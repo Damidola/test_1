@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Шашки онлайн</title>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<style>
+  :root {
+    --bg: #1f1b16;
+    --panel: #2b251e;
+    --text: #f3ead8;
+    --muted: #b9ab91;
+    --light: #e9d3a8;
+    --dark: #8a5a33;
+    --accent: #f0b43c;
+    --target: rgba(90, 220, 120, .75);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; align-items: center; padding: 16px;
+  }
+  h1 { margin: 4px 0 12px; font-size: 26px; letter-spacing: .5px; }
+  .panel {
+    width: 100%; max-width: 520px; background: var(--panel); border-radius: 12px;
+    padding: 14px; margin-bottom: 14px;
+  }
+  button {
+    background: var(--accent); color: #231a0c; border: 0; border-radius: 8px;
+    padding: 10px 14px; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  button.secondary { background: #4a3f33; color: var(--text); }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .link-box {
+    flex: 1; min-width: 0; padding: 10px; border-radius: 8px; border: 1px solid #5a4d3e;
+    background: #1b1712; color: var(--text); font-size: 14px;
+  }
+  #status { font-size: 17px; font-weight: 600; min-height: 24px; }
+  #sub { color: var(--muted); font-size: 14px; margin-top: 4px; min-height: 18px; }
+  #board {
+    width: min(92vw, 520px); aspect-ratio: 1; display: grid;
+    grid-template-columns: repeat(8, 1fr); border: 8px solid #4a2f1a; border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5); user-select: none;
+  }
+  .cell { position: relative; display: flex; align-items: center; justify-content: center; }
+  .cell.l { background: var(--light); }
+  .cell.d { background: var(--dark); cursor: pointer; }
+  .cell.last { box-shadow: inset 0 0 0 100px rgba(240, 180, 60, .28); }
+  .cell.target::after {
+    content: ""; width: 30%; height: 30%; border-radius: 50%; background: var(--target);
+  }
+  .piece {
+    width: 80%; height: 80%; border-radius: 50%; position: absolute;
+    display: flex; align-items: center; justify-content: center;
+    font-size: min(5vw, 28px); transition: transform .1s;
+  }
+  .piece.w { background: radial-gradient(circle at 35% 30%, #fff, #ddd6c8 60%, #b8ad98); box-shadow: 0 3px 0 #8c8370, 0 5px 8px rgba(0,0,0,.4); color: #8a5a33; }
+  .piece.b { background: radial-gradient(circle at 35% 30%, #666, #2a2a2a 60%, #111); box-shadow: 0 3px 0 #000, 0 5px 8px rgba(0,0,0,.5); color: var(--accent); }
+  .piece.sel { outline: 3px solid var(--accent); outline-offset: 2px; transform: scale(1.06); }
+  .piece.must { outline: 2px dashed var(--accent); outline-offset: 2px; }
+  .piece.captured { opacity: .35; }
+  .coords { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  .hidden { display: none !important; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<h1>Шашки онлайн</h1>
+
+<div class="panel" id="lobby">
+  <div class="row">
+    <button id="btnCreate">Создать игру с другом</button>
+    <button id="btnLocal" class="secondary">Играть на одном экране</button>
+  </div>
+</div>
+
+<div class="panel hidden" id="invite">
+  <div style="margin-bottom:8px">Отправь эту ссылку другу:</div>
+  <div class="row">
+    <input class="link-box" id="inviteLink" readonly>
+    <button id="btnCopy">Копировать</button>
+  </div>
+</div>
+
+<div class="panel">
+  <div id="status">Выбери режим игры</div>
+  <div id="sub"></div>
+</div>
+
+<div id="board"></div>
+
+<div class="row" style="margin-top:14px">
+  <button id="btnRestart" class="secondary">Новая партия</button>
+</div>
+<div class="coords">Русские шашки: бить обязательно, простые бьют назад, дамка ходит далеко.</div>
+
+<script>
+const N = 8;
+const DIRS = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+const ROOM_PREFIX = 'shashki-room-';
+const COLOR_NAME = { w: 'белые', b: 'чёрные' };
+
+let state = newGame();
+let mode = null;            // 'local' | 'host' | 'guest'
+let myColor = null;         // 'w' | 'b' in online mode
+let selected = null;        // [r, c]
+let peer = null;
+let conn = null;
+let room = null;
+
+function newGame() {
+  const board = [];
+  for (let r = 0; r < N; r++) {
+    const row = [];
+    for (let c = 0; c < N; c++) {
+      if ((r + c) % 2 === 1 && r < 3) row.push({ color: 'b', king: false });
+      else if ((r + c) % 2 === 1 && r > 4) row.push({ color: 'w', king: false });
+      else row.push(null);
+    }
+    board.push(row);
+  }
+  return { board, turn: 'w', chain: null, winner: null, last: null, moveNo: 0 };
+}
+
+const inB = (r, c) => r >= 0 && r < N && c >= 0 && c < N;
+const inCaps = (caps, r, c) => caps.some(([a, b]) => a === r && b === c);
+const cloneBoard = b => b.map(row => row.map(p => (p ? { ...p } : null)));
+const promotes = (piece, r) => !piece.king && ((piece.color === 'w' && r === 0) || (piece.color === 'b' && r === N - 1));
+
+function rawCaptures(b, r, c, piece, caps) {
+  const res = [];
+  for (const [dr, dc] of DIRS) {
+    if (!piece.king) {
+      const r1 = r + dr, c1 = c + dc, r2 = r + 2 * dr, c2 = c + 2 * dc;
+      if (inB(r2, c2) && b[r1][c1] && b[r1][c1].color !== piece.color &&
+          !inCaps(caps, r1, c1) && !b[r2][c2]) {
+        res.push({ to: [r2, c2], over: [r1, c1] });
+      }
+      continue;
+    }
+    let r1 = r + dr, c1 = c + dc;
+    while (inB(r1, c1) && !b[r1][c1]) { r1 += dr; c1 += dc; }
+    if (!inB(r1, c1) || b[r1][c1].color === piece.color || inCaps(caps, r1, c1)) continue;
+    let r2 = r1 + dr, c2 = c1 + dc;
+    while (inB(r2, c2) && !b[r2][c2]) {
+      res.push({ to: [r2, c2], over: [r1, c1] });
+      r2 += dr; c2 += dc;
+    }
+  }
+  return res;
+}
+
+// A king landing after a capture must pick a square that continues the chain, if any exists.
+function captureMoves(b, r, c, piece, caps) {
+  const moves = rawCaptures(b, r, c, piece, caps);
+  if (!piece.king) return moves;
+  const groups = new Map();
+  for (const m of moves) {
+    const key = m.over.join(',');
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(m);
+  }
+  const result = [];
+  for (const group of groups.values()) {
+    const continuing = group.filter(m => {
+      const nb = cloneBoard(b);
+      nb[r][c] = null;
+      nb[m.to[0]][m.to[1]] = piece;
+      return rawCaptures(nb, m.to[0], m.to[1], piece, caps.concat([m.over])).length > 0;
+    });
+    result.push(...(continuing.length ? continuing : group));
+  }
+  return result;
+}
+
+function simpleMoves(b, r, c, piece) {
+  const res = [];
+  for (const [dr, dc] of DIRS) {
+    if (!piece.king) {
+      const forward = piece.color === 'w' ? -1 : 1;
+      if (dr !== forward) continue;
+      if (inB(r + dr, c + dc) && !b[r + dr][c + dc]) res.push({ to: [r + dr, c + dc], over: null });
+      continue;
+    }
+    let r1 = r + dr, c1 = c + dc;
+    while (inB(r1, c1) && !b[r1][c1]) {
+      res.push({ to: [r1, c1], over: null });
+      r1 += dr; c1 += dc;
+    }
+  }
+  return res;
+}
+
+function colorHasCapture(b, color) {
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    const p = b[r][c];
+    if (p && p.color === color && rawCaptures(b, r, c, p, []).length) return true;
+  }
+  return false;
+}
+
+function colorHasMove(b, color) {
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    const p = b[r][c];
+    if (p && p.color === color && (rawCaptures(b, r, c, p, []).length || simpleMoves(b, r, c, p).length)) return true;
+  }
+  return false;
+}
+
+function movesFor(s, r, c) {
+  const p = s.board[r][c];
+  if (!p || p.color !== s.turn || s.winner) return [];
+  if (s.chain) {
+    if (s.chain.r !== r || s.chain.c !== c) return [];
+    return captureMoves(s.board, r, c, p, s.chain.caps);
+  }
+  if (colorHasCapture(s.board, s.turn)) return captureMoves(s.board, r, c, p, []);
+  return simpleMoves(s.board, r, c, p);
+}
+
+function applyMove(s, from, move) {
+  const b = cloneBoard(s.board);
+  const [fr, fc] = from, [tr, tc] = move.to;
+  const piece = b[fr][fc];
+  b[fr][fc] = null;
+  if (promotes(piece, tr)) piece.king = true;
+  b[tr][tc] = piece;
+  const next = { ...s, board: b, moveNo: s.moveNo + 1, last: [from, move.to] };
+
+  if (move.over) {
+    const caps = (s.chain ? s.chain.caps : []).concat([move.over]);
+    if (captureMoves(b, tr, tc, piece, caps).length) {
+      next.chain = { r: tr, c: tc, caps };
+      return next;
+    }
+    for (const [cr, cc] of caps) b[cr][cc] = null;
+  }
+  next.chain = null;
+  next.turn = s.turn === 'w' ? 'b' : 'w';
+  if (!colorHasMove(b, next.turn)) next.winner = s.turn;
+  return next;
+}
+
+function canAct() {
+  if (!mode || state.winner) return false;
+  if (mode === 'local') return true;
+  return conn && conn.open && myColor === state.turn;
+}
+
+function onCellClick(r, c) {
+  if (!canAct()) return;
+  if (selected) {
+    const move = movesFor(state, selected[0], selected[1]).find(m => m.to[0] === r && m.to[1] === c);
+    if (move) {
+      state = applyMove(state, selected, move);
+      selected = state.chain ? [state.chain.r, state.chain.c] : null;
+      send({ type: 'state', state });
+      render();
+      return;
+    }
+  }
+  if (state.chain) return;
+  const p = state.board[r][c];
+  selected = p && p.color === state.turn && movesFor(state, r, c).length ? [r, c] : null;
+  render();
+}
+
+const boardEl = document.getElementById('board');
+
+function render() {
+  const flip = mode !== 'local' && myColor === 'b';
+  const targets = selected ? movesFor(state, selected[0], selected[1]).map(m => m.to.join(',')) : [];
+  const mustCapture = canAct() && !state.chain && colorHasCapture(state.board, state.turn);
+  const caps = state.chain ? state.chain.caps : [];
+  const lastKeys = state.last ? state.last.map(x => x.join(',')) : [];
+
+  boardEl.innerHTML = '';
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const r = flip ? N - 1 - i : i, c = flip ? N - 1 - j : j;
+      const cell = document.createElement('div');
+      const key = r + ',' + c;
+      cell.className = 'cell ' + ((r + c) % 2 ? 'd' : 'l');
+      if (targets.includes(key)) cell.classList.add('target');
+      if (lastKeys.includes(key)) cell.classList.add('last');
+      const p = state.board[r][c];
+      if (p) {
+        const el = document.createElement('div');
+        el.className = 'piece ' + p.color;
+        if (p.king) el.textContent = '♛';
+        if (selected && selected[0] === r && selected[1] === c) el.classList.add('sel');
+        else if (mustCapture && p.color === state.turn && movesFor(state, r, c).length) el.classList.add('must');
+        if (inCaps(caps, r, c)) el.classList.add('captured');
+        cell.appendChild(el);
+      }
+      if ((r + c) % 2) cell.addEventListener('click', () => onCellClick(r, c));
+      boardEl.appendChild(cell);
+    }
+  }
+  renderStatus();
+}
+
+function setStatus(main, sub = '') {
+  document.getElementById('status').textContent = main;
+  document.getElementById('sub').textContent = sub;
+}
+
+function renderStatus() {
+  if (!mode) return;
+  if (state.winner) {
+    const who = mode === 'local' ? `Победили ${COLOR_NAME[state.winner]}!`
+      : state.winner === myColor ? 'Ты победил! 🎉' : 'Ты проиграл.';
+    setStatus(who, 'Нажми «Новая партия», чтобы сыграть ещё.');
+    return;
+  }
+  if (mode === 'local') {
+    setStatus(`Ходят ${COLOR_NAME[state.turn]}`, state.chain ? 'Продолжай бить этой же шашкой' : '');
+    return;
+  }
+  if (!conn || !conn.open) return;
+  const mine = `Ты играешь за ${COLOR_NAME[myColor]}.`;
+  if (state.turn === myColor) setStatus(state.chain ? 'Бей дальше!' : 'Твой ход', mine);
+  else setStatus('Ход соперника…', mine);
+}
+
+// ---------- networking ----------
+
+function send(msg) {
+  if (conn && conn.open) conn.send(msg);
+}
+
+function randomRoom() {
+  const abc = 'abcdefghjkmnpqrstuvwxyz23456789';
+  let s = '';
+  for (let i = 0; i < 8; i++) s += abc[Math.floor(Math.random() * abc.length)];
+  return s;
+}
+
+function attachConn(c) {
+  if (conn && conn !== c) conn.close();
+  conn = c;
+  c.on('open', () => {
+    c.send({ type: 'sync', state });
+    render();
+  });
+  c.on('data', msg => {
+    if (!msg || typeof msg !== 'object') return;
+    if (msg.type === 'state' || (msg.type === 'sync' && msg.state.moveNo > state.moveNo)) {
+      state = msg.state;
+      selected = state.chain && state.turn === myColor ? [state.chain.r, state.chain.c] : null;
+    } else if (msg.type === 'restart') {
+      state = newGame();
+      selected = null;
+    }
+    render();
+  });
+  c.on('close', () => {
+    if (conn !== c) return;
+    render();
+    if (mode === 'host') setStatus('Соперник отключился', 'Ждём, когда он снова откроет ссылку…');
+    else { setStatus('Связь потеряна', 'Переподключаюсь…'); setTimeout(connectToHost, 2000); }
+  });
+}
+
+function hostGame(roomId, attempt = 0) {
+  mode = 'host';
+  myColor = 'w';
+  room = roomId;
+  history.replaceState(null, '', '?host=' + room);
+  const link = location.origin + location.pathname + '?room=' + room;
+  document.getElementById('lobby').classList.add('hidden');
+  document.getElementById('invite').classList.remove('hidden');
+  document.getElementById('inviteLink').value = link;
+  setStatus('Подключаюсь к серверу…');
+
+  peer = new Peer(ROOM_PREFIX + room);
+  peer.on('open', () => setStatus('Ждём друга…', 'Ты играешь за белых и ходишь первым.'));
+  peer.on('connection', c => attachConn(c));
+  peer.on('disconnected', () => peer.reconnect());
+  peer.on('error', err => {
+    if (err.type === 'unavailable-id' && attempt < 5) {
+      peer.destroy();
+      setStatus('Восстанавливаю комнату…');
+      setTimeout(() => hostGame(roomId, attempt + 1), 3000);
+    } else if (err.type === 'unavailable-id') {
+      peer.destroy();
+      hostGame(randomRoom());
+    } else {
+      setStatus('Ошибка соединения', String(err.type || err));
+    }
+  });
+  render();
+}
+
+function joinGame(roomId) {
+  mode = 'guest';
+  myColor = 'b';
+  room = roomId;
+  document.getElementById('lobby').classList.add('hidden');
+  setStatus('Подключаюсь к игре…');
+  peer = new Peer();
+  peer.on('open', connectToHost);
+  peer.on('disconnected', () => peer.reconnect());
+  peer.on('error', err => {
+    if (err.type === 'peer-unavailable') {
+      setStatus('Друг пока не в игре', 'Попробую снова через пару секунд…');
+      setTimeout(connectToHost, 3000);
+    } else {
+      setStatus('Ошибка соединения', String(err.type || err));
+    }
+  });
+  render();
+}
+
+function connectToHost() {
+  if (!peer || peer.destroyed || !peer.open) return;
+  if (conn && conn.open) return;
+  attachConn(peer.connect(ROOM_PREFIX + room, { reliable: true }));
+}
+
+// ---------- UI wiring ----------
+
+document.getElementById('btnCreate').onclick = () => hostGame(randomRoom());
+document.getElementById('btnLocal').onclick = () => {
+  mode = 'local';
+  document.getElementById('lobby').classList.add('hidden');
+  render();
+};
+document.getElementById('btnCopy').onclick = async () => {
+  const input = document.getElementById('inviteLink');
+  try { await navigator.clipboard.writeText(input.value); }
+  catch { input.select(); document.execCommand('copy'); }
+  document.getElementById('btnCopy').textContent = 'Скопировано!';
+};
+document.getElementById('btnRestart').onclick = () => {
+  if (!mode || !confirm('Начать новую партию?')) return;
+  state = newGame();
+  selected = null;
+  send({ type: 'restart' });
+  render();
+};
+
+const params = new URLSearchParams(location.search);
+if (typeof Peer === 'undefined' && (params.get('room') || params.get('host'))) {
+  setStatus('Не удалось загрузить библиотеку связи', 'Проверь интернет и обнови страницу.');
+} else if (params.get('room')) {
+  joinGame(params.get('room'));
+} else if (params.get('host')) {
+  hostGame(params.get('host'));
+} else {
+  render();
+}
+</script>
+</body>
+</html>
