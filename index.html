@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Шашки онлайн</title>
-<script src="vendor/mqtt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <style>
   :root {
     --bg: #1f1b16;
@@ -100,22 +100,16 @@
 <script>
 const N = 8;
 const DIRS = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+const ROOM_PREFIX = 'shashki-room-';
 const COLOR_NAME = { w: 'белые', b: 'чёрные' };
-// Several public brokers at once: moves go through all of them, so one being down or blocked doesn't matter.
-const BROKERS = window.SHASHKI_BROKERS || [
-  'wss://broker.emqx.io:8084/mqtt',
-  'wss://broker.hivemq.com:8884/mqtt',
-  'wss://test.mosquitto.org:8081/mqtt',
-];
 
 let state = newGame();
 let mode = null;            // 'local' | 'host' | 'guest'
 let myColor = null;         // 'w' | 'b' in online mode
 let selected = null;        // [r, c]
-let clients = [];
-let oppOnline = [];
+let peer = null;
+let conn = null;
 let room = null;
-let startedAt = 0;
 
 function newGame() {
   const board = [];
@@ -128,7 +122,7 @@ function newGame() {
     }
     board.push(row);
   }
-  return { board, turn: 'w', chain: null, winner: null, last: null, seq: 0 };
+  return { board, turn: 'w', chain: null, winner: null, last: null, moveNo: 0 };
 }
 
 const inB = (r, c) => r >= 0 && r < N && c >= 0 && c < N;
@@ -234,7 +228,7 @@ function applyMove(s, from, move) {
   b[fr][fc] = null;
   if (promotes(piece, tr)) piece.king = true;
   b[tr][tc] = piece;
-  const next = { ...s, board: b, seq: s.seq + 1, last: [from, move.to] };
+  const next = { ...s, board: b, moveNo: s.moveNo + 1, last: [from, move.to] };
 
   if (move.over) {
     const caps = (s.chain ? s.chain.caps : []).concat([move.over]);
@@ -253,7 +247,7 @@ function applyMove(s, from, move) {
 function canAct() {
   if (!mode || state.winner) return false;
   if (mode === 'local') return true;
-  return isConnected() && myColor === state.turn;
+  return conn && conn.open && myColor === state.turn;
 }
 
 function onCellClick(r, c) {
@@ -263,7 +257,7 @@ function onCellClick(r, c) {
     if (move) {
       state = applyMove(state, selected, move);
       selected = state.chain ? [state.chain.r, state.chain.c] : null;
-      publishState();
+      send({ type: 'state', state });
       render();
       return;
     }
@@ -326,111 +320,16 @@ function renderStatus() {
     setStatus(`Ходят ${COLOR_NAME[state.turn]}`, state.chain ? 'Продолжай бить этой же шашкой' : '');
     return;
   }
-  if (!isConnected()) {
-    const slow = Date.now() - startedAt > 12000;
-    setStatus('Подключаюсь к серверу…', slow
-      ? 'Долго не получается. Проверь интернет; если включён VPN или блокировщик рекламы — попробуй без них или в другом браузере.'
-      : '');
-    return;
-  }
+  if (!conn || !conn.open) return;
   const mine = `Ты играешь за ${COLOR_NAME[myColor]}.`;
-  const opp = oppOnline.some(Boolean);
-  if (!opp && state.seq === 0) {
-    setStatus(mode === 'host' ? 'Ждём друга…' : 'Ждём соперника…',
-      mode === 'host' ? 'Отправь ему ссылку выше. Ты играешь за белых и ходишь первым.' : mine);
-    return;
-  }
-  const away = opp ? '' : ' Соперник сейчас не в сети — ход дойдёт, когда он вернётся.';
-  if (state.turn === myColor) setStatus(state.chain ? 'Бей дальше!' : 'Твой ход', mine + away);
-  else setStatus('Ход соперника…', mine + away);
+  if (state.turn === myColor) setStatus(state.chain ? 'Бей дальше!' : 'Твой ход', mine);
+  else setStatus('Ход соперника…', mine);
 }
 
 // ---------- networking ----------
 
-const topic = name => `shashki/v2/${room}/${name}`;
-const isConnected = () => clients.some(c => c.connected);
-
-function publishState() {
-  if (mode === 'local') return;
-  const payload = JSON.stringify(state);
-  for (const c of clients) if (c.connected) c.publish(topic('state'), payload, { qos: 1, retain: true });
-}
-
-function validState(s) {
-  return s && typeof s === 'object' && Number.isInteger(s.seq) && (s.turn === 'w' || s.turn === 'b') &&
-    Array.isArray(s.board) && s.board.length === N &&
-    s.board.every(row => Array.isArray(row) && row.length === N &&
-      row.every(p => p === null || (p && (p.color === 'w' || p.color === 'b') && typeof p.king === 'boolean')));
-}
-
-function onMessage(i, t, payload) {
-  const text = payload.toString();
-  if (t === topic('online/' + (myColor === 'w' ? 'b' : 'w'))) {
-    const wasOnline = oppOnline.some(Boolean);
-    oppOnline[i] = text === '1';
-    // The opponent just (re)joined: make sure they get our latest position.
-    if (!wasOnline && oppOnline[i]) publishState();
-    render();
-    return;
-  }
-  if (t !== topic('state')) return;
-  let incoming;
-  try { incoming = JSON.parse(text); } catch { return; }
-  if (!validState(incoming)) return;
-  if (incoming.seq > state.seq) {
-    state = incoming;
-    selected = state.chain && state.turn === myColor ? [state.chain.r, state.chain.c] : null;
-    render();
-  } else if (incoming.seq < state.seq) {
-    publishState();
-  }
-}
-
-function startOnline(roomId, color) {
-  room = String(roomId).toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16);
-  myColor = color;
-  mode = color === 'w' ? 'host' : 'guest';
-  startedAt = Date.now();
-  document.getElementById('lobby').classList.add('hidden');
-
-  if (typeof mqtt === 'undefined') {
-    setStatus('Не удалось загрузить игру', 'Обнови страницу.');
-    return;
-  }
-  if (mode === 'host') {
-    history.replaceState(null, '', '?host=' + room);
-    document.getElementById('invite').classList.remove('hidden');
-    document.getElementById('inviteLink').value = location.origin + location.pathname + '?room=' + room;
-  }
-
-  const meTopic = topic('online/' + myColor);
-  const oppTopic = topic('online/' + (myColor === 'w' ? 'b' : 'w'));
-  const id = 'shashki_' + Math.random().toString(16).slice(2, 12);
-  clients = BROKERS.map((url, i) => {
-    const c = mqtt.connect(url, {
-      clientId: id + '_' + i,
-      clean: true,
-      keepalive: 20,
-      connectTimeout: 10000,
-      reconnectPeriod: 3000,
-      will: { topic: meTopic, payload: '0', qos: 1, retain: true },
-    });
-    c.on('connect', () => {
-      c.subscribe([topic('state'), oppTopic], { qos: 1 });
-      c.publish(meTopic, '1', { qos: 1, retain: true });
-      if (state.seq > 0) c.publish(topic('state'), JSON.stringify(state), { qos: 1, retain: true });
-      render();
-    });
-    c.on('message', (t, payload) => onMessage(i, t, payload));
-    c.on('close', () => { oppOnline[i] = false; render(); });
-    c.on('error', () => {});
-    return c;
-  });
-  addEventListener('pagehide', () => {
-    for (const c of clients) if (c.connected) c.publish(meTopic, '0', { qos: 0, retain: true });
-  });
-  setInterval(() => { if (!isConnected()) renderStatus(); }, 3000);
-  render();
+function send(msg) {
+  if (conn && conn.open) conn.send(msg);
 }
 
 function randomRoom() {
@@ -440,9 +339,91 @@ function randomRoom() {
   return s;
 }
 
+function attachConn(c) {
+  if (conn && conn !== c) conn.close();
+  conn = c;
+  c.on('open', () => {
+    c.send({ type: 'sync', state });
+    render();
+  });
+  c.on('data', msg => {
+    if (!msg || typeof msg !== 'object') return;
+    if (msg.type === 'state' || (msg.type === 'sync' && msg.state.moveNo > state.moveNo)) {
+      state = msg.state;
+      selected = state.chain && state.turn === myColor ? [state.chain.r, state.chain.c] : null;
+    } else if (msg.type === 'restart') {
+      state = newGame();
+      selected = null;
+    }
+    render();
+  });
+  c.on('close', () => {
+    if (conn !== c) return;
+    render();
+    if (mode === 'host') setStatus('Соперник отключился', 'Ждём, когда он снова откроет ссылку…');
+    else { setStatus('Связь потеряна', 'Переподключаюсь…'); setTimeout(connectToHost, 2000); }
+  });
+}
+
+function hostGame(roomId, attempt = 0) {
+  mode = 'host';
+  myColor = 'w';
+  room = roomId;
+  history.replaceState(null, '', '?host=' + room);
+  const link = location.origin + location.pathname + '?room=' + room;
+  document.getElementById('lobby').classList.add('hidden');
+  document.getElementById('invite').classList.remove('hidden');
+  document.getElementById('inviteLink').value = link;
+  setStatus('Подключаюсь к серверу…');
+
+  peer = new Peer(ROOM_PREFIX + room);
+  peer.on('open', () => setStatus('Ждём друга…', 'Ты играешь за белых и ходишь первым.'));
+  peer.on('connection', c => attachConn(c));
+  peer.on('disconnected', () => peer.reconnect());
+  peer.on('error', err => {
+    if (err.type === 'unavailable-id' && attempt < 5) {
+      peer.destroy();
+      setStatus('Восстанавливаю комнату…');
+      setTimeout(() => hostGame(roomId, attempt + 1), 3000);
+    } else if (err.type === 'unavailable-id') {
+      peer.destroy();
+      hostGame(randomRoom());
+    } else {
+      setStatus('Ошибка соединения', String(err.type || err));
+    }
+  });
+  render();
+}
+
+function joinGame(roomId) {
+  mode = 'guest';
+  myColor = 'b';
+  room = roomId;
+  document.getElementById('lobby').classList.add('hidden');
+  setStatus('Подключаюсь к игре…');
+  peer = new Peer();
+  peer.on('open', connectToHost);
+  peer.on('disconnected', () => peer.reconnect());
+  peer.on('error', err => {
+    if (err.type === 'peer-unavailable') {
+      setStatus('Друг пока не в игре', 'Попробую снова через пару секунд…');
+      setTimeout(connectToHost, 3000);
+    } else {
+      setStatus('Ошибка соединения', String(err.type || err));
+    }
+  });
+  render();
+}
+
+function connectToHost() {
+  if (!peer || peer.destroyed || !peer.open) return;
+  if (conn && conn.open) return;
+  attachConn(peer.connect(ROOM_PREFIX + room, { reliable: true }));
+}
+
 // ---------- UI wiring ----------
 
-document.getElementById('btnCreate').onclick = () => startOnline(randomRoom(), 'w');
+document.getElementById('btnCreate').onclick = () => hostGame(randomRoom());
 document.getElementById('btnLocal').onclick = () => {
   mode = 'local';
   document.getElementById('lobby').classList.add('hidden');
@@ -456,16 +437,22 @@ document.getElementById('btnCopy').onclick = async () => {
 };
 document.getElementById('btnRestart').onclick = () => {
   if (!mode || !confirm('Начать новую партию?')) return;
-  state = { ...newGame(), seq: state.seq + 1 };
+  state = newGame();
   selected = null;
-  publishState();
+  send({ type: 'restart' });
   render();
 };
 
 const params = new URLSearchParams(location.search);
-if (params.get('room')) startOnline(params.get('room'), 'b');
-else if (params.get('host')) startOnline(params.get('host'), 'w');
-else render();
+if (typeof Peer === 'undefined' && (params.get('room') || params.get('host'))) {
+  setStatus('Не удалось загрузить библиотеку связи', 'Проверь интернет и обнови страницу.');
+} else if (params.get('room')) {
+  joinGame(params.get('room'));
+} else if (params.get('host')) {
+  hostGame(params.get('host'));
+} else {
+  render();
+}
 </script>
 </body>
 </html>
