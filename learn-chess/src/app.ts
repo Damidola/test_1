@@ -10,15 +10,7 @@ import { Coords } from './shims/lib-misc';
 const LG = (window as any).LG;
 
 
-// Прогрес зі старої версії сторінки (lg:learn:lichess) → формат Lichess (learn.progress)
-try {
-  const old = LG.store.get('learn:lichess', null) as Record<string, number[]> | null;
-  if (old && !localStorage.getItem('learn.progress')) {
-    const stages: Record<string, { scores: number[] }> = {};
-    for (const [key, scores] of Object.entries(old)) stages[key] = { scores: Array.from(scores, s => s || 0) };
-    localStorage.setItem('learn.progress', JSON.stringify({ stages }));
-  }
-} catch { /* без прогресу */ }
+
 
 // Світла/нічна тема сайту → класи тем Lichess
 const syncTheme = () => document.documentElement.classList.toggle('light', !document.documentElement.classList.contains('lg-night'));

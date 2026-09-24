@@ -43,7 +43,8 @@ export function startGame(cfg) {
   const $ = s => root.querySelector(s);
 
   // ---------- стан партії ----------
-  let player = cfg.player || 'w'; // яким кольором грає дитина
+  const q = new URLSearchParams(location.search), qSide = q.get('side'), qLevel = +q.get('level');
+  let player = qSide === 'w' || qSide === 'b' ? qSide : qSide === 'r' ? (Math.random() < 0.5 ? 'w' : 'b') : cfg.player || 'w'; // яким кольором грає дитина
   let history = [];          // позиції від початку партії
   let pos = 0;               // яку позицію зараз показано
   let hintsLeft, undosLeft, lastHint = null, thinking = false, over = false, aiTimer = null;
@@ -58,7 +59,8 @@ export function startGame(cfg) {
   const names = cfg.sideNames || { w: 'Білі', b: 'Чорні' };
 
   const hero = mountOpponent($('.lg-hero-slot'));
-  level = 1; // за замовчуванням — найлегший; тваринка на силу не впливає
+  level = qLevel >= 1 && qLevel <= 5 ? qLevel : 1; // за замовчуванням — найлегший; тваринка на силу не впливає
+  hero.setLevel(level);
   // Кнопка «Рівень»: крапки показують силу робота; тап відкриває над кнопками смужку 1…5
   const dots = n => '<i></i>'.repeat(n);
   function paintLevel() {

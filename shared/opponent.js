@@ -55,7 +55,8 @@ export const LEVEL_NAMES = ['Піддається', 'Слабкий', 'Нова�
 export function mountOpponent(el, opts = {}) {
   const LG = window.LG;
   // Щоразу при відкритті — випадкова тваринка. Сила робота від тваринки не залежить (кнопка «Рівень», за замовчуванням 1)
-  let index = Math.floor(Math.random() * OPPONENTS.length);
+  const q = new URLSearchParams(location.search);
+  let index = q.has('opp') ? Math.min(OPPONENTS.length - 1, Math.max(0, +q.get('opp') || 0)) : Math.floor(Math.random() * OPPONENTS.length);
   let level = 1;
   el.classList.add('lg-hero');
   el.innerHTML = `

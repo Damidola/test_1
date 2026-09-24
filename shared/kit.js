@@ -18,11 +18,11 @@
   // ---------- сховище (може бути недоступне в приватному режимі) ----------
   const store = {
     get(key, fallback) {
-      try { const v = localStorage.getItem('lg:' + key); return v === null ? fallback : JSON.parse(v); }
+      try { const v = localStorage.getItem('chk:' + key); return v === null ? fallback : JSON.parse(v); }
       catch (e) { return fallback; }
     },
     set(key, value) {
-      try { localStorage.setItem('lg:' + key, JSON.stringify(value)); } catch (e) { /* ігноруємо */ }
+      try { localStorage.setItem('chk:' + key, JSON.stringify(value)); } catch (e) { /* ігноруємо */ }
     }
   };
 
@@ -391,7 +391,7 @@
     // 🏠 веде туди, звідки прийшли: зі «Шляху новачка» — назад на шлях, інакше — на головну
     function homeHref() {
       let back = null;
-      try { back = sessionStorage.getItem('lg:back'); } catch (e) { /* без сховища */ }
+      try { back = sessionStorage.getItem('chk:back'); } catch (e) { /* без сховища */ }
       return back && location.href.split('#')[0] !== back ? back : root + 'index.html';
     }
     // У всіх іграх однаково: 🏠 · назва · 🔊 ❓ ⚙️

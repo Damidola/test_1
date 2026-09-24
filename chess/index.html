@@ -14,6 +14,8 @@
   <script type="module">
     import { startGame } from '../shared/game.js?v=1790272165';
     import { createRules } from './rules.js?v=1790272165';
+    const qv = new URLSearchParams(location.search).get('variant'); // з вкладки «Гра»
+    if (qv === 'standard' || qv === 'antichess') LG.store.set('chess:variant', qv);
     let game;
     game = startGame({
       rules: createRules({ variant: () => LG.store.get('chess:variant', 'standard') }),

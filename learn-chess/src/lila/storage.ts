@@ -23,7 +23,7 @@ const xhrSaveScore = (stageKey: string, levelId: number, score: number) =>
 const xhrReset = () => xhr.jsonAnyResponse('/learn/reset', { method: 'POST' });
 
 export default function (d?: LearnProgress): Storage {
-  const key = 'learn.progress';
+  const key = 'chk.learn.progress'; // окремо від сайту «Логічні ігри»
   const defaultValue: LearnProgress = {
     stages: {},
   };

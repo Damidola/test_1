@@ -5,38 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахи для дітей</title>
   <meta name="description" content="Шахи з нуля для дітей українською: уроки крок за кроком, задачі й гра з роботом.">
-  <meta name="theme-color" content="#15142A">
+  <meta name="theme-color" content="#14132B">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Шахи">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="shared/pieces/cburnett/wN.svg">
   <link rel="apple-touch-icon" href="shared/pieces/cburnett/wN.svg">
-  <link rel="stylesheet" href="shared/kit.css?v=1">
-  <link rel="stylesheet" href="app.css?v=1">
+  <link rel="stylesheet" href="shared/kit.css?v=2">
+  <link rel="stylesheet" href="app.css?v=2">
 </head>
 <body>
   <header class="ap-top">
-    <span class="ap-logo" id="logo"></span>
     <h1 id="tab-title">Уроки</h1>
-    <span class="ap-stat" id="stat"></span>
+    <span class="ap-chip" id="stat"></span>
   </header>
 
   <main class="ap-view" id="view-learn" data-tab="learn">
-    <div class="ap-path" id="path"></div>
+    <div class="ap-secbar" id="secbar"></div>
+    <div class="ap-road" id="road"><svg class="ap-road-svg" id="road-svg" aria-hidden="true"></svg></div>
   </main>
+  <main class="ap-view" id="view-play" data-tab="play" hidden></main>
   <main class="ap-view" id="view-practice" data-tab="practice" hidden></main>
   <main class="ap-view" id="view-profile" data-tab="profile" hidden></main>
 
   <div class="ap-sheet" id="sheet" hidden><div class="ap-card" id="card"></div></div>
 
   <nav class="ap-tabs" aria-label="Розділи">
-    <a href="#learn" data-tab="learn"><span>🎓</span>Уроки</a>
-    <a href="#practice" data-tab="practice"><span>🎯</span>Практика</a>
-    <a href="#profile" data-tab="profile"><span>👤</span>Профіль</a>
+    <a href="#learn" data-tab="learn"><span class="ti">🎓</span>Уроки</a>
+    <a href="#play" data-tab="play"><span class="ti">🤖</span>Гра</a>
+    <a href="#practice" data-tab="practice"><span class="ti">🎯</span>Практика</a>
+    <a href="#profile" data-tab="profile"><span class="ti">👤</span>Профіль</a>
   </nav>
 
-  <script src="shared/games.js?v=1"></script>
-  <script src="shared/kit.js?v=1"></script>
-  <script src="app.js?v=1"></script>
+  <script src="shared/games.js?v=2"></script>
+  <script src="shared/kit.js?v=2"></script>
+  <script type="module" src="app.js?v=2"></script>
 </body>
 </html>

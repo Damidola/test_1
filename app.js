@@ -1,140 +1,196 @@
-/* Шахи для дітей: застосунок із трьома вкладками.
-   🎓 Уроки — змійка кроків знизу вгору (урок · задачі · гра); 🎯 Практика — усе для тренування; 👤 Профіль — прогрес і налаштування.
-   Ігри й уроки відкриваються окремими сторінками; 🏠 у них повертає сюди, на ту саму вкладку. */
-(function () {
-  const $ = id => document.getElementById(id);
-  const set = () => LG.pieceSet();
-  const piece = (c, color = 'w') => `<img src="shared/pieces/${set()}/${color}${c}.svg" alt="">`;
-  const icon = ic => /^[PRBQNK]$/.test(ic) ? piece(ic) : ic;
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/* Шахи для дітей: застосунок із чотирма вкладками.
+   🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
+   🤖 Гра — вибір суперника, кольору, сили й режиму → партія з роботом;
+   🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
+   👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
+   Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js';
 
-  // ---------- кроки уроків ----------
-  const L = n => 'learn-chess/index.html#/' + n;      // етап уроків Lichess
-  const LS = k => 'chess-path/lesson.html#' + k;      // наш міні-урок
-  const P = k => 'chess-puzzles/index.html#' + k;     // розділ задач
-  const W = k => 'pieces-vs-pawns/index.html#' + k;   // фігури проти пішаків
-  const SECTIONS = [[0, '♟️ Фігури', '#6C5CE7'], [6, '⚔️ Напад і захист', '#FF9F1C'], [10, '👑 Шах і мат', '#E74C3C'], [15, '✨ Особливі ходи й дебют', '#2ECC9A'], [18, '🏆 Майстер', '#3498DB']];
-  const STEPS = [
-    ['P', 'Пішак', 'Ходить уперед, б’є навскоси. І одразу — перша перемога!', [['📖', 'Урок', L(6)], ['🎮', 'Пішакова битва', 'pawns/index.html', 'play']]],
-    ['R', 'Тура', 'Ходить прямо на скільки завгодно клітинок.', [['📖', 'Урок', L(1)], ['🎮', 'Тура проти 5 пішаків', W('r_p5'), 'play']]],
-    ['B', 'Слон', 'Ходить навскоси і не міняє колір клітинок.', [['📖', 'Урок', L(2)], ['🎮', 'Слон проти 3 пішаків', W('b_p3'), 'play']]],
-    ['Q', 'Ферзь', 'Тура + слон разом — найсильніша фігура.', [['📖', 'Урок', L(3)], ['🎮', 'Ферзь проти 8 пішаків', W('q_p8'), 'play']]],
-    ['N', 'Кінь', 'Стрибає літерою «Г»: два прямо, один убік.', [['📖', 'Урок', L(5)], ['🎮', 'Кінь проти 3 пішаків', W('n_p3'), 'play']]],
-    ['K', 'Король', 'Найважливіша фігура: ходить на одну клітинку.', [['📖', 'Урок', L(4)]]],
-    ['⚔️', 'Напад', 'Постав фігуру так, щоб наступним ходом побити.', [['📖', 'Урок', LS('attack')]]],
-    ['🍽️', 'Бий беззахисні', 'Забирай фігури, які ніхто не захищає.', [['📖', 'Урок', L(7)], ['🧩', 'Задачі', P('hanging'), 'task']]],
-    ['🛡️', 'Захист', 'Напали на твою фігуру? Захисти її!', [['📖', 'Урок', LS('protect')], ['📖', 'Захист', L(8)], ['🎮', 'Битва', L(9), 'play']]],
-    ['💰', 'Цінність фігур', 'Пішак 1, кінь і слон 3, тура 5, ферзь 9.', [['📖', 'Урок', 'learn-chess/value.html']]],
-    ['⚠️', 'Шах', 'Напад на короля і три способи врятуватися.', [['📖', 'Урок', 'learn-chess/check.html'], ['🧩', 'Постав шах', P('chk_rook'), 'task'], ['🧩', 'Урятуйся', P('esc_mixed'), 'task']]],
-    ['🏁', 'Мат', 'Шах, від якого нікуди подітися. Відомі мати.', [['📖', 'Урок', L(12)], ['📖', 'Відомі мати', LS('mates')], ['🧩', 'Мат в 1 хід', P('m1rook'), 'task'], ['🧩', 'Різні', P('m1mix'), 'task']]],
-    ['♜', 'Мат двома турами', 'Тури по черзі заганяють короля до краю — «драбинка».', [['📖', 'Урок', LS('rooks')]]],
-    ['♛', 'Мат ферзем', 'Ферзь заганяє, король допомагає.', [['📖', 'Урок', LS('queen')], ['🎮', 'Практика', P('kqk'), 'play']]],
-    ['🤝', 'Пат і нічия', 'Коли ніхто не виграв — і як не зробити пат.', [['📖', 'Урок', LS('draw')], ['📖', 'Пат', L(16)]]],
-    ['👑', 'Перетворення', 'Пішак стає ферзем. І взяття на проході.', [['📖', 'Урок', LS('promo')], ['📖', 'На проході', L(15)], ['🎮', 'Король і пішак', P('kpk'), 'play']]],
-    ['🏰', 'Рокіровка', 'Сховай короля й виведи туру.', [['📖', 'Урок', L(14)]]],
-    ['🚀', 'Дебют', 'Як починати гру: центр, фігури, рокіровка.', [['📖', 'Розстановка', L(13)], ['📖', 'Правила дебюту', LS('opening')]]],
-    ['🍴', 'Тактика', 'Вилка, зв’язка, прострел та інші прийоми.', [['🧩', 'Вилка', P('fork'), 'task'], ['🧩', 'Зв’язка', P('pin'), 'task'], ['🧩', 'Прострел', P('skewer'), 'task'], ['🧩', 'Відкритий напад', P('discovered'), 'task']]],
-    ['🏆', 'Мат у 2 ходи', 'Хід, відповідь суперника — і мат.', [['🧩', 'Задачі', P('mate2'), 'task']]],
-    ['⭐', 'Бонус', 'Головоломки з фігурами.', [['🎮', 'Хід конем', 'knights-tour/index.html', 'play'], ['🎮', '8 ферзів', 'eight-queens/index.html', 'play']]],
-    ['K', 'Шахи з роботом', 'Справжня партія! Обери рівень і колір.', [['🎮', 'Грати', 'chess/index.html', 'play']]]
-  ];
-  const seen = new Set(LG.store.get('path:seen', []));
-  const stepDone = i => STEPS[i][3].every(l => seen.has(l[2]));
-  const doneCount = () => STEPS.filter((_, i) => stepDone(i)).length;
+const LG = window.LG, $ = id => document.getElementById(id);
+const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
+const icon = ic => /^[PRBQNK]$/.test(ic) ? piece(ic) : ic;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  function renderLearn() {
-    const X = [0, 55, 85, 55, 0, -55, -85, -55];
-    let cur = STEPS.findIndex((_, i) => !stepDone(i)); if (cur < 0) cur = STEPS.length - 1;
-    const secOf = i => SECTIONS.filter(x => x[0] <= i).pop();
-    $('path').innerHTML = STEPS.map(([ic, title], i) => {
-      const sec = secOf(i);
-      return (sec[0] === i ? `<div class="ap-sec" style="--sec:${sec[2]}">${sec[1]}</div>` : '') +
-        `<button type="button" class="ap-node${stepDone(i) ? ' done' : ''}${i === cur ? ' cur' : ''}" id="s${i}" data-i="${i}" style="--x:${X[i % X.length]}px;--sec:${sec[2]}">
-          <span class="ap-dot">${icon(ic)}</span><b>${esc(title)}</b></button>`;
-    }).join('');
-    return cur;
-  }
-  const row = ([e, t, href, kind], sub) => `<a class="ap-row t-${kind || 'learn'}${seen.has(href) ? ' seen' : ''}" href="${href}"><span class="ic" style="--c:${kind === 'play' ? '#2ECC9A' : kind === 'task' ? '#FF9F1C' : '#6C5CE7'}">${e}</span><span>${esc(t)}${sub ? `<small>${esc(sub)}</small>` : ''}</span></a>`;
-  function openStep(i) {
-    const [, title, sub, links] = STEPS[i];
-    $('card').innerHTML = `<h2>${i + 1}. ${esc(title)}</h2><p>${esc(sub)}</p>` + links.map(l => row(l)).join('');
-    $('sheet').hidden = false;
-  }
-  $('path').addEventListener('click', e => { const n = e.target.closest('.ap-node'); if (n) openStep(+n.dataset.i); });
-  $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').hidden = true; });
+// ---------- кроки уроків ----------
+const L = n => 'learn-chess/index.html#/' + n;      // етап уроків Lichess
+const LS = k => 'chess-path/lesson.html#' + k;      // наш міні-урок
+const P = k => 'chess-puzzles/index.html#' + k;     // розділ задач
+const W = k => 'pieces-vs-pawns/index.html#' + k;   // фігури проти пішаків
+const SECTIONS = [[0, 'Фігури', '#7C6CF0'], [6, 'Напад і захист', '#FF9F1C'], [10, 'Шах і мат', '#FF5C6C'], [15, 'Особливі ходи', '#2ECC9A'], [18, 'Майстер', '#3FA7F5']];
+const STEPS = [
+  ['P', 'Пішак', 'Ходить уперед, б’є навскоси. І одразу — перша перемога!', [['📖', 'Урок', L(6)], ['🎮', 'Пішакова битва', 'pawns/index.html', 'play']]],
+  ['R', 'Тура', 'Ходить прямо на скільки завгодно клітинок.', [['📖', 'Урок', L(1)], ['🎮', 'Тура проти 5 пішаків', W('r_p5'), 'play']]],
+  ['B', 'Слон', 'Ходить навскоси і не міняє колір клітинок.', [['📖', 'Урок', L(2)], ['🎮', 'Слон проти 3 пішаків', W('b_p3'), 'play']]],
+  ['Q', 'Ферзь', 'Тура + слон разом — найсильніша фігура.', [['📖', 'Урок', L(3)], ['🎮', 'Ферзь проти 8 пішаків', W('q_p8'), 'play']]],
+  ['N', 'Кінь', 'Стрибає літерою «Г»: два прямо, один убік.', [['📖', 'Урок', L(5)], ['🎮', 'Кінь проти 3 пішаків', W('n_p3'), 'play']]],
+  ['K', 'Король', 'Найважливіша фігура: ходить на одну клітинку.', [['📖', 'Урок', L(4)]]],
+  ['⚔️', 'Напад', 'Постав фігуру так, щоб наступним ходом побити.', [['📖', 'Урок', LS('attack')]]],
+  ['🍽️', 'Бий беззахисні', 'Забирай фігури, які ніхто не захищає.', [['📖', 'Урок', L(7)], ['🧩', 'Задачі', P('hanging'), 'task']]],
+  ['🛡️', 'Захист', 'Напали на твою фігуру? Захисти її!', [['📖', 'Урок', LS('protect')], ['📖', 'Захист', L(8)], ['🎮', 'Битва', L(9), 'play']]],
+  ['💰', 'Цінність', 'Пішак 1, кінь і слон 3, тура 5, ферзь 9.', [['📖', 'Урок', 'learn-chess/value.html']]],
+  ['⚠️', 'Шах', 'Напад на короля і три способи врятуватися.', [['📖', 'Урок', 'learn-chess/check.html'], ['🧩', 'Постав шах', P('chk_rook'), 'task'], ['🧩', 'Урятуйся', P('esc_mixed'), 'task']]],
+  ['🏁', 'Мат', 'Шах, від якого нікуди подітися. Відомі мати.', [['📖', 'Урок', L(12)], ['📖', 'Відомі мати', LS('mates')], ['🧩', 'Мат в 1 хід', P('m1rook'), 'task'], ['🧩', 'Різні', P('m1mix'), 'task']]],
+  ['♜', 'Мат турами', 'Тури по черзі заганяють короля до краю — «драбинка».', [['📖', 'Урок', LS('rooks')]]],
+  ['♛', 'Мат ферзем', 'Ферзь заганяє, король допомагає.', [['📖', 'Урок', LS('queen')], ['🎮', 'Практика', P('kqk'), 'play']]],
+  ['🤝', 'Пат і нічия', 'Коли ніхто не виграв — і як не зробити пат.', [['📖', 'Урок', LS('draw')], ['📖', 'Пат', L(16)]]],
+  ['👑', 'Перетворення', 'Пішак стає ферзем. І взяття на проході.', [['📖', 'Урок', LS('promo')], ['📖', 'На проході', L(15)], ['🎮', 'Король і пішак', P('kpk'), 'play']]],
+  ['🏰', 'Рокіровка', 'Сховай короля й виведи туру.', [['📖', 'Урок', L(14)]]],
+  ['🚀', 'Дебют', 'Як починати гру: центр, фігури, рокіровка.', [['📖', 'Розстановка', L(13)], ['📖', 'Правила дебюту', LS('opening')]]],
+  ['🍴', 'Тактика', 'Вилка, зв’язка, прострел та інші прийоми.', [['🧩', 'Вилка', P('fork'), 'task'], ['🧩', 'Зв’язка', P('pin'), 'task'], ['🧩', 'Прострел', P('skewer'), 'task'], ['🧩', 'Відкритий напад', P('discovered'), 'task']]],
+  ['🏆', 'Мат у 2', 'Хід, відповідь суперника — і мат.', [['🧩', 'Задачі', P('mate2'), 'task']]],
+  ['⭐', 'Бонус', 'Головоломки з фігурами.', [['🎮', 'Хід конем', 'knights-tour/index.html', 'play'], ['🎮', '8 ферзів', 'eight-queens/index.html', 'play']]],
+  ['K', 'Партія', 'Справжня партія з роботом!', [['🎮', 'Обрати суперника', '#play', 'play']]]
+];
+const seen = new Set(LG.store.get('path:seen', []));
+const stepDone = i => STEPS[i][3].every(l => l[2].startsWith('#') ? LG.stats().chess?.played > 0 : seen.has(l[2]));
+const doneCount = () => STEPS.filter((_, i) => stepDone(i)).length;
+const secOf = i => SECTIONS.filter(x => x[0] <= i).pop();
+const KIND = { play: ['#2ECC9A', 'Гра'], task: ['#FF9F1C', 'Задачі'], learn: ['#7C6CF0', 'Урок'] };
 
-  // ---------- практика ----------
-  const PRACTICE = [
-    ['🧩 Задачі', [
-      ['♖', 'Постав шах', P('chk_rook'), 'task', 'турою, слоном, конем…'], ['🛡️', 'Урятуйся від шаху', P('esc_mixed'), 'task', 'утечи, побий, закрийся'],
-      ['🏁', 'Мат в 1 хід', P('m1mix'), 'task', 'різними фігурами'], ['🏆', 'Мат у 2 ходи', P('mate2'), 'task', 'хід, відповідь — мат'],
-      ['🍴', 'Тактика', P('fork'), 'task', 'вилка, зв’язка, прострел'], ['📋', 'Усі розділи', 'chess-puzzles/index.html', 'task', 'повний список задач']]],
-    ['🤖 Гра з роботом', [
-      ['♚', 'Шахи', 'chess/index.html', 'play', 'обери рівень і колір'], ['♟️', 'Пішакова битва', 'pawns/index.html', 'play', 'хто перший дійде до краю']]],
-    ['♜ Фігури проти пішаків', [
-      ['♛', 'Ферзь проти 8', W('q_p8'), 'play'], ['♜', 'Тура проти 5', W('r_p5'), 'play'], ['♝', 'Слон проти 3', W('b_p3'), 'play'],
-      ['♞', 'Кінь проти 3', W('n_p3'), 'play'], ['♝♝', '2 слони проти 8', W('bb_p8'), 'play'], ['♞♞', '2 коні проти 6', W('nn_p6'), 'play']]],
-    ['🏁 Постав мат роботу', [
-      ['♛', 'Ферзь і король', P('kqk'), 'play'], ['♜', 'Тура і король', P('krk'), 'play'], ['♝♝', 'Два слони', P('kbbk'), 'play'], ['♙', 'Король і пішак', P('kpk'), 'play']]],
-    ['⭐ Головоломки', [['♘', 'Хід конем', 'knights-tour/index.html', 'play'], ['♕', '8 ферзів', 'eight-queens/index.html', 'play']]]
-  ];
-  function renderPractice() {
-    $('view-practice').innerHTML = PRACTICE.map(([h, items], gi) => `<h2 class="ap-h">${h}</h2>` + (gi === 0 || gi === 1
-      ? items.map(([e, t, href, kind, sub]) => row([e, t, href, kind], sub)).join('')
-      : `<div class="ap-grid">${items.map(([e, t, href, kind]) => row([e, t, href, kind])).join('')}</div>`)).join('');
-  }
+// ---------- 🎓 уроки ----------
+let curStep = 0;
+function renderLearn() {
+  curStep = STEPS.findIndex((_, i) => !stepDone(i)); if (curStep < 0) curStep = STEPS.length - 1;
+  const rows = Math.ceil(STEPS.length / 3);
+  // рядок r знизу: парні — зліва направо, непарні — справа наліво
+  const cells = STEPS.map(([ic, title], i) => {
+    const r = Math.floor(i / 3), k = i % 3, col = r % 2 ? 3 - k : k + 1, sec = secOf(i);
+    return `<button type="button" class="ap-node${stepDone(i) ? ' done' : ''}${i === curStep ? ' cur' : ''}" id="s${i}" data-i="${i}" style="grid-row:${rows - r};grid-column:${col};--c:${sec[2]}">
+      <span class="ap-dot">${icon(ic)}<span class="n">${i + 1}</span></span><b>${esc(title)}</b></button>`;
+  }).join('');
+  $('road').innerHTML = '<svg class="ap-road-svg" id="road-svg" aria-hidden="true"></svg>' + cells;
+  $('secbar').innerHTML = SECTIONS.map(([from, name, c], si) => {
+    const to = (SECTIONS[si + 1] || [STEPS.length])[0], n = STEPS.slice(from, to).filter((_, j) => stepDone(from + j)).length;
+    return `<button type="button" data-s="${from}" style="--c:${c}"><i></i>${name} <small>${n}/${to - from}</small></button>`;
+  }).join('');
+  requestAnimationFrame(drawRoad);
+}
+// Дорога між кружечками: широка «смуга», пунктир посередині й зелений пройдений шлях
+function drawRoad() {
+  const road = $('road'), svg = $('road-svg'); if (!road || road.offsetParent === null) return;
+  const base = road.getBoundingClientRect();
+  const pts = STEPS.map((_, i) => { const d = $('s' + i).querySelector('.ap-dot').getBoundingClientRect(); return [d.left + d.width / 2 - base.left, d.top + d.height / 2 - base.top]; });
+  const path = list => list.map(([x, y], i) => (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1)).join(' ');
+  svg.setAttribute('viewBox', `0 0 ${base.width} ${base.height}`);
+  svg.innerHTML = `<path class="bed" d="${path(pts)}"/><path class="dash" d="${path(pts)}"/>` + (curStep > 0 ? `<path class="done" d="${path(pts.slice(0, curStep + 1))}"/>` : '');
+}
+window.addEventListener('resize', () => requestAnimationFrame(drawRoad));
+const row = ([e, t, href, kind], sub) => `<a class="ap-row${seen.has(href) ? ' seen' : ''}" href="${href}"><span class="ic" style="--c:${KIND[kind || 'learn'][0]}">${e}</span><span>${esc(t)}<small>${esc(sub || KIND[kind || 'learn'][1])}</small></span><span class="go">${seen.has(href) ? '✓' : '›'}</span></a>`;
+function openStep(i) {
+  const [ic, title, sub, links] = STEPS[i], sec = secOf(i);
+  $('card').innerHTML = `<div class="ap-card-head"><span class="ap-dot" style="--c:${sec[2]}">${icon(ic)}</span><div><h2>${i + 1}. ${esc(title)}</h2><p>${esc(sub)}</p></div></div>` + links.map(l => row(l)).join('');
+  $('sheet').hidden = false;
+}
+$('road').addEventListener('click', e => { const n = e.target.closest('.ap-node'); if (n) openStep(+n.dataset.i); });
+$('secbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) $('s' + b.dataset.s).scrollIntoView({ block: 'center', behavior: 'smooth' }); });
+$('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').hidden = true; if (e.target.closest('a[href^="#"]')) $('sheet').hidden = true; });
 
-  // ---------- профіль ----------
-  function solvedPuzzles() {
-    let n = 0;
-    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('lg:puz:')) try { n += JSON.parse(localStorage.getItem(k)).length; } catch (e) { /* */ } }
-    return n;
-  }
-  function renderProfile() {
-    const st = LG.stats(), games = Object.values(st).reduce((a, s) => a + (s.wins || 0), 0);
-    const v = $('view-profile');
-    v.innerHTML = `<div class="ap-me"><span class="av">${piece('K')}</span><div><b>Юний шахіст</b><small>Крок ${Math.min(doneCount() + 1, STEPS.length)} з ${STEPS.length}</small></div></div>
-      <div class="ap-stats"><div><b>${doneCount()}</b><span>кроків пройдено</span></div><div><b>${solvedPuzzles()}</b><span>задач розв’язано</span></div><div><b>${games}</b><span>перемог</span></div></div>
-      <h2 class="ap-h">Налаштування</h2>
-      <div class="ap-set"><label>🔊 Звук <input type="checkbox" class="ap-switch" id="p-sound"></label></div>
-      <div class="ap-set"><label>Гучність <input type="range" min="0" max="100" step="5" class="lg-range" id="p-vol"></label></div>
-      <div class="ap-set" id="p-pieces"></div>
-      <button type="button" class="ap-danger" id="p-reset">Скинути прогрес</button>`;
-    $('p-sound').checked = !LG.muted;
-    $('p-sound').addEventListener('change', e => { LG.muted = !e.target.checked; LG.store.set('muted', LG.muted); if (!LG.muted) LG.play('tap'); });
-    $('p-vol').value = Math.round(LG.volume * 100);
-    $('p-vol').addEventListener('input', e => { LG.volume = +e.target.value / 100; LG.store.set('volume', LG.volume); });
-    $('p-vol').addEventListener('change', () => LG.play('tap'));
-    $('p-pieces').appendChild(LG.pieceSetPicker(() => { $('logo').innerHTML = piece('N'); renderLearn(); }));
-    $('p-reset').addEventListener('click', () => {
-      if (!confirm('Скинути весь прогрес уроків і задач?')) return;
-      for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('lg:path') || k.startsWith('lg:puz:') || k.startsWith('lg:prac:') || k.startsWith('lg:lesson:') || k === 'learn.progress')) localStorage.removeItem(k); }
-      seen.clear(); renderAll();
-    });
-  }
+// ---------- 🤖 гра з роботом ----------
+const pick = { opp: LG.store.get('play:opp', 4), side: LG.store.get('play:side', 'w'), level: LG.store.get('play:level', 1), variant: LG.store.get('play:variant', 'standard') };
+function renderPlay() {
+  const o = OPPONENTS[pick.opp] || OPPONENTS[0];
+  const dots = n => `<span class="ap-lv">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? 'f' : ''}"></i>`).join('')}</span>`;
+  const seg = (key, items) => `<div class="ap-seg" data-key="${key}">${items.map(([v, inner]) => `<button type="button" data-v="${v}" class="${String(pick[key]) === String(v) ? 'on' : ''}">${inner}</button>`).join('')}</div>`;
+  $('view-play').innerHTML = `
+    <h2 class="ap-h">З ким граємо?</h2>
+    <div class="ap-opps">${OPPONENTS.map((x, i) => `<button type="button" class="ap-opp${i === pick.opp ? ' on' : ''}" data-i="${i}"><img src="${x.avatar}" alt="" loading="lazy" style="object-position:${x.pos}"><b>${esc(x.name)}</b></button>`).join('')}</div>
+    <h2 class="ap-h">Я граю</h2>
+    ${seg('side', [['w', piece('K', 'w') + 'Білими'], ['r', '<span class="big">🎲</span>Будь-як'], ['b', piece('K', 'b') + 'Чорними']])}
+    <h2 class="ap-h">Сила робота</h2>
+    ${seg('level', [1, 2, 3, 4, 5].map(n => [n, dots(n) + ['Легкий', 'Слабкий', 'Новачок', 'Бадьорий', 'Сильний'][n - 1]]))}
+    <h2 class="ap-h">Режим</h2>
+    ${seg('variant', [['standard', '<span class="big">♔</span>Шахи'], ['antichess', '<span class="big">🎁</span>Піддавки']])}
+    <div class="ap-play"><img src="${o.avatar}" alt="" style="object-position:${o.pos}"><div>${esc(o.name)}<small>${pick.side === 'w' ? 'Ти — білі' : pick.side === 'b' ? 'Ти — чорні' : 'Колір навмання'} · ${LEVEL_NAMES[pick.level - 1]}</small></div>
+      <a href="chess/index.html?opp=${pick.opp}&side=${pick.side}&level=${pick.level}&variant=${pick.variant}">Грати ▶</a></div>`;
+}
+$('view-play').addEventListener('click', e => {
+  const opp = e.target.closest('.ap-opp'), b = e.target.closest('.ap-seg button');
+  if (opp) { pick.opp = +opp.dataset.i; LG.store.set('play:opp', pick.opp); }
+  else if (b) { const key = b.parentElement.dataset.key; pick[key] = key === 'level' ? +b.dataset.v : b.dataset.v; LG.store.set('play:' + key, pick[key]); }
+  else return;
+  LG.play('tap'); const y = scrollY; renderPlay(); window.scrollTo(0, y);
+});
 
-  // ---------- вкладки ----------
-  const TITLES = { learn: 'Уроки', practice: 'Практика', profile: 'Профіль' };
-  function show(tab) {
-    if (!TITLES[tab]) tab = 'learn';
-    document.querySelectorAll('.ap-view').forEach(v => { v.hidden = v.dataset.tab !== tab; });
-    document.querySelectorAll('.ap-tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
-    $('tab-title').textContent = TITLES[tab];
-    try { sessionStorage.setItem('lg:back', location.href.split('#')[0] + '#' + tab); } catch (e) { /* */ }
-    if (tab === 'profile') renderProfile();
-    if (tab === 'learn') { const cur = renderLearn(); requestAnimationFrame(() => $('s' + cur)?.scrollIntoView({ block: 'center' })); }
-    else window.scrollTo(0, 0);
-  }
-  function renderAll() { renderLearn(); renderPractice(); $('stat').textContent = `✅ ${doneCount()}/${STEPS.length}`; }
-  // будь-яке посилання на урок/гру зараховується як «відкрито»
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a.ap-row'); if (!a) return;
-    seen.add(a.getAttribute('href')); LG.store.set('path:seen', [...seen]);
+// ---------- 🎯 практика ----------
+const PRACTICE = [
+  ['🧩 Задачі', 'Знайди найкращий хід', [
+    ['R', 'Постав шах', 'турою, слоном, конем…', P('chk_rook'), '#7C6CF0'], ['K', 'Урятуйся від шаху', 'утечи, побий, закрийся', P('esc_mixed'), '#3FA7F5'],
+    ['Q', 'Мат в 1 хід', 'різними фігурами', P('m1mix'), '#FF5C6C'], ['🏆', 'Мат у 2 ходи', 'хід, відповідь — мат', P('mate2'), '#E0567A'],
+    ['🍴', 'Тактика', 'вилка, зв’язка, прострел', P('fork'), '#FF9F1C'], ['📋', 'Усі задачі', 'повний список розділів', 'chess-puzzles/index.html', '#8C8BB3']]],
+  ['♟️ Фігури проти пішаків', 'Не пропусти жодного пішака до краю', [
+    [['Q', 'vs', 'P'], 'Ферзь проти 8', '', W('q_p8'), '#7C6CF0'], [['R', 'vs', 'P'], 'Тура проти 5', '', W('r_p5'), '#3FA7F5'],
+    [['B', 'vs', 'P'], 'Слон проти 3', '', W('b_p3'), '#2ECC9A'], [['N', 'vs', 'P'], 'Кінь проти 3', '', W('n_p3'), '#FF9F1C'],
+    [['B', 'B', 'vs', 'P'], '2 слони проти 8', '', W('bb_p8'), '#E0567A'], [['N', 'N', 'vs', 'P'], '2 коні проти 6', '', W('nn_p6'), '#8C6CF0']]],
+  ['🏁 Постав мат роботу', 'Скільки завгодно ходів — головне мат', [
+    [['K', 'Q'], 'Ферзь і король', '', P('kqk'), '#FF5C6C'], [['K', 'R'], 'Тура і король', '', P('krk'), '#3FA7F5'],
+    [['K', 'B', 'B'], 'Два слони', '', P('kbbk'), '#2ECC9A'], [['K', 'P'], 'Король і пішак', '', P('kpk'), '#FF9F1C']]],
+  ['⭐ Ігри й головоломки', 'Для розминки', [
+    [['P', 'vs', 'P'], 'Пішакова битва', 'хто перший до краю', 'pawns/index.html', '#7C6CF0'], [['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html', '#2ECC9A'],
+    [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html', '#FF9F1C']]]
+];
+function renderPractice() {
+  $('view-practice').innerHTML = PRACTICE.map(([h, sub, items]) => `<h2 class="ap-h">${h}</h2><p class="ap-sub">${sub}</p><div class="ap-tiles">${items.map(([ic, t, s, href, c]) => {
+    const vs = Array.isArray(ic) ? ic.indexOf('vs') : -1; // до «vs» — білі фігури, після — чорні
+    const art = Array.isArray(ic) ? ic.map((x, j) => x === 'vs' ? '<span>vs</span>' : piece(x, vs >= 0 && j > vs ? 'b' : 'w')).join('') : /^[PRBQNK]$/.test(ic) ? piece(ic) : `<span class="emo">${ic}</span>`;
+    return `<a class="ap-tile" href="${href}" style="--c:${c}"><span class="pcs">${art}</span><b>${esc(t)}</b>${s ? `<small>${esc(s)}</small>` : ''}</a>`;
+  }).join('')}</div>`).join('');
+}
+
+// ---------- 👤 профіль ----------
+function solvedPuzzles() {
+  let n = 0;
+  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('chk:puz:')) try { n += JSON.parse(localStorage.getItem(k)).length; } catch (e) { /* */ } }
+  return n;
+}
+function renderProfile() {
+  const st = LG.stats(), wins = Object.values(st).reduce((a, s) => a + (s.wins || 0), 0), d = doneCount();
+  $('view-profile').innerHTML = `
+    <div class="ap-me"><span class="av">${piece('K')}</span><div style="flex:1"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length}</small><div class="bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
+    <div class="ap-stats"><div><b>${d}</b><span>кроків</span></div><div><b>${solvedPuzzles()}</b><span>задач</span></div><div><b>${wins}</b><span>перемог</span></div></div>
+    <div class="ap-box"><b>Звук</b><div class="ap-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
+    <div class="ap-box" id="p-pieces"><b>Фігури</b></div>
+    <button type="button" class="ap-danger" id="p-reset">Скинути прогрес</button>`;
+  const paint = () => {
+    const v = Math.round(LG.volume * 100);
+    $('p-mute').textContent = LG.muted || v === 0 ? '🔇' : v < 40 ? '🔈' : v < 75 ? '🔉' : '🔊';
+    $('p-range').value = v; $('p-range').style.setProperty('--v', v + '%');
+    $('p-vol').classList.toggle('muted', LG.muted);
+  };
+  paint();
+  // значок — вимкнути/увімкнути; повзунок — гучність (і вмикає звук)
+  $('p-mute').addEventListener('click', () => { LG.muted = !LG.muted; LG.store.set('muted', LG.muted); if (!LG.muted) LG.play('tap'); paint(); });
+  $('p-range').addEventListener('input', e => { LG.volume = +e.target.value / 100; LG.store.set('volume', LG.volume); if (LG.muted && LG.volume > 0) { LG.muted = false; LG.store.set('muted', false); } paint(); });
+  $('p-range').addEventListener('change', () => LG.play('tap'));
+  $('p-pieces').appendChild(LG.pieceSetPicker(() => { renderLearn(); renderPractice(); }));
+  $('p-reset').addEventListener('click', () => {
+    if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
+    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
+    seen.clear(); renderAll(); renderProfile();
   });
-  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  $('logo').innerHTML = piece('N');
-  renderAll();
-  show(location.hash.slice(1) || 'learn');
-  window.addEventListener('pageshow', () => { renderAll(); show(location.hash.slice(1) || 'learn'); });
-})();
+}
+
+// ---------- вкладки ----------
+const TITLES = { learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
+function show(tab) {
+  if (!TITLES[tab]) tab = 'learn';
+  document.querySelectorAll('.ap-view').forEach(v => { v.hidden = v.dataset.tab !== tab; });
+  document.querySelectorAll('.ap-tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
+  $('tab-title').textContent = TITLES[tab];
+  $('sheet').hidden = true;
+  try { sessionStorage.setItem('chk:back', location.href.split('#')[0] + '#' + tab); } catch (e) { /* */ }
+  if (tab === 'profile') renderProfile();
+  if (tab === 'play') renderPlay();
+  if (tab === 'learn') requestAnimationFrame(() => { drawRoad(); $('s' + curStep)?.scrollIntoView({ block: 'center' }); });
+  else window.scrollTo(0, 0);
+}
+function renderAll() { renderLearn(); renderPractice(); $('stat').innerHTML = `✅ ${doneCount()}/${STEPS.length}`; }
+// відкрите посилання уроку зараховується
+document.addEventListener('click', e => {
+  const a = e.target.closest('a.ap-row, a.ap-tile'); if (!a) return;
+  seen.add(a.getAttribute('href')); LG.store.set('path:seen', [...seen]);
+});
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+renderAll();
+show(location.hash.slice(1) || 'learn');
+window.addEventListener('pageshow', e => { if (e.persisted) { renderAll(); show(location.hash.slice(1) || 'learn'); } });
