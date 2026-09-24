@@ -379,6 +379,7 @@
   const svg = (d, fill) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="${fill ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
   const ICONS = {
     '⬅️': svg('<path d="M20 12H5"/><path d="M11 5l-7 7 7 7"/>'),
+    '☰': svg('<path d="M4 6.5h16M4 12h16M4 17.5h16"/>'),
     '💡': svg('<path d="M9 18h6"/><path d="M10 21.5h4"/><path d="M12 2.5a6.5 6.5 0 0 0-3.8 11.8c.6.5.8 1.1.8 1.7h6c0-.6.3-1.2.8-1.7A6.5 6.5 0 0 0 12 2.5z" fill="currentColor" stroke-width="1.6"/>'),
     '📖': svg('<path d="M3 5.5c3-1.5 6-1.5 9 .5v14c-3-2-6-2-9-.5z"/><path d="M21 5.5c-3-1.5-6-1.5-9 .5v14c3-2 6-2 9-.5z"/>'),
     '⚙️': svg('<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>'),
@@ -401,14 +402,14 @@
     gearBtn = navBtn('⚙️', 'Налаштування', { onclick: showSettings });
     gearBtn.hidden = !settingsBuilders.length;
     const bar = el('nav', { class: 'lg-bar lg-nav' }, [
-      navBtn('⬅️', 'Назад', { href: homeHref(), class: 'lg-nav-btn lg-home' }),
+      navBtn('☰', 'Меню', { href: homeHref(), class: 'lg-nav-btn lg-home' }),
       hintBtn,
       navBtn('📖', 'Пояснення', { onclick: () => (explainFn ? explainFn() : showRules()) }),
       gearBtn
     ]);
     document.body.appendChild(bar);
   }
-  // Лише «Назад · Підказка · …свої кнопки» (гра з роботом: Відмінити, Повторити)
+  // Лише «Меню · Підказка · …свої кнопки» (гра з роботом: Назад, Вперед)
   function navOnly(extra) {
     const bar = document.querySelector('.lg-nav'); if (!bar) return [];
     bar.querySelectorAll('.lg-nav-btn:not(.lg-home)').forEach(b => { if (b !== hintBtn) b.remove(); });

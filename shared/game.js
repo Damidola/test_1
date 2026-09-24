@@ -37,8 +37,8 @@ export function startGame(cfg) {
       <button type="button" data-act="level"><span class="ico lg-dots"></span><span class="lbl">Рівень</span></button>
       <button type="button" data-act="new"><span class="ico">🔄</span><span class="lbl">Заново</span></button>
       <button type="button" data-act="hint" hidden><span class="ico">💡</span><span class="lbl">Підказка</span></button>
-      <button type="button" data-act="undo"><span class="ico">↩️</span><span class="lbl">Відмінити</span></button>
-      <button type="button" data-act="redo"><span class="ico">↪️</span><span class="lbl">Повторити</span></button>
+      <button type="button" data-act="undo"><span class="ico">↩️</span><span class="lbl">Назад</span></button>
+      <button type="button" data-act="redo"><span class="ico">↪️</span><span class="lbl">Вперед</span></button>
     </div>`;
   const $ = s => root.querySelector(s);
   let navUndo = null, navRedo = null, navFlip = null, navLevel = null; // кнопки нижньої панелі (cfg.navOnly)
@@ -318,7 +318,7 @@ export function startGame(cfg) {
     if (!m) return;
     commit(m); render(); afterMove();
   });
-  // Гра з роботом (cfg.navOnly): без кнопок під дошкою — лише нижня панель «Назад · Підказка · Відмінити · Повторити»
+  // Гра з роботом (cfg.navOnly): без кнопок під дошкою — лише нижня панель «Меню · Підказка · Назад · Вперед»
   if (cfg.navOnly) {
     root.querySelector('.lg-controls').hidden = true;
     root.classList.add('lg-navonly');
@@ -327,12 +327,12 @@ export function startGame(cfg) {
     root.querySelector('.lg-board-wrap').after(mats);
     mats.append(root.querySelector('.lg-material[data-side="top"]'), root.querySelector('.lg-material[data-side="bottom"]'));
     if (root.querySelector('.lg-quick')) root.querySelector('.lg-quick').hidden = true; // режим обирають у «Практиці»
-    // cfg.navOnly: true → Відмінити · Повторити; або список дій: ['flip', 'level', 'undo', 'redo']
+    // cfg.navOnly: true → Назад · Вперед; або список дій: ['flip', 'level', 'undo', 'redo']
     const acts = Array.isArray(cfg.navOnly) ? cfg.navOnly : ['undo', 'redo'];
     const DEF = {
       flip: ['⚪', 'Колір', () => { player = player === 'w' ? 'b' : 'w'; newGame(); }, { 'data-act': 'flip' }],
       level: ['•', 'Рівень', () => toggleLevelPop(), { 'data-act': 'level' }],
-      undo: ['↩️', 'Відмінити', () => undo()], redo: ['↪️', 'Повторити', () => redo()]
+      undo: ['↩️', 'Назад', () => undo()], redo: ['↪️', 'Вперед', () => redo()]
     };
     const made = LG.navOnly(acts.map(a => DEF[a]));
     acts.forEach((a, i) => { if (a === 'undo') navUndo = made[i]; if (a === 'redo') navRedo = made[i]; if (a === 'flip') navFlip = made[i]; if (a === 'level') navLevel = made[i]; });
