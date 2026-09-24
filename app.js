@@ -133,6 +133,7 @@ function renderProfile() {
     <div class="ap-box"><b>Крапки ходів</b><small class="ap-note">🟢 зелені крапки — куди може піти фігура</small><div class="ap-seg ap-onoff" id="p-dots">${[['1', '🟢 Показувати'], ['0', 'Не показувати']].map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join('')}</div></div>
     <div class="ap-box"><b>Гра з роботом</b>
       <div class="ap-limit"><span>💡 Підказок за партію</span><div class="ap-seg" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
+      <div class="ap-limit"><span>💬 Репліки суперника</span><div class="ap-seg" id="p-say">${[['1', 'Так'], ['0', 'Ні']].map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join('')}</div></div>
       <div class="ap-limit"><span>↩️ Ходів назад</span><div class="ap-seg" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
     </div>
     <button type="button" class="ap-danger" id="p-reset">Скинути прогрес</button>`;
@@ -155,6 +156,9 @@ function renderProfile() {
   const paintBoards = () => { boardVar(); $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" style="background-image:url('${boardUrl(t.file)}')" aria-label="${t.id}"></button>`).join(''); };
   paintBoards();
   $('p-boards').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.setBoardTheme(b.dataset.t); LG.play('tap'); paintBoards(); });
+  const paintSay = () => $('p-say').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === (LG.store.get('oppSay', true) ? '1' : '0')));
+  paintSay();
+  $('p-say').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set('oppSay', b.dataset.v === '1'); LG.play('tap'); paintSay(); });
   const paintDots = () => $('p-dots').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === (LG.store.get('showDests', true) ? '1' : '0')));
   paintDots();
   $('p-dots').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set('showDests', b.dataset.v === '1'); LG.play('tap'); paintDots(); });
@@ -163,7 +167,7 @@ function renderProfile() {
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); }));
   $('p-reset').addEventListener('click', () => {
     if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
-    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
+    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
     seen.clear(); renderAll(); renderProfile();
   });
 }

@@ -379,6 +379,8 @@
   const svg = (d, fill) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="${fill ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
   const ICONS = {
     '⬅️': svg('<path d="M20 12H5"/><path d="M11 5l-7 7 7 7"/>'),
+    '🔊': svg('<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/>'),
+    '🔇': svg('<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>'),
     '☰': svg('<path d="M4 6.5h16M4 12h16M4 17.5h16"/>'),
     '💡': svg('<path d="M9 18h6"/><path d="M10 21.5h4"/><path d="M12 2.5a6.5 6.5 0 0 0-3.8 11.8c.6.5.8 1.1.8 1.7h6c0-.6.3-1.2.8-1.7A6.5 6.5 0 0 0 12 2.5z" fill="currentColor" stroke-width="1.6"/>'),
     '📖': svg('<path d="M3 5.5c3-1.5 6-1.5 9 .5v14c-3-2-6-2-9-.5z"/><path d="M21 5.5c-3-1.5-6-1.5-9 .5v14c3-2 6-2 9-.5z"/>'),

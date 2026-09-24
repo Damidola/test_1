@@ -335,6 +335,24 @@ export function startGame(cfg) {
       undo: ['↩️', 'Назад', () => undo()], redo: ['↪️', 'Вперед', () => redo()]
     };
     const made = LG.navOnly(acts.map(a => DEF[a]));
+    // як на chess.com: «Меню» — стрілкою в лівому верхньому куті, звук — у правому; унизу лише кнопки гри
+    const home = document.querySelector('.lg-nav .lg-home');
+    if (home) {
+      home.hidden = true;
+      const top = document.createElement('div'); top.className = 'lg-topbtns';
+      top.innerHTML = `<a class="lg-top-btn" href="${home.getAttribute('href')}" aria-label="Меню">${LG.navIcon('⬅️')}</a>
+        <button type="button" class="lg-top-btn lg-top-sound" aria-label="Звук"></button>`;
+      root.appendChild(top);
+      const snd = top.querySelector('.lg-top-sound');
+      const paintSnd = () => { snd.innerHTML = LG.navIcon(LG.muted || LG.volume <= 0 ? '🔇' : '🔊'); snd.classList.toggle('off', LG.muted || LG.volume <= 0); };
+      paintSnd();
+      snd.addEventListener('click', () => {
+        LG.muted = !LG.muted; LG.store.set('muted', LG.muted);
+        if (!LG.muted && LG.volume <= 0) { LG.volume = 0.8; LG.store.set('volume', LG.volume); }
+        if (!LG.muted) LG.play('tap');
+        paintSnd();
+      });
+    }
     acts.forEach((a, i) => { if (a === 'undo') navUndo = made[i]; if (a === 'redo') navRedo = made[i]; if (a === 'flip') navFlip = made[i]; if (a === 'level') navLevel = made[i]; });
     paintLevel(); renderButtons();
   }
