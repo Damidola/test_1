@@ -77,4 +77,16 @@ $('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.red
 $('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });
-LG.addSettings(() => LG.pieceSetPicker(() => location.reload()));
+// Нижня панель: 💡 — хід-підказка, 📖 — що таке шах
+LG.onExplain(() => { main.dataset.step = 'intro'; });
+LG.onHint(() => {
+  if (main.dataset.step === 'intro' || done) return;
+  const t = TASKS[idx];
+  for (const [from, ds] of pos.allDests()) for (const to of ds) {
+    const m = { from, to }, pc = pos.board.get(from);
+    if (pc.role === 'king' && pos.board.get(to)?.color === pc.color) continue;
+    const q = pos.clone(); q.play(m);
+    const ok = t.kind === 'give' ? q.isCheck() && pc.role === t.role : kindOf(pos, m) === t.kind;
+    if (ok) return board.hint(makeSquare(from), makeSquare(to));
+  }
+});

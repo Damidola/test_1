@@ -83,5 +83,4 @@ $('hint').addEventListener('click', () => {
 });
 $('undo').addEventListener('click', () => { if (path.length < 2 || won) return LG.play('error'); path.pop(); hintKey = null; render(); });
 $('new').addEventListener('click', start);
-LG.addSettings(() => LG.pieceSetPicker(() => location.reload()));
 start();

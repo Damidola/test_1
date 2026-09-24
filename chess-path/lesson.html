@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Урок</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790274569">
-  <link rel="stylesheet" href="../shared/play.css?v=1790274569">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790275102">
+  <link rel="stylesheet" href="../shared/play.css?v=1790275102">
   <style>
     .cl { justify-content: center; gap: 8px; }
     .cl-intro { flex: 1 1 auto; min-height: 0; overflow-y: auto; width: 100%; max-width: 620px; padding: 6px 16px; box-sizing: border-box; color: var(--lg-ink); text-align: center; }
@@ -17,7 +17,8 @@
     .cl-task.ok { color: #2ECC9A; } .cl-task.bad { color: #FF9F1C; }
     .cl .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 16px - 30px - 46px - 60px - 30px)); }
     .cl .lg-board-wrap.solved cg-board { box-shadow: 0 0 0 5px #2ECC9A; }
-    .cl .lg-controls { grid-template-columns: repeat(3, 1fr); width: min(100%, 420px); }
+    .cl .lg-controls { grid-template-columns: repeat(2, 1fr); width: min(100%, 420px); }
+    .cl .lg-controls button[hidden] { display: none; }
     .cl-promo { position: absolute; inset: 0; z-index: 50; background: rgba(0, 0, 0, .45); }
     .cl-promo button { position: absolute; width: 12.5%; height: 12.5%; padding: 0; border: 0; border-radius: 50%; background: #b0b0b0; cursor: pointer; }
     .cl-promo mpiece { display: block; width: 100%; height: 100%; background-size: cover; }
@@ -38,13 +39,13 @@
     <div class="lg-board-wrap" id="wrap"><div class="lg-board-el" id="board"></div></div>
     <div class="cl-task" id="task"></div>
     <div class="lg-controls">
-      <button type="button" id="rules"><span class="ico">📖</span><span class="lbl">Правило</span></button>
+      <button type="button" id="rules" hidden><span class="ico">📖</span><span class="lbl">Правило</span></button>
       <button type="button" id="again"><span class="ico">🔁</span><span class="lbl">Ще раз</span></button>
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790274569"></script>
-  <script src="../shared/kit.js?v=1790274569" data-game="path" data-night="on"></script>
-  <script type="module" src="lesson.js?v=1790274569"></script>
+  <script src="../shared/games.js?v=1790275102"></script>
+  <script src="../shared/kit.js?v=1790275102" data-game="path" data-night="on"></script>
+  <script type="module" src="lesson.js?v=1790275102"></script>
 </body>
 </html>

@@ -36,9 +36,9 @@ export function startGame(cfg) {
       <button type="button" data-act="flip"><span class="ico lg-side-dot"></span><span class="lbl">Колір</span></button>
       <button type="button" data-act="level"><span class="ico lg-dots"></span><span class="lbl">Рівень</span></button>
       <button type="button" data-act="new"><span class="ico">🔄</span><span class="lbl">Заново</span></button>
-      <button type="button" data-act="hint"><span class="ico">💡</span><span class="lbl">Підказка</span></button>
-      <button type="button" data-act="undo"><span class="ico">↩️</span><span class="lbl">Назад</span></button>
-      <button type="button" data-act="redo"><span class="ico">↪️</span><span class="lbl">Вперед</span></button>
+      <button type="button" data-act="hint" hidden><span class="ico">💡</span><span class="lbl">Підказка</span></button>
+      <button type="button" data-act="undo"><span class="ico">↩️</span><span class="lbl">Відмінити</span></button>
+      <button type="button" data-act="redo"><span class="ico">↪️</span><span class="lbl">Повторити</span></button>
     </div>`;
   const $ = s => root.querySelector(s);
 
@@ -283,6 +283,7 @@ export function startGame(cfg) {
     if (r) return finish(r);
     if (rules.turn(state()) !== player) robotMove();
   }
+  LG.onHint && LG.onHint(() => { if (!friend) hint(); }); // підказка — у нижній панелі
   function hint() {
     const s = state();
     if (friend || over || thinking || rules.turn(s) !== player) return;
@@ -368,7 +369,6 @@ export function startGame(cfg) {
     }));
     return w;
   });
-  if (board) LG.addSettings(() => LG.pieceSetPicker(() => { applyBoardLook(); board.redraw(); }));
   if (cfg.extraSettings) LG.addSettings(cfg.extraSettings);
 
   const applyDests = () => board && board.cg.set({ movable: { showDests: LG.store.get('showDests', true) } });

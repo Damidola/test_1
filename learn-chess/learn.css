@@ -48,15 +48,15 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   .learn.learn--run { gap: 6px; grid-template-areas: "top" "main" "table"; }
   .learn--run .learn__side { display: none; }
   .learn--run .lg-run-top { grid-area: top; display: flex; align-items: stretch; gap: 4px; padding: 6px 4px 0; }
-  .lg-run-top .progress { flex: 1; display: flex; border: 1px solid var(--c-border); border-radius: 7px; overflow: hidden; }
-  .lg-run-top .progress a { flex: 1 1 0; height: 34px; display: flex; align-items: center; justify-content: center; background: var(--c-bg-high); border-inline-start: 1px solid var(--c-border); font-size: 13px; color: var(--c-link); opacity: .85; }
-  .lg-run-top .progress a:first-child { border: 0; }
-  .lg-run-top .progress a { min-width: 0; font-weight: 800; }
-  .lg-run-top .progress a.done { color: #fff; background: var(--c-good); opacity: 1; }
-  .lg-run-top .progress a.done.passed { color: #3a2a00; background: #F5C542; }
-  .lg-run-top .progress a.active { color: var(--c-over); background: var(--c-primary); opacity: 1; }
-  .lg-run-top .progress .stars { display: flex; font-size: 9px; }
-  .lg-run-top .lg-run-menu, .lg-run-top .lg-run-ex { flex: none; width: 38px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 7px; background: var(--c-bg-high); border: 1px solid var(--c-border); color: var(--c-font); font-size: 18px; cursor: pointer; }
+  /* рівні — кружечки: зелений з ✓ — ідеально, жовтий — пройдено, синій — поточний (як у шахових застосунках) */
+  .lg-run-top .progress { flex: 1; display: flex; justify-content: center; flex-wrap: nowrap; gap: 6px; padding: 7px 10px; border-radius: 18px; background: rgba(255,255,255,.07); overflow: hidden; }
+  .lg-run-top .progress a { flex: 0 1 34px; min-width: 0; aspect-ratio: 1; max-height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
+    background: #5B5A86; color: #1C1B3A; font: 900 15px var(--lg-font, sans-serif); opacity: 1; box-shadow: inset 0 -3px 0 rgba(0,0,0,.2); }
+  .lg-run-top .progress a.active { background: #16152F; color: #fff; box-shadow: 0 0 0 3px #7C6CF0; }
+  .lg-run-top .progress a.done.passed { background: #F5C542; color: #3a2a00; }
+  .lg-run-top .progress a.done.perfect { background: #58C23A; color: transparent; position: relative; }
+  .lg-run-top .progress a.done.perfect::after { content: '✓'; position: absolute; color: #fff; font-weight: 900; font-size: 18px; }
+  .lg-run-top .lg-run-menu { flex: none; width: 46px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: rgba(255,255,255,.07); color: #fff; font-size: 22px; }
   .learn--run .learn__table .progress, .learn--run .learn__table .lg-demo-open { display: none; }
   .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--lg-bar-h, 38px) - 20px - 42px - 142px)); }
   .learn--run .learn__table { margin: 0; }
@@ -102,3 +102,6 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
 
 /* рівні: зелений — ідеально, жовтий — пройдено (і в таблиці на комп'ютері) */
 .learn__table .progress a.done.passed { color: #3a2a00; background: #F5C542; }
+
+/* Темно-синя тема застосунку «Шахи для дітей» */
+html.lg body.lg-game.lg-game-learn { --c-bg-page: #16152F; --c-body-gradient: #22205A; --c-bg-box: #232250; --c-bg-high: #2E2D5C; --c-bg-zebra: #29285A; --c-border: #3F3E78; }

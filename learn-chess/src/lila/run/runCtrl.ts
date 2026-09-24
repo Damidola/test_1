@@ -34,6 +34,18 @@ export class RunCtrl {
     clearTimeouts();
 
     this.initializeLevel();
+    // Нижня панель сайту: 📖 — приклад етапу (або правило), підказок в уроках Lichess немає
+    const LG = (window as any).LG;
+    LG?.onExplain?.(() => {
+      if (this.hasDemo()) return this.replayDemo();
+      const box = document.createElement('div');
+      box.className = 'lg-rules';
+      box.innerHTML = `<h2>${this.stage.title}</h2><p style="font-size:17px;line-height:1.45">${this.stage.intro.replace(/\n/g, '<br>')}</p>`;
+      const ok = document.createElement('button');
+      ok.className = 'lg-btn lg-btn-primary lg-btn-wide'; ok.textContent = 'Зрозуміло!'; ok.onclick = () => LG.closeModal();
+      box.appendChild(ok);
+      LG.openModal(box, { cls: 'lg-modal-rules' });
+    });
 
     // Helpful for debugging:
     // site.mousetrap.bind(['shift+enter'], this.levelCtrl.complete);

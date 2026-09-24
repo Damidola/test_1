@@ -568,6 +568,9 @@ function practiceEnd() {
 
 // ---------- кнопки ----------
 $('ex').addEventListener('click', () => { if (mode === 'puzzle') startExample(); });
+// Нижня панель: 💡 — підказка (спершу фігура, потім хід), 📖 — приклад-пояснення розділу
+LG.onHint(() => { if (mode === 'puzzle' || mode === 'practice') $('hint').click(); });
+LG.onExplain(() => { if (mode === 'puzzle' || mode === 'example') startExample(); else LG.showRules(); });
 function userMove(from, to) { if (mode === 'puzzle') puzzleMove(from, to); else if (mode === 'practice') practiceMove(from, to); }
 $('hint').addEventListener('click', async () => {
   if (mode === 'example') return runExample();
@@ -592,6 +595,5 @@ $('show').addEventListener('click', () => {
 $('prev').addEventListener('click', () => { if (mode === 'puzzle') prevPuzzle(); });
 $('next').addEventListener('click', () => { if (mode === 'example') startPuzzles(); else if (mode === 'puzzle') nextPuzzle(); else if (mode === 'practice') startPractice(); });
 
-LG.addSettings(() => LG.pieceSetPicker(() => { applyBoardLook(); board.redraw(); if (mode === 'menu') renderMenu(); }));
 document.addEventListener('touchmove', e => { if (!e.target.closest('.lg-modal, .mt-menu')) e.preventDefault(); }, { passive: false });
 route();

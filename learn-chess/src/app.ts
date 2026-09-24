@@ -19,7 +19,6 @@ new MutationObserver(syncTheme).observe(document.documentElement, { attributes: 
 
 document.body.classList.add('is2d'); // як у Lichess: 2D-дошка
 applyBoardLook();
-LG.addSettings(() => LG.pieceSetPicker(() => location.reload()));
 
 // Урок відкривається з дошкою вгорі — навіть якщо мапу уроків перед тим прокрутили вниз
 const toTop = () => { document.getElementById('main-wrap')!.scrollTop = 0; };

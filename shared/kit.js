@@ -351,62 +351,38 @@
     return el('label', { class: 'lg-set-row' }, [el('span', { text: label }), input]);
   }
   function showSettings() {
-    const vol = el('input', { type: 'range', min: '0', max: '100', step: '5', value: String(Math.round(LG.volume * 100)), class: 'lg-range', 'aria-label': 'Гучність' });
-    vol.addEventListener('input', () => {
-      LG.volume = +vol.value / 100; store.set('volume', LG.volume);
-      document.dispatchEvent(new CustomEvent('lg:volume', { detail: LG.volume }));
-    });
-    vol.addEventListener('change', () => play('tap'));
     // Спершу — налаштування гри (сила робота, режими), унизу — тема і звук
     const body = el('div', { class: 'lg-settings' }, [el('h2', { text: 'Налаштування' })]);
     settingsBuilders.forEach(fn => { const part = fn(); if (part) body.appendChild(el('div', { class: 'lg-set-group' }, [part])); });
-    if (nightSupported) {
-      body.appendChild(el('div', { class: 'lg-set-group' }, [
-        switchRow('🌙 Нічна тема', document.documentElement.classList.contains('lg-night'), on => {
-          document.documentElement.classList.toggle('lg-night', on); store.set('night:' + gameId, on);
-        })
-      ]));
-    }
-    body.appendChild(el('div', { class: 'lg-set-group' }, [
-      switchRow('🔊 Звук', !LG.muted, on => { LG.muted = !on; store.set('muted', LG.muted); document.dispatchEvent(new CustomEvent('lg:mute', { detail: LG.muted })); if (on) play('tap'); }),
-      el('div', { class: 'lg-set-row' }, [el('span', { text: 'Гучність' }), vol])
-    ]));
     body.appendChild(el('button', { class: 'lg-btn lg-btn-primary lg-btn-wide', text: 'Готово', onclick: closeModal }));
     openModal(body, { cls: 'lg-modal-settings' });
   }
 
-  // ---------- верхня панель ----------
+  // Нижня панель (як у застосунку): ⬅ Назад · 💡 Підказка · 📖 Пояснення · ⚙️ (якщо в гри є свої налаштування).
+  // Звук, фігури й дошка — у Профілі застосунку.
+  let hintFn = null, explainFn = null, gearBtn = null, hintBtn = null;
+  function homeHref() {
+    let back = null;
+    try { back = sessionStorage.getItem('chk:back'); } catch (e) { /* без сховища */ }
+    return back && location.href.split('#')[0] !== back.split('#')[0] ? back : root + 'index.html';
+  }
+  function navBtn(ico, label, attrs) {
+    const a = { class: 'lg-nav-btn', ...attrs };
+    if (!a.href) a.type = 'button';
+    return el(a.href ? 'a' : 'button', a, [el('span', { class: 'ico', text: ico }), el('span', { class: 'lbl', text: label })]);
+  }
   function buildBar() {
-    const gearBtn = el('button', { class: 'lg-icon-btn lg-gear', type: 'button', title: 'Налаштування', 'aria-label': 'Налаштування', text: '⚙️', onclick: showSettings });
-    // Звук: увімкнути / вимкнути одним натисканням
-    const soundBtn = el('button', { class: 'lg-icon-btn lg-sound', type: 'button' });
-    const paintSound = () => { soundBtn.textContent = LG.muted ? '🔇' : '🔊'; soundBtn.title = soundBtn.ariaLabel = LG.muted ? 'Увімкнути звук' : 'Вимкнути звук'; };
-    soundBtn.addEventListener('click', () => {
-      LG.muted = !LG.muted; store.set('muted', LG.muted);
-      document.dispatchEvent(new CustomEvent('lg:mute', { detail: LG.muted }));
-      if (!LG.muted) play('tap');
-    });
-    document.addEventListener('lg:mute', paintSound);
-    paintSound();
-    // 🏠 веде туди, звідки прийшли: зі «Шляху новачка» — назад на шлях, інакше — на головну
-    function homeHref() {
-      let back = null;
-      try { back = sessionStorage.getItem('chk:back'); } catch (e) { /* без сховища */ }
-      return back && location.href.split('#')[0] !== back ? back : root + 'index.html';
-    }
-    // У всіх іграх однаково: 🏠 · назва · 🔊 ❓ ⚙️
-    const bar = el('header', { class: 'lg-bar' }, [
-      el('div', { class: 'lg-bar-actions' }, [
-        el('a', { class: 'lg-icon-btn lg-home', href: homeHref(), title: 'Назад', 'aria-label': 'Назад' }, [el('span', { text: '🏠' })])
-      ]),
-      el('div', { class: 'lg-bar-title' }, [el('span', { text: game.title })]),
-      el('div', { class: 'lg-bar-actions lg-bar-right' }, [
-        soundBtn,
-        el('button', { class: 'lg-icon-btn lg-help', type: 'button', title: 'Правила', 'aria-label': 'Правила', text: '❓', onclick: showRules }),
-        gearBtn
-      ])
+    hintBtn = navBtn('💡', 'Підказка', { onclick: () => hintFn && hintFn() });
+    hintBtn.hidden = !hintFn;
+    gearBtn = navBtn('⚙️', 'Налаштування', { onclick: showSettings });
+    gearBtn.hidden = !settingsBuilders.length;
+    const bar = el('nav', { class: 'lg-bar lg-nav' }, [
+      navBtn('⬅️', 'Назад', { href: homeHref(), class: 'lg-nav-btn lg-home' }),
+      hintBtn,
+      navBtn('📖', 'Пояснення', { onclick: () => (explainFn ? explainFn() : showRules()) }),
+      gearBtn
     ]);
-    document.body.insertBefore(bar, document.body.firstChild);
+    document.body.appendChild(bar);
   }
 
   // ---------- публічне API ----------
@@ -429,10 +405,9 @@
     return el('div', {}, [el('div', { class: 'lg-set-title', text: 'Фігури' }), grid]);
   }
 
-  let boardTheme = null; // за замовчуванням щоразу — коричнева дошка Lichess
   const LG = window.LG = {
-    boardTheme: () => boardTheme,
-    setBoardTheme: id => { boardTheme = id; },
+    boardTheme: () => store.get('boardTheme', 'brown'),
+    setBoardTheme: id => store.set('boardTheme', id),
     prepReward,
     pieceSet: () => store.get('pieceSet', 'cburnett'),
     pieceSetPicker,
@@ -441,7 +416,9 @@
     volume: store.get('volume', 0.8),
     playFile,
     showSettings,
-    addSettings: fn => settingsBuilders.push(fn),
+    addSettings: fn => { settingsBuilders.push(fn); if (gearBtn) gearBtn.hidden = false; },
+    onHint: fn => { hintFn = fn; if (hintBtn) hintBtn.hidden = !fn; },
+    onExplain: fn => { explainFn = fn; },
     store,
     play,
     toast,

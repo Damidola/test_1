@@ -3,10 +3,10 @@
 @import url('vendor/lichess-board.css');
 
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
-html.lg { --lg-bar-h: 38px; }
+html.lg { --lg-bar-h: 62px; } /* нижня панель */
 html.lg body.lg-game {
   position: fixed; inset: 0; margin: 0; height: 100svh; min-height: 0;
-  padding: calc(var(--lg-bar-h) + 6px) 0 10px; touch-action: manipulation;
+  padding: 8px 0 calc(var(--lg-bar-h) + 6px + env(safe-area-inset-bottom)); touch-action: manipulation;
 }
 html.lg .lg-bar .lg-icon-btn { width: 30px; height: 30px; font-size: 14px; border-radius: 10px; }
 html.lg .lg-bar .lg-bar-title { font-size: clamp(15px, 4.4vw, 20px); }
@@ -118,7 +118,7 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
   html.lg { --lg-side: clamp(250px, 24vw, 340px); --lg-mat: 26px;
     --lg-bh: calc(100svh - var(--lg-bar-h) - 16px - 2 * var(--lg-mat) - 12px);
     --lg-bw: calc(100vw - var(--lg-side) - 32px - 48px); }
-  html.lg body.lg-game { padding-bottom: 8px; }
+  html.lg body.lg-game { padding-bottom: calc(var(--lg-bar-h) + 8px); }
   html.lg .lg-play {
     max-width: none; width: auto; height: 100%; display: grid; justify-content: center; align-content: center;
     grid-template-columns: auto var(--lg-side); grid-template-rows: repeat(8, auto) 1fr; column-gap: 32px; row-gap: 0;
@@ -142,8 +142,9 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 }
 
 /* ---------- кнопка «Рівень» і смужка вибору 1…5 ---------- */
-.lg-controls.lg-six { position: relative; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 0 6px; }
-.lg-controls.lg-six button { font-size: 8.5px; }
+.lg-controls.lg-six { position: relative; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 0 6px; }
+.lg-controls.lg-six button { font-size: 10px; }
+.lg-controls button[hidden] { display: none !important; }
 .lg-dots { display: inline-flex; gap: 2px; align-items: center; justify-content: center; height: 14px; }
 .lg-dots i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 .lg-level-pop {

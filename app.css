@@ -16,7 +16,7 @@ button { font-family: inherit; }
 .ap-top h1 { flex: 1; margin: 0; font: 900 24px var(--lg-font); letter-spacing: -.3px; }
 .ap-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--ap-card); font: 900 14px var(--lg-font); }
 .ap-view { box-sizing: border-box; min-height: 100%; max-width: 560px; margin: 0 auto;
-  padding: calc(60px + env(safe-area-inset-top)) 14px calc(92px + env(safe-area-inset-bottom)); }
+  padding: calc(12px + env(safe-area-inset-top)) 14px calc(92px + env(safe-area-inset-bottom)); }
 .ap-view[hidden] { display: none; }
 
 /* ---------- вкладки ---------- */
@@ -142,3 +142,7 @@ button { font-family: inherit; }
 .ap-seg { grid-auto-columns: minmax(0, 1fr); }
 .ap-seg[data-key="level"] button { font-size: 10.5px; line-height: 1.1; text-align: center; }
 html, body { overflow-x: clip; }
+
+.ap-boards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.ap-boards button { aspect-ratio: 1; border: 3px solid transparent; border-radius: 12px; background-size: 400%; background-position: 0 0; cursor: pointer; }
+.ap-boards button.on { border-color: #fff; box-shadow: 0 0 0 3px var(--ap-violet); }

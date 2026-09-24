@@ -65,9 +65,6 @@ export const runView = (ctrl: LearnCtrl) => {
     div('.lg-run-top', [
       a(hashHref())('.lg-run-menu', { attrs: { title: 'Меню уроків' } }, '☰'),
       progressView(runCtrl),
-      runCtrl.hasDemo() && !runCtrl.demo()
-        ? button('.lg-run-ex', { attrs: { title: 'Приклад' }, hook: bind('click', runCtrl.replayDemo) }, '📖')
-        : null,
     ]),
     div('.learn__side', mapSideView(ctrl)),
     div('.learn__main.main-board', { class: { apples: levelCtrl.isAppleLevel() } }, [

@@ -135,6 +135,20 @@ document.title = lesson.title;
 $('go').addEventListener('click', () => { main.dataset.step = 'items'; board.redraw(); idx = 0; load(); });
 $('again').addEventListener('click', () => load());
 $('rules').addEventListener('click', () => { token++; main.dataset.step = 'intro'; });
+// Нижня панель: 📖 — правило уроку, 💡 — яка фігура ходить (вдруге — куди)
+LG.onExplain(() => { token++; main.dataset.step = 'intro'; });
+let hintStage = 0, hintFor = -1;
+LG.onHint(() => {
+  const it = items[idx]; if (main.dataset.step === 'intro' || !it || !it.task || done) return;
+  if (hintFor !== idx) { hintFor = idx; hintStage = 0; }
+  for (const [from, ds] of pos.allDests()) for (const to of ds) {
+    const m = { from, to }; if (isPromo(pos, m)) m.promotion = 'knight';
+    let [ok] = judge(pos, m, it);
+    if (!ok && m.promotion) { m.promotion = 'queen'; [ok] = judge(pos, m, it); }
+    if (!ok) continue;
+    board.shapes(hintStage++ === 0 ? [{ orig: makeSquare(from), brush: 'hint' }] : [{ orig: makeSquare(from), dest: makeSquare(m.to), brush: 'hint' }]);
+    return;
+  }
+});
 $('next').addEventListener('click', () => next());
-LG.addSettings(() => LG.pieceSetPicker(() => location.reload()));
 window.addEventListener('hashchange', () => location.reload());

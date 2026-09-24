@@ -5,6 +5,7 @@
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
 import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js';
+import { BOARD_THEMES, boardUrl } from './shared/board.js';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -148,6 +149,7 @@ function renderProfile() {
     <div class="ap-me"><span class="av">${piece('K')}</span><div style="flex:1"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length}</small><div class="bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
     <div class="ap-stats"><div><b>${d}</b><span>кроків</span></div><div><b>${solvedPuzzles()}</b><span>задач</span></div><div><b>${wins}</b><span>перемог</span></div></div>
     <div class="ap-box"><b>Звук</b><div class="ap-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
+    <div class="ap-box"><b>Дошка</b><div class="ap-boards" id="p-boards"></div></div>
     <div class="ap-box" id="p-pieces"><b>Фігури</b></div>
     <button type="button" class="ap-danger" id="p-reset">Скинути прогрес</button>`;
   const paint = () => {
@@ -162,6 +164,10 @@ function renderProfile() {
   $('p-range').addEventListener('input', e => { LG.volume = +e.target.value / 100; LG.store.set('volume', LG.volume); if (LG.muted && LG.volume > 0) { LG.muted = false; LG.store.set('muted', false); } paint(); });
   $('p-range').addEventListener('change', () => LG.play('tap'));
   $('p-pieces').appendChild(LG.pieceSetPicker(() => { renderLearn(); renderPractice(); }));
+  // дошки Lichess: вибір зберігається й діє в усіх уроках та іграх
+  const paintBoards = () => { $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" style="background-image:url('${boardUrl(t.file)}')" aria-label="${t.id}"></button>`).join(''); };
+  paintBoards();
+  $('p-boards').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.setBoardTheme(b.dataset.t); LG.play('tap'); paintBoards(); });
   $('p-reset').addEventListener('click', () => {
     if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
     for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
@@ -175,7 +181,6 @@ function show(tab) {
   if (!TITLES[tab]) tab = 'learn';
   document.querySelectorAll('.ap-view').forEach(v => { v.hidden = v.dataset.tab !== tab; });
   document.querySelectorAll('.ap-tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
-  $('tab-title').textContent = TITLES[tab];
   $('sheet').hidden = true;
   try { sessionStorage.setItem('chk:back', location.href.split('#')[0] + '#' + tab); } catch (e) { /* */ }
   if (tab === 'profile') renderProfile();
@@ -183,7 +188,7 @@ function show(tab) {
   if (tab === 'learn') requestAnimationFrame(() => { drawRoad(); $('s' + curStep)?.scrollIntoView({ block: 'center' }); });
   else window.scrollTo(0, 0);
 }
-function renderAll() { renderLearn(); renderPractice(); $('stat').innerHTML = `✅ ${doneCount()}/${STEPS.length}`; }
+function renderAll() { renderLearn(); renderPractice(); }
 // відкрите посилання уроку зараховується
 document.addEventListener('click', e => {
   const a = e.target.closest('a.ap-row, a.ap-tile'); if (!a) return;

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790274569">
-  <link rel="stylesheet" href="../shared/play.css?v=1790274569">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790275102">
+  <link rel="stylesheet" href="../shared/play.css?v=1790275102">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
@@ -25,7 +25,9 @@
     .mt-promo button:hover { background: #d59120; border-radius: 0; }
     .mt-promo mpiece { display: block; width: 100%; height: 100%; background-size: cover; }
     .mt .lg-controls { grid-template-columns: repeat(4, 1fr); width: min(100%, 480px); }
-    .mt[data-mode="puzzle"] .lg-controls { grid-template-columns: repeat(5, 1fr); }
+    .mt[data-mode="puzzle"] .lg-controls { grid-template-columns: repeat(4, 1fr); }
+    .mt[data-mode="practice"] .lg-controls { grid-template-columns: repeat(3, 1fr); }
+    .mt[data-mode="puzzle"] #hint, .mt[data-mode="practice"] #hint, .mt[data-mode="puzzle"] .mt-ex { display: none; }
     .mt:not([data-mode="puzzle"]) .mt-prev, .mt:not([data-mode="puzzle"]) .mt-ex { display: none; }
     .mt-ex { padding: 3px 10px; border-radius: 999px; border: 2px solid var(--lg-line); background: var(--lg-surface); color: var(--lg-ink); font: 800 13px var(--lg-font); cursor: pointer; }
     .mt[data-mode="example"] .lg-controls { grid-template-columns: repeat(3, 1fr); }
@@ -72,8 +74,8 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790274569"></script>
-  <script src="../shared/kit.js?v=1790274569" data-game="mate" data-night="on"></script>
-  <script type="module" src="mate.js?v=1790274569"></script>
+  <script src="../shared/games.js?v=1790275102"></script>
+  <script src="../shared/kit.js?v=1790275102" data-game="mate" data-night="on"></script>
+  <script type="module" src="mate.js?v=1790275102"></script>
 </body>
 </html>

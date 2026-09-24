@@ -190,6 +190,5 @@ function toggle(id, key, on, off) {
 }
 toggle('att', 'att', 'підсвітка клітинок під ударом', 'підсвітка');
 toggle('free', 'free', 'став куди завгодно — перевірю в кінці', 'вільна розстановка');
-LG.addSettings(() => LG.pieceSetPicker(() => { applyBoardLook(); cg.redrawAll(); renderTray(); }));
 document.addEventListener('touchmove', e => { if (!e.target.closest('.lg-modal')) e.preventDefault(); }, { passive: false });
 start();

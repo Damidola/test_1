@@ -89,4 +89,10 @@ $('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.red
 $('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });
-LG.addSettings(() => LG.pieceSetPicker(() => location.reload()));
+// Нижня панель: 💡 — яку фігуру бити, 📖 — правило
+LG.onExplain(() => { main.dataset.step = 'intro'; });
+LG.onHint(() => {
+  if (main.dataset.step === 'intro' || done) return;
+  const pcs = position(TASKS[idx]), caps = captures(pcs), top = best(pcs, caps);
+  for (const [from, list] of caps) for (const to of list) if (VALUE[pcs.get(to).role] === top) return board.shapes([{ orig: from, dest: to, brush: 'hint' }]);
+});
