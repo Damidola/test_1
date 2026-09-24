@@ -2,6 +2,13 @@
    Підключається з shared/kit.js, коли в Профілі обрано мову English (i18n/translate.js перекладає сторінку).
    Нова фраза на сайті — додай сюди рядок; фраза без перекладу лишається українською. */
 window.LG_EN = {
+  "Пішакова битва! Доведи свого пішака до фінішу 🏁 (верхній ряд) — або побий усіх чорних.": "Pawn battle! Get your pawn to the finish 🏁 (top row) — or capture all the black pawns.",
+  "Тура проти 5 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁": "Rook vs 5 pawns: capture them all! Don't let any reach the bottom edge 🏁",
+  "Слон проти 3 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁": "Bishop vs 3 pawns: capture them all! Don't let any reach the bottom edge 🏁",
+  "Ферзь проти 8 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁": "Queen vs 8 pawns: capture them all! Don't let any reach the bottom edge 🏁",
+  "Кінь проти 3 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁": "Knight vs 3 pawns: capture them all! Don't let any reach the bottom edge 🏁",
+  "Чорний пішак дійшов до фінішу 😕 Нічого — урок зараховано!": "A black pawn reached the finish 😕 That's OK — lesson completed!",
+  "Пішак дійшов до краю 😕 Нічого — урок зараховано!": "A pawn reached the edge 😕 That's OK — lesson completed!",
   "Побий": "Capture",
   "того, хто шахує": "the checking piece",
   "іншою фігурою": "with another piece",

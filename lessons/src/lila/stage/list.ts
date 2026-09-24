@@ -47,6 +47,9 @@ export interface LevelBase {
   showPieceValues?: boolean;
   showFailureFollowUp?: boolean;
   knightPath?: boolean; // logic-games-kids: кінь показує шлях «Г» (два прямо, один убік)
+  // logic-games-kids: останній рівень уроку — гра проти пішаків, що піддаються.
+  // 'vsPawns' — побий усіх пішаків; 'race' — пішакова битва (доведи пішака до фінішу). Програш теж зараховується (жовтим).
+  game?: 'vsPawns' | 'race';
 }
 
 export interface LevelDefaults {

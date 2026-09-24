@@ -45,11 +45,11 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
 .lg-run-top { display: none; }
 @media (max-width: 799px) and (orientation: portrait) {
   #main-wrap:has(.learn--run) { padding-bottom: 4px; }
-  .learn.learn--run { gap: 6px; grid-template-areas: "top" "main" "table"; }
+  .learn.learn--run { gap: 6px; grid-template-areas: "top" "main" "table"; grid-template-columns: minmax(0, 1fr); }
   .learn--run .learn__side { display: none; }
   .learn--run .lg-run-top { grid-area: top; display: flex; align-items: stretch; gap: 4px; padding: 6px 4px 0; }
   /* рівні — кружечки: зелений з ✓ — ідеально, жовтий — пройдено, синій — поточний (як у шахових застосунках) */
-  .lg-run-top .progress { flex: 1; display: flex; justify-content: center; flex-wrap: nowrap; gap: 6px; padding: 7px 10px; border-radius: 18px; background: rgba(255,255,255,.07); overflow: hidden; }
+  .lg-run-top .progress { flex: 1; min-width: 0; display: flex; justify-content: center; flex-wrap: nowrap; gap: clamp(2px, 1.2vw, 6px); padding: 7px 10px; border-radius: 18px; background: rgba(255,255,255,.07); overflow: hidden; }
   .lg-run-top .progress a { flex: 0 1 34px; min-width: 0; aspect-ratio: 1; max-height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
     background: #5B5A86; color: #1C1B3A; font: 900 15px var(--lg-font, sans-serif); opacity: 1; box-shadow: inset 0 -3px 0 rgba(0,0,0,.2); }
   .lg-run-top .progress .locked { flex: 0 1 34px; min-width: 0; aspect-ratio: 1; max-height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
@@ -110,3 +110,12 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
 /* Темно-синя тема застосунку «Шахи для дітей» */
 html.lg body.lg-game.lg-game-learn { --c-bg-page: #16152F; --c-body-gradient: #22205A; --c-bg-box: #232250; --c-bg-high: #2E2D5C; --c-bg-zebra: #29285A; --c-border: #3F3E78; }
 .learn__table .progress .locked { flex: 1 1 100%; height: 3em; display: flex; align-items: center; justify-content: center; opacity: .4; border-inline-start: 1px solid var(--c-border); }
+
+/* logic-games-kids: фініш — клітчаста смуга (прапорець 🏁) на ряду, куди треба дійти / куди не пускати пішаків */
+.lg-finish-top .learn__main cg-board::before, .lg-finish-bottom .learn__main cg-board::before {
+  content: ''; position: absolute; left: 0; width: 100%; height: 12.5%; z-index: 1; pointer-events: none; opacity: .38;
+  background: repeating-conic-gradient(#000 0 25%, #fff 0 50%) 0 0 / 12.5% 50%;
+}
+.lg-finish-top .learn__main cg-board::before { top: 0; }
+.lg-finish-bottom .learn__main cg-board::before { bottom: 0; opacity: .3; background: repeating-conic-gradient(#b3261e 0 25%, #fff 0 50%) 0 0 / 12.5% 50%; }
+.orientation-black.lg-finish-top cg-board::before { top: auto; bottom: 0; }

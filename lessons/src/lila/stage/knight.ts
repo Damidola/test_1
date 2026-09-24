@@ -46,6 +46,8 @@ const stage: StageNoID = {
       apples: 'b4 b5 c6 c8 d4 d5 e3 e7 f5',
       nbMoves: 9,
     },
+    // logic-games-kids: останній рівень — гра (пішаки піддаються); програш теж зараховується жовтим
+    { goal: 'Кінь проти 3 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁', fen: '8/2ppp3/8/8/8/8/8/6N1 w - -', nbMoves: 20, game: 'vsPawns', cssClass: 'lg-finish-bottom' } as any,
   ].map((l, i) => toLevel({ ...l, knightPath: i < 3 }, i)), // перші рівні: кінь ходить «Г» по клітинках
   complete: i18n.learn.knightComplete,
 };

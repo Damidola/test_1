@@ -65,6 +65,8 @@ const stage: StageNoID = {
       apples: 'c5 d5 e5 f5 d3 e4',
       nbMoves: 9,
     },
+    // logic-games-kids: останній рівень — гра (пішаки піддаються); програш теж зараховується жовтим
+    { goal: 'Пішакова битва! Доведи свого пішака до фінішу 🏁 (верхній ряд) — або побий усіх чорних.', fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w - -', nbMoves: 30, game: 'race', cssClass: 'lg-finish-top' },
   ].map(toLevel),
   complete: i18n.learn.pawnComplete,
 };

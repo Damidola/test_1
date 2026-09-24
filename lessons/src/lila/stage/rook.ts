@@ -47,6 +47,8 @@ const stage: StageNoID = {
       apples: 'b7 d1 d5 f2 f7 g4 g7',
       nbMoves: 7,
     },
+    // logic-games-kids: останній рівень — гра (пішаки піддаються); програш теж зараховується жовтим
+    { goal: 'Тура проти 5 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁', fen: '8/1ppppp2/8/8/8/8/8/R7 w - -', nbMoves: 20, game: 'vsPawns', cssClass: 'lg-finish-bottom' },
   ].map(toLevel),
   complete: i18n.learn.rookComplete,
 };

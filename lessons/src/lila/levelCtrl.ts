@@ -145,6 +145,7 @@ export class LevelCtrl {
     };
 
     return (orig: SquareName, dest: SquareName, prom?: PromotionRole) => {
+      if (blueprint.game) return this.gameMove(orig, dest, prom);
       vm.nbMoves++;
       const enemyRoleCaptured = enemyRoleToBeCaptured(orig, dest);
       const move = chess.move(orig, dest, prom);
@@ -204,6 +205,76 @@ export class LevelCtrl {
       }
       redraw();
     };
+  };
+
+  // ---------- logic-games-kids: гра наприкінці уроку (фігура проти пішаків / пішакова битва) ----------
+  gameMove = (orig: SquareName, dest: SquareName, prom?: PromotionRole) => {
+    const { chess, blueprint, vm } = this;
+    if (vm.willComplete) return;
+    vm.nbMoves++;
+    const took = !!chess.get(dest);
+    const move = chess.move(orig, dest, prom || (chess.get(orig)?.role === 'pawn' && (dest[1] === '8' || dest[1] === '1') ? 'queen' : undefined));
+    if (!move) return;
+    this.setFen(chess.fen(), opposite(blueprint.color), new Map(), [orig, dest]);
+    moveSound();
+    if (took) take();
+    if (this.gameCheck()) return this.redraw();
+    timeouts.setTimeout(() => {
+      const last = this.gameReply();
+      this.setFen(chess.fen(), blueprint.color, this.makeChessDests(), last);
+      if (!this.gameCheck() && !chess.moves(chess.instance).length) this.gameEnd(false); // ходити нікуди — кінець гри
+      this.redraw();
+    }, 550);
+    this.redraw();
+  };
+
+  // Хід пішаків: вони «піддаються» — частіше стають туди, де їх можна побити, фігуру майже ніколи не б'ють
+  gameReply = (): [SquareName, SquareName] | undefined => {
+    const { chess, blueprint } = this;
+    const pos = chess.instance, me = blueprint.color;
+    const moves = chess.moves(pos);
+    if (!moves.length) { chess.setColor(me); return undefined; }
+    const giveAway = Math.random() < (blueprint.game === 'vsPawns' ? 0.7 : 0.45);
+    const scored = moves.map(m => {
+      let v = Math.random() * 10;
+      const victim = pos.board.get(m.to);
+      if (victim) v += blueprint.game === 'vsPawns' ? -60 : Math.random() < 0.35 ? 25 : -25;
+      const c = pos.clone(); c.play(m);
+      const hit = chess.moves(c).some(x => x.to === m.to);
+      if (hit && giveAway) v += 30;
+      if (!hit && Math.abs(m.to - m.from) === 16) v += 3;
+      return { m, v };
+    }).sort((a, b) => b.v - a.v);
+    const m = scored[0].m, to = makeSquare(m.to);
+    const res = chess.move(makeSquare(m.from), to, to[1] === '1' || to[1] === '8' ? 'queen' : undefined);
+    if (!res) { chess.setColor(me); return undefined; }
+    moveSound();
+    return [makeSquare(m.from), to];
+  };
+
+  // true — гру закінчено (перемога або програш)
+  gameCheck = (): boolean => {
+    const { chess, blueprint } = this;
+    const me = blueprint.color;
+    let mine = 0, minePromoted = false, theirs = 0, theirPromoted = false;
+    for (const [, p] of chess.instance.board) {
+      if (p.color === me) { mine++; if (blueprint.game === 'race' && p.role !== 'pawn') minePromoted = true; }
+      else { theirs++; if (p.role !== 'pawn') theirPromoted = true; }
+    }
+    if (minePromoted || theirs === 0) { this.gameEnd(true); return true; }
+    if (theirPromoted || mine === 0) { this.gameEnd(false); return true; }
+    return false;
+  };
+
+  gameEnd = (win: boolean) => {
+    if (this.vm.willComplete) return;
+    this.withGround(g => g.set({ movable: { color: undefined, dests: new Map() } }));
+    if (win) return this.complete(500);
+    failure();
+    const LG = (window as any).LG;
+    if (LG?.toast) LG.toast(this.blueprint.game === 'race' ? 'Чорний пішак дійшов до фінішу 😕 Нічого — урок зараховано!' : 'Пішак дійшов до краю 😕 Нічого — урок зараховано!', 'warn');
+    this.vm.willComplete = true;
+    timeouts.setTimeout(() => { this.vm.willComplete = false; this.complete(300); }, 1800); // жовтим: пройдено, але не ідеально
   };
 
   // logic-games-kids: кінь іде «Г» — дві клітинки прямо, потім одна вбік (лише на перших рівнях)
@@ -278,12 +349,13 @@ export class LevelCtrl {
 
   start = () => {
     levelStart();
+    if (this.blueprint.game) return;
     if (this.chess.getColor() !== this.blueprint.color) timeouts.setTimeout(this.scenario.opponent, 1000);
   };
 
-  complete = () => {
+  complete = (bonus?: number) => {
     this.vm.willComplete = true;
-    this.vm.score += getLevelBonus(this.blueprint, this.vm.nbMoves);
+    this.vm.score += bonus ?? getLevelBonus(this.blueprint, this.vm.nbMoves);
     this.opts.onCompleteImmediate();
     this.withGround(g =>
       timeouts.setTimeout(
