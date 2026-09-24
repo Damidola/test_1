@@ -373,6 +373,7 @@
     return el(a.href ? 'a' : 'button', a, [el('span', { class: 'ico', text: ico }), el('span', { class: 'lbl', text: label })]);
   }
   function buildBar() {
+    if (document.querySelector('.lg-nav')) return; // уже зібрана (гра попросила раніше)
     hintBtn = navBtn('💡', 'Підказка', { onclick: () => hintFn && hintFn() });
     hintBtn.hidden = !hintFn;
     gearBtn = navBtn('⚙️', 'Налаштування', { onclick: showSettings });
@@ -389,7 +390,11 @@
   function navOnly(extra) {
     const bar = document.querySelector('.lg-nav'); if (!bar) return [];
     bar.querySelectorAll('.lg-nav-btn:not(.lg-home)').forEach(b => { if (b !== hintBtn) b.remove(); });
-    return extra.map(([ico, label, fn]) => { const b = navBtn(ico, label, { onclick: fn }); bar.appendChild(b); return b; });
+    const made = extra.map(([ico, label, fn, attrs]) => { const b = navBtn(ico, label, { onclick: fn, ...(attrs || {}) }); bar.appendChild(b); return b; });
+    // порядок: Назад · Колір · Рівень · Підказка · … (підказка — після «Рівня», якщо він є)
+    const lv = made.find(b => b.dataset.act === 'level');
+    if (lv && hintBtn) lv.after(hintBtn);
+    return made;
   }
 
   // ---------- публічне API ----------
@@ -426,7 +431,7 @@
     addSettings: fn => { settingsBuilders.push(fn); if (gearBtn) gearBtn.hidden = false; },
     onHint: fn => { hintFn = fn; if (hintBtn) hintBtn.hidden = !fn; },
     onExplain: fn => { explainFn = fn; },
-    navOnly: extra => (document.querySelector('.lg-nav') ? navOnly(extra) : (document.addEventListener('DOMContentLoaded', () => navOnly(extra)), [])),
+    navOnly: extra => { buildBar(); return navOnly(extra); },
     store,
     play,
     toast,

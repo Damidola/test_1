@@ -179,3 +179,4 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 @media (min-width: 900px) and (min-aspect-ratio: 1/1) { .lg-bubble { max-width: 72%; font-size: 14px; } }
 .lg-controls[hidden] { display: none !important; }
 .lg-quick[hidden] { display: none !important; }
+.lg-nav .lg-level-pop { grid-template-columns: repeat(5, minmax(0, 1fr)); } .lg-nav .lg-level-pop button { font-size: 10px; overflow: hidden; }

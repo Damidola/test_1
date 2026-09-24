@@ -41,7 +41,7 @@ export function startGame(cfg) {
       <button type="button" data-act="redo"><span class="ico">↪️</span><span class="lbl">Повторити</span></button>
     </div>`;
   const $ = s => root.querySelector(s);
-  let navUndo = null, navRedo = null; // кнопки нижньої панелі (cfg.navOnly)
+  let navUndo = null, navRedo = null, navFlip = null, navLevel = null; // кнопки нижньої панелі (cfg.navOnly)
 
   // ---------- стан партії ----------
   const q = new URLSearchParams(location.search), qSide = q.get('side'), qLevel = +q.get('level');
@@ -67,10 +67,11 @@ export function startGame(cfg) {
   function paintLevel() {
     const b = root.querySelector('[data-act="level"]');
     if (b) { b.querySelector('.lg-dots').innerHTML = dots(level); b.title = 'Рівень: ' + LEVEL_NAMES[level - 1]; }
-    root.querySelectorAll('.lg-level-pop button').forEach(x => x.classList.toggle('on', +x.dataset.l === level));
+    if (navLevel) navLevel.querySelector('.ico').innerHTML = `<span class="lg-dots">${dots(level)}</span>`;
+    document.querySelectorAll('.lg-level-pop button').forEach(x => x.classList.toggle('on', +x.dataset.l === level));
   }
   function toggleLevelPop() {
-    const ctr = root.querySelector('.lg-controls');
+    const ctr = navLevel ? document.querySelector('.lg-nav') : root.querySelector('.lg-controls');
     let pop = ctr.querySelector('.lg-level-pop');
     if (pop) return pop.remove();
     pop = document.createElement('div');
@@ -179,6 +180,7 @@ export function startGame(cfg) {
     }
     if (navRedo) navRedo.classList.toggle('is-off', pos >= history.length - 1);
     if (navUndo) navUndo.classList.toggle('is-off', pos === 0);
+    if (navFlip) navFlip.querySelector('.ico').textContent = player === 'w' ? '⚪' : '⚫';
   }
 
   // ---------- ходи ----------
@@ -313,7 +315,16 @@ export function startGame(cfg) {
   if (cfg.navOnly) {
     root.querySelector('.lg-controls').hidden = true;
     if (root.querySelector('.lg-quick')) root.querySelector('.lg-quick').hidden = true; // режим обирають у «Практиці»
-    [navUndo, navRedo] = LG.navOnly([['↩️', 'Відмінити', () => undo()], ['↪️', 'Повторити', () => redo()]]);
+    // cfg.navOnly: true → Відмінити · Повторити; або список дій: ['flip', 'level', 'undo', 'redo']
+    const acts = Array.isArray(cfg.navOnly) ? cfg.navOnly : ['undo', 'redo'];
+    const DEF = {
+      flip: ['⚪', 'Колір', () => { player = player === 'w' ? 'b' : 'w'; newGame(); }, { 'data-act': 'flip' }],
+      level: ['•', 'Рівень', () => toggleLevelPop(), { 'data-act': 'level' }],
+      undo: ['↩️', 'Відмінити', () => undo()], redo: ['↪️', 'Повторити', () => redo()]
+    };
+    const made = LG.navOnly(acts.map(a => DEF[a]));
+    acts.forEach((a, i) => { if (a === 'undo') navUndo = made[i]; if (a === 'redo') navRedo = made[i]; if (a === 'flip') navFlip = made[i]; if (a === 'level') navLevel = made[i]; });
+    paintLevel(); renderButtons();
   }
   root.querySelector('.lg-controls').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || b.disabled) return;

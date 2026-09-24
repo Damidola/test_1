@@ -322,3 +322,4 @@ html.lg .lg-nav-btn .ico { font-size: 22px; line-height: 1; }
 html.lg .lg-nav-btn:active { background: #29285A; transform: scale(.96); }
 .lg-toast { top: 14px !important; }
 html.lg .lg-nav-btn.is-off { opacity: .35; }
+html.lg .lg-nav-btn .ico .lg-dots { height: 22px; gap: 3px; } html.lg .lg-nav-btn .ico .lg-dots i { width: 6px; height: 6px; }
