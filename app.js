@@ -95,29 +95,20 @@ const ROWS = (() => {
   const rows = []; for (let r = 0; r * 4 < order.length; r++) rows.push(order.slice(r * 4, r * 4 + 4));
   return rows;
 })();
-const pick = { side: LG.store.get('play:side', 'w'), variant: LG.store.get('play:variant', 'standard') };
+let side = LG.store.get('play:side', 'w');
 function renderPlay() {
   const dots = n => `<span class="ap-lv">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? 'f' : ''}"></i>`).join('')}</span>`;
+  const sides = [['w', piece('K', 'w') + 'Білі'], ['r', '<span class="big">🎲</span>Будь-які'], ['b', piece('K', 'b') + 'Чорні']];
   $('view-play').innerHTML = `<h2 class="ap-h">З ким граємо?</h2><div class="ap-opprows">${ROWS.map((row, r) => `
-    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<button type="button" class="ap-opp" data-i="${i}" data-l="${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}"></button>`).join('')}</div>`).join('')}
-    </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>`;
+    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}"></a>`).join('')}</div>`).join('')}
+    </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>
+    <h2 class="ap-h">Я граю фігурами</h2>
+    <div class="ap-seg" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}">${inner}</button>`).join('')}</div>`;
 }
-function openPlay(i, level) {
-  const o = OPPONENTS[i];
-  const seg = (key, items) => `<div class="ap-seg" data-key="${key}">${items.map(([v, inner]) => `<button type="button" data-v="${v}" class="${pick[key] === v ? 'on' : ''}">${inner}</button>`).join('')}</div>`;
-  const paint = () => {
-    $('card').innerHTML = `<div class="ap-card-head"><img class="ap-card-av" src="${o.avatar}" alt="" style="object-position:${o.pos}"><div><h2>${esc(o.name)}</h2><p>Рівень ${level} · ${LEVEL_NAMES[level - 1]}</p></div></div>
-      <h3 class="ap-h3">Яким кольором граєш?</h3>
-      ${seg('side', [['w', piece('K', 'w') + 'Білими'], ['r', '<span class="big">🎲</span>Будь-як'], ['b', piece('K', 'b') + 'Чорними']])}
-      <h3 class="ap-h3">Гра</h3>
-      ${seg('variant', [['standard', '<span class="big">♔</span>Шахи'], ['antichess', '<span class="big">🎁</span>Піддавки']])}
-      <a class="ap-go" href="chess/index.html?opp=${i}&side=${pick.side}&level=${level}&variant=${pick.variant}">Грати ▶</a>`;
-  };
-  paint();
-  $('card').onclick = e => { const b = e.target.closest('.ap-seg button'); if (!b) return; pick[b.parentElement.dataset.key] = b.dataset.v; LG.store.set('play:' + b.parentElement.dataset.key, b.dataset.v); LG.play('tap'); paint(); };
-  $('sheet').hidden = false;
-}
-$('view-play').addEventListener('click', e => { const b = e.target.closest('.ap-opp'); if (b) { LG.play('tap'); openPlay(+b.dataset.i, +b.dataset.l); } });
+$('view-play').addEventListener('click', e => {
+  const b = e.target.closest('#side-seg button'); if (!b) return;
+  side = b.dataset.v; LG.store.set('play:side', side); LG.play('tap'); renderPlay();
+});
 
 // ---------- 🎯 практика ----------
 const PRACTICE = [
