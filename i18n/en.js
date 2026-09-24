@@ -2,6 +2,19 @@
    Підключається з shared/kit.js, коли в Профілі обрано мову English (i18n/translate.js перекладає сторінку).
    Нова фраза на сайті — додай сюди рядок; фраза без перекладу лишається українською. */
 window.LG_EN = {
+  "Побий": "Capture",
+  "того, хто шахує": "the checking piece",
+  "іншою фігурою": "with another piece",
+  "здогадайся сам": "figure it out",
+  "будь-якою фігурою": "with any piece",
+  "Постав мат роботу": "Checkmate the robot",
+  "Ігри й головоломки": "Games and puzzles",
+  "постав шах і врятуйся від шаху": "give check and escape from check",
+  "обери фігуру, якою ставиш мат": "choose the piece that mates",
+  "вилка, зв’язка, прострел…": "fork, pin, skewer…",
+  "скільки завгодно ходів — головне мат": "any number of moves — just checkmate",
+  "не пропусти жодного пішака до краю": "don't let a single pawn reach the edge",
+  "пішакова битва, хід конем, 8 ферзів": "pawn battle, knight's tour, 8 queens",
   "💬 Репліки суперника": "💬 Opponent speech",
   "Так": "Yes",
   "Ні": "No",

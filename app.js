@@ -91,28 +91,47 @@ $('view-play').addEventListener('click', e => {
 });
 
 // ---------- 🎯 практика ----------
+// Практика: спершу короткий список розділів (без прокрутки), тап — розділ відкривається з вибором усередині
 const PRACTICE = [
-  ['🧩 Задачі', 'Знайди найкращий хід', [
-    ['R', 'Постав шах', 'турою, слоном, конем…', P('chk_rook'), '#7C6CF0'], ['K', 'Урятуйся від шаху', 'утечи, побий, закрийся', P('esc_mixed'), '#3FA7F5'],
-    ['Q', 'Мат в 1 хід', 'різними фігурами', P('m1mix'), '#FF5C6C'], ['🏆', 'Мат у 2 ходи', 'хід, відповідь — мат', P('mate2'), '#E0567A'],
-    ['🍴', 'Тактика', 'вилка, зв’язка, прострел', P('fork'), '#FF9F1C'], ['📋', 'Усі задачі', 'повний список розділів', 'chess-puzzles/index.html', '#8C8BB3']]],
-  ['♟️ Фігури проти пішаків', 'Не пропусти жодного пішака до краю', [
-    [['Q', 'vs', 'P'], 'Ферзь проти 8', '', W('q_p8'), '#7C6CF0'], [['R', 'vs', 'P'], 'Тура проти 5', '', W('r_p5'), '#3FA7F5'],
-    [['B', 'vs', 'P'], 'Слон проти 3', '', W('b_p3'), '#2ECC9A'], [['N', 'vs', 'P'], 'Кінь проти 3', '', W('n_p3'), '#FF9F1C'],
-    [['B', 'B', 'vs', 'P'], '2 слони проти 8', '', W('bb_p8'), '#E0567A'], [['N', 'N', 'vs', 'P'], '2 коні проти 6', '', W('nn_p6'), '#8C6CF0']]],
-  ['🏁 Постав мат роботу', 'Скільки завгодно ходів — головне мат', [
-    [['K', 'Q'], 'Ферзь і король', '', P('kqk'), '#FF5C6C'], [['K', 'R'], 'Тура і король', '', P('krk'), '#3FA7F5'],
-    [['K', 'B', 'B'], 'Два слони', '', P('kbbk'), '#2ECC9A'], [['K', 'P'], 'Король і пішак', '', P('kpk'), '#FF9F1C']]],
-  ['⭐ Ігри й головоломки', 'Для розминки', [
-    [['P', 'vs', 'P'], 'Пішакова битва', 'хто перший до краю', 'pawns/index.html', '#7C6CF0'], [['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html', '#2ECC9A'],
-    [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html', '#FF9F1C']]]
+  { id: 'check', ic: 'K', t: 'Шах', s: 'постав шах і врятуйся від шаху', c: '#3FA7F5', groups: [
+    ['Постав шах', [['R', 'Турою', '', P('chk_rook')], ['B', 'Слоном', '', P('chk_bishop')], ['Q', 'Ферзем', '', P('chk_queen')], ['N', 'Конем', '', P('chk_knight')], ['P', 'Пішаком', '', P('chk_pawn')]]],
+    ['Урятуйся від шаху', [['🏃', 'Утечи королем', '', P('esc_run')], ['⚔️', 'Побий', 'того, хто шахує', P('esc_capture')], ['🛡️', 'Закрийся', 'іншою фігурою', P('esc_block')], ['🎲', 'Різні', 'здогадайся сам', P('esc_mixed')]]]] },
+  { id: 'mate1', ic: 'Q', t: 'Мат в 1 хід', s: 'обери фігуру, якою ставиш мат', c: '#FF5C6C', groups: [
+    [null, [['R', 'Турою', '', P('m1rook')], ['B', 'Слоном', '', P('m1bishop')], ['P', 'Пішаком', '', P('m1pawn')], ['Q', 'Ферзем', '', P('m1queen')], ['N', 'Конем', '', P('m1knight')], ['🎲', 'Різні', 'будь-якою фігурою', P('m1mix')]]]] },
+  { id: 'mate2', ic: '🏆', t: 'Мат у 2 ходи', s: 'хід, відповідь — мат', c: '#E0567A', href: P('mate2') },
+  { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, прострел…', c: '#FF9F1C', groups: [
+    [null, [['🍴', 'Вилка', '', P('fork')], ['📌', 'Зв’язка', '', P('pin')], ['🏹', 'Прострел', '', P('skewer')], ['💥', 'Відкритий напад', '', P('discovered')],
+      ['🎣', 'Відволікання', '', P('deflection')], ['🧲', 'Заманювання', '', P('attraction')], ['🎁', 'Незахищена фігура', '', P('hanging')], ['👑', 'Пішак у ферзі', '', P('promotion')]]]] },
+  { id: 'endgame', ic: ['K', 'Q'], t: 'Постав мат роботу', s: 'скільки завгодно ходів — головне мат', c: '#2ECC9A', groups: [
+    [null, [[['K', 'Q'], 'Ферзь і король', '', P('kqk')], [['K', 'R'], 'Тура і король', '', P('krk')], [['K', 'B', 'B'], 'Два слони', '', P('kbbk')], [['K', 'P'], 'Король і пішак', '', P('kpk')]]]] },
+  { id: 'pvp', ic: ['Q', 'vs', 'P'], t: 'Фігури проти пішаків', s: 'не пропусти жодного пішака до краю', c: '#7C6CF0', groups: [
+    [null, [[['Q', 'vs', 'P'], 'Ферзь проти 8', '', W('q_p8')], [['R', 'vs', 'P'], 'Тура проти 5', '', W('r_p5')], [['B', 'vs', 'P'], 'Слон проти 3', '', W('b_p3')],
+      [['N', 'vs', 'P'], 'Кінь проти 3', '', W('n_p3')], [['B', 'B', 'vs', 'P'], '2 слони проти 8', '', W('bb_p8')], [['N', 'N', 'vs', 'P'], '2 коні проти 6', '', W('nn_p6')]]]] },
+  { id: 'games', ic: '⭐', t: 'Ігри й головоломки', s: 'пішакова битва, хід конем, 8 ферзів', c: '#8C6CF0', groups: [
+    [null, [[['P', 'vs', 'P'], 'Пішакова битва', 'хто перший до краю', 'pawns/index.html'], [['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html'], [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html']]]] }
 ];
-function renderPractice() {
-  $('view-practice').innerHTML = PRACTICE.map(([h, sub, items]) => `<h2 class="ap-h">${h}</h2><p class="ap-sub">${sub}</p><div class="ap-tiles">${items.map(([ic, t, s, href, c]) => {
-    const vs = Array.isArray(ic) ? ic.indexOf('vs') : -1; // до «vs» — білі фігури, після — чорні
-    const art = Array.isArray(ic) ? ic.map((x, j) => x === 'vs' ? '<span>vs</span>' : piece(x, vs >= 0 && j > vs ? 'b' : 'w')).join('') : /^[PRBQNK]$/.test(ic) ? piece(ic) : `<span class="emo">${ic}</span>`;
-    return `<a class="ap-tile" href="${href}" style="--c:${c}"><span class="pcs">${art}</span><b>${esc(t)}</b>${s ? `<small>${esc(s)}</small>` : ''}</a>`;
-  }).join('')}</div>`).join('');
+const art = ic => {
+  const vs = Array.isArray(ic) ? ic.indexOf('vs') : -1; // до «vs» — білі фігури, після — чорні
+  return Array.isArray(ic) ? ic.map((x, j) => x === 'vs' ? '<span>vs</span>' : piece(x, vs >= 0 && j > vs ? 'b' : 'w')).join('') : /^[PRBQNK]$/.test(ic) ? piece(ic) : `<span class="emo">${ic}</span>`;
+};
+// скільки задач розділу вже розв'язано (chess-puzzles зберігає chk:puz:<розділ>)
+const solvedOf = hrefs => hrefs.reduce((n, h) => { const k = h.startsWith('chess-puzzles/') && h.split('#')[1]; return n + (k ? (LG.store.get('puz:' + k, []) || []).length : 0); }, 0);
+const catLinks = c => c.href ? [c.href] : c.groups.flatMap(([, items]) => items.map(x => x[3]));
+function renderPractice(open) {
+  const cat = PRACTICE.find(c => c.id === open && c.groups);
+  if (!cat) {
+    $('view-practice').innerHTML = `<h2 class="ap-h">Практика</h2><div class="ap-cats">${PRACTICE.map(c => {
+      const n = solvedOf(catLinks(c));
+      return `<a class="ap-cat" href="${c.href || '#practice/' + c.id}" style="--c:${c.c}"><span class="pcs">${art(c.ic)}</span>
+        <span class="tx"><b>${esc(c.t)}</b><small>${esc(c.s)}</small></span>${n ? `<span class="ap-cnt">✓ ${n}</span>` : ''}<span class="chev">›</span></a>`;
+    }).join('')}</div>`;
+    return;
+  }
+  $('view-practice').innerHTML = `<div class="ap-subhead"><a class="ap-backbtn" href="#practice" aria-label="Назад">‹</a><span class="pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>` +
+    cat.groups.map(([h, items]) => `${h ? `<h3 class="ap-h3">${esc(h)}</h3>` : ''}<div class="ap-tiles ap-subtiles">${items.map(([ic, t, sub, href]) => {
+      const n = solvedOf([href]);
+      return `<a class="ap-tile" href="${href}" style="--c:${cat.c}"><span class="pcs">${art(ic)}</span><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}${n ? `<span class="ap-cnt">✓ ${n}</span>` : ''}</a>`;
+    }).join('')}</div>`).join('');
 }
 
 // ---------- 👤 профіль ----------
@@ -174,12 +193,14 @@ function renderProfile() {
 
 // ---------- вкладки ----------
 const TITLES = { learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
-function show(tab) {
+function show(hash) {
+  let [tab, sub] = String(hash || '').split('/');
   if (!TITLES[tab]) tab = 'learn';
   document.querySelectorAll('.ap-view').forEach(v => { v.hidden = v.dataset.tab !== tab; });
   document.querySelectorAll('.ap-tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
   $('sheet').hidden = true;
-  try { sessionStorage.setItem('chk:back', location.href.split('#')[0] + '#' + tab); } catch (e) { /* */ }
+  try { sessionStorage.setItem('chk:back', location.href.split('#')[0] + '#' + tab + (tab === 'practice' && sub ? '/' + sub : '')); } catch (e) { /* */ }
+  if (tab === 'practice') renderPractice(sub);
   if (tab === 'profile') renderProfile();
   if (tab === 'play') renderPlay();
   if (tab === 'learn') requestAnimationFrame(() => { drawRoad(); $('s' + curStep)?.scrollIntoView({ block: 'center' }); });
