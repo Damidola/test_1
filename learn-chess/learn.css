@@ -55,7 +55,9 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   .lg-run-top .progress .locked { flex: 0 1 34px; min-width: 0; aspect-ratio: 1; max-height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
     background: #33325F; color: #6E6CA3; font: 900 15px var(--lg-font, sans-serif); cursor: not-allowed; }
   .lg-run-top .progress a.active { background: #16152F; color: #fff; box-shadow: 0 0 0 3px #7C6CF0; }
-  .lg-run-top .progress a.done.passed { background: #F5C542; color: #3a2a00; }
+  .lg-run-top .progress a.done.active { box-shadow: 0 0 0 3px #fff; }
+  .lg-run-top .progress a.done.passed { background: #F5C542; color: transparent; position: relative; }
+  .lg-run-top .progress a.done.passed::after { content: '✓'; position: absolute; color: #6B4E00; font-weight: 900; font-size: 18px; }
   .lg-run-top .progress a.done.perfect { background: #58C23A; color: transparent; position: relative; }
   .lg-run-top .progress a.done.perfect::after { content: '✓'; position: absolute; color: #fff; font-weight: 900; font-size: 18px; }
   .lg-run-top .lg-run-menu { flex: none; width: 46px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: rgba(255,255,255,.07); color: #fff; font-size: 22px; }

@@ -21,9 +21,11 @@ export function progressView(ctrl: RunCtrl) {
       const score = ctrl.score(level), open = prevDone;
       prevDone = !!score;
       // logic-games-kids: без зірочок (ламали ширину) — номер рівня; зелений — ідеально (3 зірки), жовтий — пройдено
-      const status = level.id === ctrl.levelCtrl.blueprint.id ? 'active' : score ? (getLevelRank(level, score) === 1 ? 'done perfect' : 'done passed') : 'future';
+      // пройдений рівень фарбується завжди (і поточний теж), поточний — ще й з обводкою
+      const cur = level.id === ctrl.levelCtrl.blueprint.id;
+      const status = (score ? (getLevelRank(level, score) === 1 ? 'done perfect' : 'done passed') : cur ? 'active' : 'future') + (cur && score ? ' active' : '');
       if (!open && status === 'future') return span('.locked', span('.id', level.id));
-      return a(hashHref(ctrl.stage.id, level.id))(`.${status.replace(' ', '.')}`, span('.id', level.id));
+      return a(hashHref(ctrl.stage.id, level.id))(`.${status.split(' ').join('.')}`, span('.id', level.id));
     }),
   );
 }
