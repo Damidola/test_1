@@ -34,7 +34,8 @@ export function applyBoardLook() {
 
 /* Дотики як у застосунку Lichess (для будь-якої дошки chessground):
    — фігура збільшується лише тоді, коли її справді тягнуть, а не від дотику;
-   — легкий тап із ковзанням пальця не перетягує фігуру на сусідню клітинку. */
+   — легкий тап із ковзанням пальця не перетягує фігуру на сусідню клітинку;
+   — тап по клітинці, куди може піти лише одна фігура (напр. ворожа фігура під боєм), одразу робить цей хід. */
 export function lichessTouch(cg) {
   const wrap = cg.state.dom.elements.wrap;
   // Тягнути фігуру — лише коли палець справді пройшов ~0,4 клітинки: легкий тап із ковзанням пальця
@@ -42,14 +43,39 @@ export function lichessTouch(cg) {
   const dragDist = () => { const w = wrap.getBoundingClientRect().width; if (w) cg.set({ draggable: { distance: Math.max(10, Math.round(w / 8 * 0.4)) } }); };
   dragDist(); requestAnimationFrame(dragDist);
   window.addEventListener('resize', dragDist);
-  let start = null;
-  wrap.addEventListener('pointerdown', e => { start = [e.clientX, e.clientY]; }, { capture: true, passive: true });
+  let start = null, wasSelected;
+  // Дошка могла зсунутися (змінилась розкладка сторінки) — перед кожним дотиком chessground заново міряє її положення,
+  // інакше тап потрапляє не в ту клітинку
+  const remeasure = () => { cg.state.dom.bounds.clear(); };
+  for (const ev of ['pointerdown', 'touchstart', 'mousedown']) wrap.addEventListener(ev, remeasure, { capture: true, passive: true });
+  // змінився розмір дошки (сторінка перебудувалась) — перемальовуємо: інакше крапки ходів малюються не там
+  let lastW = 0;
+  if (window.ResizeObserver) new ResizeObserver(() => {
+    const w = Math.round(wrap.getBoundingClientRect().width);
+    if (w && w !== lastW) { lastW = w; remeasure(); dragDist(); cg.redrawAll(); }
+  }).observe(wrap);
+  window.addEventListener('scroll', remeasure, { passive: true });
+  wrap.addEventListener('pointerdown', e => { start = [e.clientX, e.clientY]; wasSelected = cg.state.selected; }, { capture: true, passive: true });
   wrap.addEventListener('pointermove', e => {
-    if (start && !wrap.classList.contains('lg-lifted') && cg.state.draggable.current && Math.hypot(e.clientX - start[0], e.clientY - start[1]) >= cg.state.draggable.distance)
+    if (start && !wrap.classList.contains('lg-lifted') && cg.state.draggable.current && Math.hypot(e.clientX - start[0], e.clientY - start[1]) >= 5)
       wrap.classList.add('lg-lifted');
   }, { passive: true });
-  // Автоходу «тап по клітинці, куди може лише одна фігура» немає: фігура ходить лише тоді, коли її вибрали
-  const up = () => { start = null; wrap.classList.remove('lg-lifted'); };
+  const up = e => {
+    const tap = start && e.type === 'pointerup' && Math.hypot(e.clientX - start[0], e.clientY - start[1]) < 5;
+    const pos = start && [e.clientX, e.clientY];
+    start = null;
+    wrap.classList.remove('lg-lifted');
+    if (!tap || wasSelected) return;
+    setTimeout(() => { // після того, як chessground обробив тап
+      if (cg.state.selected) return; // тапнули свою фігуру — звичайний вибір
+      const key = cg.getKeyAtDomPos(pos), color = cg.state.movable.color, dests = cg.state.movable.dests;
+      if (!key || !color || !dests) return;
+      const from = [...dests].filter(([o, ds]) => ds.includes(key) && cg.state.pieces.get(o)?.color === color).map(([o]) => o);
+      if (from.length !== 1) return;
+      cg.selectSquare(from[0]);
+      cg.selectSquare(key);
+    });
+  };
   window.addEventListener('pointerup', up, true);
   window.addEventListener('pointercancel', up, true);
 }

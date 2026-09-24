@@ -409,6 +409,6 @@ export function startGame(cfg) {
 
   applyHero();
   newGame(); paintLevel();
-  window.lgGameDebug = () => ({ pos, len: history.length, thinking, over, player, turn: rules.turn(state()), movable: board && board.cg.state.movable.color, undosLeft });
+  window.lgGameDebug = () => ({ pos, len: history.length, thinking, over, player, turn: rules.turn(state()), movable: board && board.cg.state.movable.color, undosLeft, dests: Object.fromEntries(dests(state())) });
   return { newGame, state, board, setPlayer: c => { player = c; newGame(); } };
 }
