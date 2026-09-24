@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="color-scheme" content="dark">
-  <style id="no-flash">html, body { background: #16152F; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
+  <style id="no-flash">html, body { background: #16152F; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Цінність фігур</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790280428">
-  <link rel="stylesheet" href="../shared/play.css?v=1790280428">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790280677">
+  <link rel="stylesheet" href="../shared/play.css?v=1790280677">
   <style>
     .vl { justify-content: center; gap: 8px; }
     .vl-intro { flex: 1 1 auto; min-height: 0; overflow-y: auto; width: 100%; max-width: 620px; padding: 6px 14px; box-sizing: border-box; color: var(--lg-ink); text-align: center; }
@@ -27,11 +27,18 @@
     .vl-task.ok { color: #2ECC9A; } .vl-task.bad { color: #FF9F1C; }
     .vl .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 16px - 60px - 40px - 50px - 60px)); }
     .vl .lg-board-wrap.solved cg-board { box-shadow: 0 0 0 5px #2ECC9A; }
-    .vl .lg-controls { grid-template-columns: 1fr; width: min(100%, 260px); }
+    .vl .lg-controls { display: none; }
     .vl .lg-controls button[hidden] { display: none; }
     .vl[data-step="intro"] > :not(.vl-intro) { display: none !important; }
     .vl:not([data-step="intro"]) > .vl-intro { display: none; }
     @media (min-width: 900px) and (min-aspect-ratio: 1/1) { html.lg .lg-play.vl[data-step="intro"] { display: flex; width: 100%; } }
+    .vl-intro { overflow: hidden; display: flex; flex-direction: column; justify-content: center; padding: 4px 14px; }
+    .vl-intro h2 { font-size: clamp(19px, 3.4svh, 24px); margin: 2px 0; }
+    .vl-intro p { font-size: clamp(13px, 2.3svh, 16px); margin: 4px 0; line-height: 1.3; }
+    .vl-cards { margin: 6px 0; gap: 6px; } .vl-card { padding: 4px 2px; } .vl-card mpiece { width: clamp(30px, 6svh, 52px); height: clamp(30px, 6svh, 52px); } .vl-card b { font-size: clamp(17px, 3svh, 24px); }
+    .vl-ways { margin: 6px 0; gap: 5px; } .vl-way { padding: 5px 10px; } .vl-way span { font-size: 24px; } .vl-way b { font-size: 16px; } .vl-way small { font-size: 12px; }
+    .vl-go { margin-top: 6px; min-height: 46px; }
+    .vl .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 16px - 48px - 34px - 50px - 30px)); }
   </style>
 </head>
 <body>
@@ -50,18 +57,19 @@
       <p>Якщо можна побити кілька фігур суперника — <b>бий найдорожчу!</b></p>
       <button type="button" class="vl-go" id="go">Спробувати ▶️</button>
     </section>
-    <div class="vl-goal"><span id="goal">Побий найдорожчу фігуру</span><span class="chip" id="count"></span></div>
+    <div class="lv-bar" id="levels"></div>
+    <div class="vl-goal"><span id="goal">Побий найдорожчу фігуру</span></div>
     <div class="vl-legend" id="legend"></div>
     <div class="lg-board-wrap" id="wrap"><div class="lg-board-el" id="board"></div></div>
     <div class="vl-task" id="task"></div>
     <div class="lg-controls">
       <button type="button" id="back" hidden><span class="ico">🎓</span><span class="lbl">Уроки</span></button>
       <button type="button" id="intro" hidden><span class="ico">📖</span><span class="lbl">Ціни фігур</span></button>
-      <button type="button" id="skip"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
+      <button type="button" id="skip" hidden><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790280428"></script>
-  <script src="../shared/kit.js?v=1790280428" data-game="learn" data-night="on"></script>
-  <script type="module" src="value.js?v=1790280428"></script>
+  <script src="../shared/games.js?v=1790280677"></script>
+  <script src="../shared/kit.js?v=1790280677" data-game="learn" data-night="on"></script>
+  <script type="module" src="value.js?v=1790280677"></script>
 </body>
 </html>

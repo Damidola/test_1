@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="color-scheme" content="dark">
-  <style id="no-flash">html, body { background: #16152F; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
+  <style id="no-flash">html, body { background: #16152F; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Урок</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790280428">
-  <link rel="stylesheet" href="../shared/play.css?v=1790280428">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790280677">
+  <link rel="stylesheet" href="../shared/play.css?v=1790280677">
   <style>
     .cl { justify-content: center; gap: 8px; }
     .cl-intro { flex: 1 1 auto; min-height: 0; overflow-y: auto; width: 100%; max-width: 620px; padding: 6px 16px; box-sizing: border-box; color: var(--lg-ink); text-align: center; }
@@ -19,7 +19,7 @@
     .cl-task.ok { color: #2ECC9A; } .cl-task.bad { color: #FF9F1C; }
     .cl .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 16px - 30px - 46px - 60px - 30px)); }
     .cl .lg-board-wrap.solved cg-board { box-shadow: 0 0 0 5px #2ECC9A; }
-    .cl .lg-controls { grid-template-columns: repeat(2, 1fr); width: min(100%, 420px); }
+    .cl .lg-controls { grid-template-columns: 1fr; width: min(100%, 240px); }
     .cl .lg-controls button[hidden] { display: none; }
     .cl-promo { position: absolute; inset: 0; z-index: 50; background: rgba(0, 0, 0, .45); }
     .cl-promo button { position: absolute; width: 12.5%; height: 12.5%; padding: 0; border: 0; border-radius: 50%; background: #b0b0b0; cursor: pointer; }
@@ -28,6 +28,11 @@
     .cl[data-step="intro"] > :not(.cl-intro) { display: none !important; }
     .cl:not([data-step="intro"]) > .cl-intro { display: none; }
     @media (min-width: 900px) and (min-aspect-ratio: 1/1) { html.lg .lg-play.cl[data-step="intro"] { display: flex; width: 100%; } }
+    .cl-intro { overflow: hidden; display: flex; flex-direction: column; justify-content: center; padding: 4px 16px; }
+    .cl-intro h2 { font-size: clamp(20px, 3.6svh, 26px); margin: 2px 0 4px; }
+    .cl-intro p { font-size: clamp(13px, 2.3svh, 16px); margin: 5px 0; line-height: 1.35; }
+    .cl-goal { font-size: 15px; }
+    .cl .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 16px - 48px - 26px - 46px - 50px - 20px)); }
   </style>
 </head>
 <body>
@@ -37,17 +42,18 @@
       <div id="intro-text"></div>
       <button type="button" class="cl-go" id="go">Почати ▶️</button>
     </section>
-    <div class="cl-goal"><span id="goal"></span><span class="chip" id="count"></span></div>
+    <div class="lv-bar" id="levels"></div>
+    <div class="cl-goal"><span id="goal"></span></div>
     <div class="lg-board-wrap" id="wrap"><div class="lg-board-el" id="board"></div></div>
     <div class="cl-task" id="task"></div>
     <div class="lg-controls">
       <button type="button" id="rules" hidden><span class="ico">📖</span><span class="lbl">Правило</span></button>
       <button type="button" id="again"><span class="ico">🔁</span><span class="lbl">Ще раз</span></button>
-      <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
+      <button type="button" id="next" hidden><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790280428"></script>
-  <script src="../shared/kit.js?v=1790280428" data-game="path" data-night="on"></script>
-  <script type="module" src="lesson.js?v=1790280428"></script>
+  <script src="../shared/games.js?v=1790280677"></script>
+  <script src="../shared/kit.js?v=1790280677" data-game="path" data-night="on"></script>
+  <script type="module" src="lesson.js?v=1790280677"></script>
 </body>
 </html>

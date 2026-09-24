@@ -147,7 +147,9 @@ function renderProfile() {
   $('p-range').addEventListener('change', () => LG.play('tap'));
   $('p-pieces').appendChild(LG.pieceSetPicker(() => { renderLearn(); renderPractice(); }));
   // дошки Lichess: вибір зберігається й діє в усіх уроках та іграх
-  const paintBoards = () => { $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" style="background-image:url('${boardUrl(t.file)}')" aria-label="${t.id}"></button>`).join(''); };
+  const boardVar = () => { const t = BOARD_THEMES.find(x => x.id === LG.boardTheme()) || BOARD_THEMES[0]; $('view-profile').style.setProperty('--board-img', `url('${boardUrl(t.file)}')`); };
+  boardVar();
+  const paintBoards = () => { boardVar(); $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" style="background-image:url('${boardUrl(t.file)}')" aria-label="${t.id}"></button>`).join(''); };
   paintBoards();
   $('p-boards').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.setBoardTheme(b.dataset.t); LG.play('tap'); paintBoards(); });
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
@@ -182,5 +184,6 @@ document.addEventListener('click', e => {
 window.addEventListener('hashchange', () => show(location.hash.slice(1)));
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 renderAll();
+renderProfile();
 show(location.hash.slice(1) || 'learn');
 window.addEventListener('pageshow', e => { if (e.persisted) { renderAll(); show(location.hash.slice(1) || 'learn'); } });

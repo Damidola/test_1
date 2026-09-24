@@ -3,6 +3,7 @@
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 import { createBoard } from '../shared/board.js';
 import { goNext, markSeen } from '../shared/path.js';
+import { createLevels } from '../shared/levels.js';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
@@ -49,13 +50,16 @@ function captures(pieces) {
   }
   return out;
 }
+// кружечки рівнів угорі: по черзі, зелений/жовтий ✓
+let errs = 0;
+const lv = createLevels($('levels'), 'value', TASKS.length, i => { idx = i; load(); });
 function load() {
+  errs = 0; lv.set(idx);
   const t = TASKS[idx], pcs = position(t), caps = captures(pcs);
   done = false; lock = false;
   $('wrap').classList.remove('solved');
   board.setPosition(pcs, { animate: false });
   board.setMovable('white', caps);
-  $('count').textContent = `${idx + 1} / ${TASKS.length}`;
   $('goal').textContent = idx === 0 ? 'Приклад' : 'Побий найдорожчу фігуру';
   task(t[2]);
   // у прикладі — стрілки від фігури до всіх, кого можна побити, з ціною
@@ -74,19 +78,20 @@ function onMove(from, to) {
   if (v === top) {
     done = true; LG.play('capture'); $('wrap').classList.add('solved'); board.clearHint();
     task(`Так! ${NAME[got.role]} коштує ${v} — це найдорожча здобич 🎉`, 'ok');
+    lv.done(idx, !errs);
     setTimeout(() => {
       if (idx < TASKS.length - 1) { idx++; load(); }
       else { markSeen('lessons/value.html'); LG.win('Тепер ти знаєш, скільки коштують фігури!', { reward: true, onAgain: () => { idx = 0; load(); }, onNext: () => goNext('lessons/value.html') }); }
     }, 1500);
     return;
   }
-  lock = true; LG.play('error');
+  lock = true; errs++; LG.play('error');
   const better = [...caps.values()].flat().map(k => pcs.get(k)).find(p => VALUE[p.role] === top);
   task(`Можна краще: ${NAME[got.role]} коштує ${v}, а ${NAME[better.role]} — ${top}!`, 'bad');
   setTimeout(() => { board.setPosition(pcs, {}); board.setMovable('white', caps); lock = false; }, 900);
 }
 
-$('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.redraw(); load(); });
+$('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.redraw(); idx = lv.open(); load(); });
 $('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });

@@ -186,3 +186,7 @@ html, body { overflow-x: clip; }
 .ap-limit { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; font: 800 14px var(--lg-font); }
 .ap-limit .ap-seg { flex: none; width: 190px; padding: 4px; }
 .ap-limit .ap-seg button { min-height: 38px; font-size: 16px; }
+
+/* фігури в налаштуваннях — на обраній дошці, щоб одразу було видно зміну */
+#view-profile .lg-piece-set { background-image: var(--board-img); background-size: 400%; background-position: 0 0; }
+#view-profile .ap-boards button, #view-profile .lg-piece-set img { transition: none; }

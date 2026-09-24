@@ -4,6 +4,7 @@
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 import { createBoard } from '../shared/board.js';
 import { goNext, markSeen } from '../shared/path.js';
+import { createLevels } from '../shared/levels.js';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();
@@ -30,13 +31,16 @@ const show = (p, lm) => board.setPosition(pieces(p), { lastMove: lm, check: p.is
 const kindOf = (p, m) => { const king = p.board.get(m.from).role === 'king', cap = p.ctx().checkers.has(m.to); return king && !cap ? 'run' : cap ? 'capture' : 'block'; };
 function task(text, cls = '') { $('task').textContent = text; $('task').className = 'vl-task ' + cls; }
 
+// кружечки рівнів угорі: по черзі, зелений/жовтий ✓
+let errs = 0;
+const lv = createLevels($('levels'), 'check', TASKS.length, i => { idx = i; load(); });
 function load() {
+  errs = 0; lv.set(idx);
   const t = TASKS[idx];
   pos = Chess.fromSetup(FEN.parseFen(t.fen).unwrap()).unwrap();
   done = false; lock = false;
   $('wrap').classList.remove('solved');
   show(pos); board.setMovable('white', compat.chessgroundDests(pos));
-  $('count').textContent = `${idx + 1} / ${TASKS.length}`;
   $('goal').textContent = t.title;
   task(t.text);
   if (idx === 0) arrows(); else board.clearHint();
@@ -64,17 +68,18 @@ function onMove(from, to) {
   if (ok) {
     done = true; pos = q; show(pos, [from, to]); board.setMovable(null); board.clearHint(); $('wrap').classList.add('solved');
     task(t.kind === 'give' ? 'Шах! Король під ударом 🎉' : t.kind === 'capture' ? 'Побив — і ще й виграв фігуру! 🎉' : 'Король урятований! 🎉', 'ok');
+    lv.done(idx, !errs);
     setTimeout(() => {
       if (idx < TASKS.length - 1) { idx++; load(); }
       else { markSeen('lessons/check.html'); LG.win('Ти знаєш, що таке шах і як від нього врятуватися!', { reward: true, onAgain: () => { idx = 0; load(); }, onNext: () => goNext('lessons/check.html') }); }
     }, 1500);
     return;
   }
-  lock = true; LG.play('error'); task(why, 'bad');
+  lock = true; errs++; LG.play('error'); task(why, 'bad');
   setTimeout(() => { show(pos); board.setMovable('white', compat.chessgroundDests(pos)); if (idx === 0) arrows(); lock = false; }, 1100);
 }
 
-$('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.redraw(); load(); });
+$('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.redraw(); idx = lv.open(); load(); });
 $('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });

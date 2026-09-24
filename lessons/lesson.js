@@ -4,11 +4,14 @@ import { Chess, parseUci, makeUci, makeSquare, parseSquare, compat, fen as FEN }
 import { createBoard } from '../shared/board.js';
 import { LESSONS } from './lessons.js';
 import { goNext, markSeen } from '../shared/path.js';
+import { createLevels } from '../shared/levels.js';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
 const items = lesson.items;
-let idx = 0, pos, token = 0, done = false, lock = false;
+let idx = 0, pos, token = 0, done = false, lock = false, errs = 0;
+// кружечки рівнів угорі (приклади й завдання по черзі); після прикладу — одразу далі, без кнопки
+const lv = createLevels($('levels'), 'mini:' + location.hash.slice(1), items.length, i => { idx = i; load(); });
 
 const board = createBoard($('board'), { onMove: (o, d) => onMove(o, d) });
 board.cg.set({ movable: { showDests: true } });
@@ -51,9 +54,8 @@ async function play(p, m, t) {
 }
 
 function load() {
-  const it = items[idx]; token++; done = false; lock = false;
+  const it = items[idx]; token++; done = false; lock = false; errs = 0; lv.set(idx);
   $('wrap').classList.remove('solved'); board.clearHint(); board.setMovable(null);
-  $('count').textContent = `${idx + 1} / ${items.length}`;
   $('next').querySelector('.lbl').textContent = idx < items.length - 1 ? 'Далі' : 'Готово';
   if (it.demo) { $('goal').textContent = '📖 Приклад'; main.dataset.kind = 'demo'; runDemo(it); }
   else {
@@ -74,7 +76,8 @@ async function runDemo(it) {
       if (s.move) { const m = parseUci(s.move); p = await play(p, m, t); if (p.isCheckmate()) $('wrap').classList.add('solved'); }
       await wait(s.wait ?? (s.move ? 1200 : 2200), t);
     }
-    done = true; $('next').classList.add('ready');
+    done = true; lv.done(idx, true);
+    await wait(1200, t); next();
   } catch (e) { if (e !== 'stop') throw e; }
 }
 function judge(p, m, it) {
@@ -116,11 +119,11 @@ async function onMove(from, to) {
   if (ok) {
     done = true; board.setMovable(null);
     pos = await play(pos, m).catch(() => pos);
-    $('wrap').classList.add('solved'); say(pos.isCheckmate() ? 'Мат! 🎉' : 'Правильно! 🎉', 'ok'); $('next').classList.add('ready');
+    $('wrap').classList.add('solved'); say(pos.isCheckmate() ? 'Мат! 🎉' : 'Правильно! 🎉', 'ok'); lv.done(idx, !errs);
     setTimeout(() => { if (t === token) next(); }, 1500);
     return;
   }
-  lock = true; LG.play('error'); say(why, 'bad');
+  lock = true; errs++; LG.play('error'); say(why, 'bad');
   setTimeout(() => { if (t !== token) return; show(pos); board.setMovable('white', compat.chessgroundDests(pos)); lock = false; }, 900);
 }
 function next() {
@@ -136,7 +139,7 @@ function next() {
 $('title').textContent = lesson.title;
 $('intro-text').innerHTML = lesson.intro;
 document.title = lesson.title;
-$('go').addEventListener('click', () => { main.dataset.step = 'items'; board.redraw(); idx = 0; load(); });
+$('go').addEventListener('click', () => { main.dataset.step = 'items'; board.redraw(); idx = lv.open(); load(); });
 $('again').addEventListener('click', () => load());
 $('rules').addEventListener('click', () => { token++; main.dataset.step = 'intro'; });
 // Нижня панель: 📖 — правило уроку, 💡 — яка фігура ходить (вдруге — куди)
