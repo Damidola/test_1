@@ -52,6 +52,16 @@ export class LearnCtrl {
       })() ||
       // finally, fallback to a level id of 1
       1;
+    // logic-games-kids: рівні відкриваються по черзі — не далі за перший непройдений
+    if (stageId && stageById[stageId]) {
+      const scores = this.data.stages[stageById[stageId].key]?.scores ?? [];
+      let open = 1;
+      while (open < stageById[stageId].levels.length && scores[open - 1]) open++;
+      if (this.opts.levelId! > open) {
+        this.opts.levelId = open;
+        history.replaceState(null, '', `#/${stageId}/${open}`);
+      }
+    }
   };
 
   inStage = () => this.opts.stageId !== null;
