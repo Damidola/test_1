@@ -321,3 +321,4 @@ html.lg .lg-nav-btn[hidden] { display: none; }
 html.lg .lg-nav-btn .ico { font-size: 22px; line-height: 1; }
 html.lg .lg-nav-btn:active { background: #29285A; transform: scale(.96); }
 .lg-toast { top: 14px !important; }
+html.lg .lg-nav-btn.is-off { opacity: .35; }

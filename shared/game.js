@@ -41,6 +41,7 @@ export function startGame(cfg) {
       <button type="button" data-act="redo"><span class="ico">↪️</span><span class="lbl">Повторити</span></button>
     </div>`;
   const $ = s => root.querySelector(s);
+  let navUndo = null, navRedo = null; // кнопки нижньої панелі (cfg.navOnly)
 
   // ---------- стан партії ----------
   const q = new URLSearchParams(location.search), qSide = q.get('side'), qLevel = +q.get('level');
@@ -176,6 +177,8 @@ export function startGame(cfg) {
       b(a).disabled = friend;
       b(a).classList.toggle('is-off', friend || (a === 'redo' && pos >= history.length - 1));
     }
+    if (navRedo) navRedo.classList.toggle('is-off', pos >= history.length - 1);
+    if (navUndo) navUndo.classList.toggle('is-off', pos === 0);
   }
 
   // ---------- ходи ----------
@@ -306,6 +309,11 @@ export function startGame(cfg) {
     if (!m) return;
     commit(m); render(); afterMove();
   });
+  // Гра з роботом (cfg.navOnly): без кнопок під дошкою — лише нижня панель «Назад · Підказка · Відмінити · Повторити»
+  if (cfg.navOnly) {
+    root.querySelector('.lg-controls').hidden = true;
+    [navUndo, navRedo] = LG.navOnly([['↩️', 'Відмінити', () => undo()], ['↪️', 'Повторити', () => redo()]]);
+  }
   root.querySelector('.lg-controls').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || b.disabled) return;
     ({

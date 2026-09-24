@@ -384,6 +384,12 @@
     ]);
     document.body.appendChild(bar);
   }
+  // Лише «Назад · Підказка · …свої кнопки» (гра з роботом: Відмінити, Повторити)
+  function navOnly(extra) {
+    const bar = document.querySelector('.lg-nav'); if (!bar) return [];
+    bar.querySelectorAll('.lg-nav-btn:not(.lg-home)').forEach(b => { if (b !== hintBtn) b.remove(); });
+    return extra.map(([ico, label, fn]) => { const b = navBtn(ico, label, { onclick: fn }); bar.appendChild(b); return b; });
+  }
 
   // ---------- публічне API ----------
   // ---------- набори фігур (з Lichess): спільні для шахових ігор ----------
@@ -419,6 +425,7 @@
     addSettings: fn => { settingsBuilders.push(fn); if (gearBtn) gearBtn.hidden = false; },
     onHint: fn => { hintFn = fn; if (hintBtn) hintBtn.hidden = !fn; },
     onExplain: fn => { explainFn = fn; },
+    navOnly: extra => (document.querySelector('.lg-nav') ? navOnly(extra) : (document.addEventListener('DOMContentLoaded', () => navOnly(extra)), [])),
     store,
     play,
     toast,
