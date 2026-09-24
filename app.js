@@ -55,7 +55,16 @@ function openStep(i) {
   $('card').innerHTML = `<div class="ap-card-head"><span class="ap-dot" style="--c:${sec[2]}">${icon(ic)}</span><div><h2>${i + 1}. ${esc(title)}</h2><p>${esc(sub)}</p></div></div>` + links.map(l => row(l)).join('');
   $('sheet').hidden = false;
 }
-$('road').addEventListener('click', e => { const n = e.target.closest('.ap-node'); if (n) openStep(+n.dataset.i); });
+$('road').addEventListener('click', e => {
+  const n = e.target.closest('.ap-node'); if (!n) return;
+  const links = STEPS[+n.dataset.i][3];
+  if (links.length === 1) { // один пункт — одразу його, без аркуша
+    const href = links[0][2]; seen.add(href); LG.store.set('path:seen', [...seen]);
+    if (href.startsWith('#')) location.hash = href; else location.href = href;
+    return;
+  }
+  openStep(+n.dataset.i);
+});
 $('secbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) $('s' + b.dataset.s).scrollIntoView({ block: 'center', behavior: 'smooth' }); });
 $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').hidden = true; if (e.target.closest('a[href^="#"]')) $('sheet').hidden = true; });
 
