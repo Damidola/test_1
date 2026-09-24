@@ -24,6 +24,9 @@ applyBoardLook();
 const toTop = () => { document.getElementById('main-wrap')!.scrollTop = 0; };
 window.addEventListener('hashchange', toTop);
 
+// Мапи уроків Lichess немає: без етапу в адресі — назад до уроків застосунку
+if (!/^#\/\d/.test(location.hash)) location.replace('../index.html#learn');
+
 initModule({ pref: { coords: Coords.Inside, destination: true, is3d: false } });
 toTop();
 

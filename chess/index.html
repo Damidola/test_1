@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахи</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790276101">
-  <link rel="stylesheet" href="../shared/play.css?v=1790276101">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790276137">
+  <link rel="stylesheet" href="../shared/play.css?v=1790276137">
 </head>
 <body>
   <main></main>
-  <script src="../shared/games.js?v=1790276101"></script>
-  <script src="../shared/kit.js?v=1790276101" data-game="chess" data-night="on"></script>
+  <script src="../shared/games.js?v=1790276137"></script>
+  <script src="../shared/kit.js?v=1790276137" data-game="chess" data-night="on"></script>
   <script type="module">
-    import { startGame } from '../shared/game.js?v=1790276101';
-    import { createRules } from './rules.js?v=1790276101';
+    import { startGame } from '../shared/game.js?v=1790276137';
+    import { createRules } from './rules.js?v=1790276137';
     const qv = new URLSearchParams(location.search).get('variant'); // з вкладки «Гра»
     if (qv === 'standard' || qv === 'antichess') LG.store.set('chess:variant', qv);
     let game;

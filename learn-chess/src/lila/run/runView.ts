@@ -63,7 +63,7 @@ export const runView = (ctrl: LearnCtrl) => {
   return div('.learn.learn--run', { class: rootClass }, [
     // logic-games-kids (телефон): угорі — меню, рівні з зірочками й «Приклад», щоб усе було на одному екрані
     div('.lg-run-top', [
-      a(hashHref())('.lg-run-menu', { attrs: { title: 'Меню уроків' } }, '☰'),
+      a('../index.html#learn')('.lg-run-menu', { attrs: { title: 'Меню уроків' } }, '☰'),
       progressView(runCtrl),
     ]),
     div('.learn__side', mapSideView(ctrl)),
