@@ -81,7 +81,7 @@ function renderPlay() {
   const dots = n => `<span class="ap-lv">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? 'f' : ''}"></i>`).join('')}</span>`;
   const sides = [['w', piece('K', 'w') + 'Білі'], ['b', piece('K', 'b') + 'Чорні'], ['r', '<span class="big">🎲</span>']];
   $('view-play').innerHTML = `<h2 class="ap-h">З ким граємо?</h2><div class="ap-opprows">${ROWS.map((row, r) => `
-    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}"></a>`).join('')}</div>`).join('')}
+    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}${OPPONENTS[i].toon ? `;background:url('${OPPONENTS[i].sceneUrl}') center/cover` : ''}"></a>`).join('')}</div>`).join('')}
     </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>
     <h2 class="ap-h">Я граю</h2><div class="ap-seg ap-sideseg" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>`;
 }

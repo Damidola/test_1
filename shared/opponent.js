@@ -16,8 +16,9 @@ export const OPPONENTS = [
   ['Жовтий робот', 5, 'robot-yellow.jpg', 'factory'],
   ['Балерина Капучина', 2, 'ballerina.jpg', 'rainbow'],
   ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'], ['Тралалело Тралала', 3, 'tralalero.jpg', 'underwater'], ['Тун-тун-тун-сахур', 4, 'tung-tung.jpg', 'lanterns'],
-  ['Брр Брр Патапім', 4, 'patapim.jpg', 'autumn']
-].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center' }));
+  ['Брр Брр Патапім', 4, 'patapim.jpg', 'autumn'],
+  ['Коник Гоп', 2, 'toon-horse.svg', 'chessgreen'] // мультяшний (SVG) — без рамки, стоїть на низу сцени
+].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' }));
 
 const scene = n => ROOT + 'shared/bg/' + n + '.svg';
 
@@ -39,7 +40,8 @@ const LINES = {
   'lirili.jpg': ['Лірілі ларіла… думаю повільно, як слон 🐘'],
   'tralalero.jpg': ['Тралалело! Плаваю в думках 🦈'],
   'tung-tung.jpg': ['Тун-тун-тун… стукаю по дошці 🥁'],
-  'patapim.jpg': ['Брр-брр… Патапім думає 🌳']
+  'patapim.jpg': ['Брр-брр… Патапім думає 🌳'],
+  'toon-horse.svg': ['Гоп-гоп! Я стрибаю літерою «Г» 🐴', 'Іго-го! Мій хід буде хитрим!', 'Моя корона — для найкращого ходу 👑']
 };
 const GENERIC = [
   'Не поспішай — подумай! 🤔', 'Цікаво, що ти задумав…', 'Я хочу їсти. А ти? 🍪', 'Ого, гарний хід!',
@@ -63,8 +65,10 @@ export function mountOpponent(el, opts = {}) {
     <button type="button" class="lg-hero-pic" aria-label="Обрати суперника"><img alt=""></button>
     <button type="button" class="lg-hero-arrow l" aria-label="Попередній суперник">‹</button>
     <button type="button" class="lg-hero-arrow r" aria-label="Наступний суперник">›</button>`;
+  // Стрілки ‹ › — лише де просили (у грі з роботом їх немає: суперника обирають тапом по ньому)
+  if (opts.arrows === false) el.querySelectorAll('.lg-hero-arrow').forEach(a => a.remove());
   const pic = el.querySelector('.lg-hero-pic'), img = pic.querySelector('img');
-  const prev = el.querySelector('.l'), next = el.querySelector('.r');
+  const prev = el.querySelector('.l') || document.createElement('i'), next = el.querySelector('.r') || document.createElement('i');
 
   // Сцени й картинки вантажимо одразу — тоді нічого не блимає
   OPPONENTS.forEach(o => { new Image().src = scene(o.bg); new Image().src = o.avatar; });
@@ -90,6 +94,7 @@ export function mountOpponent(el, opts = {}) {
       el.dataset.scene = o.bg;
       el.style.setProperty('--scene', `url("${scene(o.bg)}")`);
       el.style.setProperty('--pic-pos', o.pos);
+      el.classList.toggle('toon', o.toon);
       img.src = o.avatar; img.alt = o.name;
       el.classList.remove('switching');
       requestAnimationFrame(placeArrows);
@@ -108,7 +113,7 @@ export function mountOpponent(el, opts = {}) {
   const grid = picker.querySelector('.lg-picker-grid');
   function openPicker() {
     grid.innerHTML = OPPONENTS.map((o, i) => `<button type="button" class="lg-pick ${i === index ? 'current' : ''}" data-i="${i}">
-      <img src="${o.avatar}" alt="" style="object-position: ${o.pos}"><span>${o.name}</span></button>`).join('');
+      <img src="${o.avatar}" alt="" style="object-position: ${o.pos}${o.toon ? `; background: url('${o.sceneUrl}') center / cover` : ''}"><span>${o.name}</span></button>`).join('');
     picker.hidden = false;
     requestAnimationFrame(() => picker.classList.add('open'));
     grid.querySelector('.current')?.scrollIntoView({ block: 'center' });
@@ -139,7 +144,7 @@ export function mountOpponent(el, opts = {}) {
     hide(true); clearTimeout(bubbleTimer);
     const box = document.createElement('div');
     box.className = 'lg-say';
-    box.innerHTML = '<svg class="lg-say-tail" aria-hidden="true"><polygon /></svg><div class="lg-bubble"></div>';
+    box.innerHTML = '<div class="lg-bubble"></div>';
     box.querySelector('.lg-bubble').textContent = text;
     box.addEventListener('click', () => hide());
     el.appendChild(box);
@@ -153,21 +158,8 @@ export function mountOpponent(el, opts = {}) {
     if (now) return b.remove();
     b.classList.add('out'); setTimeout(() => b.remove(), 400);
   }
-  function place(box) {
-    const H = el.getBoundingClientRect(), I = img.getBoundingClientRect(), bub = box.querySelector('.lg-bubble');
-    if (!I.width) return;
-    // рот — трохи нижче середини портрета
-    const mx = I.left - H.left + I.width * 0.54, my = I.top - H.top + I.height * 0.66;
-    const bw = bub.offsetWidth, bh = bub.offsetHeight, pad = 6;
-    const left = Math.max(pad, Math.min(H.width - bw - pad, mx + I.width * 0.12));
-    const top = Math.max(pad, Math.min(H.height - bh - pad, my - bh - I.height * 0.1));
-    bub.style.left = left + 'px'; bub.style.top = top + 'px';
-    // хвостик: основа — на нижньому краї хмаринки ближче до рота, вістря — у рота
-    const baseX = Math.max(left + 14, Math.min(left + bw - 40, mx + 6)), baseY = top + bh - 3;
-    const svg = box.querySelector('svg');
-    svg.setAttribute('width', H.width); svg.setAttribute('height', H.height);
-    svg.querySelector('polygon').setAttribute('points', `${baseX},${baseY} ${baseX + 26},${baseY} ${mx + 4},${my}`);
-  }
+  // Репліка — плашкою внизу сцени на всю ширину (як на chess.com): мордочку не закриває
+  function place(box) { box.querySelector('svg')?.remove(); }
 
   return {
     say,

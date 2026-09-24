@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+<!-- «Коник Гоп» — мультяшний суперник (власний малюнок, SVG): кліпає очима й ворушить ротом -->
+<style>
+.eyes{transform-origin:200px 172px;animation:blink 4.2s infinite}
+@keyframes blink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+.head{transform-origin:200px 330px;animation:sway 5s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.pup{animation:look 7s ease-in-out infinite}
+@keyframes look{0%,40%,100%{transform:translate(0,0)}48%,62%{transform:translate(7px,-2px)}70%,80%{transform:translate(-6px,0)}}
+.mouth{transform-origin:200px 288px;animation:talk 2.6s ease-in-out infinite}
+@keyframes talk{0%,60%,100%{transform:scaleY(1)}66%,78%{transform:scaleY(1.9)}72%{transform:scaleY(1.2)}}
+</style>
+<defs>
+<pattern id="chk" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#f4f1e6"/><rect width="14" height="14" fill="#3a8f4b"/><rect x="14" y="14" width="14" height="14" fill="#3a8f4b"/></pattern>
+</defs>
+<!-- шия й тулуб -->
+<path d="M118 400 C124 340 140 300 165 285 L235 285 C260 300 276 340 282 400 Z" fill="#c9854a"/>
+<path d="M60 400 C70 360 110 340 150 336 L250 336 C290 340 330 360 340 400 Z" fill="#e2574c"/>
+<!-- шарф у клітинку -->
+<path d="M138 318 C170 334 230 334 262 318 L268 350 C232 368 168 368 132 350 Z" fill="url(#chk)"/>
+<path d="M232 344 L262 346 L252 400 L220 400 Z" fill="url(#chk)"/>
+<g class="head">
+<!-- грива ззаду -->
+<path d="M112 150 C92 200 96 250 120 290 C104 240 110 196 128 160 Z" fill="#5b3a1e"/>
+<!-- вуха -->
+<path d="M128 108 L108 22 L176 82 Z" fill="#c9854a"/><path d="M134 96 L122 46 L162 84 Z" fill="#f2a7a0"/>
+<path d="M272 108 L292 22 L224 82 Z" fill="#c9854a"/><path d="M266 96 L278 46 L238 84 Z" fill="#f2a7a0"/>
+<!-- голова -->
+<ellipse cx="200" cy="190" rx="98" ry="112" fill="#d99a5b"/>
+<!-- морда -->
+<ellipse cx="200" cy="262" rx="80" ry="60" fill="#f2c99a"/>
+<ellipse cx="174" cy="258" rx="10" ry="7" fill="#8a5530"/><ellipse cx="226" cy="258" rx="10" ry="7" fill="#8a5530"/>
+<g class="mouth"><path d="M168 284 Q200 312 232 284 Q200 298 168 284 Z" fill="#6b2f22"/></g>
+<!-- щічки -->
+<ellipse cx="124" cy="226" rx="20" ry="12" fill="#f07b72" opacity=".45"/><ellipse cx="276" cy="226" rx="20" ry="12" fill="#f07b72" opacity=".45"/>
+<!-- брови -->
+<path d="M132 128 Q158 112 184 126" stroke="#5b3a1e" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M216 126 Q242 112 268 128" stroke="#5b3a1e" stroke-width="8" stroke-linecap="round" fill="none"/>
+<!-- очі -->
+<g class="eyes">
+<ellipse cx="160" cy="172" rx="31" ry="36" fill="#fff"/><ellipse cx="240" cy="172" rx="31" ry="36" fill="#fff"/>
+<g class="pup"><circle cx="164" cy="180" r="17" fill="#2b2140"/><circle cx="244" cy="180" r="17" fill="#2b2140"/>
+<circle cx="171" cy="172" r="6" fill="#fff"/><circle cx="251" cy="172" r="6" fill="#fff"/></g>
+</g>
+<!-- чубчик -->
+<path d="M150 96 C160 60 200 52 222 70 C246 62 262 84 250 104 C236 92 222 96 214 110 C204 94 184 92 172 112 C168 100 158 96 150 96 Z" fill="#5b3a1e"/>
+<!-- корона -->
+<g transform="rotate(-10 230 52)"><path d="M196 70 L190 30 L210 48 L226 22 L242 48 L262 30 L256 70 Z" fill="#ffc83d" stroke="#e0a21a" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="226" cy="58" r="5" fill="#e2574c"/></g>
+</g>
+</svg>

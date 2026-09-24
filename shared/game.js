@@ -59,7 +59,7 @@ export function startGame(cfg) {
   const human = side => friend || side === player;
   const names = cfg.sideNames || { w: 'Білі', b: 'Чорні' };
 
-  const hero = mountOpponent($('.lg-hero-slot'));
+  const hero = mountOpponent($('.lg-hero-slot'), { arrows: cfg.navOnly !== true });
   level = qLevel >= 1 && qLevel <= 5 ? qLevel : 1; // за замовчуванням — найлегший; тваринка на силу не впливає
   hero.setLevel(level);
   // Кнопка «Рівень»: крапки показують силу робота; тап відкриває над кнопками смужку 1…5
@@ -409,6 +409,7 @@ export function startGame(cfg) {
 
   applyHero();
   newGame(); paintLevel();
+  window.lgSay = t => hero.say(t); // для тестів
   window.lgGameDebug = () => ({ pos, len: history.length, thinking, over, player, turn: rules.turn(state()), movable: board && board.cg.state.movable.color, undosLeft, dests: Object.fromEntries(dests(state())) });
   return { newGame, state, board, setPlayer: c => { player = c; newGame(); } };
 }
