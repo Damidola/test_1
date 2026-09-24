@@ -26,6 +26,13 @@
     }
   };
 
+  // ---------- мова: українська (типово) або англійська — переклад у папці i18n/ ----------
+  const lang = store.get('lang', 'uk') === 'en' ? 'en' : 'uk';
+  if (lang === 'en' && document.readyState === 'loading') {
+    const q = ((script && script.getAttribute('src') || '').match(/\?v=\d+/) || [''])[0];
+    document.write(`<script src="${root}i18n/en.js${q}"><\/script><script src="${root}i18n/translate.js${q}"><\/script>`);
+  }
+
   const today = () => new Date().toISOString().slice(0, 10);
 
   // ---------- звуки (синтезовані, без файлів) ----------
@@ -418,6 +425,9 @@
   }
 
   const LG = window.LG = {
+    lang: () => lang,
+    setLang: l => { store.set('lang', l === 'en' ? 'en' : 'uk'); location.reload(); },
+    t: s => (window.LG_T ? window.LG_T(s) : s),
     boardTheme: () => store.get('boardTheme', 'brown'),
     setBoardTheme: id => store.set('boardTheme', id),
     prepReward,

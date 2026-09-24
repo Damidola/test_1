@@ -70,6 +70,9 @@ export function lichessTouch(cg) {
       if (cg.state.selected) return; // тапнули свою фігуру — звичайний вибір
       const key = cg.getKeyAtDomPos(pos), color = cg.state.movable.color, dests = cg.state.movable.dests;
       if (!key || !color || !dests) return;
+      // лише взяття: тап по ворожій фігурі, яку може побити тільки одна наша фігура (тап по порожній клітинці нічого не рухає)
+      const target = cg.state.pieces.get(key);
+      if (!target || target.color === color) return;
       const from = [...dests].filter(([o, ds]) => ds.includes(key) && cg.state.pieces.get(o)?.color === color).map(([o]) => o);
       if (from.length !== 1) return;
       cg.selectSquare(from[0]);
@@ -90,6 +93,7 @@ export function createBoard(el, opts = {}) {
     orientation: opts.orientation || 'white',
     coordinates: true,
     coordinatesOnSquares: false,
+    blockTouchScroll: true, // як в уроках (lila): палець на дошці не прокручує сторінку — тап не «з'їжджає»
     animation: { enabled: true, duration: 200 },
     highlight: { lastMove: true, check: true },
     movable: { free: false, color: undefined, showDests: true, events: { after: (o, d) => opts.onMove && opts.onMove(o, d) } },

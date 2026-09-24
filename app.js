@@ -126,12 +126,13 @@ function renderProfile() {
   $('view-profile').innerHTML = `
     <div class="ap-me"><span class="av">${piece('K')}</span><div style="flex:1"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length}</small><div class="bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
     <div class="ap-stats"><div><b>${d}</b><span>кроків</span></div><div><b>${solvedPuzzles()}</b><span>задач</span></div><div><b>${wins}</b><span>перемог</span></div></div>
+    <div class="ap-box"><b>Мова · Language</b><div class="ap-seg ap-lang" id="p-lang">${[['uk', '🇺🇦 Українська'], ['en', '🇬🇧 English']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
     <div class="ap-box"><b>Звук</b><div class="ap-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
     <div class="ap-box"><b>Дошка</b><div class="ap-boards" id="p-boards"></div></div>
     <div class="ap-box" id="p-pieces"><b>Фігури</b></div>
     <div class="ap-box"><b>Гра з роботом</b>
-      <div class="ap-limit"><span>💡 Підказок за партію</span><div class="ap-seg" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
-      <div class="ap-limit"><span>↩️ Ходів назад</span><div class="ap-seg" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
+      <div class="ap-limit"><span>💡 Підказок за партію</span><div class="ap-seg" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
+      <div class="ap-limit"><span>↩️ Ходів назад</span><div class="ap-seg" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
     </div>
     <button type="button" class="ap-danger" id="p-reset">Скинути прогрес</button>`;
   const paint = () => {
@@ -141,6 +142,7 @@ function renderProfile() {
     $('p-vol').classList.toggle('muted', LG.muted);
   };
   paint();
+  $('p-lang').addEventListener('click', e => { const b = e.target.closest('button'); if (b && b.dataset.v !== LG.lang()) LG.setLang(b.dataset.v); });
   // значок — вимкнути/увімкнути; повзунок — гучність (і вмикає звук)
   $('p-mute').addEventListener('click', () => { LG.muted = !LG.muted; LG.store.set('muted', LG.muted); if (!LG.muted) LG.play('tap'); paint(); });
   $('p-range').addEventListener('input', e => { LG.volume = +e.target.value / 100; LG.store.set('volume', LG.volume); if (LG.muted && LG.volume > 0) { LG.muted = false; LG.store.set('muted', false); } paint(); });

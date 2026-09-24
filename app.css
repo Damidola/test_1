@@ -184,9 +184,15 @@ html, body { overflow-x: clip; }
 #view-play .ap-sideseg { grid-auto-flow: row; grid-template-columns: 1fr 1fr 64px; }
 #view-play .ap-sideseg button { font-size: 14px; }
 .ap-limit { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; font: 800 14px var(--lg-font); }
-.ap-limit .ap-seg { flex: none; width: 190px; padding: 4px; }
-.ap-limit .ap-seg button { min-height: 38px; font-size: 16px; }
+.ap-limit > span { flex: 1; min-width: 0; }
+.ap-limit .ap-seg { flex: none; width: 184px; padding: 4px; grid-template-columns: repeat(4, 1fr); grid-auto-flow: row; }
+.ap-limit .ap-seg button { min-height: 40px; padding: 0; font-size: 17px; line-height: 1; font-variant-numeric: tabular-nums; }
+.ap-limit .ap-seg button .inf { display: block; font-size: 24px; line-height: 20px; height: 20px; transform: translateY(-2px); }
 
 /* фігури в налаштуваннях — на обраній дошці, щоб одразу було видно зміну */
 #view-profile .lg-piece-set { background-image: var(--board-img); background-size: 400%; background-position: 0 0; }
 #view-profile .ap-boards button, #view-profile .lg-piece-set img { transition: none; }
+
+/* мова: 🇺🇦 / 🇬🇧 — дві великі кнопки */
+.ap-lang { margin-top: 8px; }
+.ap-lang button { min-height: 44px; flex-direction: row; font-size: 15px; }
