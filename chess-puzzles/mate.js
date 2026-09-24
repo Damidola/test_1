@@ -171,9 +171,14 @@ function route() {
 }
 function startPuzzles() {
   mode = 'puzzle'; main.dataset.mode = 'puzzle'; setButtons([['📋', 'Розділи'], ['💡', 'Підказка'], ['👀', 'Розв’язок'], ['▶️', 'Далі']]);
-  const list = DATA[sec], solved = solvedOf(sec);
-  idx = list.findIndex(([id]) => !solved.has(id)); if (idx < 0) idx = 0;
+  idx = openIdx();
   loadPuzzle();
+}
+// Задачі по черзі: відкрита лише наступна після розв'язаної (або тієї, де вже показали розв'язок)
+function openIdx() {
+  const list = DATA[sec], s = solvedOf(sec);
+  let first = list.findIndex(([id]) => !s.has(id)); if (first < 0) first = list.length - 1;
+  return Math.min(list.length - 1, Math.max(first, LG.store.get('puzopen:' + sec, 0)));
 }
 window.addEventListener('hashchange', route);
 $('list').addEventListener('click', () => { if (mode === 'practice') location.href = '../learn-chess/index.html'; else location.hash = ''; });
@@ -295,15 +300,16 @@ function showSolution() {
   stepOne();
 }
 function prevPuzzle() {
-  const n = DATA[sec].length;
-  idx = (idx - 1 + n) % n;
+  if (idx === 0) return LG.play('error');
+  idx--;
   loadPuzzle();
 }
 function nextPuzzle() {
-  const list = DATA[sec], s = solvedOf(sec);
-  let n = list.findIndex(([id], i) => i > idx && !s.has(id));
-  if (n < 0) n = list.findIndex(([id]) => !s.has(id));
-  idx = n < 0 ? (idx + 1) % list.length : n;
+  const list = DATA[sec];
+  if (!done && idx >= openIdx()) { LG.play('error'); shake(); return say('Спершу розв’яжи цю задачу 🙂 Не виходить — натисни 💡 або 👀', 2200); }
+  if (idx >= list.length - 1) { idx = 0; return loadPuzzle(); }
+  idx++;
+  if (idx > LG.store.get('puzopen:' + sec, 0)) LG.store.set('puzopen:' + sec, idx);
   loadPuzzle();
 }
 
