@@ -48,7 +48,7 @@ export function lichessTouch(cg) {
   const dragDist = () => { const w = wrap.getBoundingClientRect().width; if (w) cg.set({ draggable: { distance: Math.max(10, Math.round(w / 8 * 0.4)) } }); };
   dragDist(); requestAnimationFrame(dragDist);
   window.addEventListener('resize', dragDist);
-  let start = null, wasSelected;
+  let start = null, wasSelected, dragOrig = null;
   // Дошка могла зсунутися (змінилась розкладка сторінки) — перед кожним дотиком chessground заново міряє її положення,
   // інакше тап потрапляє не в ту клітинку
   const remeasure = () => { cg.state.dom.bounds.clear(); };
@@ -60,15 +60,22 @@ export function lichessTouch(cg) {
     if (w && w !== lastW) { lastW = w; remeasure(); dragDist(); cg.redrawAll(); }
   }).observe(wrap);
   window.addEventListener('scroll', remeasure, { passive: true });
-  wrap.addEventListener('pointerdown', e => { start = [e.clientX, e.clientY]; wasSelected = cg.state.selected; }, { capture: true, passive: true });
+  wrap.addEventListener('pointerdown', e => { start = [e.clientX, e.clientY]; wasSelected = cg.state.selected; dragOrig = null; }, { capture: true, passive: true });
   wrap.addEventListener('pointermove', e => {
     if (start && !wrap.classList.contains('lg-lifted') && cg.state.draggable.current && Math.hypot(e.clientX - start[0], e.clientY - start[1]) >= 5)
       wrap.classList.add('lg-lifted');
+    if (wrap.classList.contains('lg-lifted') && cg.state.draggable.current) dragOrig = cg.state.draggable.current.orig;
   }, { passive: true });
   const up = e => {
     const tap = start && e.type === 'pointerup' && Math.hypot(e.clientX - start[0], e.clientY - start[1]) < 5;
     const pos = start && [e.clientX, e.clientY];
     start = null;
+    // Перетягнув фігуру туди, куди вона ходити не може, — тихий звук «не можна» (як на chess.com)
+    const orig = dragOrig; dragOrig = null;
+    if (orig && e.type === 'pointerup') {
+      const key = cg.getKeyAtDomPos([e.clientX, e.clientY]), color = cg.state.movable.color, ds = cg.state.movable.dests && cg.state.movable.dests.get(orig);
+      if (key && key !== orig && color && cg.state.pieces.get(orig)?.color === color && !(ds && ds.includes(key)) && window.LG) window.LG.play('illegal');
+    }
     wrap.classList.remove('lg-lifted');
     if (!tap || wasSelected) return;
     setTimeout(() => { // після того, як chessground обробив тап

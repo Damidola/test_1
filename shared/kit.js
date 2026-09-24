@@ -62,6 +62,7 @@
   // у швидких (хрестики-нулики, сірники, задачки) — короткий звук перемоги Lichess
   const FILES = { win: game && game.long ? 'shared/sounds/win.mp3' : 'shared/sounds/victory.mp3' };
   FILES.move = 'shared/sounds/move.mp3'; FILES.capture = 'shared/sounds/capture.mp3'; FILES.error = 'shared/sounds/error.mp3';
+  FILES.illegal = 'shared/sounds/illegal.wav'; // тихе «тук-тук»: фігуру поклали туди, куди ходити не можна
   // Файли граємо через Web Audio: на iPhone new Audio() поза самим тапом (після перетягування,
   // хід робота) браузер мовчки блокує, а розблокований AudioContext грає будь-коли.
   const ctx = () => {
@@ -108,7 +109,7 @@
       });
     } catch (e) { /* без звуку */ }
   }
-  setTimeout(() => ['move', 'capture', 'error', 'win'].forEach(n => load(root + FILES[n])), 0); // щоб перший хід не чекав завантаження
+  setTimeout(() => ['move', 'capture', 'error', 'illegal', 'win'].forEach(n => load(root + FILES[n])), 0); // щоб перший хід не чекав завантаження
   function play(name) {
     if (FILES[name]) return playFile(root + FILES[name]);
     if (LG.muted || !SOUNDS[name]) return;
