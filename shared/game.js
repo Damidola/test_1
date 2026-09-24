@@ -229,11 +229,16 @@ export function startGame(cfg) {
     clearTimeout(aiTimer);
     // Робот ходить ще раз поспіль (замкнув квадратик, суперник пропускає хід) — пауза коротша
     const again = pos > 0 && rules.turn(history[pos - 1]) === rules.turn(state());
-    aiTimer = setTimeout(() => {
+    const s0 = state();
+    // Рушій (Stockfish) думає у фоні одночасно з паузою «робот думає»
+    const pending = rules.aiMoveAsync && !over ? rules.aiMoveAsync(s0, level).catch(() => null) : null;
+    aiTimer = setTimeout(async () => {
       const s = state();
+      if (over || human(rules.turn(s))) { thinking = false; hero.setThinking(false); return render(); } // позицію змінили, поки робот думав
+      let move = pending ? await pending : null;
+      if (state() !== s || over) return; // поки чекали рушій — відмінили хід або почали нову гру
       thinking = false; hero.setThinking(false);
-      if (over || human(rules.turn(s))) return render(); // позицію змінили, поки робот думав
-      const move = aiMove(rules, s, level);
+      if (s !== s0 || !move) move = aiMove(rules, s, level);
       if (!move) return render();
       commit(move);
       render();

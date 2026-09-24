@@ -66,6 +66,7 @@ export function aiMove(rules, state, level) {
   const moves = rules.moves(state);
   if (!moves.length) return null;
   if (moves.length === 1) return moves[0];
+  if (rules.aiMove) { const m = rules.aiMove(state, level); if (m) return m; } // гра має власного робота для цього рівня
   const side = rules.turn(state);
   const wins = moves.filter(m => { const r = rules.result(rules.play(state, m)); return r && r.winner === side; });
   const d = rules.aiDepth || [3, 4, 5];
