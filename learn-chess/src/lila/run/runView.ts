@@ -1,0 +1,99 @@
+import { type Classes, type VNode } from 'snabbdom';
+
+import { a, bind, button, div, h2, img, p } from 'lib/view';
+
+import chessground from '../chessground';
+import { hashHref } from '../hashRouting';
+import type { LearnCtrl } from '../ctrl';
+import type { LevelCtrl } from '../levelCtrl';
+import { mapSideView } from '../mapSideView';
+import { makeStars, progressView } from '../progressView';
+import { promotionView } from '../promotionView';
+import { withLinebreaks } from '../util';
+import congrats from './congrats';
+import type { RunCtrl } from './runCtrl';
+import stageComplete from './stageComplete';
+import stageStarting from './stageStarting';
+
+const renderFailed = (ctrl: RunCtrl): VNode =>
+  div('.result.failed', { hook: bind('click', ctrl.restart) }, [
+    h2(i18n.learn.puzzleFailed),
+    button(i18n.learn.retry),
+  ]);
+
+const renderCompleted = (level: LevelCtrl): VNode =>
+  div(
+    '.result.completed',
+    {
+      class: { next: !!level.blueprint.nextButton },
+      hook: bind('click', level.onComplete),
+    },
+    [
+      h2(congrats()),
+      level.blueprint.nextButton ? button(i18n.learn.next) : makeStars(level.blueprint, level.vm.score),
+    ],
+  );
+
+// logic-games-kids: приклад на початку етапу — підпис до кроку й кнопки «Ще раз» / «Почати»
+const renderDemo = (ctrl: RunCtrl): VNode =>
+  div('.lg-demo', [
+    div('.goal.lg-demo-say', [
+      p('.lg-demo-title', '📖 Приклад · ' + ctrl.stage.title),
+      p(withLinebreaks(ctrl.demoText() || ctrl.stage.intro)),
+      ctrl.demoDone() ? p('.lg-demo-you', 'Тепер ти! Натисни «Почати» 👇') : null,
+    ]),
+    div('.lg-demo-btns', [
+      button('.lg-demo-again', { hook: bind('click', ctrl.replayDemo) }, '🔁 Ще раз'),
+      button('.lg-demo-go', { class: { ready: ctrl.demoDone() }, hook: bind('click', ctrl.endDemo) }, '▶️ Почати'),
+    ]),
+  ]);
+
+export const runView = (ctrl: LearnCtrl) => {
+  const runCtrl = ctrl.runCtrl;
+  const { stage, levelCtrl } = runCtrl;
+  const rootClass: Classes = {
+    starting: !!levelCtrl.vm.starting,
+    completed: levelCtrl.vm.completed && !levelCtrl.blueprint.nextButton,
+    'last-step': levelCtrl.vm.lastStep,
+    'piece-values': !!levelCtrl.blueprint.showPieceValues,
+  };
+  if (stage.cssClass) rootClass[stage.cssClass] = true;
+  if (levelCtrl.blueprint.cssClass) rootClass[levelCtrl.blueprint.cssClass] = true;
+  rootClass['lg-demo-on'] = runCtrl.demo();
+  return div('.learn.learn--run', { class: rootClass }, [
+    // logic-games-kids (телефон): угорі — меню, рівні з зірочками й «Приклад», щоб усе було на одному екрані
+    div('.lg-run-top', [
+      a(hashHref())('.lg-run-menu', { attrs: { title: 'Меню уроків' } }, '☰'),
+      progressView(runCtrl),
+      runCtrl.hasDemo() && !runCtrl.demo()
+        ? button('.lg-run-ex', { attrs: { title: 'Приклад' }, hook: bind('click', runCtrl.replayDemo) }, '📖')
+        : null,
+    ]),
+    div('.learn__side', mapSideView(ctrl)),
+    div('.learn__main.main-board', { class: { apples: levelCtrl.isAppleLevel() } }, [
+      runCtrl.stageStarting() ? stageStarting(runCtrl) : null,
+      runCtrl.stageCompleted() ? stageComplete(runCtrl) : null,
+      chessground(ctrl.runCtrl),
+      promotionView(ctrl.runCtrl),
+    ]),
+    div('.learn__table', [
+      div('.wrap', [
+        div('.title', [
+          img(stage.image, '')(),
+          div('.text', [h2(stage.title), p('.subtitle', stage.subtitle)]),
+        ]),
+        runCtrl.demo()
+          ? renderDemo(runCtrl)
+          : levelCtrl.vm.failed
+          ? renderFailed(runCtrl)
+          : levelCtrl.vm.completed
+            ? renderCompleted(levelCtrl)
+            : div('.goal', withLinebreaks(levelCtrl.blueprint.goal)),
+        progressView(runCtrl),
+        !runCtrl.demo() && runCtrl.hasDemo()
+          ? button('.lg-demo-open', { hook: bind('click', runCtrl.replayDemo) }, '📖 Приклад')
+          : null,
+      ]),
+    ]),
+  ]);
+};

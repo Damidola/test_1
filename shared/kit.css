@@ -1,0 +1,305 @@
+/* Спільний стиль: кольори, шрифт, верхня панель, вікна, кнопки. */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
+
+:root {
+  --lg-bg: #FFF7EC;
+  --lg-bg-2: #FDEBD3;
+  --lg-surface: #FFFFFF;
+  --lg-surface-2: #F6F1FF;
+  --lg-ink: #2D2A4A;
+  --lg-muted: #6E6A8E;
+  --lg-line: #ECE4F7;
+  --lg-primary: #6C5CE7;
+  --lg-primary-ink: #FFFFFF;
+  --lg-primary-soft: #EAE6FF;
+  --lg-sun: #FFB300;
+  --lg-mint: #2ECC9A;
+  --lg-coral: #FF6B6B;
+  --lg-sky: #4DA3FF;
+  --lg-radius: 18px;
+  --lg-shadow: 0 6px 0 rgba(45, 42, 74, .08), 0 12px 28px rgba(45, 42, 74, .10);
+  --lg-btn-shadow: 0 2px 6px rgba(45, 42, 74, .14);
+  --lg-font: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --lg-bar-h: 64px;
+}
+
+/* ---------- фон і базова типографіка для сторінок ігор ---------- */
+html.lg body.lg-game {
+  font-family: var(--lg-font);
+  color: var(--lg-ink);
+  background-color: var(--lg-bg);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 179, 0, .16) 0 90px, transparent 91px),
+    radial-gradient(circle at 88% 12%, rgba(77, 163, 255, .14) 0 120px, transparent 121px),
+    radial-gradient(circle at 85% 88%, rgba(46, 204, 154, .14) 0 110px, transparent 111px),
+    radial-gradient(circle at 8% 92%, rgba(255, 107, 107, .12) 0 100px, transparent 101px);
+  background-attachment: fixed;
+  padding-top: calc(var(--lg-bar-h) + 16px);
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html.lg body.lg-game button,
+html.lg body.lg-game select,
+html.lg body.lg-game input { font-family: var(--lg-font); }
+
+/* Заголовки самих ігор дублюють верхню панель — ховаємо їх */
+
+/* ---------- верхня панель ---------- */
+.lg-bar {
+  position: fixed; inset: 0 0 auto 0; z-index: 1000;
+  height: var(--lg-bar-h);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-left));
+  background: rgba(255, 255, 255, .88);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--lg-line);
+  font-family: var(--lg-font);
+  color: var(--lg-ink);
+  box-sizing: border-box;
+}
+.lg-bar-title {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-weight: 900; font-size: clamp(18px, 5.4vw, 26px);
+  white-space: nowrap; overflow: hidden; text-overflow: clip;
+}
+.lg-bar-title > span:last-child { overflow: hidden; text-overflow: ellipsis; }
+.lg-bar-actions { display: flex; gap: 8px; }
+/* права група такої ж ширини, як ліва — щоб назва була по центру */
+.lg-bar-right { justify-content: flex-end; }
+/* Сітка: ліва й права групи однакової ширини, назва по центру й ніколи не обрізається */
+html.lg .lg-bar { display: grid; grid-template-columns: 1fr auto 1fr; }
+html.lg .lg-bar .lg-bar-actions:first-child { justify-self: start; }
+html.lg .lg-bar .lg-bar-right { justify-self: end; }
+html.lg .lg-bar .lg-bar-title { flex: none; min-width: 0; overflow: visible; }
+
+.lg-icon-btn {
+  width: 46px; height: 46px; flex: none;
+  display: inline-grid; place-items: center;
+  border: 2px solid var(--lg-line); border-radius: 14px;
+  background: var(--lg-surface); color: var(--lg-ink);
+  font-size: 22px; line-height: 1; cursor: pointer; text-decoration: none;
+  box-shadow: var(--lg-btn-shadow);
+  transition: transform .1s ease, background .12s, border-color .12s;
+}
+.lg-icon-btn:hover { background: var(--lg-primary-soft); }
+.lg-icon-btn:active { transform: scale(.94); background: var(--lg-primary-soft); }
+.lg-icon-btn:focus-visible, .lg-btn:focus-visible { outline: 3px solid var(--lg-sky); outline-offset: 2px; }
+.lg-help { background: var(--lg-sun); border-color: #E9A200; }
+.lg-help:hover { background: #FFC233; }
+
+/* ---------- кнопки ---------- */
+.lg-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 10px 20px;
+  font: 800 17px/1.1 var(--lg-font);
+  color: var(--lg-ink); background: var(--lg-surface);
+  border: 2px solid var(--lg-line); border-radius: 16px;
+  box-shadow: var(--lg-btn-shadow);
+  cursor: pointer; text-decoration: none;
+  transition: transform .1s ease, filter .12s, background .12s;
+}
+.lg-btn:hover { filter: brightness(1.04); }
+.lg-btn:active { transform: scale(.96); }
+.lg-btn-primary { background: var(--lg-primary); color: var(--lg-primary-ink); border-color: #5646D6; }
+.lg-btn-wide { width: 100%; margin-top: 8px; }
+
+.lg-muted { color: var(--lg-muted); }
+.lg-chip {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  background: var(--lg-primary-soft); color: #4435BF; font-weight: 800; font-size: 13px;
+}
+
+/* ---------- модальні вікна ---------- */
+.lg-modal {
+  position: fixed; inset: 0; z-index: 2000;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(45, 42, 74, .45);
+  opacity: 0; transition: opacity .2s ease;
+  font-family: var(--lg-font); color: var(--lg-ink);
+}
+.lg-modal.lg-open { opacity: 1; }
+.lg-modal-card {
+  position: relative;
+  width: min(460px, 100%); max-height: calc(100dvh - 32px); overflow: auto;
+  background: var(--lg-surface); border-radius: 26px;
+  padding: 26px 22px 22px;
+  box-shadow: 0 10px 0 rgba(45, 42, 74, .12), 0 30px 60px rgba(45, 42, 74, .3);
+  transform: translateY(20px) scale(.96); transition: transform .25s cubic-bezier(.2, 1.4, .4, 1);
+  box-sizing: border-box; text-align: left;
+}
+.lg-modal.lg-open .lg-modal-card { transform: none; }
+.lg-modal-x {
+  position: absolute; top: 12px; right: 12px;
+  width: 38px; height: 38px; border-radius: 12px; border: 0;
+  background: var(--lg-surface-2); color: var(--lg-ink); font-size: 18px; font-weight: 900; cursor: pointer;
+}
+.lg-modal-card h2 { margin: 0 0 8px; font-size: 26px; font-weight: 900; line-height: 1.15; }
+.lg-modal-card h3 { margin: 18px 0 6px; font-size: 18px; font-weight: 900; }
+.lg-modal-card p, .lg-modal-card li { font-size: 17px; line-height: 1.45; }
+.lg-modal-card ul { margin: 0; padding-left: 22px; }
+.lg-modal-card li { margin: 4px 0; }
+
+.lg-rules-head { display: flex; align-items: center; gap: 12px; padding-right: 40px; }
+.lg-rules-emoji {
+  font-size: 34px; width: 58px; height: 58px; flex: none;
+  display: grid; place-items: center; border-radius: 18px; background: var(--lg-surface-2);
+}
+.lg-rules-head h2 { margin: 0; }
+.lg-rules-goal { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: #FFF3D6; font-size: 17px; line-height: 1.45; }
+.lg-tips li::marker { content: '⭐ '; }
+.lg-tips { padding-left: 26px !important; }
+.lg-parents { margin-top: 16px; padding: 10px 14px; border-radius: 14px; background: var(--lg-surface-2); }
+.lg-parents summary { cursor: pointer; font-weight: 900; font-size: 16px; }
+.lg-parents p { font-size: 15px; margin: 8px 0 0; }
+.lg-skill-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.lg-skill-row > span:first-child { font-weight: 800; margin-right: 4px; }
+
+.lg-result { text-align: center; }
+.lg-result p { white-space: pre-line; }
+.lg-result-emoji { font-size: 96px; line-height: 1; margin: 6px 0 10px; animation: lg-pop .6s cubic-bezier(.2, 1.6, .4, 1); }
+.lg-result h2 { font-size: 34px; }
+.lg-result-btns { display: flex; gap: 14px; justify-content: center; margin-top: 18px; }
+/* 🏠 і 🔄 — однакового розміру (одна — посилання, друга — кнопка) */
+html.lg .lg-modal .lg-result-btns > .lg-btn { flex: 0 0 110px; width: 110px; height: 84px; min-height: 0; box-sizing: border-box; padding: 0; margin: 0; font-size: 42px; line-height: 1; border-radius: 22px; }
+.lg-result-img img, .lg-result-img video { display: block; max-width: 100%; max-height: 220px; margin: 8px auto; border-radius: 16px; object-fit: contain; }
+.lg-result-win h2 { color: #4435BF; }
+@keyframes lg-pop { from { transform: scale(.2) rotate(-20deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ---------- тости ---------- */
+.lg-toasts {
+  position: fixed; left: 50%; top: calc(var(--lg-bar-h) + 10px); transform: translateX(-50%);
+  z-index: 1500; display: flex; flex-direction: column; gap: 8px; align-items: center;
+  width: min(92vw, 440px); pointer-events: none;
+}
+.lg-toast {
+  font: 800 16px/1.35 var(--lg-font); color: var(--lg-ink);
+  background: var(--lg-surface); border: 2px solid var(--lg-line); border-radius: 16px;
+  padding: 12px 16px; box-shadow: var(--lg-shadow); text-align: center;
+  opacity: 0; transform: translateY(-10px); transition: all .25s ease;
+}
+.lg-toast.lg-show { opacity: 1; transform: none; }
+.lg-toast-warn { background: #FFF3D6; border-color: #FFD37A; }
+
+.lg-confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2500; }
+
+@media (max-width: 420px) {
+  :root { --lg-bar-h: 58px; }
+  .lg-icon-btn { width: 42px; height: 42px; font-size: 20px; border-radius: 12px; }
+  .lg-bar { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lg-modal, .lg-modal-card, .lg-toast, .lg-result-emoji { transition: none; animation: none; }
+}
+
+/* ---------- захист від глобальних стилів кнопок у старих іграх ---------- */
+html.lg .lg-bar .lg-icon-btn,
+html.lg .lg-bar .lg-icon-btn:hover,
+html.lg .lg-modal .lg-btn,
+html.lg .lg-modal .lg-btn:hover,
+html.lg .lg-modal .lg-modal-x,
+html.lg .lg-modal .lg-modal-x:hover {
+  margin: 0; min-width: 0; transform: none; letter-spacing: normal; text-transform: none; white-space: normal;
+}
+html.lg .lg-bar .lg-icon-btn { padding: 0; width: 46px; height: 46px; background-image: none; }
+html.lg .lg-bar .lg-icon-btn:hover { background-color: var(--lg-primary-soft); }
+html.lg .lg-bar .lg-help, html.lg .lg-bar .lg-help:hover { background-color: var(--lg-sun); }
+html.lg .lg-bar .lg-icon-btn:active { transform: scale(.94); }
+html.lg .lg-modal .lg-btn { padding: 10px 20px; background-image: none; }
+html.lg .lg-modal .lg-btn:active { transform: scale(.96); }
+html.lg .lg-modal .lg-modal-x { padding: 0; background-image: none; }
+html.lg .lg-modal .lg-btn:not(.lg-btn-primary) { background-color: var(--lg-surface); color: var(--lg-ink); }
+html.lg .lg-modal .lg-btn-primary { background-color: var(--lg-primary); color: #fff; }
+@media (max-width: 420px) {
+  html.lg .lg-bar .lg-icon-btn { width: 42px; height: 42px; }
+}
+
+/* ---------- налаштування ---------- */
+.lg-settings h2 { margin: 0 0 12px; padding-right: 40px; font-size: 22px; }
+.lg-set-group { background: var(--lg-surface-2); border-radius: 16px; padding: 4px 12px; margin-bottom: 10px; }
+.lg-set-row { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 8px 14px; min-height: 42px; padding: 6px 0; font-weight: 800; font-size: 15px; }
+.lg-set-row + .lg-set-row { border-top: 1px solid var(--lg-line); }
+.lg-set-row input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; flex: none;
+  width: 52px; height: 30px; border-radius: 999px; background: #C9C4DE; position: relative; cursor: pointer; transition: background .2s;
+}
+.lg-set-row input[type="checkbox"]::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2); transition: transform .2s;
+}
+.lg-set-row input[type="checkbox"]:checked { background: var(--lg-mint); }
+.lg-set-row input[type="checkbox"]:checked::after { transform: translateX(22px); }
+.lg-range { flex: 1 1 120px; min-width: 90px; max-width: 100%; accent-color: var(--lg-primary); height: 26px; }
+.lg-set-title { font-weight: 900; font-size: 14px; margin: 8px 0 4px; }
+
+/* ---------- нічна тема (вмикається грою, що її підтримує) ---------- */
+html.lg-night {
+  /* Не зовсім темний: чорні фігури на ньому добре видно */
+  --lg-bg: #52505F;
+  --lg-surface: #5E5C6D;
+  --lg-surface-2: #666477;
+  --lg-ink: #F6F4FF;
+  --lg-muted: #CFCBE0;
+  --lg-line: #737184;
+  --lg-primary-soft: #6A6284;
+  --lg-btn-shadow: 0 2px 8px rgba(0, 0, 0, .45);
+}
+html.lg.lg-night body.lg-game {
+  background-color: var(--lg-bg);
+  background-image: none;
+}
+html.lg-night .lg-bar { background: rgba(70, 68, 84, .95); }
+html.lg-night .lg-modal-x { color: var(--lg-ink); }
+html.lg-night .lg-rules-goal { background: #3A3350; }
+
+/* ---------- налаштування: компактні, гортаються пальцем, великий червоний хрестик ---------- */
+html.lg .lg-modal .lg-modal-settings {
+  max-height: min(56svh, 520px); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+  padding: 14px 12px 12px; touch-action: pan-y;
+}
+.lg-modal-settings .lg-settings h2 { font-size: 17px; margin: 0 0 8px; padding-right: 76px; min-height: 64px; display: flex; align-items: center; }
+.lg-modal-settings .lg-set-group { padding: 2px 10px; margin-bottom: 6px; border-radius: 12px; }
+.lg-modal-settings .lg-set-row { min-height: 32px; padding: 3px 0; font-size: 13px; gap: 4px 10px; }
+.lg-modal-settings .lg-set-title { font-size: 12px; margin: 4px 0 2px; }
+.lg-modal-settings .swatches { gap: 5px; }
+.lg-modal-settings .swatch { border-radius: 8px; }
+html.lg .lg-modal .lg-modal-settings .lg-modal-x,
+html.lg .lg-modal .lg-modal-settings .lg-modal-x:hover {
+  position: absolute; float: none; top: 10px; right: 10px; margin: 0; z-index: 3;
+  width: 64px; height: 64px; border-radius: 50%;
+  background: #E53935; color: #fff; font-size: 34px; font-weight: 900; line-height: 1;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .35); border: 3px solid #fff;
+}
+
+/* Налаштування: рівні рядки — підпис зліва, перемикач/список справа */
+.lg-modal-settings .lg-set-row { display: grid; grid-template-columns: 1fr auto; align-items: center; min-height: 38px; }
+.lg-modal-settings .lg-set-row select { width: 76px; min-height: 32px; padding: 2px 6px; font-size: 14px; text-align: center; }
+.lg-modal-settings .lg-set-row .lg-range { width: 150px; }
+.lg-modal-settings .lg-set-title { margin-top: 8px; }
+
+.lg-piece-sets { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 2px 0 6px; }
+.lg-piece-set { aspect-ratio: 1; padding: 3px; border-radius: 10px; border: 3px solid transparent; background: #F0D9B5; cursor: pointer; }
+.lg-piece-set img { width: 100%; height: 100%; display: block; }
+.lg-piece-set.active { border-color: var(--lg-primary); }
+
+/* ---------- кнопки внизу гри (спільні для всіх ігор) ---------- */
+.lg-controls {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; flex: none;
+  width: min(100vw, 560px); padding: 0 10px; box-sizing: border-box;
+}
+.lg-controls button {
+  height: 38px; min-width: 0; padding: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  font: 800 9px var(--lg-font); color: var(--lg-ink); background: var(--lg-surface);
+  border: 2px solid var(--lg-line); border-radius: 14px; box-shadow: var(--lg-btn-shadow); cursor: pointer;
+}
+.lg-controls button:active { transform: scale(.93); }
+.lg-controls .ico { font-size: 14px; line-height: 1; }
+.lg-controls .is-off { opacity: .4; }
+
+/* Комп'ютер / планшет боком — кнопки під мишку більші */
+@media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+  html.lg .lg-controls button { height: 58px; font-size: 14px; gap: 3px; border-radius: 16px; }
+  html.lg .lg-controls .ico { font-size: 22px; }
+}
