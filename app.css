@@ -159,3 +159,19 @@ html, body { overflow-x: clip; }
 .ap-h3 { margin: 14px 2px 6px; font: 900 15px var(--lg-font); color: var(--ap-muted); }
 .ap-go { display: block; margin-top: 16px; padding: 15px; border-radius: 18px; background: var(--ap-green); color: #fff; text-align: center; text-decoration: none; font: 900 19px var(--lg-font); box-shadow: 0 4px 0 #1F9C75; }
 .ap-go:active { transform: translateY(3px); box-shadow: none; }
+
+/* «Гра» — рівно один екран без прокрутки: звірята зменшуються під висоту */
+#view-play:not([hidden]) { display: flex; flex-direction: column; height: 100svh; min-height: 0; overflow: hidden;
+  padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+#view-play .ap-h { flex: none; margin: 4px 2px 8px; }
+#view-play .ap-opprows { flex: 1 1 auto; min-height: 0; display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 6px; }
+#view-play .ap-opprow { min-height: 0; height: 100%; grid-template-columns: 16px repeat(4, minmax(0, 1fr)); gap: 6px; }
+#view-play .ap-opprow .ap-opp { height: 100%; max-height: 100%; width: auto; max-width: 100%; justify-self: center; aspect-ratio: 1; box-sizing: border-box; }
+#view-play .ap-rowlv .ap-lv i { width: 6px; height: 6px; }
+#view-play .ap-hint { flex: none; margin: 6px 0 0; font-size: 12px; }
+#view-play .ap-seg { flex: none; margin-bottom: 6px; }
+#view-play .ap-seg button { min-height: 44px; flex-direction: row; gap: 6px; }
+#view-play .ap-seg button img { width: 26px; height: 26px; }
+#view-play .ap-opprow { container-type: size; align-items: center; }
+#view-play .ap-opprow .ap-opp { --s: min(100cqh, calc((100cqw - 16px - 24px) / 4)); width: var(--s); height: var(--s); max-width: none; max-height: none; }
+#view-play .ap-seg button { white-space: nowrap; font-size: 12.5px; }

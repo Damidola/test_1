@@ -235,11 +235,17 @@ async function puzzleMove(from, to) {
     if (rule) say(rule[1], 2200);
     mistakes++; LG.play('error'); paint();
     const t = token;
+    const lm0 = lastMove; // хід до помилки — щоб підсвітка не лишилась від показаної відповіді
+    let backed = false;
     const back = () => {
-      if (t !== token) return;
-      show(pos, lastMove); allowMoves();
+      if (t !== token || backed) return;
+      backed = true; wrap.removeEventListener('pointerdown', skip, true);
+      board.clearHint(); show(pos, lm0); allowMoves();
       if (mistakes >= 3) showSolution(); else paint();
     };
+    // дотик до дошки під час показу — одразу повертаємо позицію, щоб можна було ходити
+    const skip = () => back();
+    wrap.addEventListener('pointerdown', skip, true);
     board.setMovable(null);
     // Шах, але не мат: показуємо, як суперник рятується, — і повертаємо назад
     if (MATE_SEC(sec) && test.isCheck()) {
@@ -247,14 +253,14 @@ async function puzzleMove(from, to) {
       const outs = escapes(test), r = outs[0];
       say('Шах, але не мат: ' + (outs.length > 1 ? 'ось як можна врятуватися 👇' : 'ось як урятуватися 👇'), 3600);
       // стрілки: усі способи врятуватися (куди тікає король, хто б'є, хто закриває)
-      setTimeout(() => { if (t === token) board.shapes(outs.slice(0, 8).map(o => ({ orig: o.uci.slice(0, 2), dest: o.uci.slice(2, 4), brush: o.rank === 0 ? 'green' : o.rank === 3 ? 'blue' : 'red' }))); }, 350);
+      setTimeout(() => { if (t === token && !backed) board.shapes(outs.slice(0, 8).map(o => ({ orig: o.uci.slice(0, 2), dest: o.uci.slice(2, 4), brush: o.rank === 0 ? 'green' : o.rank === 3 ? 'blue' : 'red' }))); }, 350);
       setTimeout(() => {
-        if (t !== token || !r) return;
+        if (t !== token || !r || backed) return;
         board.clearHint();
         const { q, lm } = playUci(test, r.uci); show(q, lm);
         say(r.text, 2200);
-        setTimeout(back, 1800);
-      }, 1900);
+        setTimeout(back, 1300);
+      }, 1500);
       return;
     }
     shake();

@@ -102,7 +102,7 @@ function renderPlay() {
   $('view-play').innerHTML = `<h2 class="ap-h">З ким граємо?</h2><div class="ap-opprows">${ROWS.map((row, r) => `
     <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}"></a>`).join('')}</div>`).join('')}
     </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>
-    <h2 class="ap-h">Я граю фігурами</h2>
+    <h2 class="ap-h">Я граю</h2>
     <div class="ap-seg" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}">${inner}</button>`).join('')}</div>`;
 }
 $('view-play').addEventListener('click', e => {
