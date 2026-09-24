@@ -78,6 +78,7 @@ function drawRoad() {
 window.addEventListener('resize', () => requestAnimationFrame(drawRoad));
 const row = ([e, t, href, kind], sub) => `<a class="ap-row${seen.has(href) ? ' seen' : ''}" href="${href}"><span class="ic" style="--c:${KIND[kind || 'learn'][0]}">${e}</span><span>${esc(t)}<small>${esc(sub || KIND[kind || 'learn'][1])}</small></span><span class="go">${seen.has(href) ? '✓' : '›'}</span></a>`;
 function openStep(i) {
+  $('card').onclick = null;
   const [ic, title, sub, links] = STEPS[i], sec = secOf(i);
   $('card').innerHTML = `<div class="ap-card-head"><span class="ap-dot" style="--c:${sec[2]}">${icon(ic)}</span><div><h2>${i + 1}. ${esc(title)}</h2><p>${esc(sub)}</p></div></div>` + links.map(l => row(l)).join('');
   $('sheet').hidden = false;
@@ -87,30 +88,36 @@ $('secbar').addEventListener('click', e => { const b = e.target.closest('button'
 $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').hidden = true; if (e.target.closest('a[href^="#"]')) $('sheet').hidden = true; });
 
 // ---------- 🤖 гра з роботом ----------
-const pick = { opp: LG.store.get('play:opp', 4), side: LG.store.get('play:side', 'w'), level: LG.store.get('play:level', 1), variant: LG.store.get('play:variant', 'standard') };
+// Усі суперники на одному екрані, по рядках: 1-й рядок — рівень 1 … 5-й — рівень 5.
+// Тап по звіряткові → знизу вибір кольору (і режиму) → партія.
+const ROWS = (() => {
+  const order = OPPONENTS.map((o, i) => [o.level, i]).sort((x, y) => x[0] - y[0] || x[1] - y[1]).map(x => x[1]);
+  const rows = []; for (let r = 0; r * 4 < order.length; r++) rows.push(order.slice(r * 4, r * 4 + 4));
+  return rows;
+})();
+const pick = { side: LG.store.get('play:side', 'w'), variant: LG.store.get('play:variant', 'standard') };
 function renderPlay() {
-  const o = OPPONENTS[pick.opp] || OPPONENTS[0];
   const dots = n => `<span class="ap-lv">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? 'f' : ''}"></i>`).join('')}</span>`;
-  const seg = (key, items) => `<div class="ap-seg" data-key="${key}">${items.map(([v, inner]) => `<button type="button" data-v="${v}" class="${String(pick[key]) === String(v) ? 'on' : ''}">${inner}</button>`).join('')}</div>`;
-  $('view-play').innerHTML = `
-    <h2 class="ap-h">З ким граємо?</h2>
-    <div class="ap-opps">${OPPONENTS.map((x, i) => `<button type="button" class="ap-opp${i === pick.opp ? ' on' : ''}" data-i="${i}"><img src="${x.avatar}" alt="" loading="lazy" style="object-position:${x.pos}"><b>${esc(x.name)}</b></button>`).join('')}</div>
-    <h2 class="ap-h">Я граю</h2>
-    ${seg('side', [['w', piece('K', 'w') + 'Білими'], ['r', '<span class="big">🎲</span>Будь-як'], ['b', piece('K', 'b') + 'Чорними']])}
-    <h2 class="ap-h">Сила робота</h2>
-    ${seg('level', [1, 2, 3, 4, 5].map(n => [n, dots(n) + ['Легкий', 'Слабкий', 'Новачок', 'Бадьорий', 'Сильний'][n - 1]]))}
-    <h2 class="ap-h">Режим</h2>
-    ${seg('variant', [['standard', '<span class="big">♔</span>Шахи'], ['antichess', '<span class="big">🎁</span>Піддавки']])}
-    <div class="ap-play"><img src="${o.avatar}" alt="" style="object-position:${o.pos}"><div>${esc(o.name)}<small>${pick.side === 'w' ? 'Ти — білі' : pick.side === 'b' ? 'Ти — чорні' : 'Колір навмання'} · ${LEVEL_NAMES[pick.level - 1]}</small></div>
-      <a href="chess/index.html?opp=${pick.opp}&side=${pick.side}&level=${pick.level}&variant=${pick.variant}">Грати ▶</a></div>`;
+  $('view-play').innerHTML = `<h2 class="ap-h">З ким граємо?</h2><div class="ap-opprows">${ROWS.map((row, r) => `
+    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<button type="button" class="ap-opp" data-i="${i}" data-l="${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}"></button>`).join('')}</div>`).join('')}
+    </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>`;
 }
-$('view-play').addEventListener('click', e => {
-  const opp = e.target.closest('.ap-opp'), b = e.target.closest('.ap-seg button');
-  if (opp) { pick.opp = +opp.dataset.i; LG.store.set('play:opp', pick.opp); }
-  else if (b) { const key = b.parentElement.dataset.key; pick[key] = key === 'level' ? +b.dataset.v : b.dataset.v; LG.store.set('play:' + key, pick[key]); }
-  else return;
-  LG.play('tap'); const y = scrollY; renderPlay(); window.scrollTo(0, y);
-});
+function openPlay(i, level) {
+  const o = OPPONENTS[i];
+  const seg = (key, items) => `<div class="ap-seg" data-key="${key}">${items.map(([v, inner]) => `<button type="button" data-v="${v}" class="${pick[key] === v ? 'on' : ''}">${inner}</button>`).join('')}</div>`;
+  const paint = () => {
+    $('card').innerHTML = `<div class="ap-card-head"><img class="ap-card-av" src="${o.avatar}" alt="" style="object-position:${o.pos}"><div><h2>${esc(o.name)}</h2><p>Рівень ${level} · ${LEVEL_NAMES[level - 1]}</p></div></div>
+      <h3 class="ap-h3">Яким кольором граєш?</h3>
+      ${seg('side', [['w', piece('K', 'w') + 'Білими'], ['r', '<span class="big">🎲</span>Будь-як'], ['b', piece('K', 'b') + 'Чорними']])}
+      <h3 class="ap-h3">Гра</h3>
+      ${seg('variant', [['standard', '<span class="big">♔</span>Шахи'], ['antichess', '<span class="big">🎁</span>Піддавки']])}
+      <a class="ap-go" href="chess/index.html?opp=${i}&side=${pick.side}&level=${level}&variant=${pick.variant}">Грати ▶</a>`;
+  };
+  paint();
+  $('card').onclick = e => { const b = e.target.closest('.ap-seg button'); if (!b) return; pick[b.parentElement.dataset.key] = b.dataset.v; LG.store.set('play:' + b.parentElement.dataset.key, b.dataset.v); LG.play('tap'); paint(); };
+  $('sheet').hidden = false;
+}
+$('view-play').addEventListener('click', e => { const b = e.target.closest('.ap-opp'); if (b) { LG.play('tap'); openPlay(+b.dataset.i, +b.dataset.l); } });
 
 // ---------- 🎯 практика ----------
 const PRACTICE = [

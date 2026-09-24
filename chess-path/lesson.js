@@ -123,6 +123,8 @@ async function onMove(from, to) {
   setTimeout(() => { if (t !== token) return; show(pos); board.setMovable('white', compat.chessgroundDests(pos)); lock = false; }, 900);
 }
 function next() {
+  // по черзі: далі — лише після виконаного завдання чи переглянутого прикладу
+  if (!done) { LG.play('error'); return say(items[idx].demo ? 'Спершу подивись приклад до кінця 🙂' : 'Спершу виконай завдання 🙂 Не виходить — натисни 💡', 'bad'); }
   $('next').classList.remove('ready');
   if (idx < items.length - 1) { idx++; load(); return; }
   LG.store.set('lesson:' + location.hash.slice(1), true);
