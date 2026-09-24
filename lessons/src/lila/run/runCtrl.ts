@@ -9,6 +9,7 @@ import { stageStart, stageEnd } from '../sound';
 import { type Stage, type Level, byId as stageById } from '../stage/list';
 import { clearTimeouts } from '../timeouts';
 import { DEMOS, playDemo } from '../demo';
+import { markSeen } from '../../../../shared/path.js';
 
 export class RunCtrl {
   data: LearnProgress = this.opts.storage.data;
@@ -71,6 +72,7 @@ export class RunCtrl {
           } else if (this.stageCompleted()) return;
           else {
             this.stageCompleted(true);
+            markSeen('lessons/index.html#/' + this.stage.id); // крок шляху застосунку пройдено
             stageEnd();
           }
           this.redraw();

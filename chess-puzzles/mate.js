@@ -181,7 +181,7 @@ function openIdx() {
   return Math.min(list.length - 1, Math.max(first, LG.store.get('puzopen:' + sec, 0)));
 }
 window.addEventListener('hashchange', route);
-$('list').addEventListener('click', () => { if (mode === 'practice') location.href = '../learn-chess/index.html'; else location.hash = ''; });
+$('list').addEventListener('click', () => { if (mode === 'practice') location.href = '../lessons/index.html'; else location.hash = ''; });
 
 // ---------- задачі Lichess ----------
 function loadPuzzle() {

@@ -2,7 +2,7 @@
 window.LG_GAMES = [
   {
     "id": "path",
-    "path": "chess-path/index.html",
+    "path": "lessons/index.html",
     "emoji": "♟️",
     "title": "Шахи — шлях новачка",
     "short": "Крок за кроком: фігури, напад і захист, шах, мат, дебют — трохи теорії, задачі й гра.",
@@ -35,7 +35,7 @@ window.LG_GAMES = [
   },
   {
     "id": "learn",
-    "path": "learn-chess/index.html",
+    "path": "lessons/index.html",
     "emoji": "🎓",
     "title": "Як ходять фігури",
     "short": "Уроки: фігури збирають зірочки; цінність фігур; практика проти робота.",

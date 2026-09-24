@@ -3,6 +3,7 @@
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 import { createBoard } from '../shared/board.js';
+import { goNext, markSeen } from '../shared/path.js';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();
@@ -65,7 +66,7 @@ function onMove(from, to) {
     task(t.kind === 'give' ? 'Шах! Король під ударом 🎉' : t.kind === 'capture' ? 'Побив — і ще й виграв фігуру! 🎉' : 'Король урятований! 🎉', 'ok');
     setTimeout(() => {
       if (idx < TASKS.length - 1) { idx++; load(); }
-      else LG.win('Ти знаєш, що таке шах і як від нього врятуватися!', { reward: true, onAgain: () => { idx = 0; load(); } });
+      else { markSeen('lessons/check.html'); LG.win('Ти знаєш, що таке шах і як від нього врятуватися!', { reward: true, onAgain: () => { idx = 0; load(); }, onNext: () => goNext('lessons/check.html') }); }
     }, 1500);
     return;
   }

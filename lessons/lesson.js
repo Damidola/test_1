@@ -1,8 +1,9 @@
-/* Міні-урок «Шляху новачка» (chess-path/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
+/* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, parseUci, makeUci, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 import { createBoard } from '../shared/board.js';
 import { LESSONS } from './lessons.js';
+import { goNext, markSeen } from '../shared/path.js';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
@@ -128,7 +129,8 @@ function next() {
   $('next').classList.remove('ready');
   if (idx < items.length - 1) { idx++; load(); return; }
   LG.store.set('lesson:' + location.hash.slice(1), true);
-  LG.win(`Урок «${lesson.title}» пройдено!`, { reward: true, onAgain: () => { idx = 0; load(); } });
+  const here = 'lessons/lesson.html' + location.hash; markSeen(here);
+  LG.win(`Урок «${lesson.title}» пройдено!`, { reward: true, onAgain: () => { idx = 0; load(); }, onNext: () => goNext(here) });
 }
 
 $('title').textContent = lesson.title;

@@ -2,6 +2,7 @@
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 import { createBoard } from '../shared/board.js';
+import { goNext, markSeen } from '../shared/path.js';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
@@ -75,7 +76,7 @@ function onMove(from, to) {
     task(`Так! ${NAME[got.role]} коштує ${v} — це найдорожча здобич 🎉`, 'ok');
     setTimeout(() => {
       if (idx < TASKS.length - 1) { idx++; load(); }
-      else LG.win('Тепер ти знаєш, скільки коштують фігури!', { reward: true, onAgain: () => { idx = 0; load(); } });
+      else { markSeen('lessons/value.html'); LG.win('Тепер ти знаєш, скільки коштують фігури!', { reward: true, onAgain: () => { idx = 0; load(); }, onNext: () => goNext('lessons/value.html') }); }
     }, 1500);
     return;
   }

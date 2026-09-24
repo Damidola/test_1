@@ -1,7 +1,7 @@
 // Перевірка міні-уроків «Шляху новачка»: позиції можливі, ходи прикладів legal, у кожного завдання є розв'язок
 import { Chess, parseUci, makeUci } from 'chessops';
 import { parseFen } from 'chessops/fen';
-import { LESSONS } from '../chess-path/lessons.js';
+import { LESSONS } from '../lessons/lessons.js';
 const pos = fen => { const r = Chess.fromSetup(parseFen(fen).unwrap()); if (r.isErr) throw new Error('bad fen ' + fen + ' ' + r.error); return r.unwrap(); };
 const moves = p => { const r = []; for (const [f, ds] of p.allDests()) for (const t of ds) { if (p.board.get(f).role === 'pawn' && (t >> 3 === 7 || t >> 3 === 0)) for (const pr of ['queen', 'knight', 'rook', 'bishop']) r.push({ from: f, to: t, promotion: pr }); else r.push({ from: f, to: t }); } return r; };
 export function judge(p, m, ok) {

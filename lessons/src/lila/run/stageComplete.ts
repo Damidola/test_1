@@ -8,6 +8,8 @@ import { hashNavigate } from '../hashRouting';
 import { getStageRank } from '../score';
 import { withLinebreaks } from '../util';
 import type { RunCtrl } from './runCtrl';
+// logic-games-kids: «Далі» — наступний пункт шляху застосунку (урок, гра чи задачі), а не наступний етап Lichess
+import { goNext, nextAfter } from '../../../../shared/path.js';
 
 function makeStars(rank: number) {
   const stars = [];
@@ -17,7 +19,8 @@ function makeStars(rank: number) {
 
 export default function (ctrl: RunCtrl) {
   const stage = ctrl.stage;
-  const next = ctrl.getNext();
+  const here = 'lessons/index.html#/' + stage.id;
+  const next = nextAfter(here);
   const score = ctrl.stageScore();
   return h(
     'div.learn__screen-overlay',
@@ -29,7 +32,7 @@ export default function (ctrl: RunCtrl) {
     },
     h('div.learn__screen', [
       h('div.stars', makeStars(getStageRank(stage, score))),
-      h('h1', i18n.learn.stageXComplete(stage.id)),
+      h('h1', `Урок «${stage.title}» пройдено!`),
       h(
         'span.score',
         i18n.site.yourScore.asArray(
@@ -47,14 +50,14 @@ export default function (ctrl: RunCtrl) {
       h('p', withLinebreaks(stage.complete)),
       h('div.buttons', [
         next
-          ? h('button.button', { hook: bind('click', () => hashNavigate(next.id)) }, [
-              i18n.learn.nextX(next.title),
+          ? h('button.button', { hook: bind('click', () => goNext(here)) }, [
+              'Далі: ' + next.title,
               icon(licon.GreaterThan)(),
             ])
           : null,
         h(`button.button.button-empty`, { hook: bind('click', () => hashNavigate()) }, [
           icon(licon.LessThan)(),
-          i18n.learn.backToMenu,
+          'До уроків',
         ]),
       ]),
     ]),
