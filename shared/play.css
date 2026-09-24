@@ -178,3 +178,4 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 @keyframes lgBubbleOut { to { transform: scale(.7); opacity: 0; } }
 @media (min-width: 900px) and (min-aspect-ratio: 1/1) { .lg-bubble { max-width: 72%; font-size: 14px; } }
 .lg-controls[hidden] { display: none !important; }
+.lg-quick[hidden] { display: none !important; }

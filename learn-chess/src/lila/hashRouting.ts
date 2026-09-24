@@ -1,6 +1,8 @@
 export const BASE_LEARN_PATH = location.pathname;
 
 export const hashNavigate = (stageId?: number, levelId?: number) => {
+  // logic-games-kids: мапи уроків немає — «до меню» веде до уроків застосунку
+  if (typeof stageId !== 'number') return location.assign('../index.html#learn');
   let hashPath = '';
   if (typeof stageId === 'number') hashPath += `/${stageId}`;
   if (typeof levelId === 'number') hashPath += `/${levelId}`;

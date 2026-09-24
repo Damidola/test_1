@@ -6,7 +6,6 @@ import chessground from '../chessground';
 import { hashHref } from '../hashRouting';
 import type { LearnCtrl } from '../ctrl';
 import type { LevelCtrl } from '../levelCtrl';
-import { mapSideView } from '../mapSideView';
 import { makeStars, progressView } from '../progressView';
 import { promotionView } from '../promotionView';
 import { withLinebreaks } from '../util';
@@ -66,7 +65,6 @@ export const runView = (ctrl: LearnCtrl) => {
       a('../index.html#learn')('.lg-run-menu', { attrs: { title: 'Меню уроків' } }, '☰'),
       progressView(runCtrl),
     ]),
-    div('.learn__side', mapSideView(ctrl)),
     div('.learn__main.main-board', { class: { apples: levelCtrl.isAppleLevel() } }, [
       runCtrl.stageStarting() ? stageStarting(runCtrl) : null,
       runCtrl.stageCompleted() ? stageComplete(runCtrl) : null,

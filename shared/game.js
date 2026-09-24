@@ -312,6 +312,7 @@ export function startGame(cfg) {
   // Гра з роботом (cfg.navOnly): без кнопок під дошкою — лише нижня панель «Назад · Підказка · Відмінити · Повторити»
   if (cfg.navOnly) {
     root.querySelector('.lg-controls').hidden = true;
+    if (root.querySelector('.lg-quick')) root.querySelector('.lg-quick').hidden = true; // режим обирають у «Практиці»
     [navUndo, navRedo] = LG.navOnly([['↩️', 'Відмінити', () => undo()], ['↪️', 'Повторити', () => redo()]]);
   }
   root.querySelector('.lg-controls').addEventListener('click', e => {

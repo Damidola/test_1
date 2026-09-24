@@ -2,14 +2,12 @@ import { extractHashParameters } from './hashRouting';
 import type { LearnProgress, LearnOpts } from './learn';
 import { RunCtrl } from './run/runCtrl';
 import { gtz } from './score';
-import { SideCtrl } from './sideCtrl';
 import { type Stage, byId as stageById } from './stage/list';
 import { clearTimeouts } from './timeouts';
 
 export class LearnCtrl {
   data: LearnProgress = this.opts.storage.data;
 
-  sideCtrl: SideCtrl;
   runCtrl: RunCtrl;
 
   constructor(
@@ -20,12 +18,10 @@ export class LearnCtrl {
 
     this.setStageLevelFromHash();
 
-    this.sideCtrl = new SideCtrl(this, opts);
     this.runCtrl = new RunCtrl(opts, redraw);
 
     window.addEventListener('hashchange', () => {
       this.setStageLevelFromHash();
-      this.sideCtrl.updateCategId();
       if (this.opts.stageId !== null) this.runCtrl.initializeLevel();
       this.redraw();
     });
