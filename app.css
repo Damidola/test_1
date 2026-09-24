@@ -196,3 +196,6 @@ html, body { overflow-x: clip; }
 /* мова: 🇺🇦 / 🇬🇧 — дві великі кнопки */
 .ap-lang { margin-top: 8px; }
 .ap-lang button { min-height: 44px; flex-direction: row; font-size: 15px; }
+.ap-note { display: block; margin-top: 2px; font: 700 13px var(--lg-font); color: var(--ap-muted); }
+.ap-onoff { margin-top: 8px; }
+.ap-onoff button { min-height: 44px; flex-direction: row; font-size: 15px; }

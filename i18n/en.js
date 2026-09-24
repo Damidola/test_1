@@ -2,6 +2,10 @@
    Підключається з shared/kit.js, коли в Профілі обрано мову English (i18n/translate.js перекладає сторінку).
    Нова фраза на сайті — додай сюди рядок; фраза без перекладу лишається українською. */
 window.LG_EN = {
+  "Крапки ходів": "Move dots",
+  "🟢 зелені крапки — куди може піти фігура": "🟢 green dots — where a piece can go",
+  "🟢 Показувати": "🟢 Show",
+  "Не показувати": "Hide",
   "А попереду — пішаки.": "And in front — the pawns.",
   "А слона ніхто не захищає — беремо!": "And nobody defends the bishop — we take it!",
   "Бий фігури суперника, але не підставляй свої!": "Capture the opponent's pieces, but don't leave yours hanging!",

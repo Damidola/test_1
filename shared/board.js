@@ -38,6 +38,11 @@ export function applyBoardLook() {
    — тап по клітинці, куди може піти лише одна фігура (напр. ворожа фігура під боєм), одразу робить цей хід. */
 export function lichessTouch(cg) {
   const wrap = cg.state.dom.elements.wrap;
+  // Зелені крапки ходів можна повністю вимкнути в Профілі — тоді жодна гра чи урок їх не вмикає
+  const dotsOff = () => { try { return localStorage.getItem('chk:showDests') === 'false'; } catch (e) { return false; } };
+  const set = cg.set;
+  cg.set = c => set(c && c.movable && 'showDests' in c.movable && dotsOff() ? { ...c, movable: { ...c.movable, showDests: false } } : c);
+  if (dotsOff()) set({ movable: { showDests: false } });
   // Тягнути фігуру — лише коли палець справді пройшов ~0,4 клітинки: легкий тап із ковзанням пальця
   // не перетягує пішака на сусідню клітинку
   const dragDist = () => { const w = wrap.getBoundingClientRect().width; if (w) cg.set({ draggable: { distance: Math.max(10, Math.round(w / 8 * 0.4)) } }); };
