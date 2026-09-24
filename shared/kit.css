@@ -325,3 +325,14 @@ html.lg .lg-nav-btn.is-off { opacity: .35; }
 html.lg .lg-nav-btn .ico .lg-dots { height: 22px; gap: 3px; } html.lg .lg-nav-btn .ico .lg-dots i { width: 6px; height: 6px; }
 html.lg .lg-nav-btn .ico { position: relative; }
 html.lg .lg-nav-btn .ico[data-n]::after { content: attr(data-n); position: absolute; top: -6px; right: -12px; min-width: 18px; height: 18px; border-radius: 9px; background: #7C6CF0; color: #fff; font: 900 11px/18px var(--lg-font); text-align: center; }
+
+/* нижні кнопки — окремими «плитками», як на chess.com, з малюнками-іконками */
+html.lg .lg-nav { background: rgba(22, 21, 47, .96); border-top: 0; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); gap: 8px; height: calc(var(--lg-bar-h) + env(safe-area-inset-bottom)); }
+html.lg .lg-nav-btn { max-width: none; padding: 2px 0; gap: 1px; border-radius: 14px; background: #2E2C66; color: #E9E8FF;
+  box-shadow: 0 3px 0 #1B1A42; font: 800 11px var(--lg-font); }
+html.lg .lg-nav-btn:active { background: #3A3880; transform: translateY(2px); box-shadow: 0 1px 0 #1B1A42; }
+html.lg .lg-nav-btn .ico { display: grid; place-items: center; height: 26px; font-size: 21px; }
+html.lg .lg-nav-btn .ico svg { width: 26px; height: 26px; display: block; }
+html.lg .lg-nav-btn.lg-home .ico svg { width: 24px; height: 24px; }
+html.lg .lg-nav-btn .lbl { opacity: .85; white-space: nowrap; }
+html.lg .lg-nav-btn:is([disabled], .is-off) { opacity: .4; }

@@ -374,10 +374,24 @@
     try { back = sessionStorage.getItem('chk:back'); } catch (e) { /* без сховища */ }
     return back && location.href.split('#')[0] !== back.split('#')[0] ? back : root + 'index.html';
   }
+  // Іконки нижніх кнопок — малюнки (SVG), як на chess.com, а не емодзі
+  const svg = (d, fill) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="${fill ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  const ICONS = {
+    '⬅️': svg('<path d="M20 12H5"/><path d="M11 5l-7 7 7 7"/>'),
+    '💡': svg('<path d="M9 18h6"/><path d="M10 21.5h4"/><path d="M12 2.5a6.5 6.5 0 0 0-3.8 11.8c.6.5.8 1.1.8 1.7h6c0-.6.3-1.2.8-1.7A6.5 6.5 0 0 0 12 2.5z" fill="currentColor" stroke-width="1.6"/>'),
+    '📖': svg('<path d="M3 5.5c3-1.5 6-1.5 9 .5v14c-3-2-6-2-9-.5z"/><path d="M21 5.5c-3-1.5-6-1.5-9 .5v14c3-2 6-2 9-.5z"/>'),
+    '⚙️': svg('<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>'),
+    '↩️': svg('<path d="M15 4.5L7.5 12l7.5 7.5"/>'),
+    '↪️': svg('<path d="M9 4.5l7.5 7.5L9 19.5"/>'),
+    '⚪': '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="#fff" stroke="#9c9ad0" stroke-width="2"/></svg>',
+    '⚫': '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="#1d1b30" stroke="#fff" stroke-width="2"/></svg>'
+  };
   function navBtn(ico, label, attrs) {
     const a = { class: 'lg-nav-btn', ...attrs };
     if (!a.href) a.type = 'button';
-    return el(a.href ? 'a' : 'button', a, [el('span', { class: 'ico', text: ico }), el('span', { class: 'lbl', text: label })]);
+    const i = el('span', { class: 'ico', text: ICONS[ico] ? '' : ico });
+    if (ICONS[ico]) i.innerHTML = ICONS[ico];
+    return el(a.href ? 'a' : 'button', a, [i, el('span', { class: 'lbl', text: label })]);
   }
   function buildBar() {
     if (document.querySelector('.lg-nav')) return; // уже зібрана (гра попросила раніше)
@@ -442,6 +456,7 @@
     onHint: fn => { hintFn = fn; if (hintBtn) hintBtn.hidden = !fn; },
     onExplain: fn => { explainFn = fn; },
     navOnly: extra => { buildBar(); return navOnly(extra); },
+    navIcon: ico => ICONS[ico] || ico,
     store,
     play,
     toast,

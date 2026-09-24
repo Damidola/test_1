@@ -180,7 +180,7 @@ export function startGame(cfg) {
     }
     if (navRedo) navRedo.classList.toggle('is-off', pos >= history.length - 1);
     if (navUndo) { navUndo.classList.toggle('is-off', pos === 0 || !undosLeft);  }
-    if (navFlip) navFlip.querySelector('.ico').textContent = player === 'w' ? '⚪' : '⚫';
+    if (navFlip) navFlip.querySelector('.ico').innerHTML = LG.navIcon(player === 'w' ? '⚪' : '⚫');
   }
 
   // ---------- ходи ----------
