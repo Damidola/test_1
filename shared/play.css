@@ -180,3 +180,6 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 .lg-controls[hidden] { display: none !important; }
 .lg-quick[hidden] { display: none !important; }
 .lg-nav .lg-level-pop { grid-template-columns: repeat(5, minmax(0, 1fr)); } .lg-nav .lg-level-pop button { font-size: 10px; overflow: hidden; }
+/* лише нижня панель (гра з роботом): кнопок під дошкою немає — дошка на всю ширину */
+.lg-navonly > .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 176px)); }
+.lg-navonly > .lg-hero-slot { min-height: 70px; }

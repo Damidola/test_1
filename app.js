@@ -70,12 +70,11 @@ const ROWS = (() => {
 let side = LG.store.get('play:side', 'w');
 function renderPlay() {
   const dots = n => `<span class="ap-lv">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? 'f' : ''}"></i>`).join('')}</span>`;
-  const sides = [['w', piece('K', 'w') + 'Білі'], ['r', '<span class="big">🎲</span>Будь-які'], ['b', piece('K', 'b') + 'Чорні']];
+  const sides = [['w', piece('K', 'w') + 'Білі'], ['b', piece('K', 'b') + 'Чорні'], ['r', '<span class="big">🎲</span>']];
   $('view-play').innerHTML = `<h2 class="ap-h">З ким граємо?</h2><div class="ap-opprows">${ROWS.map((row, r) => `
     <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}"></a>`).join('')}</div>`).join('')}
     </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>
-    <h2 class="ap-h">Я граю</h2>
-    <div class="ap-seg" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}">${inner}</button>`).join('')}</div>`;
+    <h2 class="ap-h">Я граю</h2><div class="ap-seg ap-sideseg" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>`;
 }
 $('view-play').addEventListener('click', e => {
   const b = e.target.closest('#side-seg button'); if (!b) return;
@@ -121,6 +120,10 @@ function renderProfile() {
     <div class="ap-box"><b>Звук</b><div class="ap-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
     <div class="ap-box"><b>Дошка</b><div class="ap-boards" id="p-boards"></div></div>
     <div class="ap-box" id="p-pieces"><b>Фігури</b></div>
+    <div class="ap-box"><b>Гра з роботом</b>
+      <div class="ap-limit"><span>💡 Підказок за партію</span><div class="ap-seg" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
+      <div class="ap-limit"><span>↩️ Ходів назад</span><div class="ap-seg" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
+    </div>
     <button type="button" class="ap-danger" id="p-reset">Скинути прогрес</button>`;
   const paint = () => {
     const v = Math.round(LG.volume * 100);
@@ -138,9 +141,12 @@ function renderProfile() {
   const paintBoards = () => { $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" style="background-image:url('${boardUrl(t.file)}')" aria-label="${t.id}"></button>`).join(''); };
   paintBoards();
   $('p-boards').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.setBoardTheme(b.dataset.t); LG.play('tap'); paintBoards(); });
+  const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
+  paintLim();
+  $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); }));
   $('p-reset').addEventListener('click', () => {
     if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
-    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
+    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
     seen.clear(); renderAll(); renderProfile();
   });
 }

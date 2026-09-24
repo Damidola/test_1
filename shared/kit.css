@@ -323,3 +323,5 @@ html.lg .lg-nav-btn:active { background: #29285A; transform: scale(.96); }
 .lg-toast { top: 14px !important; }
 html.lg .lg-nav-btn.is-off { opacity: .35; }
 html.lg .lg-nav-btn .ico .lg-dots { height: 22px; gap: 3px; } html.lg .lg-nav-btn .ico .lg-dots i { width: 6px; height: 6px; }
+html.lg .lg-nav-btn .ico { position: relative; }
+html.lg .lg-nav-btn .ico[data-n]::after { content: attr(data-n); position: absolute; top: -6px; right: -12px; min-width: 18px; height: 18px; border-radius: 9px; background: #7C6CF0; color: #fff; font: 900 11px/18px var(--lg-font); text-align: center; }

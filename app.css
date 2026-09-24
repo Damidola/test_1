@@ -175,3 +175,14 @@ html, body { overflow-x: clip; }
 #view-play .ap-opprow { container-type: size; align-items: center; }
 #view-play .ap-opprow .ap-opp { --s: min(100cqh, calc((100cqw - 16px - 24px) / 4)); width: var(--s); height: var(--s); max-width: none; max-height: none; }
 #view-play .ap-seg button { white-space: nowrap; font-size: 12.5px; }
+
+.ap-siderow { flex: none; display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+.ap-siderow > b { font: 900 17px var(--lg-font); white-space: nowrap; }
+.ap-siderow .ap-seg { flex: 1; margin: 0 !important; padding: 4px; }
+#view-play .ap-siderow .ap-seg button { min-height: 42px; padding: 4px; }
+#view-play .ap-siderow .ap-seg button img { width: 30px; height: 30px; }
+#view-play .ap-sideseg { grid-auto-flow: row; grid-template-columns: 1fr 1fr 64px; }
+#view-play .ap-sideseg button { font-size: 14px; }
+.ap-limit { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; font: 800 14px var(--lg-font); }
+.ap-limit .ap-seg { flex: none; width: 190px; padding: 4px; }
+.ap-limit .ap-seg button { min-height: 38px; font-size: 16px; }

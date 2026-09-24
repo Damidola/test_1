@@ -179,7 +179,7 @@ export function startGame(cfg) {
       b(a).classList.toggle('is-off', friend || (a === 'redo' && pos >= history.length - 1));
     }
     if (navRedo) navRedo.classList.toggle('is-off', pos >= history.length - 1);
-    if (navUndo) navUndo.classList.toggle('is-off', pos === 0);
+    if (navUndo) { navUndo.classList.toggle('is-off', pos === 0 || !undosLeft);  }
     if (navFlip) navFlip.querySelector('.ico').textContent = player === 'w' ? '⚪' : '⚫';
   }
 
@@ -231,8 +231,9 @@ export function startGame(cfg) {
     const again = pos > 0 && rules.turn(history[pos - 1]) === rules.turn(state());
     aiTimer = setTimeout(() => {
       const s = state();
-      const move = aiMove(rules, s, level);
       thinking = false; hero.setThinking(false);
+      if (over || human(rules.turn(s))) return render(); // позицію змінили, поки робот думав
+      const move = aiMove(rules, s, level);
       if (!move) return render();
       commit(move);
       render();
@@ -257,8 +258,9 @@ export function startGame(cfg) {
     history = [rules.initial(cfg.options ? cfg.options() : {})];
     pos = 0; lastHint = null;
     if (friend) player = 'w';
-    hintsLeft = Number(LG.store.get('hints', '3'));
-    undosLeft = Number(LG.store.get('undos', '3'));
+    const lim = v => (String(v) === 'inf' ? Infinity : Number(v)); // «inf» — без обмежень (Профіль)
+    hintsLeft = lim(LG.store.get('hints', '3'));
+    undosLeft = lim(LG.store.get('undos', '3'));
     if (board) board.setOrientation(colorName(player));
     paintQuick();
     render(false);
@@ -266,27 +268,32 @@ export function startGame(cfg) {
   }
 
   // ---------- кнопки ----------
+  // Якщо зараз хід робота, а він не думає, — хай ходить (гра ніколи не «застигає»)
+  function resume() {
+    if (over || friend) return render();
+    const r = rules.result(state());
+    if (r) return finish(r);
+    if (!human(rules.turn(state()))) { if (!thinking) robotMove(); }
+    else render();
+  }
   function undo() {
     if (friend) return;
-    if (thinking) { clearTimeout(aiTimer); thinking = false; hero.setThinking(false); }
-    if (pos === 0 || undosLeft <= 0) return LG.play('error');
-    // Повертаємось до свого ходу: через хід робота і свій
+    // Спершу знаходимо, куди повертатись (свій хід), — і лише тоді зупиняємо робота
     let p = pos - 1;
     while (p > 0 && (rules.turn(history[p]) !== player || !stable(history[p]))) p--;
-    if (rules.turn(history[p]) !== player) return LG.play('error');
+    if (pos === 0 || p < 0 || rules.turn(history[p]) !== player || undosLeft <= 0) { LG.play('error'); return resume(); }
+    clearTimeout(aiTimer); thinking = false; hero.setThinking(false);
     pos = p; over = false; undosLeft--; lastHint = null;
-    render();
+    render(); renderButtons();
   }
   function redo() {
-    if (friend) return;
-    if (pos >= history.length - 1 || thinking) return;
+    if (friend || thinking) return;
+    if (pos >= history.length - 1) return LG.play('error');
     let p = pos + 1;
     while (p < history.length - 1 && (rules.turn(history[p]) !== player || !stable(history[p]))) p++;
-    pos = p;
-    const r = rules.result(state());
-    render();
-    if (r) return finish(r);
-    if (rules.turn(state()) !== player) robotMove();
+    pos = p; lastHint = null;
+    renderButtons();
+    resume();
   }
   LG.onHint && LG.onHint(() => { if (!friend) hint(); }); // підказка — у нижній панелі
   function hint() {
@@ -314,6 +321,7 @@ export function startGame(cfg) {
   // Гра з роботом (cfg.navOnly): без кнопок під дошкою — лише нижня панель «Назад · Підказка · Відмінити · Повторити»
   if (cfg.navOnly) {
     root.querySelector('.lg-controls').hidden = true;
+    root.classList.add('lg-navonly');
     if (root.querySelector('.lg-quick')) root.querySelector('.lg-quick').hidden = true; // режим обирають у «Практиці»
     // cfg.navOnly: true → Відмінити · Повторити; або список дій: ['flip', 'level', 'undo', 'redo']
     const acts = Array.isArray(cfg.navOnly) ? cfg.navOnly : ['undo', 'redo'];
@@ -382,8 +390,8 @@ export function startGame(cfg) {
     });
     w.querySelector('#show-opp').addEventListener('change', e => { LG.store.set('showOpponent', e.target.checked); applyHero(); });
     w.querySelector('#show-dests')?.addEventListener('change', e => { LG.store.set('showDests', e.target.checked); applyDests(); });
-    w.querySelector('#hints-n').addEventListener('change', e => { LG.store.set('hints', e.target.value); hintsLeft = +e.target.value; });
-    w.querySelector('#undos-n').addEventListener('change', e => { LG.store.set('undos', e.target.value); undosLeft = +e.target.value; });
+    w.querySelector('#hints-n').addEventListener('change', e => { LG.store.set('hints', e.target.value); hintsLeft = e.target.value === 'inf' ? Infinity : +e.target.value; });
+    w.querySelector('#undos-n').addEventListener('change', e => { LG.store.set('undos', e.target.value); undosLeft = e.target.value === 'inf' ? Infinity : +e.target.value; });
     w.querySelectorAll('.lg-swatches button').forEach(b => b.addEventListener('click', () => {
       LG.setBoardTheme(b.dataset.t); applyBoardLook();
     }));
@@ -401,5 +409,6 @@ export function startGame(cfg) {
 
   applyHero();
   newGame(); paintLevel();
+  window.lgGameDebug = () => ({ pos, len: history.length, thinking, over, player, turn: rules.turn(state()), movable: board && board.cg.state.movable.color, undosLeft });
   return { newGame, state, board, setPlayer: c => { player = c; newGame(); } };
 }
