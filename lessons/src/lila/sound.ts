@@ -6,8 +6,8 @@ const make = (name: string, volume?: number) => {
 // Гучність у 2 рази нижча за Lichess (зірочка й новий рівень — ще тихіше): у дитячих уроках звуки звучать дуже часто
 export const move = () => site.sound.play('move', 0.5);
 export const take = make('sfx/Tournament3rd', 0.0325); // зірочка — ще вдвічі тихіше
-export const levelStart = make('other/ping', 0.2);
-export const levelEnd = make('other/energy3', 0.5);
+export const levelStart = make('other/ping', 0.1);
+export const levelEnd = make('other/energy3', 0.25);
 export const stageStart = make('other/guitar', 0.5);
 export const stageEnd = make('other/gewonnen', 0.5);
 export const failure = make('other/no-go', 0.5);
