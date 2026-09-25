@@ -214,10 +214,19 @@ body.lg-game-learn .lg-nav-btn { flex-direction: row !important; gap: 8px !impor
 body.lg-game-learn .lg-nav-btn .ico { font-size: 18px !important; }
 body.lg-game-learn .lg-nav-btn .ico svg { width: 20px; height: 20px; }
 @media (max-width: 799px) and (orientation: portrait) {
-  /* вчитель і дошка — посередині вільного місця під рівнями */
-  .learn.learn--run { grid-template-areas: "top" "." "table" "main" "." !important; grid-template-rows: auto minmax(0, 1fr) auto auto minmax(0, 1fr) !important; gap: 8px !important; }
+  /* під рівнями — вчитель, одразу під ним дошка; уся вільна висота — лише знизу (інакше на телефоні дошка з'їжджає під нижні кнопки) */
+  .learn.learn--run { grid-template-areas: "top" "table" "main" "." !important; grid-template-rows: auto auto auto minmax(0, 1fr) !important; gap: 8px !important; }
+  /* верхній рядок ‹ НАЗВА ⛶ і кружечки — компактні, фіксованої висоти */
+  .learn--run .lg-run-top { height: 58px; box-sizing: border-box; gap: 2px 8px !important; padding: 2px 10px 0 !important; grid-template-columns: 30px minmax(0, 1fr) 30px !important; }
+  .lg-run-top .lg-run-menu { width: 28px !important; height: 28px !important; font-size: 22px !important; padding-bottom: 3px !important; }
+  .lg-run-fs .lg-top-btn { width: 28px !important; height: 28px !important; }
+  .lg-run-fs .lg-top-btn svg { width: 15px !important; height: 15px !important; }
+  .lg-run-title { font-size: 12px !important; letter-spacing: 2px !important; }
+  .lg-run-top .progress { gap: 6px !important; }
+  .lg-run-top .progress a, .lg-run-top .progress .locked { width: 20px !important; height: 20px !important; font-size: 10px !important; }
+  .lg-run-top .progress a.done::after { font-size: 11px !important; }
   .learn .learn--run, .learn.learn--run { --teach-h: max(calc(clamp(84px, min(30vw, 15svh), 140px) + 12px), 118px);
-    --bw: min(100vw, calc(100svh - var(--lg-bar-h) - env(safe-area-inset-bottom) - var(--teach-h) - 120px)); }
+    --bw: min(100vw, calc(100svh - var(--lg-bar-h) - env(safe-area-inset-bottom) - var(--teach-h) - 58px - 50px)); }
   .learn--run .learn__main.main-board { width: var(--bw) !important; max-width: none !important; margin: 0 0 0 calc(50% - var(--bw) / 2) !important; }
   .learn--run .learn__table .wrap { padding: 6px 8px !important; box-sizing: border-box; }
   .lg-run-top .progress a.done { color: transparent !important; }
