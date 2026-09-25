@@ -358,6 +358,7 @@ export class LevelCtrl {
   hintShape?: DrawShape;
   armHint = () => {
     const gen = ++this.hintGen;
+    this.hintStep = 0;
     this.clearHint();
     timeouts.setTimeout(() => {
       if (gen !== this.hintGen || this.vm.completed || this.vm.willComplete || this.vm.failed) return;
@@ -379,6 +380,7 @@ export class LevelCtrl {
     else if (this.isAppleLevel() && (uci = this.pathToApple())) text = 'Підказка: зелена стрілка показує, куди піти, щоб дістатися зірочки ⭐';
     else if (blueprint.pointsForCapture && (uci = (m => (m ? m.orig + m.dest : undefined))(chess.findCapture())))
       text = 'Підказка: цю фігуру можна побити — дивись на стрілку 👇';
+    else if (this.hintStep >= 1 && (uci = this.hintMove())) text = 'Підказка: зелена стрілка — ось хороший хід 👇';
     else text = 'Підказка: натисни на свою фігуру — крапки покажуть, куди вона може піти. Прочитай завдання ще раз 🙂';
     this.vm.hint = text;
     if (uci) {
@@ -386,6 +388,37 @@ export class LevelCtrl {
       const sh = this.hintShape;
       this.withGround(g => g.setShapes([...g.state.drawable.shapes, sh]));
     }
+    this.redraw();
+  };
+  // Кнопка «Підказка» внизу: 1-й раз — обводимо фігуру, якою ходити; 2-й — стрілка найкращого ходу
+  hintStep = 0;
+  hintMove = (): string | undefined => {
+    const { blueprint, chess } = this;
+    if (blueprint.game) return undefined;
+    let uci = this.scenario.next() || (this.isAppleLevel() ? this.pathToApple() : undefined);
+    if (!uci && blueprint.pointsForCapture) { const m = chess.findCapture(); if (m) uci = m.orig + m.dest; }
+    if (!uci) {
+      const pos = chess.instance.clone(); pos.turn = blueprint.color;
+      const ms = chess.moves(pos);
+      // рокіровка — король ходить на 2+ клітинки
+      const castle = ms.find(m => pos.board.get(m.from)?.role === 'king' && Math.abs((m.to % 8) - (m.from % 8)) >= 2);
+      const pick = castle || (new Set(ms.map(m => m.from)).size === 1 ? ms[0] : undefined);
+      if (pick) uci = makeSquare(pick.from) + makeSquare(pick.to);
+    }
+    return uci;
+  };
+  manualHint = () => {
+    if (this.vm.completed || this.vm.willComplete || this.vm.failed) return;
+    const uci = this.hintMove();
+    if (!uci || this.hintStep >= 1) {
+      this.clearHint(); this.showHint(); this.hintStep = 2; return;
+    }
+    this.clearHint();
+    this.vm.hint = 'Підказка: ходи цією фігурою 👆 Натисни «Підказка» ще раз — покажу куди';
+    const sh: DrawShape = { orig: uci.slice(0, 2) as SquareName, brush: 'green' };
+    this.hintShape = sh;
+    this.withGround(g => g.setShapes([...g.state.drawable.shapes, sh]));
+    this.hintStep = 1;
     this.redraw();
   };
   // найкоротший шлях до будь-якої зірочки (кілька ходів поспіль своїм кольором) → перший хід шляху

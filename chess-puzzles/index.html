@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790344720">
-  <link rel="stylesheet" href="../shared/play.css?v=1790344720">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790344973">
+  <link rel="stylesheet" href="../shared/play.css?v=1790344973">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
@@ -105,6 +105,16 @@
     .mt-card .ic { border-radius: 50% !important; background: #1d1d1d !important; }
     .mt-card b { font-family: Manrope, sans-serif !important; font-weight: 700 !important; }
     .mt-card small { font-family: Manrope, sans-serif !important; color: #8c8c8c !important; opacity: 1 !important; }
+    /* задачі як урок (?lesson): угорі ‹ НАЗВА ⛶ і кружечки, Пан Сова з бульбашкою; стрілок задач і верхнього рядка задач немає */
+    .mt[data-lesson] > .mt-top, .mt[data-lesson] > .mt-navrow { display: none !important; }
+    .mt[data-lesson] .lv-say .mt-goal { display: none; }
+    .mt[data-lesson] { padding-top: 0; }
+    .mt[data-lesson] .lv-say #task { color: #fff; }
+    .mt[data-lesson] .lv-say:has(#task.ok) { background: linear-gradient(135deg, #1fbf98, #2ee6b8); border-color: transparent; }
+    .mt[data-lesson] .lv-say:has(#task.ok.passed), .mt[data-lesson] .lv-say:has(#task.bad) { background: linear-gradient(135deg, #e0ad22, #F5C542); border-color: transparent; }
+    .mt[data-lesson] .lv-say:has(#task.ok, #task.bad)::before { border-right-color: transparent; }
+    .mt[data-lesson] .lv-say #task.ok, .mt[data-lesson] .lv-say #task.bad { color: #04241d !important; font-weight: 800; }
+    .mt[data-lesson] .lv-say #task.passed, .mt[data-lesson] .lv-say #task.bad { color: #3d2c00 !important; }
   </style>
 </head>
 <body>
@@ -124,8 +134,8 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790344720"></script>
-  <script src="../shared/kit.js?v=1790344720" data-game="mate" data-night="on"></script>
-  <script type="module" src="mate.js?v=1790344720"></script>
+  <script src="../shared/games.js?v=1790344973"></script>
+  <script src="../shared/kit.js?v=1790344973" data-game="mate" data-night="on"></script>
+  <script type="module" src="mate.js?v=1790344973"></script>
 </body>
 </html>

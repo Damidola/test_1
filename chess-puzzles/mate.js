@@ -4,15 +4,20 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790344720';
-import { createRules } from '../chess/rules.js?v=1790344720';
-import { hintMove } from '../shared/ai.js?v=1790344720';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790344973';
+import { createRules } from '../chess/rules.js?v=1790344973';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790344973';
+import { hintMove } from '../shared/ai.js?v=1790344973';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
 { const fsb = LG.fsButton && LG.fsButton(); if (fsb) document.querySelector('.mt-fsslot').appendChild(fsb); }
 const main = document.querySelector('main.mt'), wrap = $('wrap');
 const DATA = await (await fetch(new URL('puzzles.json', import.meta.url))).json();
+// Відкрито з уроків (?lesson): звичайний урок — не більше 10 задач, угорі кружечки рівнів і Пан Сова (shared/levels.js)
+const LESSON = new URLSearchParams(location.search).has('lesson'), LESSON_N = 10;
+if (LESSON) for (const k in DATA) DATA[k] = DATA[k].slice(0, LESSON_N);
+let levels = null;
 
 const GROUPS = [
   ['Постав шах', [
@@ -175,8 +180,26 @@ function route() {
 function startPuzzles() {
   // задачі гортають стрілки вгорі, вихід — стрілка ‹
   mode = 'puzzle'; main.dataset.mode = 'puzzle'; setButtons([['📋', 'Розділи'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); $('list').hidden = true; $('show').hidden = $('next').hidden = true; // у задачах унизу лише Підказка й Гайд
+  if (LESSON) {
+    if (!levels) {
+      main.dataset.lesson = '1';
+      const t = document.createElement('span'); t.id = 'title'; t.hidden = true; t.textContent = INFO[sec].title; main.prepend(t);
+      const el = document.createElement('div'); el.className = 'lv-bar'; el.id = 'levels'; wrap.before(el);
+      levels = createLevels(el, 'puz-' + sec, DATA[sec].length, i => { token++; idx = i; loadPuzzle(); });
+    }
+    idx = levels.open();
+    return loadPuzzle();
+  }
   idx = openIdx();
   loadPuzzle();
+}
+// урок: наступний рівень, а після останнього — вікно «Урок пройдено!»
+function lessonNext() {
+  const n = DATA[sec].length, r = LG.store.get('lvl:puz-' + sec, []);
+  const open = [...Array(n).keys()].find(i => !r[i]);
+  if (open === undefined) return lessonDone({ title: INFO[sec].title, text: 'Молодець! Усі задачі розв’язано.', key: 'puz-' + sec, n,
+    here: 'chess-puzzles/index.html?lesson=1#' + sec, onAgain: () => { idx = 0; loadPuzzle(); } });
+  idx = idx + 1 < n && !r[idx + 1] ? idx + 1 : open; loadPuzzle();
 }
 // Задачі по черзі: відкрита лише наступна після розв'язаної (або тієї, де вже показали розв'язок)
 function openIdx() {
@@ -196,6 +219,7 @@ function loadPuzzle() {
   const userFirst = line.length % 2 === 1;
   userColor = userFirst ? pos.turn : pos.turn === 'white' ? 'black' : 'white';
   wrap.classList.remove('solved');
+  if (levels) { levels.set(idx); $('task').classList.remove('ok', 'passed', 'bad'); }
   // у задачах на шах не підказуємо крапками, куди можна піти
   board.cg.set({ movable: { showDests: !/^(chk|esc)_/.test(sec) } });
   board.setOrientation(userColor); board.clearHint(); board.setMovable(null);
@@ -211,7 +235,7 @@ function opponent() { // хід суперника з рішення Lichess
 }
 function paint() {
   const info = INFO[sec];
-  if (!flash) $('task').textContent = TASK[sec] || '';
+  if (!flash && !(levels && done)) $('task').textContent = TASK[sec] || '';
   if (mode === 'practice') {
     $('goal').innerHTML = `${icon(info.ic)} ${info.title}`;
     $('lives').textContent = ''; $('count').textContent = '🏆 ' + LG.store.get('prac:' + sec, 0);
@@ -287,6 +311,14 @@ function solved() {
   const s = solvedOf(sec), first = !s.has(DATA[sec][idx][0]);
   if (mistakes < 3) { s.add(DATA[sec][idx][0]); LG.store.set('puz:' + sec, [...s]); }
   paint();
+  if (levels) {
+    levels.done(idx, mistakes === 0);
+    $('task').classList.add('ok'); if (mistakes) $('task').classList.add('passed');
+    $('task').textContent = mistakes ? 'Вийшло! Молодець 👍' : 'Ідеально! 🌟';
+    LG.play('win');
+    const t = token;
+    return setTimeout(() => { if (t === token && done) lessonNext(); }, 1700);
+  }
   if (mistakes < 3 && first && s.size === DATA[sec].length) {
     return LG.win(`Усі задачі «${INFO[sec].title}» розв’язано!`, { reward: true, onAgain: () => nextPuzzle() });
   }
@@ -298,8 +330,10 @@ function showSolution() {
   if (done || mode !== 'puzzle') return;
   done = true; mistakes = Math.max(mistakes, 3); board.setMovable(null); paint();
   const t = token;
+  if (levels) { levels.done(idx, false); $('task').classList.add('bad'); }
   const stepOne = () => {
-    if (t !== token || step >= line.length) return;
+    if (t !== token) return;
+    if (step >= line.length) { if (levels) setTimeout(() => { if (t === token) lessonNext(); }, 1500); return; }
     const m = parseUci(line[step]);
     if (pos.turn === userColor) board.hint(makeSquare(m.from), makeSquare(m.to));
     setTimeout(() => {

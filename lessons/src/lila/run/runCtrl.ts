@@ -38,6 +38,7 @@ export class RunCtrl {
     // Нижня панель сайту: 📖 «Пояснення» — сторінка з поясненням етапу (текст і схема, як ходить фігура).
     // Урок одразу починається із завдання — без обов'язкового прикладу.
     const LG = (window as any).LG;
+    LG?.onHint?.(() => this.levelCtrl?.manualHint());
     LG?.onExplain?.(() => {
       const box = document.createElement('div');
       box.className = 'lg-rules lg-explain';
