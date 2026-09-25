@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура доходить до кружечка, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, dests, shortest } from './mazes.js?v=1790369512';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790369512';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790369512';
+import { MAZES, dests, shortest } from './mazes.js?v=1790369727';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790369727';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790369727';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -74,7 +74,17 @@ LG.onHint(() => {
   (hintStep ? path.slice(1) : [path[1]]).forEach(p => cell(p).classList.add('hint'));
   hintStep = 1;
 });
-LG.onExplain(() => { main.dataset.step = main.dataset.step === 'intro' ? 'items' : 'intro'; });
+// знайомство: відео (якщо є) + пояснення; уперше — перед вправами, потім — кнопкою «Гайд»
+const video = $('video');
+function intro(on) {
+  main.dataset.step = on ? 'intro' : 'items';
+  if (!M.video) return;
+  if (on) { $('title').textContent = M.videoTitle || M.title; video.hidden = false; video.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + M.video + '?playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Відео"></iframe>'; }
+  else { video.innerHTML = ''; $('title').textContent = M.title; }
+}
+LG.onExplain(() => intro(main.dataset.step !== 'intro'));
+$('go').addEventListener('click', () => intro(false));
+if (M.video && !LG.store.get('lvl:maze:' + K, []).length) intro(true);
 $('again').addEventListener('click', () => load());
 fitBoard(wrap);
 load();

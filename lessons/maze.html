@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Лабіринт</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790369512">
-  <link rel="stylesheet" href="../shared/play.css?v=1790369512">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790369727">
+  <link rel="stylesheet" href="../shared/play.css?v=1790369727">
   <style>
     .mz { justify-content: flex-start; gap: 8px; }
     .mz-intro { display: none; }
@@ -33,14 +33,22 @@
     .mz-piece mpiece { display: block; width: 100%; height: 100%; background-size: cover; }
     .mz-piece.sel mpiece { filter: drop-shadow(0 0 6px #2ee6b8); }
     .mz-wrap.solved { box-shadow: 0 0 0 4px #2ee6b8; }
+    /* відео-знайомство: з кадру 16:9 лишаємо квадрат із дошкою посередині, на всю ширину екрана */
+    .mz-video { position: relative; width: 100vw; max-width: 560px; aspect-ratio: 1; overflow: hidden; margin: 4px 0 8px; background: #000; flex: none; }
+    .mz-video iframe { position: absolute; top: 0; left: 50%; height: 100%; aspect-ratio: 16 / 9; transform: translateX(-50%); border: 0; }
+    .mz-intro:has(.mz-video:not([hidden])) .mz-arrows { display: none; }
+    .mz-intro:has(.mz-video:not([hidden])) { justify-content: flex-start; padding: 0 0 8px; }
+    .mz-go { margin-top: 10px; min-height: 48px; padding: 0 28px; border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 17px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
   </style>
 </head>
 <body>
   <main class="lg-play mz" data-step="items">
     <section class="mz-intro">
       <h2 id="title"></h2>
+      <div class="mz-video" id="video" hidden></div>
       <div class="mz-arrows"><mpiece class="rook white"></mpiece><i style="left:50%;top:0;transform:translateX(-50%);--p:translate(-50%,-8px)">↑</i><i style="left:50%;bottom:0;transform:translateX(-50%);--p:translate(-50%,8px)">↓</i><i style="left:0;top:50%;transform:translateY(-50%);--p:translate(-8px,-50%)">←</i><i style="right:0;top:50%;transform:translateY(-50%);--p:translate(8px,-50%)">→</i></div>
       <p id="intro-text"></p>
+      <button type="button" class="mz-go" id="go">До вправ ▶️</button>
     </section>
     <div class="lv-bar" id="levels"></div>
     <div class="cl-goal" hidden><span id="goal"></span></div>
@@ -50,8 +58,8 @@
       <button type="button" id="again"><span class="ico">🔁</span><span class="lbl">Заново</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790369512"></script>
-  <script src="../shared/kit.js?v=1790369512" data-game="path" data-night="on"></script>
-  <script type="module" src="maze.js?v=1790369512"></script>
+  <script src="../shared/games.js?v=1790369727"></script>
+  <script src="../shared/kit.js?v=1790369727" data-game="path" data-night="on"></script>
+  <script type="module" src="maze.js?v=1790369727"></script>
 </body>
 </html>
