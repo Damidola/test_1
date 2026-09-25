@@ -107,6 +107,8 @@ const sound = (p, m) => LG.play(p.board.get(m.to) ? 'capture' : 'move');
 function playUci(p, uci) { const m = parseUci(uci), q = p.clone(); sound(p, m); q.play(m); return { q, lm: [makeSquare(m.from), makeSquare(m.to)] }; }
 const promoFor = (p, from, to) => p.board.get(parseSquare(from))?.role === 'pawn' && (to[1] === '8' || to[1] === '1');
 const allowMoves = () => board.setMovable(userColor, compat.chessgroundDests(pos));
+let goodT = 0;
+const good = () => { clearTimeout(goodT); wrap.classList.remove('good'); void wrap.offsetWidth; wrap.classList.add('good'); goodT = setTimeout(() => wrap.classList.remove('good'), 900); };
 const shake = () => { wrap.classList.remove('wrong'); void wrap.offsetWidth; wrap.classList.add('wrong'); };
 
 // Тимчасовий напис під дошкою
@@ -270,6 +272,7 @@ async function puzzleMove(from, to) {
     return;
   }
   const { q, lm } = playUci(pos, from + to + promo);
+  good();
   pos = q; step++; hintStage = 0; board.clearHint();
   show(pos, lm);
   if (step >= line.length || pos.isCheckmate()) return solved();
