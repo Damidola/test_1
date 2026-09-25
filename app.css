@@ -265,3 +265,10 @@ html, body { overflow-x: clip; }
 .pf-sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.3); transition: transform .15s; }
 .pf-sw.on { background: var(--ap-green); } .pf-sw.on::after { transform: translateX(22px); }
 .pf-reset { display: block; margin: 12px auto 4px; padding: 8px 14px; border: 0; background: none; color: var(--ap-red); font: 800 13px var(--lg-font); opacity: .85; cursor: pointer; }
+/* плитка задач: «✅ 2 / 35» і смужка прогресу внизу */
+.ap-prog { margin-top: auto; display: flex; flex-direction: column; gap: 3px; font: 900 12px var(--lg-font); }
+.ap-prog i { display: block; height: 5px; border-radius: 3px; background: #fff; box-shadow: 0 0 0 999px rgba(0,0,0,.18) inset; min-width: 3px; }
+.ap-prog { position: relative; }
+.ap-prog::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; border-radius: 3px; background: rgba(0,0,0,.2); z-index: 0; }
+.ap-prog i { position: relative; z-index: 1; box-shadow: none; }
+.ap-prog.all span::after { content: ' 🏆'; }

@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790317317';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790317317';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790317317';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790317376';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790317376';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790317376';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -117,8 +117,19 @@ const art = ic => {
 // скільки задач розділу вже розв'язано (chess-puzzles зберігає chk:puz:<розділ>)
 const solvedOf = hrefs => hrefs.reduce((n, h) => { const k = h.startsWith('chess-puzzles/') && h.split('#')[1]; return n + (k ? (LG.store.get('puz:' + k, []) || []).length : 0); }, 0);
 const catLinks = c => c.href ? [c.href] : c.groups.flatMap(([, items]) => items.map(x => x[3]));
+// скільки всього задач у кожному розділі — з chess-puzzles/puzzles.json (вантажиться раз, коли відкрили розділ)
+let puzTotal = null, puzLoading = false;
+function loadPuzTotals(open) {
+  if (puzTotal || puzLoading) return;
+  puzLoading = true;
+  fetch('chess-puzzles/puzzles.json').then(r => r.json()).then(d => {
+    puzTotal = Object.fromEntries(Object.entries(d).map(([k, v]) => [k, v.length]));
+    if (location.hash === '#practice/' + open) renderPractice(open);
+  }).catch(() => { puzLoading = false; });
+}
 function renderPractice(open) {
   const cat = PRACTICE.find(c => c.id === open && c.groups);
+  if (cat) loadPuzTotals(open);
   if (!cat) {
     $('view-practice').innerHTML = `<h2 class="ap-h">Практика</h2><div class="ap-cats">${PRACTICE.map(c => {
       const n = solvedOf(catLinks(c));
@@ -129,8 +140,10 @@ function renderPractice(open) {
   }
   $('view-practice').innerHTML = `<div class="ap-subhead"><a class="ap-backbtn" href="#practice" aria-label="Назад">‹</a><span class="pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>` +
     cat.groups.map(([h, items]) => `${h ? `<h3 class="ap-h3">${esc(h)}</h3>` : ''}<div class="ap-tiles ap-subtiles">${items.map(([ic, t, sub, href]) => {
-      const n = solvedOf([href]);
-      return `<a class="ap-tile" href="${href}" style="--c:${cat.c}"><span class="pcs">${art(ic)}</span><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}${n ? `<span class="ap-cnt">✓ ${n}</span>` : ''}</a>`;
+      const n = solvedOf([href]), k = href.startsWith('chess-puzzles/') && href.split('#')[1], tot = k && puzTotal && puzTotal[k];
+      // задачі: «✅ 2 / 35» і смужка — скільки розв'язано з усіх
+      const prog = tot ? `<span class="ap-prog${n >= tot ? ' all' : ''}"><span>✅ ${n} / ${tot}</span><i style="width:${Math.round(100 * n / tot)}%"></i></span>` : n ? `<span class="ap-cnt">✓ ${n}</span>` : '';
+      return `<a class="ap-tile" href="${href}" style="--c:${cat.c}"><span class="pcs">${art(ic)}</span><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}${prog}</a>`;
     }).join('')}</div>`).join('');
 }
 
