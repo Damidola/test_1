@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790337895';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790337895';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790337895';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790338107';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790338107';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790338107';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -106,13 +106,18 @@ const ROWS = (() => {
   return rows;
 })();
 let side = LG.store.get('play:side', 'w');
+// Вкладка «Гра» у новому дизайні (чорне тло, Manrope), але з кольорами й мультяшними суперниками старого:
+// угорі — яким кольором граєш, далі 5 рядків-рівнів: номер і назва рівня кольором, праворуч — 4 суперники в кружечках
+const LV_COLORS = ['#2ECC9A', '#3FA7F5', '#7C6CF0', '#FF9F1C', '#FF5C6C'];
 function renderPlay() {
-  const dots = n => `<span class="ap-lv">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? 'f' : ''}"></i>`).join('')}</span>`;
-  const sides = [['w', piece('K', 'w') + 'Білі'], ['b', piece('K', 'b') + 'Чорні'], ['r', '<span class="big">🎲</span>']];
-  $('view-play').innerHTML = `<h2 class="ap-h">З ким граємо?</h2><div class="ap-opprows">${ROWS.map((row, r) => `
-    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></a>`).join('')}</div>`).join('')}
-    </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>
-    <h2 class="ap-h">Я граю</h2><div class="ap-seg ap-sideseg" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>`;
+  const sides = [['w', piece('K', 'w') + '<span>Білі</span>'], ['b', piece('K', 'b') + '<span>Чорні</span>'], ['r', '<span class="big">🎲</span>']];
+  $('view-play').classList.add('mg2');
+  $('view-play').innerHTML = `<div class="g2-head">ГРА З РОБОТОМ</div>
+    <div class="g2-side" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>
+    <div class="g2-rows">${ROWS.map((row, r) => `
+      <div class="g2-row" style="--lc:${LV_COLORS[r]}"><div class="g2-lvl"><b>${r + 1}</b><span>${esc(LEVEL_NAMES[r])}</span></div>
+        <div class="g2-opps">${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></a>`).join('')}</div></div>`).join('')}
+    </div>`;
 }
 $('view-play').addEventListener('click', e => {
   const b = e.target.closest('#side-seg button'); if (!b) return;
@@ -156,23 +161,27 @@ function loadPuzTotals(open) {
     if (location.hash === '#practice/' + open) renderPractice(open);
   }).catch(() => { puzLoading = false; });
 }
+// Вкладка «Практика» у новому дизайні: список рядків (кружечок кольору розділу з фігурами, назва, опис, лічильник, ›);
+// у розділі — картки задач із тонкою смужкою прогресу кольору розділу
+const CHEV = '<svg class="g2-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
 function renderPractice(open) {
   const cat = PRACTICE.find(c => c.id === open && c.groups);
+  $('view-practice').classList.add('mg2');
   if (cat) loadPuzTotals(open);
   if (!cat) {
-    $('view-practice').innerHTML = `<h2 class="ap-h">Практика</h2><div class="ap-cats">${PRACTICE.map(c => {
+    $('view-practice').innerHTML = `<div class="g2-head">ПРАКТИКА</div><div class="g2-list">${PRACTICE.map(c => {
       const n = solvedOf(catLinks(c));
-      return `<a class="ap-cat" href="${c.href || '#practice/' + c.id}" style="--c:${c.c}"><span class="pcs">${art(c.ic)}</span>
-        <span class="tx"><b>${esc(c.t)}</b><small>${esc(c.s)}</small></span>${n ? `<span class="ap-cnt">✓ ${n}</span>` : ''}<span class="chev">›</span></a>`;
+      return `<a class="g2-item" href="${c.href || '#practice/' + c.id}" style="--c:${c.c}"><span class="g2-ic pcs">${art(c.ic)}</span>
+        <span class="g2-tx"><span class="g2-t"><b>${esc(c.t)}</b>${n ? `<em>✓ ${n}</em>` : ''}</span><small>${esc(c.s)}</small></span>${CHEV}</a>`;
     }).join('')}</div>`;
     return;
   }
-  $('view-practice').innerHTML = `<div class="ap-subhead"><a class="ap-backbtn" href="#practice" aria-label="Назад">‹</a><span class="pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>` +
-    cat.groups.map(([h, items]) => `${h ? `<h3 class="ap-h3">${esc(h)}</h3>` : ''}<div class="ap-tiles ap-subtiles">${items.map(([ic, t, sub, href]) => {
+  $('view-practice').innerHTML = `<div class="g2-sub"><a class="g2-back" href="#practice" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><span class="g2-ic pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>` +
+    cat.groups.map(([h, items]) => `${h ? `<h3 class="g2-h3">${esc(h)}</h3>` : ''}<div class="g2-tiles">${items.map(([ic, t, sub, href]) => {
       const n = solvedOf([href]), k = href.startsWith('chess-puzzles/') && href.split('#')[1], tot = k && puzTotal && puzTotal[k];
-      // задачі: «✅ 2 / 35» і смужка — скільки розв'язано з усіх
-      const prog = tot ? `<span class="ap-prog${n >= tot ? ' all' : ''}"><span>✅ ${n} / ${tot}</span><i style="width:${Math.round(100 * n / tot)}%"></i></span>` : n ? `<span class="ap-cnt">✓ ${n}</span>` : '';
-      return `<a class="ap-tile" href="${href}" style="--c:${cat.c}"><span class="pcs">${art(ic)}</span><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}${prog}</a>`;
+      // задачі: «2 / 35» і смужка — скільки розв'язано з усіх
+      const prog = tot ? `<span class="g2-prog${n >= tot ? ' all' : ''}"><span>${n} / ${tot}</span><i><i style="width:${Math.max(2, Math.round(100 * n / tot))}%"></i></i></span>` : n ? `<span class="g2-cnt">✓ ${n}</span>` : '';
+      return `<a class="g2-tile" href="${href}" style="--c:${cat.c}"><span class="g2-ic pcs">${art(ic)}</span><span class="g2-tx"><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${prog}</a>`;
     }).join('')}</div>`).join('');
 }
 
