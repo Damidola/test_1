@@ -6,16 +6,16 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Як ходять фігури</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790370967">
-  <link rel="stylesheet" href="../shared/play.css?v=1790370967">
-  <link rel="stylesheet" href="lila-learn.css?v=1790370967">
-  <link rel="stylesheet" href="learn.css?v=1790370967">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790372439">
+  <link rel="stylesheet" href="../shared/play.css?v=1790372439">
+  <link rel="stylesheet" href="lila-learn.css?v=1790372439">
+  <link rel="stylesheet" href="learn.css?v=1790372439">
 </head>
 <body data-asset-url=".">
   <main id="main-wrap"><div id="learn-app"></div></main>
-  <script src="../shared/games.js?v=1790370967"></script>
-  <script src="../shared/kit.js?v=1790370967" data-game="learn" data-night="on"></script>
-  <script type="module" src="app.js?v=1790370967"></script>
+  <script src="../shared/games.js?v=1790372439"></script>
+  <script src="../shared/kit.js?v=1790372439" data-game="learn" data-night="on"></script>
+  <script type="module" src="app.js?v=1790372439"></script>
 
   <style>
     .lv-vid { position: fixed; inset: 0; z-index: 3000; display: flex; flex-direction: column; align-items: center; padding: 12px 0 16px; background: #1B2133; overflow: auto; }
@@ -28,11 +28,12 @@
     // відео-знайомство з фігурою перед першим проходженням уроку (плейлист ChessKid)
     (function () {
       const V = { 2: ['bishop', 'MKLW3oh7_wE', 'Знайомся зі слоном!'], 3: ['queen', '4wnfdWWiv3w', 'Знайомся з ферзем!'], 4: ['king', 'KVeMgVMslNM', 'Знайомся з королем!'], 5: ['knight', 'pbMAQk-5bHU', 'Знайомся з конем!'], 6: ['pawn', 'e015cjCtkl8', 'Знайомся з пішаком!'] };
+      let last = null;
       function check() {
-        document.querySelector('.lv-vid')?.remove();
-        const v = V[(location.hash.match(/^#\/(\d+)/) || [])[1]]; if (!v) return;
-        let prog = {}; try { prog = JSON.parse(localStorage.getItem('chk.learn.progress')) || {}; } catch (e) { /* */ }
-        if (prog.stages && prog.stages[v[0]] && prog.stages[v[0]].scores.some(x => x)) return;
+        const id = (location.hash.match(/^#\/(\d+)/) || [])[1];
+        if (id === last) return; // перехід між рівнями того ж уроку — без відео
+        last = id; document.querySelector('.lv-vid')?.remove();
+        const v = V[id]; if (!v) return;
         const o = document.createElement('div'); o.className = 'lv-vid';
         o.innerHTML = '<h2></h2><div class="lv-vid-box"><iframe src="https://www.youtube-nocookie.com/embed/' + v[1] + '?playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Відео"></iframe></div><button type="button">До вправ ▶️</button>';
         o.querySelector('h2').textContent = v[2];
