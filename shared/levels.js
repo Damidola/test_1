@@ -54,7 +54,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790318855').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1790319626').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';

@@ -185,13 +185,11 @@ build('dg', 'doge',
   <rect x="134" y="102" width="10" height="6" fill="#fff" opacity=".8"/><rect x="220" y="102" width="10" height="6" fill="#fff" opacity=".8"/></g>""",
       eye=(46, 174, 21, 23, 12), iris='#4a2a12', brow='#9c5a22', mouth=(270, 24), fur='#e39a4c', paw='#fbecd6', pad='#c98f55', blush=214, blush_dx=74)
 
-# ---------- Тун-тун-тун-сахур: дерев'яний чоловічок-колода з битою ----------
+# ---------- Тун-тун-тун-сахур: дерев'яний чоловічок-колода ----------
 build('tt', 'tung',
       back="""
   <path d="M110 400 L116 320 C150 306 250 306 284 320 L290 400 Z" fill="#b07a45"/>
-  <path d="M140 330 v70 M200 322 v78 M260 330 v70" stroke="#8a5a2e" stroke-width="4" opacity=".5"/>
-  <!-- бита -->
-  <g transform="rotate(-24 332 360)"><path d="M322 400 L326 300 C326 280 346 280 346 300 L346 400 Z" fill="#d8a765" stroke="#9a6a34" stroke-width="3"/><rect x="322" y="376" width="24" height="10" fill="#9a6a34"/></g>""",
+  <path d="M140 330 v70 M200 322 v78 M260 330 v70" stroke="#8a5a2e" stroke-width="4" opacity=".5"/>""",
       head="""
   <path d="M112 90 C112 70 150 60 200 60 C250 60 288 70 288 90 L292 300 C292 320 250 330 200 330 C150 330 108 320 108 300 Z" fill="#c68d52"/>
   <ellipse cx="200" cy="72" rx="88" ry="16" fill="#e0ad72"/><ellipse cx="200" cy="72" rx="60" ry="9" fill="none" stroke="#b07a45" stroke-width="3"/><ellipse cx="200" cy="72" rx="32" ry="5" fill="none" stroke="#b07a45" stroke-width="3"/>
