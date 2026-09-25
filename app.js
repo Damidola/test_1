@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790377574';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790377574';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790377574';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790379803';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790379803';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790379803';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -74,22 +74,13 @@ window.addEventListener('resize', () => requestAnimationFrame(drawRoad));
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(drawRoad)).observe($('road'));
 window.addEventListener('pageshow', () => requestAnimationFrame(drawRoad));
 const row = ([e, t, href, kind], sub) => `<a class="ap-row${seen.has(href) ? ' seen' : ''}" href="${href}"><span class="ic" style="--c:${KIND[kind || 'learn'][0]}">${e}</span><span>${esc(t)}<small>${esc(sub || KIND[kind || 'learn'][1])}</small></span><span class="go">${seen.has(href) ? '✓' : '›'}</span></a>`;
-function openStep(i) {
-  $('card').onclick = null;
-  const [ic, title, sub, links] = STEPS[i], sec = secOf(i);
-  $('card').innerHTML = `<div class="ap-card-head"><span class="ap-dot" style="--c:${sec[2]}">${icon(ic)}</span><div><h2>${i + 1}. ${esc(title)}</h2><p>${esc(sub)}</p></div></div>` + links.map(l => row(l)).join('');
-  $('sheet').hidden = false;
-}
 $('road').addEventListener('click', e => {
   const n = e.target.closest('.ap-node'); if (!n) return;
   LG.store.set('learn:sec', curSec); // повернутись із уроку саме в цей розділ
   const links = STEPS[+n.dataset.i][3];
-  if (links.length === 1) { // один пункт — одразу його, без аркуша
-    const href = links[0][2]; seen.add(href); LG.store.set('path:seen', [...seen]);
-    if (href.startsWith("#")) location.hash = href; else LG.go(href);
-    return;
-  }
-  openStep(+n.dataset.i);
+  const href = (links.find(l => !seen.has(l[2])) || links[0])[2];
+  seen.add(href); LG.store.set('path:seen', [...seen]);
+  if (href.startsWith("#")) location.hash = href; else LG.go(href);
 });
 const goSec = si => { if (si < 0 || si >= SECTIONS.length || si === curSec) return; curSec = si; LG.store.set('learn:sec', si); LG.play('tap'); renderLearn(); gate($('view-learn')); };
 $('secbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) goSec(+b.dataset.s); });
