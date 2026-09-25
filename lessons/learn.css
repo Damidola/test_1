@@ -85,7 +85,7 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   .lg-run-top .lg-run-menu { flex: none; width: 46px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: rgba(255,255,255,.07); color: #fff; font-size: 22px; }
   .learn--run .learn__table .progress, .learn--run .learn__table .lg-demo-open { display: none; }
   /* розмір дошки не залежить від того, скільки тексту в учителя (приклад із кнопками вищий) — дошка не стрибає й не лізе під кнопки */
-  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--fs-top, 0px) - var(--lg-bar-h, 38px) - 20px - 62px - max(clamp(84px, min(30vw, 15svh), 140px), 150px) - 30px)); }
+  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--fs-top, 0px) - var(--lg-bar-h, 38px) - 20px - 62px - clamp(84px, min(30vw, 15svh), 140px) - 30px)); }
   .learn--run .learn__table { margin: 0; }
   .learn--run .learn__table .goal { font-size: 16px; font-weight: 700; padding: 8px 10px; min-height: 0; }
   /* слова вчителя — не довше 4 рядків */

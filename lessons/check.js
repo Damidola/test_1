@@ -2,9 +2,9 @@
    потім прості завдання: 2 — «постав шах», по 3 — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790334661';
-import { goNext, markSeen } from '../shared/path.js?v=1790334661';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790334661';
+import { createBoard } from '../shared/board.js?v=1790334895';
+import { goNext, markSeen } from '../shared/path.js?v=1790334895';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790334895';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();
@@ -79,12 +79,17 @@ function onMove(from, to) {
   setTimeout(() => { show(pos); board.setMovable('white', compat.chessgroundDests(pos)); if (idx === 0) arrows(); lock = false; }, 1100);
 }
 
-$('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.redraw(); idx = lv.open(); load(); });
+// Урок одразу починається із завдання; пояснення (📖 внизу) відкривається поверх і закривається тією ж кнопкою
+let started = false;
+const startTasks = () => { main.dataset.step = 'tasks'; board.redraw(); if (started) return; started = true; idx = lv.open(); load(); };
+$('go').addEventListener('click', startTasks);
+$('go').textContent = 'Зрозуміло 👍';
+setTimeout(startTasks, 0);
 $('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });
 // Нижня панель: 💡 — хід-підказка, 📖 — що таке шах
-LG.onExplain(() => { main.dataset.step = 'intro'; });
+LG.onExplain(() => { if (main.dataset.step === 'intro') startTasks(); else main.dataset.step = 'intro'; });
 LG.onHint(() => {
   if (main.dataset.step === 'intro' || done) return;
   const t = TASKS[idx];

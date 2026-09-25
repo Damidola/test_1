@@ -35,13 +35,14 @@ export class RunCtrl {
     clearTimeouts();
 
     this.initializeLevel();
-    // Нижня панель сайту: 📖 — приклад етапу (або правило), підказок в уроках Lichess немає
+    // Нижня панель сайту: 📖 «Пояснення» — сторінка з поясненням етапу (текст і схема, як ходить фігура).
+    // Урок одразу починається із завдання — без обов'язкового прикладу.
     const LG = (window as any).LG;
     LG?.onExplain?.(() => {
-      if (this.hasDemo()) return this.replayDemo();
       const box = document.createElement('div');
-      box.className = 'lg-rules';
-      box.innerHTML = `<h2>${this.stage.title}</h2><p style="font-size:17px;line-height:1.45">${this.stage.intro.replace(/\n/g, '<br>')}</p>`;
+      box.className = 'lg-rules lg-explain';
+      box.innerHTML = `<h2>${this.stage.title}</h2>` + explainDiagrams(this.stage.key) +
+        `<p style="font-size:17px;line-height:1.45">${this.stage.intro.replace(/\n/g, '<br>')}</p>`;
       const ok = document.createElement('button');
       ok.className = 'lg-btn lg-btn-primary lg-btn-wide'; ok.textContent = 'Зрозуміло!'; ok.onclick = () => LG.closeModal();
       box.appendChild(ok);
@@ -88,7 +89,6 @@ export class RunCtrl {
     if (!this.opts.stageId) return;
     this.demo(false);
     this.demoToken++;
-    if (!restarting && this.levelCtrl.blueprint.id === 1 && this.hasDemo()) return this.startDemo();
     if (this.stageStarting()) stageStart();
     else this.levelCtrl.start();
   };
@@ -161,4 +161,33 @@ export class RunCtrl {
     this.initializeLevel(true);
     this.redraw();
   };
+}
+
+// ---------- схема для «Пояснення»: фігура на порожній дошці й крапки там, куди вона ходить ----------
+const MOVES: Record<string, [string, number, number, [number, number][], boolean]> = {
+  // ключ етапу: [фігура, стовпчик, рядок (0 — знизу), напрямки, далеко?]
+  rook: ['R', 3, 3, [[1, 0], [-1, 0], [0, 1], [0, -1]], true],
+  bishop: ['B', 3, 3, [[1, 1], [-1, 1], [1, -1], [-1, -1]], true],
+  queen: ['Q', 3, 3, [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]], true],
+  king: ['K', 3, 3, [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]], false],
+  knight: ['N', 3, 3, [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]], false],
+  pawn: ['P', 3, 1, [[0, 1], [0, 2]], false],
+};
+function explainDiagrams(key: string): string {
+  const m = MOVES[key];
+  if (!m) return '';
+  const [role, fx, fy, dirs, slide] = m;
+  const set = (window as any).LG?.pieceSet?.() || 'cburnett';
+  const dots: [number, number][] = [];
+  for (const [dx, dy] of dirs) for (let k = 1; k < (slide ? 8 : 2); k++) {
+    const x = fx + dx * k, y = fy + dy * k;
+    if (x < 0 || x > 7 || y < 0 || y > 7) break;
+    dots.push([x, y]);
+  }
+  let sq = '';
+  for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++)
+    sq += `<rect x="${x}" y="${7 - y}" width="1" height="1" fill="${(x + y) % 2 ? '#f0d9b5' : '#b58863'}"/>`;
+  const dd = dots.map(([x, y]) => `<circle cx="${x + 0.5}" cy="${7 - y + 0.5}" r=".17" fill="rgba(20,85,30,.6)"/>`).join('');
+  const pc = `<image href="../shared/pieces/${set}/w${role}.svg" x="${fx}" y="${7 - fy}" width="1" height="1"/>`;
+  return `<svg viewBox="0 0 8 8" style="display:block;width:min(100%,300px);margin:6px auto 10px;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.3)">${sq}${dd}${pc}</svg>`;
 }

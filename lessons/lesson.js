@@ -1,10 +1,10 @@
 /* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, parseUci, makeUci, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790334661';
-import { LESSONS } from './lessons.js?v=1790334661';
-import { goNext, markSeen } from '../shared/path.js?v=1790334661';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790334661';
+import { createBoard } from '../shared/board.js?v=1790334895';
+import { LESSONS } from './lessons.js?v=1790334895';
+import { goNext, markSeen } from '../shared/path.js?v=1790334895';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790334895';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
@@ -139,11 +139,16 @@ function next() {
 $('title').textContent = lesson.title;
 $('intro-text').innerHTML = lesson.intro;
 document.title = lesson.title;
-$('go').addEventListener('click', () => { main.dataset.step = 'items'; board.redraw(); idx = lv.open(); load(); });
+// Урок одразу починається із завдання; пояснення (📖 внизу) відкривається поверх і закривається тією ж кнопкою
+let started = false;
+const startTasks = () => { main.dataset.step = 'items'; board.redraw(); if (started) return; started = true; idx = lv.open(); load(); };
+$('go').addEventListener('click', startTasks);
+$('go').textContent = 'Зрозуміло 👍';
+setTimeout(startTasks, 0);
 $('again').addEventListener('click', () => load());
 $('rules').addEventListener('click', () => { token++; main.dataset.step = 'intro'; });
 // Нижня панель: 📖 — правило уроку, 💡 — яка фігура ходить (вдруге — куди)
-LG.onExplain(() => { token++; main.dataset.step = 'intro'; });
+LG.onExplain(() => { token++; if (main.dataset.step === 'intro') startTasks(); else main.dataset.step = 'intro'; });
 let hintStage = 0, hintFor = -1;
 LG.onHint(() => {
   const it = items[idx]; if (main.dataset.step === 'intro' || !it || !it.task || done) return;

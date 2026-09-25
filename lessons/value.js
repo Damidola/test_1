@@ -1,9 +1,9 @@
 /* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 10 коротких завдань «побий найдорожчу».
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790334661';
-import { goNext, markSeen } from '../shared/path.js?v=1790334661';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790334661';
+import { createBoard } from '../shared/board.js?v=1790334895';
+import { goNext, markSeen } from '../shared/path.js?v=1790334895';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790334895';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
@@ -91,12 +91,17 @@ function onMove(from, to) {
   setTimeout(() => { board.setPosition(pcs, {}); board.setMovable('white', caps); lock = false; }, 900);
 }
 
-$('go').addEventListener('click', () => { main.dataset.step = 'tasks'; board.redraw(); idx = lv.open(); load(); });
+// Урок одразу починається із завдання; пояснення (📖 внизу) відкривається поверх і закривається тією ж кнопкою
+let started = false;
+const startTasks = () => { main.dataset.step = 'tasks'; board.redraw(); if (started) return; started = true; idx = lv.open(); load(); };
+$('go').addEventListener('click', startTasks);
+$('go').textContent = 'Зрозуміло 👍';
+setTimeout(startTasks, 0);
 $('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });
 // Нижня панель: 💡 — яку фігуру бити, 📖 — правило
-LG.onExplain(() => { main.dataset.step = 'intro'; });
+LG.onExplain(() => { if (main.dataset.step === 'intro') startTasks(); else main.dataset.step = 'intro'; });
 LG.onHint(() => {
   if (main.dataset.step === 'intro' || done) return;
   const pcs = position(TASKS[idx]), caps = captures(pcs), top = best(pcs, caps);
