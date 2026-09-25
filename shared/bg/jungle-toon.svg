@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+<!-- Джунглі для мультяшної мавпочки: світло крізь листя, ліани гойдаються, метелик пурхає -->
+<style>
+.v{transform-box:fill-box;transform-origin:50% 0;animation:sw 4s ease-in-out infinite}
+.v2{animation-duration:5.2s;animation-delay:-1.3s}.v3{animation-duration:4.6s;animation-delay:-2.4s}
+@keyframes sw{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.lf{transform-box:fill-box;transform-origin:50% 100%;animation:lf 6s ease-in-out infinite}
+.lf2{animation-delay:-3s}
+@keyframes lf{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.bf{animation:bf 9s ease-in-out infinite}
+@keyframes bf{0%{transform:translate(120px,150px)}25%{transform:translate(260px,90px)}50%{transform:translate(420px,130px)}75%{transform:translate(600px,80px)}100%{transform:translate(120px,150px)}}
+.wing{transform-box:fill-box;transform-origin:100% 50%;animation:wg .25s ease-in-out infinite alternate}
+.wing2{transform-origin:0 50%}
+@keyframes wg{to{transform:scaleX(.3)}}
+.ray{animation:ry 7s ease-in-out infinite}
+@keyframes ry{0%,100%{opacity:.18}50%{opacity:.32}}
+</style>
+<defs>
+<linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfeecb"/><stop offset=".6" stop-color="#7fd39a"/><stop offset="1" stop-color="#4fb37a"/></linearGradient>
+<radialGradient id="sun" cx=".5" cy=".15" r=".6"><stop offset="0" stop-color="#fff7c2" stop-opacity=".9"/><stop offset="1" stop-color="#fff7c2" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="800" height="320" fill="url(#sk)"/>
+<rect width="800" height="320" fill="url(#sun)"/>
+<g class="ray" fill="#fffbe0"><path d="M400 0 L330 320 L380 320 Z"/><path d="M420 0 L470 320 L520 320 Z"/><path d="M380 0 L220 320 L250 320 Z"/></g>
+<!-- дальні дерева -->
+<g fill="#5cbf83"><ellipse cx="60" cy="200" rx="110" ry="90"/><ellipse cx="220" cy="230" rx="120" ry="80"/><ellipse cx="600" cy="220" rx="130" ry="85"/><ellipse cx="760" cy="200" rx="110" ry="95"/></g>
+<g fill="#3fa46c"><ellipse cx="130" cy="270" rx="150" ry="70"/><ellipse cx="420" cy="290" rx="190" ry="60"/><ellipse cx="700" cy="275" rx="160" ry="70"/></g>
+<!-- стовбури -->
+<rect x="36" y="60" width="26" height="260" rx="10" fill="#7a4a24"/><rect x="742" y="40" width="30" height="280" rx="10" fill="#6d4020"/>
+<!-- ліани -->
+<g fill="none" stroke="#2e7d4f" stroke-width="5" stroke-linecap="round">
+ <path class="v" d="M150 0 C146 60 158 110 150 170"/>
+ <path class="v v2" d="M300 0 C306 40 296 80 302 118"/>
+ <path class="v v3" d="M560 0 C552 70 566 120 558 190"/>
+ <path class="v v2" d="M680 0 C686 50 676 90 682 140"/>
+</g>
+<g fill="#39a35f">
+ <g class="v"><ellipse cx="160" cy="70" rx="14" ry="7" transform="rotate(30 160 70)"/><ellipse cx="140" cy="120" rx="14" ry="7" transform="rotate(-30 140 120)"/><ellipse cx="158" cy="160" rx="14" ry="7" transform="rotate(25 158 160)"/></g>
+ <g class="v v3"><ellipse cx="568" cy="80" rx="14" ry="7" transform="rotate(30 568 80)"/><ellipse cx="548" cy="140" rx="14" ry="7" transform="rotate(-30 548 140)"/><ellipse cx="566" cy="180" rx="14" ry="7" transform="rotate(25 566 180)"/></g>
+</g>
+<!-- верхнє листя -->
+<g fill="#2f8f55"><ellipse cx="40" cy="10" rx="120" ry="45"/><ellipse cx="240" cy="-5" rx="140" ry="40"/><ellipse cx="520" cy="-8" rx="160" ry="42"/><ellipse cx="770" cy="12" rx="120" ry="48"/></g>
+<g fill="#257a47"><ellipse cx="120" cy="18" rx="80" ry="26"/><ellipse cx="660" cy="20" rx="90" ry="28"/></g>
+<!-- квіти -->
+<g><circle cx="96" cy="250" r="9" fill="#ff6fa3"/><circle cx="96" cy="250" r="4" fill="#ffe066"/><circle cx="706" cy="240" r="10" fill="#ff8a3d"/><circle cx="706" cy="240" r="4" fill="#ffe066"/><circle cx="640" cy="286" r="8" fill="#ff6fa3"/><circle cx="640" cy="286" r="3" fill="#ffe066"/></g>
+<!-- великі листки по краях -->
+<g class="lf" fill="#1f7a43"><path d="M-10 320 C10 250 70 220 120 230 C90 250 60 280 40 320 Z"/><path d="M40 320 C60 270 110 250 160 262 C130 275 100 295 90 320 Z"/></g>
+<g class="lf lf2" fill="#1f7a43"><path d="M810 320 C790 250 730 220 680 230 C710 250 740 280 760 320 Z"/><path d="M760 320 C740 270 690 250 640 262 C670 275 700 295 710 320 Z"/></g>
+<!-- метелик -->
+<g class="bf"><path class="wing" d="M0 0 C-14 -14 -18 6 0 4 Z" fill="#ffb703"/><path class="wing wing2" d="M0 0 C14 -14 18 6 0 4 Z" fill="#fb8500"/><rect x="-1.5" y="-4" width="3" height="10" rx="1.5" fill="#3d2b1f"/></g>
+</svg>

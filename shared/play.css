@@ -48,8 +48,11 @@ html.lg .lg-bar .lg-bar-title { font-size: clamp(15px, 4.4vw, 20px); }
 .lg-hero-arrow.l { left: 2px; } .lg-hero-arrow.r { right: 2px; }
 /* мультяшний (SVG) суперник — без рамки, стоїть на низу сцени, як персонаж chess.com */
 .lg-hero.toon .lg-hero-pic { align-items: flex-end; }
+.lg-toon { display: block; pointer-events: auto; cursor: pointer; height: 100%; aspect-ratio: 1; }
+.lg-toon[hidden] { display: none; }
+.lg-toon > svg { display: block; width: 100%; height: 100%; }
 .lg-hero.toon .lg-hero-pic img { height: 100%; max-height: none; border-radius: 0; background: none; box-shadow: none; object-position: center bottom; }
-.lg-hero.toon.thinking img { box-shadow: none; filter: drop-shadow(0 0 10px var(--lg-sun)); }
+.lg-hero.toon.thinking img, .lg-hero.toon.thinking .lg-toon { box-shadow: none; filter: drop-shadow(0 0 10px var(--lg-sun)); }
 
 /* ---------- рахунок збитих ---------- */
 .lg-material {

@@ -9,7 +9,7 @@ const A = f => ROOT + 'shared/opponents/' + f;
 export const OPPONENTS = [
   ['Хом’ячок', 1, 'hamster.png', 'wildwest'],
   ['Капібара', 3, 'capybara.jpg', 'summer'], ['Сова', 3, 'owl.jpg', 'nightforest'], ['Кіт Очі-блюдця', 3, 'bigeyes.jpg', 'candy'],
-  ['Мавпочка', 2, 'monkey.jpg', 'jungle', 'center bottom'], // на фото зверху зайве порожнє тло — показуємо низ, тварина більша
+  ['Мавпочка', 2, 'toon-monkey.svg', 'jungle-toon'], // мультяшна (SVG): радіє, злиться, думає, говорить
   ['Зелений робот', 3, 'robot-green.jpg', 'space'],
   ['Кіт', 4, 'cat.jpg', 'room'], ['Драматичний мопс', 4, 'pug.jpg', 'stage'], ['Кіт Смадж', 4, 'smudge.jpg', 'kitchen'],
   ['Собака', 4, 'dog.jpg', 'beach'], ['Хитрий кіт', 4, 'evilcat.jpg', 'rooftops'],
@@ -25,7 +25,7 @@ const scene = n => ROOT + 'shared/bg/' + n + '.svg';
 // Репліки суперника (раз за партію — у хмаринці, як у коміксі)
 const LINES = {
   'hamster.png': ['Я сховав твого пішака за щічку! 🐹', 'Хрум-хрум… я думаю.'],
-  'monkey.jpg': ['Банан за гарний хід! 🍌', 'У-у-а-а! Я стрибаю, як кінь!'],
+  'toon-monkey.svg': ['Банан за гарний хід! 🍌', 'У-у-а-а! Я стрибаю, як кінь!'],
   'capybara.jpg': ['Я спокійна, як капібара у ванні 🛁', 'Не поспішаймо… ми ж капібари.'],
   'owl.jpg': ['Угу. Я бачу всю дошку, навіть уночі 🦉', 'Мудрі сови думають двічі.'],
   'bigeyes.jpg': ['Мої очі бачать УСІ ходи 👀', 'Ой, а що це ти задумав?'],
@@ -62,12 +62,15 @@ export function mountOpponent(el, opts = {}) {
   let level = 1;
   el.classList.add('lg-hero');
   el.innerHTML = `
-    <button type="button" class="lg-hero-pic" aria-label="Обрати суперника"><img alt=""></button>
+    <button type="button" class="lg-hero-pic" aria-label="Обрати суперника"><img alt=""><span class="lg-toon" hidden></span></button>
     <button type="button" class="lg-hero-arrow l" aria-label="Попередній суперник">‹</button>
     <button type="button" class="lg-hero-arrow r" aria-label="Наступний суперник">›</button>`;
   // Стрілки ‹ › — лише де просили (у грі з роботом їх немає: суперника обирають тапом по ньому)
   if (opts.arrows === false) el.querySelectorAll('.lg-hero-arrow').forEach(a => a.remove());
-  const pic = el.querySelector('.lg-hero-pic'), img = pic.querySelector('img');
+  const pic = el.querySelector('.lg-hero-pic'), img = pic.querySelector('img'), toon = pic.querySelector('.lg-toon');
+  // Мультяшні (SVG) — вбудовуємо в сторінку: тоді настрій (радіє / злиться / думає / говорить) міняється класом на панелі
+  const svgCache = {};
+  const loadSvg = url => (svgCache[url] = svgCache[url] || fetch(url).then(r => r.text()).catch(() => ''));
   const prev = el.querySelector('.l') || document.createElement('i'), next = el.querySelector('.r') || document.createElement('i');
 
   // Сцени й картинки вантажимо одразу — тоді нічого не блимає
@@ -96,6 +99,8 @@ export function mountOpponent(el, opts = {}) {
       el.style.setProperty('--pic-pos', o.pos);
       el.classList.toggle('toon', o.toon);
       img.src = o.avatar; img.alt = o.name;
+      if (o.toon) loadSvg(o.avatar).then(t => { if (OPPONENTS[index] !== o) return; toon.innerHTML = t; toon.hidden = !t; img.hidden = !!t; });
+      else { toon.hidden = true; toon.innerHTML = ''; img.hidden = false; }
       el.classList.remove('switching');
       requestAnimationFrame(placeArrows);
     };
@@ -125,6 +130,7 @@ export function mountOpponent(el, opts = {}) {
     if (e.target === picker || e.target.closest('.lg-picker-x')) closePicker();
   });
   img.addEventListener('click', openPicker);
+  toon.addEventListener('click', openPicker);
   prev.addEventListener('click', () => show(index - 1));
   next.addEventListener('click', () => show(index + 1));
 
@@ -135,7 +141,7 @@ export function mountOpponent(el, opts = {}) {
 
   // Хмаринка з реплікою, як у коміксі: хвостик — від рота тваринки, хмаринка — праворуч угору від нього.
   // Висить ~8 с і зникає (тап — сховати одразу).
-  let bubble = null, bubbleTimer = 0;
+  let bubble = null, bubbleTimer = 0, talkTimer = 0;
   function say(text) {
     if (el.hidden || !LG.store.get('oppSay', true)) return; // репліки можна вимкнути в Профілі
     const o = OPPONENTS[index], own = LINES[o.avatar.split('/').pop()] || [];
@@ -147,6 +153,7 @@ export function mountOpponent(el, opts = {}) {
     box.innerHTML = '<div class="lg-bubble"></div>';
     box.querySelector('.lg-bubble').textContent = text;
     box.addEventListener('click', () => hide());
+    el.classList.add('talking'); clearTimeout(talkTimer); talkTimer = setTimeout(() => el.classList.remove('talking'), 2600);
     el.appendChild(box);
     bubble = box;
     place(box);
@@ -161,11 +168,18 @@ export function mountOpponent(el, opts = {}) {
   // Репліка — плашкою внизу сцени на всю ширину (як на chess.com): мордочку не закриває
   function place(box) { box.querySelector('svg')?.remove(); }
 
+  let moodTimer = 0, baseMood = null;
   return {
     say,
     level: () => level,
     setLevel: l => { level = l; },
     setThinking: on => el.classList.toggle('thinking', !!on),
+    // Настрій мультяшного суперника: 'happy' | 'angry' | null; ms — лише на мить, потім повертається основний
+    setMood(m, ms) {
+      clearTimeout(moodTimer);
+      const put = x => { el.classList.remove('mood-happy', 'mood-angry'); if (x) el.classList.add('mood-' + x); };
+      if (ms) { put(m); moodTimer = setTimeout(() => put(baseMood), ms); } else { baseMood = m; put(m); }
+    },
     applyVisible
   };
 }

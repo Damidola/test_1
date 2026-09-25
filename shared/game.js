@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790316395';
-import { aiMove, hintMove } from './ai.js?v=1790316395';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790316395';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790317317';
+import { aiMove, hintMove } from './ai.js?v=1790317317';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790317317';
 
 const LG = window.LG;
 
@@ -185,6 +185,8 @@ export function startGame(cfg) {
 
   // ---------- ходи ----------
   function commit(move) {
+    // мультяшний суперник реагує на взяття: забрав твою фігуру — радіє, втратив свою — злиться
+    if (move.capture && !friend) hero.setMood(human(rules.turn(state())) ? 'angry' : 'happy', 1800);
     const next = rules.play(state(), move);
     next.lastMove = move.from && move.to ? [move.from, move.to] : state().lastMove;
     history = history.slice(0, pos + 1); // новий хід — «вперед» більше нікуди
@@ -252,13 +254,14 @@ export function startGame(cfg) {
     const autoClose = typeof cfg.autoClose === 'function' ? cfg.autoClose() : cfg.autoClose;
     if (autoClose) again.autoClose = autoClose; // швидкі ігри: вікно саме зникає
     if (friend && r.winner !== 'draw') return LG.win('Переможець: ' + names[r.winner] + '!', { ...again, reward: true });
+    if (!friend) hero.setMood(r.winner === 'draw' ? null : r.winner === player ? 'angry' : 'happy'); // програв — злиться, виграв — радіє
     if (r.winner === 'draw') LG.draw(r.text || 'Нічия!', again);
     else if (r.winner === player) LG.win(r.text || 'Перемога!', { ...again, reward: true });
     else LG.lose(r.text || 'Цього разу виграв суперник.', again);
   }
 
   function newGame() {
-    clearTimeout(aiTimer); thinking = false; over = false; hero.setThinking(false);
+    clearTimeout(aiTimer); thinking = false; over = false; hero.setThinking(false); hero.setMood(null);
     robotMoves = 0; sayAt = 2 + Math.floor(Math.random() * 5);
     history = [rules.initial(cfg.options ? cfg.options() : {})];
     pos = 0; lastHint = null;
@@ -282,6 +285,7 @@ export function startGame(cfg) {
     else render();
   }
   function undo() {
+    hero.setMood(null);
     if (friend) return;
     // Спершу знаходимо, куди повертатись (свій хід), — і лише тоді зупиняємо робота
     let p = pos - 1;
@@ -437,6 +441,7 @@ export function startGame(cfg) {
   applyHero();
   newGame(); paintLevel();
   window.lgSay = t => hero.say(t); // для тестів
+  window.lgMood = (m, ms) => hero.setMood(m, ms);
   window.lgGameDebug = () => ({ pos, len: history.length, thinking, over, player, turn: rules.turn(state()), movable: board && board.cg.state.movable.color, undosLeft, dests: Object.fromEntries(dests(state())) });
   return { newGame, state, board, setPlayer: c => { player = c; newGame(); } };
 }
