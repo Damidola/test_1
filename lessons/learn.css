@@ -220,8 +220,7 @@ html.lg body.lg-game.lg-game-learn { background: #1B2133 !important; }
   .lg-run-top .progress { gap: 6px !important; }
   .lg-run-top .progress a, .lg-run-top .progress .locked { width: 20px !important; height: 20px !important; font-size: 10px !important; }
   .lg-run-top .progress a.done::after { font-size: 11px !important; }
-  .learn .learn--run, .learn.learn--run { --teach-h: max(calc(clamp(84px, min(30vw, 15svh), 140px) + 12px), 118px);
-    --bw: min(100vw, calc(100svh - var(--lg-bar-h) - env(safe-area-inset-bottom) - var(--teach-h) - 58px - 26px)); }
+  .learn .learn--run, .learn.learn--run { --teach-h: max(calc(clamp(84px, min(30vw, 15svh), 140px) + 12px), 118px); }
   .learn--run .learn__main.main-board { max-width: none !important; margin: 0 auto !important; }
   .learn--run .learn__table .wrap { padding: 6px 8px !important; box-sizing: border-box; }
   .lg-run-top .progress a.done { color: transparent !important; }
