@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790346443';
-import { aiMove, hintMove } from './ai.js?v=1790346443';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790346443';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790352319';
+import { aiMove, hintMove } from './ai.js?v=1790352319';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790352319';
 
 const LG = window.LG;
 
@@ -147,7 +147,7 @@ export function startGame(cfg) {
       // Хід суперника: можна зробити хід наперед (синім) — зіграється, щойно суперник походить
       const pre = !mine && cfg.premove && !over && !friend && human(player);
       if (mine) board.setMovable(colorName(rules.turn(s)), dests(s));
-      else if (pre) board.setMovable(colorName(player), new Map(), colorName(rules.turn(s)));
+      else if (pre) { board.setMovable(colorName(player), new Map(), colorName(rules.turn(s))); if (rules.premovePos) board.cg.set({ premovable: { customDests: dests(rules.premovePos(s, player)) } }); }
       else { board.setMovable(null, new Map()); board.cg.cancelPremove(); }
       board.clearHint();
       if (rules.marks) board.marks(rules.marks(s));
@@ -309,7 +309,7 @@ export function startGame(cfg) {
       return html ? { html, mood, scene: getComputedStyle(slot).getPropertyValue('--scene') } : null;
     };
     if (r.winner === 'draw') LG.draw(r.text || 'Нічия!', { ...again, hero: heroOpt('') });
-    else if (r.winner === player) LG.win(r.text || 'Перемога!', { ...again, reward: true, hero: heroOpt('mood-angry') });
+    else if (r.winner === player) LG.win(r.text || 'Перемога!', { ...again, reward: true }); // перемога — смішна гіфка-нагорода, а не сердитий суперник
     else LG.lose(r.text || 'Цього разу виграв суперник.', { ...again, hero: heroOpt('mood-happy') });
   }
 

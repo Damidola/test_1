@@ -1,7 +1,7 @@
 /* Шахи за правилами Lichess (chessops): шах, мат, пат, рокіровка, взяття на проході.
    Пішак, що дійшов до кінця, одразу стає ферзем. */
 import { Chess, makeSquare, fen, attacks } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { bestUci } from '../shared/engine.js?v=1790346443';
+import { bestUci } from '../shared/engine.js?v=1790352319';
 const { makeFen } = fen;
 
 const VALUE = { pawn: 100, knight: 300, bishop: 320, rook: 500, queen: 900, king: 0 };
@@ -151,6 +151,8 @@ export function createRules() {
   return {
     initial: () => Chess.default(),
     moves, play, result, evaluate, captured,
+    // хід наперед (синім): лише туди, куди фігура справді може піти в цій позиції (як зелені крапки), а не будь-куди
+    premovePos: (pos, color) => { const p = pos.clone(); p.turn = color === 'w' ? 'white' : 'black'; return p; },
     turn: pos => side(pos.turn),
     key: pos => makeFen(pos.toSetup()),
     check: pos => (pos.isCheck() ? pos.turn : false),
