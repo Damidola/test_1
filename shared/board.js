@@ -39,6 +39,7 @@ export function applyBoardLook() {
    — коли наша фігура на дошці одна, тап по будь-якій клітинці, куди вона може піти, одразу робить хід. */
 export function lichessTouch(cg) {
   const wrap = cg.state.dom.elements.wrap;
+  fitBoard(wrap.closest('.lg-board-wrap, .learn__main'));
   // Зелені крапки ходів можна повністю вимкнути в Профілі — тоді жодна гра чи урок їх не вмикає
   const dotsOff = () => { try { return localStorage.getItem('chk:showDests') === 'false'; } catch (e) { return false; } };
   const set = cg.set;
@@ -96,6 +97,45 @@ export function lichessTouch(cg) {
   };
   window.addEventListener('pointerup', up, true);
   window.addEventListener('pointercancel', up, true);
+}
+
+/* Один розмір дошки для всіх сторінок: на всю ширину екрана (до 560px), але так, щоб усе під дошкою
+   (текст завдання, кнопки гри) вміщалося над нижньою панеллю. Меряє реальну сторінку — без формул під кожну сторінку. */
+export function fitBoard(box) {
+  if (!box || box.closest('.kt-crop') || box.dataset.fit) return;
+  box.dataset.fit = '1';
+  const host = box.closest('main, .learn--run') || box.parentElement;
+  const limit = () => { const nav = document.querySelector('.lg-nav'); return (nav && nav.offsetParent !== null ? nav.getBoundingClientRect().top : innerHeight) - 4; };
+  const contentBottom = () => {
+    let b = 0;
+    for (const c of host.querySelectorAll(':scope > *, :scope > * > .lg-controls')) {
+      const cs = getComputedStyle(c);
+      if (cs.position === 'fixed' || cs.position === 'absolute' || cs.display === 'none' || !c.offsetHeight) continue;
+      b = Math.max(b, c.getBoundingClientRect().bottom);
+    }
+    return b;
+  };
+  let busy = false;
+  const fit = () => {
+    if (busy || !box.isConnected) return;
+    // лише телефон вертикально; на планшеті/комп'ютері — розкладка сторінки як є
+    if (innerWidth > 799 || innerWidth > innerHeight) { box.style.width = ''; return; }
+    busy = true;
+    const vw = document.documentElement.clientWidth, full = Math.min(vw, 560);
+    let s = full;
+    for (let i = 0; i < 5; i++) {
+      box.style.width = s + 'px';
+      const over = contentBottom() - limit();
+      if (over <= 0.5) break;
+      s = Math.max(200, Math.floor(s - over));
+    }
+    busy = false;
+  };
+  const again = () => requestAnimationFrame(fit);
+  addEventListener('resize', again);
+  if (window.ResizeObserver) { const ro = new ResizeObserver(again); for (const c of host.children) if (c !== box) ro.observe(c); ro.observe(host); }
+  if (document.fonts) document.fonts.ready.then(again);
+  again(); setTimeout(fit, 300);
 }
 
 /* createBoard(el, { orientation, onMove(orig, dest) })

@@ -10,6 +10,7 @@ import { STEPS } from '../shared/path.js';
 const require = createRequire(import.meta.url);
 let pw; try { pw = require('playwright'); } catch { pw = require('/opt/node22/lib/node_modules/playwright'); }
 const ROOT = new URL('..', import.meta.url).pathname, SHOTS = process.argv[2];
+if (SHOTS) (await import('node:fs')).mkdirSync(SHOTS, { recursive: true });
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.webmanifest': 'application/json' };
 const server = http.createServer(async (req, res) => {
   const p = decodeURIComponent(req.url.split('?')[0]);
