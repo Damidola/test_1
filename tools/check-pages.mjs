@@ -18,7 +18,7 @@ const server = http.createServer(async (req, res) => {
 }).listen(0);
 const base = `http://localhost:${server.address().port}/`;
 // бібліотеки з CDN — з node_modules (у пісочниці немає доступу до CDN)
-const chessops = (await build({ entryPoints: [require.resolve('chessops')], bundle: true, format: 'esm', write: false })).outputFiles[0].text;
+const chessops = (await build({ entryPoints: [join(ROOT, 'node_modules/chessops/dist/esm/index.js')], bundle: true, format: 'esm', write: false })).outputFiles[0].text;
 const cg = join(ROOT, 'node_modules/@lichess-org/chessground');
 
 const pages = new Set(['index.html#learn', 'index.html#practice', 'chess/index.html', 'pawns/index.html', 'pieces-vs-pawns/index.html#q_p8', 'chess-puzzles/index.html#m1rook']);
@@ -44,7 +44,7 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
     if (board) {
       if (board.width < vw - 8 && board.bottom < navTop - 8) out.push(`дошка вузька: ${Math.round(board.width)}/${vw}, хоча знизу є місце`);
       if (board.bottom > navTop + 1) out.push(`дошка під кнопками на ${Math.round(board.bottom - navTop)}px`);
-      if (board.top < 0) out.push('дошка обрізана згори');
+      if (board.top < 0 && !document.querySelector('.kt-crop')) out.push('дошка обрізана згори');
     }
     for (const el of document.querySelectorAll('.lg-teacher, .lv-bar .lv, .lg-run-top .progress a')) {
       const r = el.getBoundingClientRect(); if (!r.width) continue;
