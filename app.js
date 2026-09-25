@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790365725';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790365725';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790365725';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790365795';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790365795';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790365795';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -284,7 +284,7 @@ function renderProfile() {
     document.addEventListener('fullscreenchange', paintFs);
   }
   sw('p-dots', 'showDests', true); sw('p-coords', 'coords', true);
-  $('p-coords').addEventListener('click', () => document.documentElement.classList.toggle('lg-nocoords', !LG.store.get('coords', true))); sw('p-say', 'oppSay', false); // репліки суперника типово вимкнені
+  $('p-coords').addEventListener('click', () => document.documentElement.classList.toggle('lg-nocoords', !LG.store.get('coords', true))); sw('p-say', 'oppSay', true); // репліки суперника типово ввімкнені
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); const em = $('view-profile').querySelector('.mg-more em'); if (em) em.firstChild.textContent = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`; }));

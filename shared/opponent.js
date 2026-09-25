@@ -181,7 +181,7 @@ export function mountOpponent(el, opts = {}) {
   // Висить ~8 с і зникає (тап — сховати одразу).
   let bubble = null, bubbleTimer = 0, talkTimer = 0;
   function say(text) {
-    if (el.hidden || !LG.store.get('oppSay', false)) return; // репліки типово вимкнені — вмикаються в Профілі
+    if (el.hidden || !LG.store.get('oppSay', true)) return; // репліки типово ввімкнені — вимикаються в Профілі
     const o = OPPONENTS[index], own = LINES[o.avatar.split('/').pop().split('?')[0]] || [];
     const pool = own.length && Math.random() < 0.55 ? own : GENERIC;
     text = text || pool[Math.floor(Math.random() * pool.length)];
