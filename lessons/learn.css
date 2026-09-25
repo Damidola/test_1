@@ -150,3 +150,11 @@ html.lg body.lg-game.lg-game-learn { --c-bg-page: #16152F; --c-body-gradient: #2
   .learn--run .learn__table .goal { font-size: 14px; padding: 6px 9px; }
   .learn--run .learn__table .goal p { -webkit-line-clamp: 3; }
 }
+/* координати за межами дошки: цифри ліворуч, літери під дошкою (як у грі з роботом) */
+.learn__main.main-board { aspect-ratio: 1 / 1.006; }
+.learn__main.main-board > .cg-wrap { inset: 0 auto auto 14px; width: calc(100% - 14px); height: auto; aspect-ratio: 1; }
+.learn__main .cg-wrap coords coord { color: #a9a7d6 !important; text-shadow: none; }
+.learn__main .cg-wrap coords.ranks { left: -13px; right: auto; top: 0; width: 12px; height: 100%; text-align: center; }
+.learn__main .cg-wrap coords.ranks coord { display: flex; align-items: center; justify-content: center; }
+.learn__main .cg-wrap coords.files { bottom: -16px; top: auto; left: 0; height: 15px; }
+.learn__main .cg-wrap coords.files coord { padding-left: 0; text-align: center; }

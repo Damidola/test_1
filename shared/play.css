@@ -273,3 +273,13 @@ cg-board square.oc.premove-dest { background: radial-gradient(transparent 0%, tr
 .lv-hint { font: 800 14px var(--lg-font); color: #f5c542; }
 /* дошка під вчителем — менша на низьких екранах, щоб не залазила під нижні кнопки */
 html.lg .lg-play:has(> .lv-teach) .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - env(safe-area-inset-bottom) - 56px - clamp(84px, min(28vw, 16svh), 130px) - 130px)); }
+
+/* координати — ЗА межами дошки: цифри ліворуч, літери під дошкою (як у шахових застосунках) */
+.lg-board-wrap:has(> .lg-board-el) { aspect-ratio: auto; height: auto; }
+.lg-board-wrap > .lg-board-el { box-sizing: border-box; width: calc(100% - 14px); height: auto; aspect-ratio: 1; margin: 0 0 16px 14px; }
+.lg-board-wrap > .lg-board-el.cg-wrap coords { color: #a9a7d6; }
+.lg-board-wrap > .lg-board-el.cg-wrap coords coord { color: #a9a7d6 !important; text-shadow: none; }
+.lg-board-wrap > .lg-board-el.cg-wrap coords.ranks { left: -13px; right: auto; top: 0; width: 12px; text-align: center; }
+.lg-board-wrap > .lg-board-el.cg-wrap coords.ranks coord { display: flex; align-items: center; justify-content: center; }
+.lg-board-wrap > .lg-board-el.cg-wrap coords.files { bottom: -16px; height: 15px; }
+.lg-board-wrap > .lg-board-el.cg-wrap coords.files coord { padding-left: 0; text-align: center; }

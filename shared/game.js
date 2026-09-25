@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790333591';
-import { aiMove, hintMove } from './ai.js?v=1790333591';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790333591';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790333719';
+import { aiMove, hintMove } from './ai.js?v=1790333719';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790333719';
 
 const LG = window.LG;
 
@@ -365,9 +365,9 @@ export function startGame(cfg) {
   if (cfg.navOnly) {
     root.querySelector('.lg-controls').hidden = true;
     root.classList.add('lg-navonly');
-    // як на chess.com: збиті фігури обох — одним рядком під дошкою (зліва — суперника, справа — твої), фон суперника — до самої дошки
+    // збиті фігури обох — одним рядком НАД дошкою (зліва — суперника, справа — твої)
     const mats = document.createElement('div'); mats.className = 'lg-mats';
-    root.querySelector('.lg-board-wrap').after(mats);
+    root.querySelector('.lg-board-wrap').before(mats);
     mats.append(root.querySelector('.lg-material[data-side="top"]'), root.querySelector('.lg-material[data-side="bottom"]'));
     if (root.querySelector('.lg-quick')) root.querySelector('.lg-quick').hidden = true; // режим обирають у «Практиці»
     // cfg.navOnly: true → Назад · Вперед; або список дій: ['flip', 'level', 'undo', 'redo']
