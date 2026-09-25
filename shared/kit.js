@@ -653,6 +653,51 @@
     draw: (msg, opts) => result('draw', msg, opts)
   };
 
+  // ---------- Telegram Mini App ----------
+  // У Telegram сайт відкривається як застосунок: на весь екран, без свайпу-закриття, кнопка «Назад» Telegram, наші кольори.
+  // Скрипт Telegram вантажимо лише всередині Telegram (поза ним сайт не залежить від telegram.org).
+  (function telegram() {
+    const hasTg = /tgWebApp/.test(location.hash);
+    let inTg = hasTg || !!window.TelegramWebviewProxy;
+    try { inTg = inTg || sessionStorage.getItem('chk:tg') === '1'; } catch (e) { /* */ }
+    if (!inTg) return;
+    try { sessionStorage.setItem('chk:tg', '1'); } catch (e) { /* */ }
+    if (hasTg) {
+      // параметри запуску Telegram — у сховище (звідти їх читає telegram-web-app.js), а з адреси прибираємо: наші сторінки теж читають #
+      const params = {};
+      location.hash.slice(1).split('&').forEach(kv => { const i = kv.indexOf('='); if (i > 0 && /^tgWebApp/.test(kv.slice(0, i))) { try { params[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); } catch (e) { params[kv.slice(0, i)] = kv.slice(i + 1); } } });
+      try { sessionStorage.setItem('__telegram__initParams', JSON.stringify(params)); } catch (e) { /* */ }
+      const rest = location.hash.slice(1).split('&').filter(kv => !/^tgWebApp/.test(kv)).join('&');
+      history.replaceState(history.state, '', location.pathname + location.search + (rest ? '#' + rest : ''));
+    }
+    document.documentElement.classList.add('lg-tg');
+    const setup = () => {
+      const tg = window.Telegram && window.Telegram.WebApp; if (!tg) return;
+      const at = v => !tg.isVersionAtLeast || tg.isVersionAtLeast(v);
+      try { tg.ready(); tg.expand(); } catch (e) { /* */ }
+      try { if (at('7.7')) tg.disableVerticalSwipes(); } catch (e) { /* */ }
+      try { if (at('6.1')) { tg.setHeaderColor('#1B2133'); tg.setBackgroundColor('#1B2133'); } if (at('7.10')) tg.setBottomBarColor('#1B2133'); } catch (e) { /* */ }
+      // зверху — місце під кнопки Telegram (у повноекранному режимі вони поверх сторінки)
+      const inset = () => {
+        const a = (tg.safeAreaInset && tg.safeAreaInset.top) || 0, b = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) || 0;
+        document.documentElement.style.setProperty('--tg-top', (tg.isFullscreen ? a + b : 0) + 'px');
+      };
+      ['fullscreenChanged', 'safeAreaChanged', 'contentSafeAreaChanged', 'viewportChanged'].forEach(ev => { try { tg.onEvent(ev, inset); } catch (e) { /* */ } });
+      try { if (at('8.0') && !tg.isFullscreen) tg.requestFullscreen(); } catch (e) { /* */ }
+      inset();
+      // системна «Назад»: у грі чи уроці — туди ж, куди стрілка ‹; на головній — ховаємо
+      try {
+        if (at('6.1')) {
+          if (game) { tg.BackButton.show(); tg.BackButton.onClick(() => go(homeHref())); } else tg.BackButton.hide();
+        }
+      } catch (e) { /* */ }
+    };
+    const s = document.createElement('script');
+    s.src = 'https://telegram.org/js/telegram-web-app.js';
+    s.onload = setup;
+    document.head.appendChild(s);
+  })();
+
   if (!game) return; // головна сторінка використовує лише API
 
   // Дитячі ігри не повинні показувати системні alert-вікна

@@ -343,7 +343,7 @@ html body { transition: opacity .15s ease-out; }
 
 /* повний екран: угорі чорна смуга (як у шахових застосунках) — вміст починається під нею */
 html.lg-fs { --fs-top: 28px; background: #1B2133; }
-html.lg-fs body { border-top: var(--fs-top) solid #000; box-sizing: border-box; }
+html.lg-fs body { border-top: var(--fs-top) solid #1B2133; box-sizing: border-box; }
 
 /* ================= Новий дизайн ігрових екранів (урок, задача, гра з роботом) =================
    Чорне тло й Manrope, як у Профілі; нижня панель — темні «плитки» як у Magnus, підказка з бірюзовою лампочкою. */
@@ -403,3 +403,7 @@ html.lg .lg-nav-btn { border-radius: 20px !important; background: #37405F !impor
 html.lg .lg-nav-btn:active { background: #434D70 !important; transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.18) !important; }
 html.lg .lg-nav-btn .ico svg { width: 24px !important; height: 24px !important; }
 html.lg .lg-nav-btn .lbl { opacity: .85; }
+/* Telegram Mini App: повним екраном керує Telegram (наша ⛶ не потрібна); зверху — місце під кнопки Telegram */
+html.lg-tg .lg-top-fs, html.lg-tg .lv-fs, html.lg-tg #p-fs { display: none !important; }
+html.lg-tg { --fs-top: var(--tg-top, 0px); }
+html.lg-tg body { border-top: var(--fs-top) solid #1B2133; box-sizing: border-box; }
