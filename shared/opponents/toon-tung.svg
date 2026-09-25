@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" class="tt">
+<!-- «tung» — мультяшний суперник (tools/toons.py). Настрій — класом на панелі суперника:
+     .mood-happy, .mood-angry, .thinking, .talking, .poked. Без класів — спокійний: кліпає, озирається, махає лапкою. -->
+<style>
+.tt-body{transform-origin:200px 400px;animation:ttSway 5s ease-in-out infinite}
+@keyframes ttSway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.tt-eyes{transform-origin:200px 164px;animation:ttBlink 4.4s infinite}
+@keyframes ttBlink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+.tt-pup{animation:ttLook 7.5s ease-in-out infinite;transition:transform .3s}
+@keyframes ttLook{0%,40%,100%{transform:translate(0,0)}48%,62%{transform:translate(6px,-1px)}70%,80%{transform:translate(-6px,0)}}
+.tt-earl{transform-origin:140px 110px;animation:ttEar 3.6s ease-in-out infinite}
+.tt-earr{transform-origin:260px 110px;animation:ttEar 3.6s ease-in-out infinite reverse}
+@keyframes ttEar{0%,80%,100%{transform:rotate(0)}88%{transform:rotate(-8deg)}}
+.tt-armr{transform-origin:292px 344px;animation:ttWave 2.8s ease-in-out infinite}
+@keyframes ttWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
+.tt-arml{transform-origin:108px 344px;animation:ttRest 3.6s ease-in-out infinite}
+@keyframes ttRest{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
+.tt-happy,.tt-angry,.tt-bhappy,.tt-bangry,.tt-eyeshappy,.tt-steam,.tt-red,.tt-talk,.tt-spark{opacity:0}
+.tt-happy,.tt-angry,.tt-norm,.tt-talk{transition:opacity .2s}
+.mood-happy .tt-norm,.mood-happy .tt-bnorm,.mood-happy .tt-eyes{opacity:0}
+.mood-happy .tt-happy,.mood-happy .tt-bhappy,.mood-happy .tt-eyeshappy,.mood-happy .tt-spark{opacity:1}
+.mood-happy .tt-body{animation:ttJump .55s ease-in-out infinite}
+@keyframes ttJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.mood-happy .tt-blush{opacity:.8}
+.mood-happy .tt-armr{animation:ttCheer .55s ease-in-out infinite}
+@keyframes ttCheer{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-26deg)}}
+.mood-happy .tt-arml{animation:ttCheerL .55s ease-in-out infinite}
+@keyframes ttCheerL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+.tt-spark{animation:ttSpark 1.2s ease-in-out infinite}
+@keyframes ttSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
+.mood-angry .tt-norm,.mood-angry .tt-bnorm{opacity:0}
+.mood-angry .tt-angry,.mood-angry .tt-bangry,.mood-angry .tt-steam{opacity:1}
+.mood-angry .tt-red{opacity:.35}
+.mood-angry .tt-body{animation:ttShake .18s linear infinite}
+@keyframes ttShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.mood-angry .tt-pup{animation:none;transform:translate(0,3px)}
+.mood-angry .tt-earl{animation:none;transform:rotate(-18deg)}.mood-angry .tt-earr{animation:none;transform:rotate(18deg)}
+.mood-angry .tt-armr{animation:ttFist .3s ease-in-out infinite}
+@keyframes ttFist{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-8deg)}}
+.tt-steam{animation:ttSteam 1.4s ease-out infinite}
+@keyframes ttSteam{0%{transform:translateY(8px) scale(.6)}100%{transform:translateY(-28px) scale(1.3)}}
+.thinking .tt-pup{animation:none;transform:translate(7px,-7px)}
+.thinking .tt-armr{animation:none;transform:rotate(-34deg) translate(-26px,14px)}
+.talking:not(.mood-happy):not(.mood-angry) .tt-norm{opacity:0}
+.talking:not(.mood-happy):not(.mood-angry) .tt-talk{opacity:1}
+.tt-talkin{transform-origin:200px 272px;animation:ttTalk .32s ease-in-out infinite alternate}
+@keyframes ttTalk{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.poked .tt-body{animation:ttPoke .7s cubic-bezier(.3,1.8,.5,1)}
+@keyframes ttPoke{0%{transform:scale(1,1)}20%{transform:scale(1.08,.9) translateY(10px)}50%{transform:scale(.95,1.08) translateY(-18px)}100%{transform:none}}
+.poked .tt-pup{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}
+.poked .tt-bnorm{opacity:0}.poked .tt-bhappy{opacity:1;transform:translateY(-8px)}
+.poked .tt-norm{opacity:0}.poked .tt-talk{opacity:1}.poked .tt-talkin{animation:none}
+.poked .tt-earl{animation:none;transform:rotate(12deg)}.poked .tt-earr{animation:none;transform:rotate(-12deg)}
+</style>
+<g class="tt-body">
+  <path d="M110 400 L116 320 C150 306 250 306 284 320 L290 400 Z" fill="#b07a45"/>
+  <path d="M140 330 v70 M200 322 v78 M260 330 v70" stroke="#8a5a2e" stroke-width="4" opacity=".5"/>
+  <!-- бита -->
+  <g transform="rotate(-24 332 360)"><path d="M322 400 L326 300 C326 280 346 280 346 300 L346 400 Z" fill="#d8a765" stroke="#9a6a34" stroke-width="3"/><rect x="322" y="376" width="24" height="10" fill="#9a6a34"/></g>
+  <path d="M112 90 C112 70 150 60 200 60 C250 60 288 70 288 90 L292 300 C292 320 250 330 200 330 C150 330 108 320 108 300 Z" fill="#c68d52"/>
+  <ellipse cx="200" cy="72" rx="88" ry="16" fill="#e0ad72"/><ellipse cx="200" cy="72" rx="60" ry="9" fill="none" stroke="#b07a45" stroke-width="3"/><ellipse cx="200" cy="72" rx="32" ry="5" fill="none" stroke="#b07a45" stroke-width="3"/>
+  <path d="M126 110 C122 170 128 240 124 300 M276 110 C280 170 274 240 278 300" stroke="#a36f3c" stroke-width="4" fill="none" opacity=".6"/>
+  <ellipse class="tt-red" cx="200" cy="200" rx="92" ry="126" fill="#ff3b30"/>
+  <path d="M190 206 C186 222 190 232 200 234 C210 232 214 222 210 206 Z" fill="#a36f3c"/>
+  <ellipse class="tt-blush" cx="130" cy="212" rx="20" ry="11" fill="#f08a7e" opacity=".45"/><ellipse class="tt-blush" cx="270" cy="212" rx="20" ry="11" fill="#f08a7e" opacity=".45"/>
+  <g stroke="#3d2614" stroke-width="8" stroke-linecap="round" fill="none">
+    <path class="tt-bnorm" d="M132 124 Q156 112 180 122"/><path class="tt-bnorm" d="M220 122 Q244 112 268 124"/>
+    <path class="tt-bhappy" d="M132 118 Q156 100 180 114"/><path class="tt-bhappy" d="M220 114 Q244 100 268 118"/>
+    <path class="tt-bangry" d="M132 114 L180 134"/><path class="tt-bangry" d="M268 114 L220 134"/>
+  </g>
+  <g class="tt-eyes">
+    <ellipse cx="156" cy="164" rx="24" ry="28" fill="#fff"/><ellipse cx="244" cy="164" rx="24" ry="28" fill="#fff"/>
+    <g class="tt-pup"><circle cx="159" cy="169" r="13" fill="#2b1a10"/><circle cx="247" cy="169" r="13" fill="#2b1a10"/>
+      <circle cx="159" cy="169" r="7.2" fill="#1c1410"/><circle cx="247" cy="169" r="7.2" fill="#1c1410"/>
+      <circle cx="164" cy="163" r="4.5" fill="#fff"/><circle cx="252" cy="163" r="4.5" fill="#fff"/></g>
+  </g>
+  <g class="tt-eyeshappy" stroke="#2b1a10" stroke-width="8" stroke-linecap="round" fill="none"><path d="M136 170 Q156 148 176 170"/><path d="M224 170 Q244 148 264 170"/></g>
+  <path class="tt-norm" d="M174 266 Q200 284 226 266" fill="none" stroke="#4a2a14" stroke-width="6" stroke-linecap="round"/>
+  <g class="tt-talk"><g class="tt-talkin"><ellipse cx="200" cy="272" rx="18" ry="14" fill="#4a2a14"/><ellipse cx="200" cy="279" rx="10" ry="5" fill="#e5645a"/></g></g>
+  <g class="tt-happy"><path d="M166 260 Q200 306 234 260 Z" fill="#4a2a14"/><path d="M174 262 L226 262 L222 269 L178 269 Z" fill="#fff"/><ellipse cx="200" cy="286" rx="14" ry="6" fill="#e5645a"/></g>
+  <g class="tt-angry"><path d="M174 282 Q200 258 226 282 Q200 272 174 282 Z" fill="#4a2a14"/><path d="M184 276 L216 276" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>
+  <g class="tt-steam" fill="#fff" opacity=".85"><circle cx="96" cy="104" r="14"/><circle cx="82" cy="86" r="10"/><circle cx="304" cy="104" r="14"/><circle cx="318" cy="86" r="10"/></g>
+  <g class="tt-spark" fill="#ffd23f"><path d="M64 120 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z"/><path d="M332 120 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z"/></g>
+
+  <g class="tt-arml">
+    <path d="M108 344 C94 362 100 384 124 386" fill="none" stroke="#c68d52" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="128" cy="384" rx="18" ry="15" fill="#d8a765"/>
+    <path d="M118 378 q5 -3 10 0 M121 386 q5 -3 10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <g class="tt-armr">
+    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="#c68d52" stroke-width="30" stroke-linecap="round"/>
+    <g transform="translate(332 272)">
+      <ellipse cx="0" cy="0" rx="20" ry="21" fill="#d8a765"/>
+      <g fill="#d8a765"><ellipse cx="-13" cy="-17" rx="7" ry="9"/><ellipse cx="0" cy="-22" rx="7" ry="9"/><ellipse cx="13" cy="-17" rx="7" ry="9"/></g>
+      <ellipse cx="0" cy="4" rx="9" ry="8" fill="#b07a45"/>
+      <g fill="#b07a45"><circle cx="-12" cy="-17" r="3.5"/><circle cx="0" cy="-21" r="3.5"/><circle cx="12" cy="-17" r="3.5"/></g>
+    </g>
+  </g>
+</g>
+</svg>

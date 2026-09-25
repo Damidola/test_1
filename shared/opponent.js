@@ -9,19 +9,20 @@ const A = f => ROOT + 'shared/opponents/' + f + VER;
 // Рівень 1 — піддається … 5 — сильний. Італійські «брейнроти» — в кінці списку.
 // У кожного суперника свій фон (shared/bg/*.svg) — жоден не повторюється.
 export const OPPONENTS = [
-  ['Хом’ячок', 1, 'hamster.png', 'wildwest'],
-  ['Капібара', 3, 'capybara.jpg', 'summer'], ['Сова', 3, 'owl.jpg', 'nightforest'], ['Кіт Очі-блюдця', 3, 'bigeyes.jpg', 'candy'],
-  ['Мавпочка', 2, 'toon-monkey.svg', 'jungle-toon'], // мультяшна (SVG): радіє, злиться, думає, говорить
-  ['Зелений робот', 3, 'robot-green.jpg', 'space'],
-  ['Кіт', 4, 'cat.jpg', 'room'], ['Драматичний мопс', 4, 'pug.jpg', 'stage'], ['Кіт Смадж', 4, 'smudge.jpg', 'kitchen'],
-  ['Собака', 4, 'dog.jpg', 'beach'], ['Хитрий кіт', 4, 'evilcat.jpg', 'rooftops'],
-  ['Жовтий робот', 5, 'robot-yellow.jpg', 'factory'],
-  ['Балерина Капучина', 2, 'ballerina.jpg', 'rainbow'],
-  ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'], ['Тралалело Тралала', 3, 'tralalero.jpg', 'underwater'], ['Тун-тун-тун-сахур', 4, 'tung-tung.jpg', 'lanterns'],
-  ['Брр Брр Патапім', 4, 'patapim.jpg', 'autumn'],
-  ['Коник Гоп', 2, 'toon-horse.svg', 'meadow-toon'] // мультяшний (SVG) — без рамки, стоїть на низу сцени
+  // Мультяшні (SVG, tools/toons.py): емоції, реакція на тап — на рівнях 1–2
+  ['Мавпочка', 1, 'toon-monkey.svg', 'jungle-toon'], ['Коник Гоп', 1, 'toon-horse.svg', 'meadow-toon'],
+  ['Капібара', 1, 'toon-capybara.svg', 'onsen-toon'], ['Собака', 1, 'toon-doge.svg', 'beach-toon'],
+  ['Кіт Смадж', 2, 'toon-smudge.svg', 'kitchen-toon'], ['Тун-тун-тун-сахур', 2, 'toon-tung.svg', 'lanterns-toon'],
+  // Фото — рівні 2–5
+  ['Хом’ячок', 2, 'hamster.png', 'wildwest'], ['Балерина Капучина', 2, 'ballerina.jpg', 'rainbow'],
+  ['Сова', 3, 'owl.jpg', 'nightforest'], ['Кіт Очі-блюдця', 3, 'bigeyes.jpg', 'candy'], ['Зелений робот', 3, 'robot-green.jpg', 'space'], ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'],
+  ['Кіт', 4, 'cat.jpg', 'room'], ['Драматичний мопс', 4, 'pug.jpg', 'stage'], ['Хитрий кіт', 4, 'evilcat.jpg', 'rooftops'], ['Тралалело Тралала', 4, 'tralalero.jpg', 'underwater'],
+  ['Жовтий робот', 5, 'robot-yellow.jpg', 'factory'], ['Брр Брр Патапім', 5, 'patapim.jpg', 'autumn']
 ].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' + VER }));
 
+// Старі фото тих, кого перемальовано, — файли лишаються в shared/opponents/ і shared/bg/, щоб можна було повернути:
+// ['Мавпочка', 'monkey.jpg', 'jungle'], ['Капібара', 'capybara.jpg', 'summer'], ['Кіт Смадж', 'smudge.jpg', 'kitchen'],
+// ['Собака', 'dog.jpg', 'beach'], ['Тун-тун-тун-сахур', 'tung-tung.jpg', 'lanterns'], ['Коник Гоп', старий SVG — у git-історії]
 const scene = n => ROOT + 'shared/bg/' + n + '.svg' + VER;
 
 // Репліки суперника (раз за партію — у хмаринці, як у коміксі)
@@ -29,19 +30,23 @@ const LINES = {
   'hamster.png': ['Я сховав твого пішака за щічку! 🐹', 'Хрум-хрум… я думаю.'],
   'toon-monkey.svg': ['Банан за гарний хід! 🍌', 'У-у-а-а! Я стрибаю, як кінь!'],
   'capybara.jpg': ['Я спокійна, як капібара у ванні 🛁', 'Не поспішаймо… ми ж капібари.'],
+  'toon-capybara.svg': ['Я спокійна, як капібара у ванні 🛁', 'Не поспішаймо… ми ж капібари.'],
   'owl.jpg': ['Угу. Я бачу всю дошку, навіть уночі 🦉', 'Мудрі сови думають двічі.'],
   'bigeyes.jpg': ['Мої очі бачать УСІ ходи 👀', 'Ой, а що це ти задумав?'],
   'robot-green.jpg': ['Біп-буп. Обчислюю… 🤖', 'Мої батарейки заряджені на перемогу!'],
   'cat.jpg': ['Мур. Я б краще поспав… 😴', 'Ця фігура — моя мишка 🐭'],
   'pug.jpg': ['Драма! Ти нападаєш на мою фігуру?! 😱', 'Я не плачу, це просто шахи.'],
   'smudge.jpg': ['Не люблю овочі. І твій хід теж 🥗', 'Хм. Я незадоволений.'],
+  'toon-smudge.svg': ['Не люблю овочі. І твій хід теж 🥗', 'Хм. Я незадоволений.'],
   'dog.jpg': ['Гав! Кинь мені пішака! 🦴', 'Я принесу тобі твою фігуру!'],
+  'toon-doge.svg': ['Гав! Кинь мені пішака! 🦴', 'Я принесу тобі твою фігуру!'],
   'evilcat.jpg': ['Хе-хе, у мене хитрий план 😼', 'Ти ще не бачиш мою пастку…'],
   'robot-yellow.jpg': ['СИСТЕМА: ПЕРЕМОГА ЗАПЛАНОВАНА 🤖', 'Помилку не знайдено. Поки що.'],
   'ballerina.jpg': ['Мій кінь стрибає, як балерина 💃', 'Раз-два-три — і хід!'],
   'lirili.jpg': ['Лірілі ларіла… думаю повільно, як слон 🐘'],
   'tralalero.jpg': ['Тралалело! Плаваю в думках 🦈'],
   'tung-tung.jpg': ['Тун-тун-тун… стукаю по дошці 🥁'],
+  'toon-tung.svg': ['Тун-тун-тун… стукаю по дошці 🥁'],
   'patapim.jpg': ['Брр-брр… Патапім думає 🌳'],
   'toon-horse.svg': ['Гоп-гоп! Я стрибаю літерою «Г» 🐴', 'Іго-го! Мій хід буде хитрим!', 'Моя корона — для найкращого ходу 👑']
 };

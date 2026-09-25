@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+<!-- Доге: пляж — сонце, море з хвилями, пальма гойдається, чайка, м'ячик -->
+<style>
+.wv{animation:wv 3.5s ease-in-out infinite}.wv2{animation-delay:-1.7s}@keyframes wv{0%,100%{transform:translateX(0)}50%{transform:translateX(-24px)}}
+.pl{transform-box:fill-box;transform-origin:0 100%;animation:pl 4s ease-in-out infinite}@keyframes pl{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+.gl{animation:gl 14s linear infinite}@keyframes gl{from{transform:translate(-80px,70px)}to{transform:translate(880px,40px)}}
+.wg{transform-box:fill-box;transform-origin:50% 100%;animation:wg .4s ease-in-out infinite alternate}@keyframes wg{to{transform:scaleY(.4)}}
+</style>
+<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fc3f7"/><stop offset="1" stop-color="#b3ecff"/></linearGradient></defs>
+<rect width="800" height="320" fill="url(#sk)"/>
+<circle cx="640" cy="70" r="40" fill="#ffe066"/><circle cx="640" cy="70" r="58" fill="#ffe066" opacity=".3"/>
+<rect x="0" y="170" width="800" height="80" fill="#1e9fd6"/>
+<g class="wv" fill="#6fd0f2"><path d="M-40 190 q30 -12 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 v10 h-900 z"/></g>
+<g class="wv wv2" fill="#9fe3ff"><path d="M-40 214 q30 -10 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 v8 h-900 z"/></g>
+<path d="M0 238 Q200 222 400 236 Q600 222 800 238 L800 320 L0 320 Z" fill="#ffdc9a"/>
+<g fill="#f4c979"><circle cx="120" cy="290" r="4"/><circle cx="330" cy="300" r="3"/><circle cx="560" cy="286" r="4"/><circle cx="700" cy="304" r="3"/></g>
+<!-- пальма -->
+<g class="pl"><path d="M60 300 C70 240 80 180 110 120" fill="none" stroke="#8a5a2e" stroke-width="16" stroke-linecap="round"/>
+<g fill="#3fb45a"><path d="M110 120 C80 96 40 100 20 120 C54 112 84 118 110 120 Z"/><path d="M110 120 C104 86 124 60 160 56 C140 76 124 98 110 120 Z"/><path d="M110 120 C140 100 180 104 200 128 C166 118 136 118 110 120 Z"/><path d="M110 120 C92 90 60 76 36 80 C66 92 90 104 110 120 Z"/></g>
+<circle cx="104" cy="128" r="7" fill="#8a5a2e"/><circle cx="116" cy="130" r="7" fill="#8a5a2e"/></g>
+<!-- м'ячик -->
+<g transform="translate(700 262)"><circle r="22" fill="#fff"/><path d="M-22 0 a22 22 0 0 1 22 -22 v22 z" fill="#ff5c6c"/><path d="M0 22 a22 22 0 0 0 22 -22 h-22 z" fill="#3fa7f5"/></g>
+<!-- чайка -->
+<g class="gl"><path class="wg" d="M-14 0 q7 -8 14 0 q7 -8 14 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></g>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+<!-- Капібара: гарячий джерельний басейн (онсен) — пара піднімається, бамбук, камені, вечірнє небо -->
+<style>
+.st{animation:st 5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}.st2{animation-delay:-1.7s}.st3{animation-delay:-3.3s}
+@keyframes st{0%{opacity:0;transform:translateY(20px) scale(.7)}40%{opacity:.7}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+.wv{animation:wv 3s ease-in-out infinite}@keyframes wv{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}
+.bb{transform-box:fill-box;transform-origin:50% 100%;animation:bb 5s ease-in-out infinite}@keyframes bb{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+</style>
+<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb88a"/><stop offset="1" stop-color="#ffe0b8"/></linearGradient>
+<linearGradient id="wt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd3e6"/><stop offset="1" stop-color="#4fb3cf"/></linearGradient></defs>
+<rect width="800" height="320" fill="url(#sk)"/>
+<circle cx="640" cy="90" r="46" fill="#fff3c4" opacity=".9"/>
+<path d="M0 190 Q140 140 280 170 Q420 120 560 165 Q690 130 800 160 L800 320 L0 320 Z" fill="#a5c98a"/>
+<!-- бамбук -->
+<g class="bb" fill="#6fbf5a"><rect x="40" y="40" width="16" height="200" rx="6"/><rect x="70" y="70" width="14" height="170" rx="6"/><rect x="740" y="30" width="16" height="210" rx="6"/><rect x="712" y="80" width="13" height="160" rx="6"/></g>
+<g stroke="#4f9a44" stroke-width="3"><path d="M40 90h16M40 150h16M70 120h14M70 180h14M740 90h16M740 160h16M712 130h13M712 190h13"/></g>
+<g fill="#7fcf66"><ellipse cx="30" cy="60" rx="24" ry="7" transform="rotate(-30 30 60)"/><ellipse cx="94" cy="90" rx="22" ry="7" transform="rotate(25 94 90)"/><ellipse cx="770" cy="50" rx="24" ry="7" transform="rotate(30 770 50)"/><ellipse cx="700" cy="100" rx="22" ry="7" transform="rotate(-25 700 100)"/></g>
+<!-- басейн -->
+<ellipse cx="400" cy="300" rx="420" ry="90" fill="#8a8f98"/>
+<ellipse cx="400" cy="304" rx="380" ry="70" fill="url(#wt)"/>
+<g class="wv" stroke="#c9f1fb" stroke-width="4" stroke-linecap="round" fill="none" opacity=".8"><path d="M120 290 q20 -8 40 0 M300 300 q20 -8 40 0 M520 292 q20 -8 40 0 M660 304 q20 -8 40 0"/></g>
+<g fill="#6f757e"><ellipse cx="60" cy="262" rx="46" ry="24"/><ellipse cx="740" cy="258" rx="50" ry="26"/><ellipse cx="150" cy="248" rx="30" ry="16"/><ellipse cx="660" cy="246" rx="32" ry="16"/></g>
+<!-- пара -->
+<g fill="#fff"><ellipse class="st" cx="180" cy="250" rx="22" ry="30"/><ellipse class="st st2" cx="400" cy="244" rx="26" ry="34"/><ellipse class="st st3" cx="610" cy="250" rx="22" ry="30"/></g>
+</svg>

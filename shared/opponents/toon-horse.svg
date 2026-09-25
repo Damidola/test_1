@@ -16,8 +16,8 @@
 @keyframes hsMane{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
 .hs-armr{transform-origin:292px 344px;animation:hsWave 2.6s ease-in-out infinite}
 @keyframes hsWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
-.hs-arml{transform-origin:108px 344px;animation:hsCarrot 3.4s ease-in-out infinite}
-@keyframes hsCarrot{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
+.hs-arml{transform-origin:108px 344px;animation:hsRest 3.4s ease-in-out infinite}
+@keyframes hsRest{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
 .hs-happy,.hs-angry,.hs-bhappy,.hs-bangry,.hs-eyeshappy,.hs-steam,.hs-red,.hs-talk,.hs-spark{opacity:0}
 .hs-happy,.hs-angry,.hs-norm,.hs-talk{transition:opacity .2s}
 /* радіє */
@@ -62,7 +62,6 @@
 </style>
 <defs>
 <pattern id="hsChk" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#f4f1e6"/><rect width="14" height="14" fill="#3a8f4b"/><rect x="14" y="14" width="14" height="14" fill="#3a8f4b"/></pattern>
-<linearGradient id="hsCar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f2711c"/><stop offset=".5" stop-color="#ff9a3c"/><stop offset="1" stop-color="#e2600f"/></linearGradient>
 </defs>
 <g class="hs-body">
   <!-- шия і светр -->
@@ -107,14 +106,9 @@
   <!-- чубчик і корона -->
   <g class="hs-mane"><path d="M150 96 C160 60 200 52 222 70 C246 62 262 84 250 104 C236 92 222 96 214 110 C204 94 184 92 172 112 C168 100 158 96 150 96 Z" fill="#5b3a1e"/></g>
   <g transform="rotate(-10 230 52)"><path d="M196 70 L190 30 L210 48 L226 22 L242 48 L262 30 L256 70 Z" fill="#ffc83d" stroke="#e0a21a" stroke-width="3" stroke-linejoin="round"/><circle cx="226" cy="58" r="5" fill="#e2574c"/></g>
-  <!-- ліва нога-рука з морквиною -->
+  <!-- ліва нога-рука: копитце лежить -->
   <g class="hs-arml">
     <path d="M108 344 C92 362 96 384 118 386" fill="none" stroke="#e2574c" stroke-width="30" stroke-linecap="round"/>
-    <g transform="translate(116 382) rotate(-38)">
-      <path d="M-10 0 C-12 -30 -6 -60 4 -78 C10 -58 14 -30 10 0 Z" fill="url(#hsCar)" stroke="#c4540c" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M-4 -20 h8 M-3 -40 h7 M-1 -58 h5" stroke="#c4540c" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M4 -78 C-4 -92 -12 -96 -16 -94 M4 -78 C4 -94 8 -100 12 -100 M4 -78 C12 -90 20 -92 24 -88" fill="none" stroke="#3aa35c" stroke-width="5" stroke-linecap="round"/>
-    </g>
     <ellipse cx="120" cy="384" rx="18" ry="15" fill="#6b4526"/>
     <path d="M106 390 q14 6 28 0" stroke="#3d2614" stroke-width="3" fill="none" stroke-linecap="round"/>
   </g>
