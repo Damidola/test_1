@@ -505,7 +505,7 @@
     const bar = el('nav', { class: 'lg-bar lg-nav' }, [
       navBtn('☰', 'Меню', { href: homeHref(), class: 'lg-nav-btn lg-home' }),
       hintBtn,
-      navBtn('📖', 'Пояснення', { onclick: () => (explainFn ? explainFn() : showRules()) }),
+      navBtn('📖', 'Гайд', { onclick: () => (explainFn ? explainFn() : showRules()) }),
       gearBtn
     ]);
     document.body.appendChild(bar);

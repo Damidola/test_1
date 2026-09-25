@@ -489,7 +489,7 @@ window.LG_EN = {
   "Поставленого ферзя можна перетягнути в іншу клітинку.": "A placed queen can be dragged to another square.",
   "Почати": "Start",
   "Почати ▶️": "Start ▶️",
-  "Пояснення": "Explain",
+  "Гайд": "Guide",
   "Правила дебюту": "Opening rules",
   "Правило": "Rule",
   "Правильно! 🎉": "Correct! 🎉",
