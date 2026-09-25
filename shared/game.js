@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790321962';
-import { aiMove, hintMove } from './ai.js?v=1790321962';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790321962';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790325000';
+import { aiMove, hintMove } from './ai.js?v=1790325000';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790325000';
 
 const LG = window.LG;
 
@@ -97,6 +97,19 @@ export function startGame(cfg) {
   // Вигляд поля: за замовчуванням — дошка Lichess; ігри з іншим полем (хрестики-нулики,
   // чотири в ряд) дають свій view: { render(s, {mine, moves}), hint(m), clearHint() }
   const board = cfg.view ? null : createBoard($('.lg-board-el'), { onMove: (o, d) => userMove(o, d), onSelect: key => tapPassSquare(key), premove: !!cfg.premove });
+  // Без блимання: екран гри з'являється одразу весь — коли вже завантажені суперник зі сценою, дошка й фігури
+  (function gateReveal() {
+    const html = document.documentElement; html.classList.add('lg-wait');
+    const load = u => new Promise(r => { const im = new Image(); im.onload = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(r); im.onerror = r; im.src = u; });
+    const urls = [];
+    if (board) {
+      const cs = getComputedStyle(html), bg = (cs.getPropertyValue('--cg-board').match(/url\(["']?([^"')]+)/) || [])[1];
+      if (bg) urls.push(bg);
+      [...document.querySelectorAll('style')].forEach(st => { for (const m of st.textContent.matchAll(/piece\.[a-z]+\.[a-z]+,mpiece[^{]*\{background-image:url\("([^"]+)"/g)) urls.push(m[1]); });
+    }
+    Promise.race([Promise.all([hero.ready, ...urls.map(load)]), new Promise(r => setTimeout(r, 3000))])
+      .then(() => { let n = 4; const f = () => (--n ? requestAnimationFrame(f) : html.classList.remove('lg-wait')); requestAnimationFrame(f); });
+  })();
   // Посеред серії стрибків («Кути»): шашка, що стрибає, лишається вибраною з наступними стрибками,
   // а ще один тап по ній — «досить, хід закінчено» (замість окремої кнопки)
   let autoSelected = null;

@@ -336,3 +336,7 @@ html.lg .lg-nav-btn .ico svg { width: 26px; height: 26px; display: block; }
 html.lg .lg-nav-btn.lg-home .ico svg { width: 24px; height: 24px; }
 html.lg .lg-nav-btn .lbl { opacity: .85; white-space: nowrap; }
 html.lg .lg-nav-btn:is([disabled], .is-off) { opacity: .4; }
+
+/* без блимання: поки картинки гри вантажаться, сторінка прихована (тло вже темне), потім з'являється вся одразу */
+html.lg-wait body { opacity: .001 !important; transition: none; }
+html body { transition: opacity .15s ease-out; }

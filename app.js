@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321962';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321962';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321962';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790325000';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790325000';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790325000';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -85,7 +85,7 @@ $('road').addEventListener('click', e => {
   }
   openStep(+n.dataset.i);
 });
-const goSec = si => { if (si < 0 || si >= SECTIONS.length || si === curSec) return; curSec = si; LG.play('tap'); renderLearn(); };
+const goSec = si => { if (si < 0 || si >= SECTIONS.length || si === curSec) return; curSec = si; LG.play('tap'); renderLearn(); gate($('view-learn')); };
 $('secbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) goSec(+b.dataset.s); });
 $('road').addEventListener('click', e => { const b = e.target.closest('.ap-nextsec'); if (b) goSec(+b.dataset.s); });
 // свайп ліворуч / праворуч — сусідній розділ
@@ -110,7 +110,7 @@ function renderPlay() {
   const dots = n => `<span class="ap-lv">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? 'f' : ''}"></i>`).join('')}</span>`;
   const sides = [['w', piece('K', 'w') + 'Білі'], ['b', piece('K', 'b') + 'Чорні'], ['r', '<span class="big">🎲</span>']];
   $('view-play').innerHTML = `<h2 class="ap-h">З ким граємо?</h2><div class="ap-opprows">${ROWS.map((row, r) => `
-    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].avatar}" alt="" style="object-position:${OPPONENTS[i].pos}${OPPONENTS[i].toon ? `;background:url('${OPPONENTS[i].sceneUrl}') center/cover` : ''}"></a>`).join('')}</div>`).join('')}
+    <div class="ap-opprow"><span class="ap-rowlv">${dots(r + 1)}</span>${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></a>`).join('')}</div>`).join('')}
     </div><p class="ap-sub ap-hint">Угорі — найлегші, унизу — найсильніші</p>
     <h2 class="ap-h">Я граю</h2><div class="ap-seg ap-sideseg" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>`;
 }
@@ -238,9 +238,9 @@ function renderProfile() {
   $('p-range').addEventListener('change', () => LG.play('tap'));
   $('p-pieces').appendChild(LG.pieceSetPicker(() => { renderLearn(); renderPractice(); }));
   // дошки Lichess: вибір зберігається й діє в усіх уроках та іграх
-  const boardVar = () => { const t = BOARD_THEMES.find(x => x.id === LG.boardTheme()) || BOARD_THEMES[0]; $('view-profile').style.setProperty('--board-img', `url('${boardUrl(t.file)}')`); };
+  const boardVar = () => { const t = BOARD_THEMES.find(x => x.id === LG.boardTheme()) || BOARD_THEMES[0]; $('view-profile').style.setProperty('--board-img', `url('${boardUrl('thumbs/' + t.id + '.webp')}')`); };
   boardVar();
-  const paintBoards = () => { boardVar(); $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" style="background-image:url('${boardUrl(t.file)}')" aria-label="${t.id}"></button>`).join(''); };
+  const paintBoards = () => { boardVar(); $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" aria-label="${t.id}"><img src="${boardUrl('thumbs/' + t.id + '.webp')}" alt="" decoding="sync"></button>`).join(''); };
   paintBoards();
   $('p-boards').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.setBoardTheme(b.dataset.t); LG.play('tap'); paintBoards(); });
   // перемикачі: крапки ходів і репліки суперника
@@ -269,6 +269,31 @@ function renderProfile() {
 
 // ---------- вкладки ----------
 const TITLES = { learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
+// ---------- без блимання: вкладка з'являється одразу вся, коли її картинки (і фони-сцени) вже завантажені ----------
+const imgReady = new Map(); // url → Promise
+function loadImg(url) {
+  if (!imgReady.has(url)) imgReady.set(url, new Promise(res => { const im = new Image(); im.onload = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(res); im.onerror = res; im.src = url; }));
+  return imgReady.get(url);
+}
+const urlsIn = el => [...el.querySelectorAll('img[src]')].map(i => i.src).concat([...(el.innerHTML + (el.getAttribute('style') || '')).matchAll(/url\((?:&quot;|["'])?([^"')&]+)/g)].map(m => new URL(m[1], location.href).href));
+const loaded = new Set();
+const frames = (n, f) => requestAnimationFrame(() => (n > 1 ? frames(n - 1, f) : f())); // кілька кадрів — щоб браузер устиг намалювати SVG-сцени
+function gate(view) {
+  const urls = urlsIn(view).filter(u => !loaded.has(u));
+  const fonts = document.fonts && document.fonts.status !== 'loaded' ? document.fonts.ready : null;
+  if (!urls.length && !fonts) { view.classList.remove('lg-wait'); return; }
+  view.classList.add('lg-wait');
+  const imgs = [...view.querySelectorAll('img')].filter(i => !i.complete || !loaded.has(i.src));
+  imgs.forEach(i => { i.decoding = 'sync'; });
+  const all = Promise.all(urls.map(u => loadImg(u).then(() => loaded.add(u))).concat(fonts || [], imgs.map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {}))));
+  Promise.race([all, new Promise(r => setTimeout(r, 3000))]).then(() => frames(4, () => view.classList.remove('lg-wait')));
+}
+// поки дитина на першій вкладці — тихо довантажуємо картинки інших (суперники, їхні сцени, дошки, фігури)
+function preloadRest() {
+  const urls = OPPONENTS.map(o => o.thumb).concat(BOARD_THEMES.map(t => boardUrl('thumbs/' + t.id + '.webp')), [boardUrl((BOARD_THEMES.find(t => t.id === LG.boardTheme()) || BOARD_THEMES[0]).file)], OPPONENTS.flatMap(o => [o.avatar, o.sceneUrl]));
+  let k = 0; const next = () => { if (k >= urls.length) return; const u = urls[k++]; loadImg(u).then(() => { loaded.add(u); next(); }); };
+  for (let j = 0; j < 4; j++) next();
+}
 function show(hash) {
   let [tab, sub] = String(hash || '').split('/');
   if (!TITLES[tab]) tab = 'learn';
@@ -281,6 +306,7 @@ function show(hash) {
   if (tab === 'play') renderPlay();
   if (tab === 'learn') requestAnimationFrame(drawRoad);
   else window.scrollTo(0, 0);
+  gate(document.querySelector(`.ap-view[data-tab="${tab}"]`));
 }
 function renderAll() { renderLearn(); renderPractice(); }
 // відкрите посилання уроку зараховується
@@ -293,4 +319,5 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 renderAll();
 renderProfile();
 show(location.hash.slice(1) || 'learn');
+addEventListener('load', () => setTimeout(preloadRest, 200));
 window.addEventListener('pageshow', e => { if (e.persisted) { renderAll(); show(location.hash.slice(1) || 'learn'); } });

@@ -18,7 +18,7 @@ export const OPPONENTS = [
   ['Балерина Капучина', 3, 'ballerina.jpg', 'rainbow'], ['Кіт Очі-блюдця', 3, 'bigeyes.jpg', 'candy'], ['Зелений робот', 3, 'robot-green.jpg', 'space'], ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'],
   ['Кіт', 4, 'cat.jpg', 'room'], ['Драматичний мопс', 4, 'pug.jpg', 'stage'], ['Хитрий кіт', 4, 'evilcat.jpg', 'rooftops'], ['Тралалело Тралала', 4, 'tralalero.jpg', 'underwater'],
   ['Жовтий робот', 5, 'robot-yellow.jpg', 'factory'], ['Брр Брр Патапім', 5, 'patapim.jpg', 'autumn']
-].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' + VER }));
+].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), thumb: ROOT + 'shared/opponents/thumbs/' + file.replace(/\.\w+$/, '.webp') + VER, sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' + VER }));
 
 // Старі фото тих, кого перемальовано, — файли лишаються в shared/opponents/ і shared/bg/, щоб можна було повернути:
 // ['Мавпочка', 'monkey.jpg', 'jungle'], ['Капібара', 'capybara.jpg', 'summer'], ['Кіт Смадж', 'smudge.jpg', 'kitchen'],
@@ -82,8 +82,11 @@ export function mountOpponent(el, opts = {}) {
   const loadSvg = url => (svgCache[url] = svgCache[url] || fetch(url).then(r => r.text()).catch(() => ''));
   const prev = el.querySelector('.l') || document.createElement('i'), next = el.querySelector('.r') || document.createElement('i');
 
-  // Сцени й картинки вантажимо одразу — тоді нічого не блимає
-  OPPONENTS.forEach(o => { new Image().src = scene(o.bg); new Image().src = o.avatar; });
+  // Готовність першого суперника (картинка, сцена, вбудований SVG) — гра показується лише тоді, щоб нічого не блимало
+  let readyRes; const ready = new Promise(r => { readyRes = r; });
+  const loadUrl = u => new Promise(r => { const im = new Image(); im.onload = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(r); im.onerror = r; im.src = u; });
+  // решту суперників довантажуємо потім, коли гра вже на екрані (для вибору суперника)
+  ready.then(() => setTimeout(() => OPPONENTS.forEach(o => { new Image().src = o.thumb; }), 400));
 
   function placeArrows() {
     const w = el.getBoundingClientRect(), a = img.getBoundingClientRect();
@@ -100,7 +103,8 @@ export function mountOpponent(el, opts = {}) {
     pic.setAttribute('aria-label', 'Суперник: ' + o.name + '. Натисни, щоб обрати іншого');
     // Плавно: нова картинка спершу вантажиться, потім з'являється
     const pre = new Image();
-    pre.onload = pre.onerror = () => {
+    const bgLoad = loadUrl(scene(o.bg));
+    pre.onload = pre.onerror = () => bgLoad.then(() => {
       if (OPPONENTS[index] !== o) return;
       // Фон, обрізка й картинка міняються разом — інакше стара тваринка на мить стрибає на чужому фоні
       el.dataset.scene = o.bg;
@@ -108,11 +112,11 @@ export function mountOpponent(el, opts = {}) {
       el.style.setProperty('--pic-pos', o.pos);
       el.classList.toggle('toon', o.toon);
       img.src = o.avatar; img.alt = o.name;
-      if (o.toon) loadSvg(o.avatar).then(t => { if (OPPONENTS[index] !== o) return; toon.innerHTML = t; toon.hidden = !t; img.hidden = !!t; });
-      else { toon.hidden = true; toon.innerHTML = ''; img.hidden = false; }
+      if (o.toon) loadSvg(o.avatar).then(t => { if (OPPONENTS[index] !== o) return; toon.innerHTML = t; toon.hidden = !t; img.hidden = !!t; readyRes(); });
+      else { toon.hidden = true; toon.innerHTML = ''; img.hidden = false; readyRes(); }
       el.classList.remove('switching');
       requestAnimationFrame(placeArrows);
-    };
+    });
     if (!first) el.classList.add('switching');
     pre.src = o.avatar;
   }
@@ -127,7 +131,7 @@ export function mountOpponent(el, opts = {}) {
   const grid = picker.querySelector('.lg-picker-grid');
   function openPicker() {
     grid.innerHTML = OPPONENTS.map((o, i) => `<button type="button" class="lg-pick ${i === index ? 'current' : ''}" data-i="${i}">
-      <img src="${o.avatar}" alt="" style="object-position: ${o.pos}${o.toon ? `; background: url('${o.sceneUrl}') center / cover` : ''}"><span>${o.name}</span></button>`).join('');
+      <img src="${o.thumb}" alt=""><span>${o.name}</span></button>`).join('');
     picker.hidden = false;
     requestAnimationFrame(() => picker.classList.add('open'));
     grid.querySelector('.current')?.scrollIntoView({ block: 'center' });
@@ -189,6 +193,7 @@ export function mountOpponent(el, opts = {}) {
 
   let moodTimer = 0, baseMood = null;
   const api = {
+    ready,
     say,
     level: () => level,
     setLevel: l => { level = l; },

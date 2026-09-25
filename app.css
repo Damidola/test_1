@@ -190,7 +190,7 @@ html, body { overflow-x: clip; }
 .ap-limit .ap-seg button .inf { display: block; font-size: 24px; line-height: 20px; height: 20px; transform: translateY(-2px); }
 
 /* фігури в налаштуваннях — на обраній дошці, щоб одразу було видно зміну */
-#view-profile .lg-piece-set { background-image: var(--board-img); background-size: 400%; background-position: 0 0; }
+#view-profile .lg-piece-set { background-image: var(--board-img); background-size: cover; background-position: 0 0; }
 #view-profile .ap-boards button, #view-profile .lg-piece-set img { transition: none; }
 
 /* мова: 🇺🇦 / 🇬🇧 — дві великі кнопки */
@@ -432,3 +432,9 @@ body:has(#view-learn:not([hidden])) { background: #000; }
 #view-learn .ap-nextsec { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 1; display: flex; align-items: center; gap: 8px;
   height: 34px; padding: 0 16px; border: 1.5px solid #333; border-radius: 17px; background: #000; color: #bdbdbd; font: 700 13px Manrope, var(--lg-font), sans-serif; white-space: nowrap; cursor: pointer; }
 #view-learn .ap-nextsec i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+
+/* ---------- без блимання: вкладка показується, коли всі її картинки завантажені ---------- */
+.ap-view { transition: opacity .15s ease-out; }
+.ap-view.lg-wait { opacity: .001; transition: none; } /* не 0: браузер уже малює картинки, поки вкладка прихована */
+.ap-boards button { padding: 0; overflow: hidden; background: none; }
+.ap-boards button img { display: block; width: 100%; height: 100%; object-fit: cover; }

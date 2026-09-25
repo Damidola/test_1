@@ -45,7 +45,13 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
 .lg-run-top { display: none; }
 @media (max-width: 799px) and (orientation: portrait) {
   #main-wrap:has(.learn--run) { padding-bottom: 4px; }
-  .learn.learn--run { gap: 6px; grid-template-areas: "top" "main" "table"; grid-template-columns: minmax(0, 1fr); }
+  #main-wrap:has(.learn--run) > #learn-app { min-height: 100%; display: flex; flex-direction: column; }
+  #learn-app > .learn--run { flex: 1; width: 100%; }
+  /* дошка з завданням — посередині між верхнім рядком і нижніми кнопками, а не притиснута догори;
+     під завдання тримаємо місце, щоб дошка не стрибала, коли з'являється пояснення чи результат */
+  .learn.learn--run { gap: 6px; min-height: 100%; grid-template-areas: "top" "." "main" "table" "."; grid-template-rows: auto minmax(0, 1fr) auto auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr); }
+  .learn--run .learn__table { min-height: 112px; align-self: start; }
   .learn--run .learn__side { display: none; }
   .learn--run .lg-run-top { grid-area: top; display: flex; align-items: stretch; gap: 4px; padding: 6px 4px 0; }
   /* рівні — кружечки: зелений з ✓ — ідеально, жовтий — пройдено, синій — поточний (як у шахових застосунках) */
