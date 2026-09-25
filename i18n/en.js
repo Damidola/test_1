@@ -2,6 +2,13 @@
    Підключається з shared/kit.js, коли в Профілі обрано мову English (i18n/translate.js перекладає сторінку).
    Нова фраза на сайті — додай сюди рядок; фраза без перекладу лишається українською. */
 window.LG_EN = {
+  "🌐 Мова": "🌐 Language",
+  "💡 Підказки": "💡 Hints",
+  "↩️ Ходи назад": "↩️ Undos",
+  "🟢 Крапки ходів": "🟢 Move dots",
+  "Ваш рахунок:": "Your score:",
+  "‹ До уроків": "‹ To lessons",
+  "Зрозуміло 👍": "Got it 👍",
   "Пішакова битва! Доведи свого пішака до фінішу 🏁 (верхній ряд) — або побий усіх чорних.": "Pawn battle! Get your pawn to the finish 🏁 (top row) — or capture all the black pawns.",
   "Тура проти 5 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁": "Rook vs 5 pawns: capture them all! Don't let any reach the bottom edge 🏁",
   "Слон проти 3 пішаків: побий усіх! Не дай жодному дійти до нижнього краю 🏁": "Bishop vs 3 pawns: capture them all! Don't let any reach the bottom edge 🏁",

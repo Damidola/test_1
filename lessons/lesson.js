@@ -1,10 +1,10 @@
 /* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, parseUci, makeUci, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js';
-import { LESSONS } from './lessons.js';
-import { goNext, markSeen } from '../shared/path.js';
-import { createLevels } from '../shared/levels.js';
+import { createBoard } from '../shared/board.js?v=1790316395';
+import { LESSONS } from './lessons.js?v=1790316395';
+import { goNext, markSeen } from '../shared/path.js?v=1790316395';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790316395';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
@@ -133,7 +133,7 @@ function next() {
   if (idx < items.length - 1) { idx++; load(); return; }
   LG.store.set('lesson:' + location.hash.slice(1), true);
   const here = 'lessons/lesson.html' + location.hash; markSeen(here);
-  LG.win(`Урок «${lesson.title}» пройдено!`, { reward: true, onAgain: () => { idx = 0; load(); }, onNext: () => goNext(here) });
+  lessonDone({ title: lesson.title, key: 'mini:' + location.hash.slice(1), n: items.length, here });
 }
 
 $('title').textContent = lesson.title;

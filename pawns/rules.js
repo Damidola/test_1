@@ -1,7 +1,7 @@
 /* Правила «Пішаків»: лише пішаки. Виграє той, хто першим доведе пішака
    до останнього ряду або зб'є всіх пішаків суперника. Немає ходів — нічия.
    Клітинки: 0 = a8 … 63 = h1; білі йдуть «вгору» (до рядка 0). */
-import { squareName as N } from '../shared/board.js';
+import { squareName as N } from '../shared/board.js?v=1790316395';
 
 const START = { w: 6, b: 1 }, GOAL = { w: 0, b: 7 }, DIR = { w: -1, b: 1 };
 const other = s => (s === 'w' ? 'b' : 'w');

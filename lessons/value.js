@@ -1,9 +1,9 @@
 /* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 10 коротких завдань «побий найдорожчу».
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js';
-import { goNext, markSeen } from '../shared/path.js';
-import { createLevels } from '../shared/levels.js';
+import { createBoard } from '../shared/board.js?v=1790316395';
+import { goNext, markSeen } from '../shared/path.js?v=1790316395';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790316395';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
@@ -81,7 +81,7 @@ function onMove(from, to) {
     lv.done(idx, !errs);
     setTimeout(() => {
       if (idx < TASKS.length - 1) { idx++; load(); }
-      else { markSeen('lessons/value.html'); LG.win('Тепер ти знаєш, скільки коштують фігури!', { reward: true, onAgain: () => { idx = 0; load(); }, onNext: () => goNext('lessons/value.html') }); }
+      else lessonDone({ title: 'Цінність фігур', text: 'Тепер ти знаєш, скільки коштують фігури!', key: 'value', n: TASKS.length, here: 'lessons/value.html' });
     }, 1500);
     return;
   }

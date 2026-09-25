@@ -230,3 +230,38 @@ html, body { overflow-x: clip; }
 /* список розділів завжди вміщається на екран (7 рядків), на низьких телефонах — нижчі рядки */
 .ap-cat { min-height: clamp(48px, calc((100svh - 210px) / 7 - 9px), 62px); padding-top: 4px; padding-bottom: 4px; }
 @media (max-height: 700px) { .ap-cat .pcs { height: 40px; min-width: 42px; } .ap-cat .pcs img { width: 30px; height: 30px; } .ap-cat b { font-size: 16px; } .ap-cat small { -webkit-line-clamp: 1; } .ap-cats { gap: 8px; } }
+
+/* ---------- Профіль: компактно ---------- */
+.pf-head { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 20px; background: linear-gradient(135deg, #7C6CF0, #5B4BD6); box-shadow: 0 4px 14px rgba(92, 75, 214, .3); }
+.pf-head .av { width: 52px; height: 52px; flex: none; border-radius: 50%; background: rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center; }
+.pf-head .av img { width: 40px; height: 40px; }
+.pf-me { flex: 1; min-width: 0; }
+.pf-me b { font: 900 18px var(--lg-font); } .pf-me small { display: inline; margin-left: 8px; font: 800 12px var(--lg-font); opacity: .85; }
+.pf-me .bar { height: 6px; margin-top: 6px; border-radius: 3px; background: rgba(255,255,255,.25); overflow: hidden; }
+.pf-me .bar i { display: block; height: 100%; background: #fff; border-radius: 3px; }
+.pf-stats { display: flex; gap: 10px; margin-top: 6px; font: 800 11.5px var(--lg-font); opacity: .9; white-space: nowrap; }
+.pf-stats b { font-size: 14px; }
+.pf-list { margin-top: 8px; border-radius: 18px; background: var(--ap-card); overflow: hidden; }
+.pf-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 50px; padding: 6px 12px; box-sizing: border-box; }
+.pf-row + .pf-row { border-top: 1px solid rgba(255,255,255,.06); }
+.pf-l { flex: none; font: 800 14px var(--lg-font); white-space: nowrap; }
+.pf-col { flex-direction: column; align-items: stretch; gap: 6px; padding-top: 8px; padding-bottom: 10px; }
+.pf-h { margin: 14px 4px 0; font: 900 14px var(--lg-font); color: var(--ap-muted); }
+.pf-seg { flex: none; width: 150px; padding: 3px; grid-template-columns: 1fr 1fr; grid-auto-flow: row; }
+.pf-seg button { min-height: 34px; flex-direction: row; font-size: 13px; }
+.pf-lim { flex: none; width: 168px; padding: 3px; grid-template-columns: repeat(4, 1fr); grid-auto-flow: row; }
+.pf-lim button { min-height: 34px; padding: 0; font-size: 16px; line-height: 1; }
+.pf-lim button .inf { display: block; font-size: 22px; line-height: 18px; height: 18px; transform: translateY(-2px); }
+.pf-row .ap-vol { flex: 1; max-width: 220px; gap: 10px; }
+.pf-row .ap-vol button { width: 38px; height: 38px; border-radius: 12px; font-size: 19px; }
+.pf-row .ap-boards { grid-template-columns: repeat(12, 1fr); gap: 4px; }
+.pf-row .ap-boards button { border-width: 2px; border-radius: 8px; }
+.pf-row .ap-boards button.on { box-shadow: 0 0 0 2px var(--ap-violet); }
+#p-pieces .lg-set-title { display: none; }
+#p-pieces .lg-piece-sets { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+#p-pieces .lg-piece-set { width: auto; height: auto; aspect-ratio: 1; padding: 2px; border-radius: 8px; min-width: 0; }
+#p-pieces .lg-piece-set img { width: 100%; height: 100%; }
+.pf-sw { flex: none; position: relative; width: 52px; height: 30px; border: 0; border-radius: 15px; background: #3A3870; cursor: pointer; transition: background .15s; }
+.pf-sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.3); transition: transform .15s; }
+.pf-sw.on { background: var(--ap-green); } .pf-sw.on::after { transform: translateX(22px); }
+.pf-reset { display: block; margin: 12px auto 4px; padding: 8px 14px; border: 0; background: none; color: var(--ap-red); font: 800 13px var(--lg-font); opacity: .85; cursor: pointer; }

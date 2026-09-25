@@ -4,9 +4,9 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js';
-import { createRules } from '../chess/rules.js';
-import { hintMove } from '../shared/ai.js';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790316395';
+import { createRules } from '../chess/rules.js?v=1790316395';
+import { hintMove } from '../shared/ai.js?v=1790316395';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const main = document.querySelector('main.mt'), wrap = $('wrap');
@@ -165,9 +165,7 @@ function route() {
   if (!INFO[k]) { mode = 'menu'; main.dataset.mode = 'menu'; board.setMovable(null); renderMenu(); return; }
   sec = k;
   if (PRACTICE.includes(k)) { mode = 'practice'; main.dataset.mode = 'practice'; setButtons([['🎓', 'Уроки'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); startPractice(); }
-  else {
-    startExample();
-  }
+  else startPuzzles(); // одразу перша задача; пояснення — кнопкою «Пояснення» внизу
 }
 function startPuzzles() {
   mode = 'puzzle'; main.dataset.mode = 'puzzle'; setButtons([['📋', 'Розділи'], ['💡', 'Підказка'], ['👀', 'Розв’язок'], ['▶️', 'Далі']]);
@@ -351,6 +349,32 @@ const CAP = {
   mate: ['Шукаємо хід, після якого королю нікуди подітися 👇', 'Мат! Королю нікуди подітися 🎉'],
   mate2: ['Спершу — хід, після якого суперник не врятується 👇', 'Сильний хід!', 'Суперник відповідає…', 'І мат! 🎉']
 };
+// «Пояснення»: картинка (дошка з прикладу й стрілка першого ходу) і текст — без анімації, закривається
+function showExplain() {
+  const [, fen, moves] = DATA[sec][exampleIndex(sec)], ln = moves.split(' ');
+  let p = Chess.fromSetup(FEN.parseFen(fen).unwrap()).unwrap();
+  const userFirst = ln.length % 2 === 1;
+  const me = userFirst ? p.turn : p.turn === 'white' ? 'black' : 'white';
+  if (!userFirst) p.play(parseUci(ln[0]));
+  const mv = parseUci(ln[userFirst ? 0 : 1]);
+  const flip = me === 'black';
+  const xy = sq => { const f = sq & 7, r = sq >> 3; return [flip ? 7 - f : f, flip ? r : 7 - r]; };
+  let pcs = '';
+  for (const [sq, pc] of p.board) { const [x, y] = xy(sq); pcs += `<mpiece class="${pc.role} ${pc.color}" style="left:${x * 12.5}%;top:${y * 12.5}%"></mpiece>`; }
+  const [x1, y1] = xy(mv.from), [x2, y2] = xy(mv.to);
+  const arrow = `<svg viewBox="0 0 8 8" class="mt-exp-arrow"><defs><marker id="mtah" markerWidth="4" markerHeight="4" refX="2.2" refY="2" orient="auto"><path d="M0,0 L4,2 L0,4 z" fill="#FF9F1C"/></marker></defs>
+    <line x1="${x1 + .5}" y1="${y1 + .5}" x2="${x2 + .5 - Math.sign(x2 - x1) * .25}" y2="${y2 + .5 - Math.sign(y2 - y1) * .25}" stroke="#FF9F1C" stroke-width=".22" stroke-linecap="round" marker-end="url(#mtah)" opacity=".92"/></svg>`;
+  const key = exKey(sec), text = key === 'chk' ? EXPLAIN.chk(RU[CHK_ROLE[sec]]) : EXPLAIN[key];
+  const box = document.createElement('div'); box.className = 'mt-exp';
+  box.innerHTML = `<h2></h2><div class="mt-exp-board">${pcs}${arrow}</div><p class="mt-exp-text"></p><p class="mt-exp-task"></p>
+    <button type="button" class="lg-btn lg-btn-primary lg-btn-wide">Зрозуміло 👍</button>`;
+  const grp = GROUPS.find(([, l]) => l.some(x => x[0] === sec));
+  box.querySelector('h2').textContent = '📖 ' + (grp && grp[1].length > 1 ? grp[0] + ' · ' : '') + INFO[sec].title;
+  box.querySelector('.mt-exp-text').textContent = text || '';
+  box.querySelector('.mt-exp-task').textContent = '🎯 ' + (TASK[sec] || '');
+  box.querySelector('button').addEventListener('click', () => LG.closeModal());
+  LG.openModal(box, { cls: 'lg-modal-rules' });
+}
 const exKey = k => k.startsWith('chk_') ? 'chk' : k.startsWith('m1') ? 'mate' : k;
 function exampleIndex(k) {
   const list = DATA[k], from = Math.min(k.startsWith('chk_') ? 15 : k.startsWith('esc_') ? 10 : 8, list.length - 1);
@@ -579,10 +603,10 @@ function practiceEnd() {
 }
 
 // ---------- кнопки ----------
-$('ex').addEventListener('click', () => { if (mode === 'puzzle') startExample(); });
+$('ex').hidden = true; // пояснення — кнопкою внизу
 // Нижня панель: 💡 — підказка (спершу фігура, потім хід), 📖 — приклад-пояснення розділу
 LG.onHint(() => { if (mode === 'puzzle' || mode === 'practice') $('hint').click(); });
-LG.onExplain(() => { if (mode === 'puzzle' || mode === 'example') startExample(); else LG.showRules(); });
+LG.onExplain(() => { if (mode === 'puzzle' || mode === 'example') showExplain(); else LG.showRules(); });
 function userMove(from, to) { if (mode === 'puzzle') puzzleMove(from, to); else if (mode === 'practice') practiceMove(from, to); }
 $('hint').addEventListener('click', async () => {
   if (mode === 'example') return runExample();

@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js';
-import { BOARD_THEMES, boardUrl } from './shared/board.js';
-import { SECTIONS, STEPS, P, W } from './shared/path.js';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790316395';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790316395';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790316395';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -142,20 +142,24 @@ function solvedPuzzles() {
 }
 function renderProfile() {
   const st = LG.stats(), wins = Object.values(st).reduce((a, s) => a + (s.wins || 0), 0), d = doneCount();
+  // Компактно: шапка з прогресом і цифрами, далі — рядки «назва ліворуч, керування праворуч»
   $('view-profile').innerHTML = `
-    <div class="ap-me"><span class="av">${piece('K')}</span><div style="flex:1"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length}</small><div class="bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
-    <div class="ap-stats"><div><b>${d}</b><span>кроків</span></div><div><b>${solvedPuzzles()}</b><span>задач</span></div><div><b>${wins}</b><span>перемог</span></div></div>
-    <div class="ap-box"><b>Мова · Language</b><div class="ap-seg ap-lang" id="p-lang">${[['uk', '🇺🇦 Українська'], ['en', '🇬🇧 English']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
-    <div class="ap-box"><b>Звук</b><div class="ap-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
-    <div class="ap-box"><b>Дошка</b><div class="ap-boards" id="p-boards"></div></div>
-    <div class="ap-box" id="p-pieces"><b>Фігури</b></div>
-    <div class="ap-box"><b>Крапки ходів</b><small class="ap-note">🟢 зелені крапки — куди може піти фігура</small><div class="ap-seg ap-onoff" id="p-dots">${[['1', '🟢 Показувати'], ['0', 'Не показувати']].map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join('')}</div></div>
-    <div class="ap-box"><b>Гра з роботом</b>
-      <div class="ap-limit"><span>💡 Підказок за партію</span><div class="ap-seg" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
-      <div class="ap-limit"><span>💬 Репліки суперника</span><div class="ap-seg" id="p-say">${[['1', 'Так'], ['0', 'Ні']].map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join('')}</div></div>
-      <div class="ap-limit"><span>↩️ Ходів назад</span><div class="ap-seg" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
+    <div class="pf-head"><span class="av">${piece('K')}</span><div class="pf-me"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length}</small><div class="bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div>
+      <div class="pf-stats"><span><b>${d}</b> кроків</span><span><b>${solvedPuzzles()}</b> задач</span><span><b>${wins}</b> перемог</span></div></div></div>
+    <div class="pf-list">
+      <div class="pf-row"><span class="pf-l">🌐 Мова</span><div class="ap-seg pf-seg" id="p-lang">${[['uk', '🇺🇦 UA'], ['en', '🇬🇧 EN']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
+      <div class="pf-row"><span class="pf-l">Звук</span><div class="ap-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
+      <div class="pf-row pf-col"><span class="pf-l">Дошка</span><div class="ap-boards" id="p-boards"></div></div>
+      <div class="pf-row pf-col" id="p-pieces"><span class="pf-l">Фігури</span></div>
+      <div class="pf-row"><span class="pf-l">🟢 Крапки ходів</span><button type="button" class="pf-sw" id="p-dots" aria-label="Крапки ходів"></button></div>
     </div>
-    <button type="button" class="ap-danger" id="p-reset">Скинути прогрес</button>`;
+    <h3 class="pf-h">Гра з роботом</h3>
+    <div class="pf-list">
+      <div class="pf-row"><span class="pf-l">💡 Підказки</span><div class="ap-seg pf-lim" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
+      <div class="pf-row"><span class="pf-l">↩️ Ходи назад</span><div class="ap-seg pf-lim" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
+      <div class="pf-row"><span class="pf-l">💬 Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
+    </div>
+    <button type="button" class="pf-reset" id="p-reset">Скинути прогрес</button>`;
   const paint = () => {
     const v = Math.round(LG.volume * 100);
     $('p-mute').textContent = LG.muted || v === 0 ? '🔇' : v < 40 ? '🔈' : v < 75 ? '🔉' : '🔊';
@@ -175,12 +179,13 @@ function renderProfile() {
   const paintBoards = () => { boardVar(); $('p-boards').innerHTML = BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" class="${LG.boardTheme() === t.id ? 'on' : ''}" style="background-image:url('${boardUrl(t.file)}')" aria-label="${t.id}"></button>`).join(''); };
   paintBoards();
   $('p-boards').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.setBoardTheme(b.dataset.t); LG.play('tap'); paintBoards(); });
-  const paintSay = () => $('p-say').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === (LG.store.get('oppSay', true) ? '1' : '0')));
-  paintSay();
-  $('p-say').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set('oppSay', b.dataset.v === '1'); LG.play('tap'); paintSay(); });
-  const paintDots = () => $('p-dots').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === (LG.store.get('showDests', true) ? '1' : '0')));
-  paintDots();
-  $('p-dots').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set('showDests', b.dataset.v === '1'); LG.play('tap'); paintDots(); });
+  // перемикачі: крапки ходів і репліки суперника
+  const sw = (id, key) => {
+    const paint = () => $(id).classList.toggle('on', !!LG.store.get(key, true));
+    paint();
+    $(id).addEventListener('click', () => { LG.store.set(key, !LG.store.get(key, true)); LG.play('tap'); paint(); });
+  };
+  sw('p-dots', 'showDests'); sw('p-say', 'oppSay');
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); }));
