@@ -16,6 +16,8 @@
   const nightSupported = !!(script && script.dataset.night);
 
   // ---------- сховище (може бути недоступне в приватному режимі) ----------
+  // Уся гучність сайту — удвічі тихіша за гучність телефона: повзунок у Профілі (типово 100%) множиться на це
+  const MASTER = 0.5;
   const store = {
     get(key, fallback) {
       try { const v = localStorage.getItem('chk:' + key); return v === null ? fallback : JSON.parse(v); }
@@ -124,7 +126,7 @@
     osc.type = type || 'sine';
     osc.frequency.setValueAtTime(freq, t);
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, (vol || 0.18) * LG.volume), t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, (vol || 0.18) * LG.volume * MASTER), t + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     osc.connect(gain).connect(audioCtx.destination);
     osc.start(t);
@@ -176,7 +178,7 @@
   };
   function start({ buf, lead }, k = 1) {
     const c = ctx(), src = c.createBufferSource(), gain = c.createGain();
-    gain.gain.value = LG.volume * k; src.buffer = buf; src.connect(gain).connect(c.destination); src.start(0, lead);
+    gain.gain.value = LG.volume * MASTER * k; src.buffer = buf; src.connect(gain).connect(c.destination); src.start(0, lead);
   }
   function playFile(u, k = 1) {
     if (LG.muted || LG.volume <= 0) return;
@@ -185,7 +187,7 @@
       if (ready[url]) return start(ready[url], k); // уже розкодовано — граємо одразу, без очікування
       load(url).then(x => {
         if (x) return start(x, k);
-        const a = new Audio(url); a.volume = Math.min(1, LG.volume * k); a.play().catch(() => {});
+        const a = new Audio(url); a.volume = Math.min(1, LG.volume * MASTER * k); a.play().catch(() => {});
       });
     } catch (e) { /* без звуку */ }
   }
@@ -628,7 +630,7 @@
     pieceSetPicker,
     game,
     muted: store.get('muted', false),
-    volume: store.get('volume', 0.4),
+    volume: store.get('volume', 1),
     playFile,
     showSettings,
     addSettings: fn => { settingsBuilders.push(fn); if (gearBtn) gearBtn.hidden = false; },
