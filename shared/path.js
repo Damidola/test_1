@@ -4,7 +4,7 @@
 const L = n => 'lessons/index.html#/' + n;      // етап уроків Lichess
 const LS = k => 'lessons/lesson.html#' + k;      // наш міні-урок
 export const P = k => 'chess-puzzles/index.html#' + k;     // розділ задач
-export const PL = k => 'chess-puzzles/index.html?lesson=1#' + k; // задачі як урок: ≤10 задач, кружечки рівнів і Пан Сова
+export const PL = k => 'chess-puzzles/index.html?lesson=1#' + k; // задачі як урок: ≤8 задач, кружечки рівнів і Пан Сова
 export const W = k => 'pieces-vs-pawns/index.html#' + k;   // фігури проти пішаків
 export const SECTIONS = [[0, 'Фігури', '#7C6CF0'], [7, 'Особливі ходи', '#2ECC9A'], [10, 'Шах', '#FF5C6C'], [17, 'Мат', '#FF9F1C'], [23, 'Майстер', '#3FA7F5']];
 // Розділи: 1) як ходять фігури і як ними бити; 2) особливі ходи; 3) усе про шах (напад → шах → як урятуватися);
