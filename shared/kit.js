@@ -26,7 +26,35 @@
     }
   };
 
-  // ---------- мова: українська (типово) або англійська — переклад у папці i18n/ ----------
+  // ---------- повний екран (без адресного рядка браузера) ----------
+  // Браузер виходить з повного екрана при переході на іншу сторінку, тож якщо його увімкнено в Профілі,
+  // на новій сторінці вмикаємо знову з першим дотиком (без дотику браузер не дозволяє).
+  const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const fsOk = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+  function fsEnter() {
+    const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen;
+    if (!f || fsEl()) return Promise.resolve();
+    try { const r = f.call(d, { navigationUI: 'hide' }); return r && r.catch ? r.catch(() => {}) : Promise.resolve(); } catch (e) { return Promise.resolve(); }
+  }
+  function fsExit() {
+    const f = document.exitFullscreen || document.webkitExitFullscreen;
+    if (f && fsEl()) try { f.call(document); } catch (e) { /* */ }
+  }
+  let fsLeaving = false;
+  addEventListener('pagehide', () => { fsLeaving = true; });
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+    // вийшли самі (жестом «назад» чи кнопкою) — вимикаємо налаштування, щоб не вмикати знову
+    if (!fsEl() && !fsLeaving && store.get('fullscreen', false) && !fsToggling) store.set('fullscreen', false);
+    document.documentElement.classList.toggle('lg-fs', !!fsEl());
+    dispatchEvent(new Event('resize'));
+  }));
+  let fsToggling = false;
+  if (fsOk && store.get('fullscreen', false)) {
+    const again = () => { if (store.get('fullscreen', false) && !fsEl()) fsEnter(); };
+    ['pointerup', 'touchend', 'click'].forEach(t => addEventListener(t, again, { capture: true, passive: true }));
+  }
+
+
   const lang = store.get('lang', 'uk') === 'en' ? 'en' : 'uk';
   if (lang === 'en' && document.readyState === 'loading') {
     const q = ((script && script.getAttribute('src') || '').match(/\?v=\d+/) || [''])[0];
@@ -444,6 +472,11 @@
 
   const LG = window.LG = {
     lang: () => lang,
+    fullscreen: {
+      supported: fsOk,
+      on: () => !!fsEl(),
+      set(on) { store.set('fullscreen', !!on); fsToggling = true; (on ? fsEnter() : Promise.resolve(fsExit())).then(() => setTimeout(() => { fsToggling = false; }, 300)); }
+    },
     setLang: l => { store.set('lang', l === 'en' ? 'en' : 'uk'); location.reload(); },
     t: s => (window.LG_T ? window.LG_T(s) : s),
     boardTheme: () => store.get('boardTheme', 'brown'),

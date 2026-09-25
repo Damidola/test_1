@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790320309';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790320309';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790320309';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790320445';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790320445';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790320445';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -167,6 +167,7 @@ function renderProfile() {
       <div class="pf-row pf-col"><span class="pf-l">Дошка</span><div class="ap-boards" id="p-boards"></div></div>
       <div class="pf-row pf-col" id="p-pieces"><span class="pf-l">Фігури</span></div>
       <div class="pf-row"><span class="pf-l">🟢 Крапки ходів</span><button type="button" class="pf-sw" id="p-dots" aria-label="Крапки ходів"></button></div>
+      ${LG.fullscreen.supported ? `<div class="pf-row"><span class="pf-l">⛶ Повний екран</span><button type="button" class="pf-sw" id="p-fs" aria-label="Повний екран"></button></div>` : ''}
     </div>
     <details class="pf-more"${pfOpen ? ' open' : ''}><summary class="pf-list pf-sum"><span class="pf-l">🤖 Гра з роботом і ще</span><span class="pf-chev">›</span></summary>
     <div class="pf-list">
@@ -202,6 +203,13 @@ function renderProfile() {
     paint();
     $(id).addEventListener('click', () => { LG.store.set(key, !LG.store.get(key, def)); LG.play('tap'); paint(); });
   };
+  // повний екран: вмикається одразу (це дотик), і на інших сторінках — з першим дотиком
+  if ($('p-fs')) {
+    const paintFs = () => $('p-fs').classList.toggle('on', !!LG.store.get('fullscreen', false));
+    paintFs();
+    $('p-fs').addEventListener('click', () => { LG.fullscreen.set(!LG.store.get('fullscreen', false)); LG.play('tap'); paintFs(); });
+    document.addEventListener('fullscreenchange', paintFs);
+  }
   sw('p-dots', 'showDests', true); sw('p-say', 'oppSay', false); // репліки суперника типово вимкнені
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();

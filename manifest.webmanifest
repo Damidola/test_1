@@ -4,7 +4,7 @@
   "description": "Шахи з нуля: уроки крок за кроком, задачі й гра з роботом.",
   "start_url": "./index.html#learn",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#15142A",
   "theme_color": "#15142A",
