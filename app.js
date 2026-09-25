@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790345491';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790345491';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790345491';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790345744';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790345744';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790345744';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -136,16 +136,17 @@ const PRACTICE = [
   { id: 'mate1', ic: 'Q', t: 'Мат в 1 хід', s: 'обери фігуру, якою ставиш мат', c: '#FF5C6C', groups: [
     [null, [['R', 'Турою', '', P('m1rook')], ['B', 'Слоном', '', P('m1bishop')], ['P', 'Пішаком', '', P('m1pawn')], ['Q', 'Ферзем', '', P('m1queen')], ['N', 'Конем', '', P('m1knight')], ['🎲', 'Різні', 'будь-якою фігурою', P('m1mix')]]]] },
   { id: 'mate2', ic: '🏆', t: 'Мат у 2 ходи', s: 'хід, відповідь — мат', c: '#E0567A', href: P('mate2') },
-  { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, прострел та інші', c: '#FF9F1C', groups: [
-    [null, [['🍴', 'Вилка', '', P('fork')], ['📌', 'Зв’язка', '', P('pin')], ['🏹', 'Прострел', '', P('skewer')], ['💥', 'Відкритий напад', '', P('discovered')],
+  { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, простріл та інші', c: '#FF9F1C', groups: [
+    [null, [['🍴', 'Вилка', '', P('fork')], ['📌', 'Зв’язка', '', P('pin')], ['🏹', 'Простріл', '', P('skewer')], ['💥', 'Відкритий напад', '', P('discovered')],
       ['🎣', 'Відволікання', '', P('deflection')], ['🧲', 'Заманювання', '', P('attraction')], ['🎁', 'Незахищена фігура', '', P('hanging')], ['👑', 'Пішак у ферзі', '', P('promotion')]]]] },
   { id: 'endgame', ic: ['K', 'Q'], t: 'Постав мат роботу', s: 'скільки завгодно ходів — головне мат', c: '#2ECC9A', groups: [
     [null, [[['K', 'Q'], 'Ферзь і король', '', P('kqk')], [['K', 'R'], 'Тура і король', '', P('krk')], [['K', 'B', 'B'], 'Два слони', '', P('kbbk')], [['K', 'P'], 'Король і пішак', '', P('kpk')]]]] },
   { id: 'pvp', ic: ['Q', 'vs', 'P'], t: 'Фігури проти пішаків', s: 'не пропусти жодного пішака до краю', c: '#7C6CF0', groups: [
     [null, [[['Q', 'vs', 'P'], 'Ферзь проти 8', '', W('q_p8')], [['R', 'vs', 'P'], 'Тура проти 5', '', W('r_p5')], [['B', 'vs', 'P'], 'Слон проти 3', '', W('b_p3')],
       [['N', 'vs', 'P'], 'Кінь проти 3', '', W('n_p3')], [['B', 'B', 'vs', 'P'], '2 слони проти 8', '', W('bb_p8')], [['N', 'N', 'vs', 'P'], '2 коні проти 6', '', W('nn_p6')]]]] },
-  { id: 'games', ic: '⭐', t: 'Ігри й головоломки', s: 'пішакова битва, хід конем, 8 ферзів', c: '#8C6CF0', groups: [
-    [null, [[['P', 'vs', 'P'], 'Пішакова битва', 'хто перший до краю', 'pawns/index.html'], [['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html'], [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html']]]] }
+  { id: 'games', ic: '⭐', t: 'Головоломки', s: 'хід конем, 8 ферзів', c: '#8C6CF0', groups: [
+    [null, [[['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html'], [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html']]]] },
+  { id: 'pawns', ic: ['P', 'vs', 'P'], t: 'Пішакова битва', s: 'хто перший до краю', c: '#4DB6AC', href: 'pawns/index.html' }
 ];
 const art = ic => {
   const vs = Array.isArray(ic) ? ic.indexOf('vs') : -1; // до «vs» — білі фігури, після — чорні
