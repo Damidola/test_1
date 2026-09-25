@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790364759';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790364759';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790364759';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790364976';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790364976';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790364976';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -184,7 +184,7 @@ function renderPractice(open) {
     return;
   }
   $('view-practice').innerHTML = `<div class="g2-sub"><a class="g2-back" href="#practice" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><span class="g2-ic pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>` +
-    cat.groups.map(([h, items]) => `${h ? `<h3 class="g2-h3">${esc(h)}</h3>` : ''}<div class="g2-tiles">${items.map(([ic, t, sub, href]) => {
+    cat.groups.map(([h, items]) => `${h ? `<h3 class="g2-h3">${esc(h)}</h3>` : ''}<div class="g2-tiles" style="flex-grow:${Math.ceil(items.length / 2)}">${items.map(([ic, t, sub, href]) => {
       const n = solvedOf([href]), k = href.startsWith('chess-puzzles/') && href.split('#')[1], tot = k && puzTotal && puzTotal[k];
       // задачі: «2 / 35» і смужка — скільки розв'язано з усіх
       const prog = tot ? `<span class="g2-prog${n >= tot ? ' all' : ''}"><span>${n} / ${tot}</span><i><i style="width:${Math.max(2, Math.round(100 * n / tot))}%"></i></i></span>` : n ? `<span class="g2-cnt">✓ ${n}</span>` : '';
