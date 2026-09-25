@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Лабіринт</title>
+  <link rel="stylesheet" href="../shared/kit.css?v=1790369512">
+  <link rel="stylesheet" href="../shared/play.css?v=1790369512">
+  <style>
+    .mz { justify-content: flex-start; gap: 8px; }
+    .mz-intro { display: none; }
+    .mz[data-step="intro"] > :not(.mz-intro) { display: none !important; }
+    .mz[data-step="intro"] > .mz-intro { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 8px 18px; text-align: center; }
+    .mz-intro h2 { font: 800 24px Manrope, var(--lg-font), sans-serif; margin: 6px 0; }
+    .mz-intro p { font: 700 16px/1.4 Manrope, var(--lg-font), sans-serif; margin: 6px 0; max-width: 420px; }
+    .mz-arrows { position: relative; width: 170px; height: 170px; margin: 10px auto; }
+    .mz-arrows mpiece { position: absolute; left: 50%; top: 50%; width: 80px; height: 80px; transform: translate(-50%, -50%); background-size: cover; }
+    .mz-arrows i { position: absolute; font: 900 34px/1 Manrope, sans-serif; color: #2ee6b8; font-style: normal; animation: mzPush 1.2s ease-in-out infinite; }
+    @keyframes mzPush { 50% { transform: var(--p); } }
+    /* дошка-лабіринт: на всю ширину, клітинки як у шаховій дошці, стіни — об'ємні блоки */
+    .mz-wrap { flex: none; position: relative; width: 100vw; max-width: 560px; aspect-ratio: var(--w) / var(--h); }
+    .mz-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--w), 1fr); grid-template-rows: repeat(var(--h), 1fr); touch-action: manipulation; user-select: none; }
+    .mz-grid > div { position: relative; background: #f0d9b5; }
+    .mz-grid > div.dk { background: #b58863; }
+    .mz-grid > div.wall::after { content: ''; position: absolute; inset: 5%; border-radius: 12%; background: #3A4466; box-shadow: inset 0 -7px 0 rgba(0,0,0,.35), 0 3px 6px rgba(0,0,0,.35); }
+    .mz-grid > div.dest::after { content: ''; position: absolute; left: 50%; top: 50%; width: 30%; height: 30%; transform: translate(-50%, -50%); border-radius: 50%; background: rgba(20, 85, 30, .5); }
+    .mz-grid > div.goal::before { content: ''; position: absolute; left: 50%; top: 50%; width: 42%; height: 42%; transform: translate(-50%, -50%); border-radius: 50%; background: #fff; box-shadow: 0 0 0 0 rgba(255,255,255,.7); animation: mzPulse 1.3s ease-out infinite; }
+    @keyframes mzPulse { 70% { box-shadow: 0 0 0 14px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+    .mz-grid > div.hint { box-shadow: inset 0 0 0 4px #FF9F1C; }
+    .mz-piece { position: absolute; width: calc(100% / var(--w)); height: calc(100% / var(--h)); transition: transform .28s ease; pointer-events: none; z-index: 2; }
+    .mz-piece mpiece { display: block; width: 100%; height: 100%; background-size: cover; }
+    .mz-piece.sel mpiece { filter: drop-shadow(0 0 6px #2ee6b8); }
+    .mz-wrap.solved { box-shadow: 0 0 0 4px #2ee6b8; }
+  </style>
+</head>
+<body>
+  <main class="lg-play mz" data-step="items">
+    <section class="mz-intro">
+      <h2 id="title"></h2>
+      <div class="mz-arrows"><mpiece class="rook white"></mpiece><i style="left:50%;top:0;transform:translateX(-50%);--p:translate(-50%,-8px)">↑</i><i style="left:50%;bottom:0;transform:translateX(-50%);--p:translate(-50%,8px)">↓</i><i style="left:0;top:50%;transform:translateY(-50%);--p:translate(-8px,-50%)">←</i><i style="right:0;top:50%;transform:translateY(-50%);--p:translate(8px,-50%)">→</i></div>
+      <p id="intro-text"></p>
+    </section>
+    <div class="lv-bar" id="levels"></div>
+    <div class="cl-goal" hidden><span id="goal"></span></div>
+    <div class="mz-wrap lg-board-wrap" id="wrap"><div class="mz-grid" id="grid"></div></div>
+    <div class="cl-task" id="task"></div>
+    <div class="lg-controls">
+      <button type="button" id="again"><span class="ico">🔁</span><span class="lbl">Заново</span></button>
+    </div>
+  </main>
+  <script src="../shared/games.js?v=1790369512"></script>
+  <script src="../shared/kit.js?v=1790369512" data-game="path" data-night="on"></script>
+  <script type="module" src="maze.js?v=1790369512"></script>
+</body>
+</html>
