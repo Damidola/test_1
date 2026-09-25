@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+<!-- Луг для «Коника Гопа»: небо, хмаринки пливуть, замок на пагорбі з прапорцем, паркан, квіти -->
+<style>
+.cl{animation:cl 40s linear infinite}.cl2{animation-duration:55s;animation-delay:-20s}
+@keyframes cl{from{transform:translateX(-160px)}to{transform:translateX(900px)}}
+.fl{transform-box:fill-box;transform-origin:0 50%;animation:fl 1.2s ease-in-out infinite alternate}
+@keyframes fl{to{transform:skewY(-12deg) scaleX(.9)}}
+.gr{transform-box:fill-box;transform-origin:50% 100%;animation:gr 3s ease-in-out infinite}
+.gr2{animation-delay:-1.5s}
+@keyframes gr{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+</style>
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8ff"/><stop offset="1" stop-color="#d4f0ff"/></linearGradient></defs>
+<rect width="800" height="320" fill="url(#sky)"/>
+<circle cx="670" cy="60" r="36" fill="#ffe27a"/><circle cx="670" cy="60" r="54" fill="#ffe27a" opacity=".25"/>
+<g class="cl" fill="#fff"><ellipse cx="0" cy="60" rx="46" ry="18"/><ellipse cx="-26" cy="66" rx="28" ry="14"/><ellipse cx="28" cy="66" rx="30" ry="14"/></g>
+<g class="cl cl2" fill="#fff" opacity=".9"><ellipse cx="0" cy="110" rx="38" ry="14"/><ellipse cx="22" cy="116" rx="26" ry="12"/></g>
+<!-- далекі пагорби -->
+<path d="M0 230 Q120 170 260 205 Q380 150 520 196 Q660 160 800 200 L800 320 L0 320 Z" fill="#8fd17a"/>
+<!-- замок -->
+<g transform="translate(560 128)">
+ <rect x="0" y="30" width="90" height="60" fill="#c9c2d9"/><rect x="-14" y="10" width="26" height="80" fill="#b7aecb"/><rect x="78" y="10" width="26" height="80" fill="#b7aecb"/>
+ <path d="M-16 10 L-1 -14 L14 10 Z M76 10 L91 -14 L106 10 Z" fill="#7c6cf0"/>
+ <path d="M0 30 h10 v-8 h10 v8 h10 v-8 h10 v8 h10 v-8 h10 v8 h10 v-8 h10 v8" fill="#c9c2d9"/>
+ <path d="M35 90 v-24 a10 10 0 0 1 20 0 v24 Z" fill="#6b4a3a"/>
+ <rect x="-5" y="34" width="8" height="12" rx="4" fill="#5a5270"/><rect x="87" y="34" width="8" height="12" rx="4" fill="#5a5270"/>
+ <line x1="91" y1="-14" x2="91" y2="-40" stroke="#5a5270" stroke-width="3"/><path class="fl" d="M91 -40 h24 l-6 7 6 7 h-24 Z" fill="#ff5c6c"/>
+</g>
+<!-- ближчий луг -->
+<path d="M0 262 Q160 226 330 252 Q520 222 800 256 L800 320 L0 320 Z" fill="#5fbf5a"/>
+<!-- паркан -->
+<g fill="#e9c38a" stroke="#b98a4c" stroke-width="2">
+ <rect x="30" y="236" width="10" height="44" rx="3"/><rect x="80" y="232" width="10" height="46" rx="3"/><rect x="130" y="230" width="10" height="46" rx="3"/><rect x="180" y="232" width="10" height="44" rx="3"/>
+ <rect x="24" y="244" width="172" height="8" rx="3"/><rect x="24" y="262" width="172" height="8" rx="3"/>
+</g>
+<path d="M0 292 Q200 276 400 290 Q600 278 800 292 L800 320 L0 320 Z" fill="#48a847"/>
+<!-- травичка й квіти -->
+<g fill="#3d9a3c"><path class="gr" d="M250 300 l6 -26 6 26z"/><path class="gr gr2" d="M268 302 l5 -20 5 20z"/><path class="gr" d="M520 298 l6 -24 6 24z"/><path class="gr gr2" d="M720 300 l5 -22 5 22z"/></g>
+<g><circle cx="300" cy="296" r="7" fill="#ffd23f"/><circle cx="300" cy="296" r="3" fill="#ff8a3d"/><circle cx="470" cy="300" r="7" fill="#ff6fa3"/><circle cx="470" cy="300" r="3" fill="#fff"/><circle cx="620" cy="294" r="6" fill="#fff"/><circle cx="620" cy="294" r="2.5" fill="#ffd23f"/></g>
+</svg>

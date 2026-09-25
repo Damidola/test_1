@@ -19,7 +19,7 @@ export const OPPONENTS = [
   ['Балерина Капучина', 2, 'ballerina.jpg', 'rainbow'],
   ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'], ['Тралалело Тралала', 3, 'tralalero.jpg', 'underwater'], ['Тун-тун-тун-сахур', 4, 'tung-tung.jpg', 'lanterns'],
   ['Брр Брр Патапім', 4, 'patapim.jpg', 'autumn'],
-  ['Коник Гоп', 2, 'toon-horse.svg', 'chessgreen'] // мультяшний (SVG) — без рамки, стоїть на низу сцени
+  ['Коник Гоп', 2, 'toon-horse.svg', 'meadow-toon'] // мультяшний (SVG) — без рамки, стоїть на низу сцени
 ].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' + VER }));
 
 const scene = n => ROOT + 'shared/bg/' + n + '.svg' + VER;

@@ -1,51 +1,132 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-<!-- «Коник Гоп» — мультяшний суперник (власний малюнок, SVG): кліпає очима й ворушить ротом -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" class="hs">
+<!-- «Коник Гоп» — мультяшний суперник (власний малюнок, SVG). Настрій — класом на панелі суперника:
+     .mood-happy (виграє / забрав фігуру), .mood-angry (програє / втратив фігуру), .thinking, .talking, .poked (тапнули).
+     Без класів — спокійний: кліпає, озирається, погойдується, вушка ворушаться, махає копитцем. -->
 <style>
-.eyes{transform-origin:200px 172px;animation:blink 4.2s infinite}
-@keyframes blink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
-.head{transform-origin:200px 330px;animation:sway 5s ease-in-out infinite}
-@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
-.pup{animation:look 7s ease-in-out infinite}
-@keyframes look{0%,40%,100%{transform:translate(0,0)}48%,62%{transform:translate(7px,-2px)}70%,80%{transform:translate(-6px,0)}}
-.mouth{transform-origin:200px 288px;animation:talk 2.6s ease-in-out infinite}
-@keyframes talk{0%,60%,100%{transform:scaleY(1)}66%,78%{transform:scaleY(1.9)}72%{transform:scaleY(1.2)}}
+.hs-body{transform-origin:200px 400px;animation:hsSway 5s ease-in-out infinite}
+@keyframes hsSway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.hs-eyes{transform-origin:200px 172px;animation:hsBlink 4.2s infinite}
+@keyframes hsBlink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+.hs-pup{animation:hsLook 7s ease-in-out infinite;transition:transform .3s}
+@keyframes hsLook{0%,40%,100%{transform:translate(0,0)}48%,62%{transform:translate(7px,-2px)}70%,80%{transform:translate(-6px,0)}}
+.hs-earl{transform-origin:150px 96px;animation:hsEar 3.4s ease-in-out infinite}
+.hs-earr{transform-origin:250px 96px;animation:hsEar 3.4s ease-in-out infinite reverse}
+@keyframes hsEar{0%,80%,100%{transform:rotate(0)}88%{transform:rotate(-10deg)}}
+.hs-mane{transform-origin:200px 90px;animation:hsMane 2.6s ease-in-out infinite}
+@keyframes hsMane{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+.hs-armr{transform-origin:292px 344px;animation:hsWave 2.6s ease-in-out infinite}
+@keyframes hsWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
+.hs-arml{transform-origin:108px 344px;animation:hsCarrot 3.4s ease-in-out infinite}
+@keyframes hsCarrot{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
+.hs-happy,.hs-angry,.hs-bhappy,.hs-bangry,.hs-eyeshappy,.hs-steam,.hs-red,.hs-talk,.hs-spark{opacity:0}
+.hs-happy,.hs-angry,.hs-norm,.hs-talk{transition:opacity .2s}
+/* радіє */
+.mood-happy .hs-norm,.mood-happy .hs-bnorm,.mood-happy .hs-eyes{opacity:0}
+.mood-happy .hs-happy,.mood-happy .hs-bhappy,.mood-happy .hs-eyeshappy,.mood-happy .hs-spark{opacity:1}
+.mood-happy .hs-body{animation:hsJump .55s ease-in-out infinite}
+@keyframes hsJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.mood-happy .hs-blush{opacity:.8}
+.mood-happy .hs-armr{animation:hsCheer .55s ease-in-out infinite}
+@keyframes hsCheer{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-26deg)}}
+.mood-happy .hs-arml{animation:hsCheerL .55s ease-in-out infinite}
+@keyframes hsCheerL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+.hs-spark{animation:hsSpark 1.2s ease-in-out infinite}
+@keyframes hsSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
+/* злиться: червоніє, пара з ніздрів, б'є копитом */
+.mood-angry .hs-norm,.mood-angry .hs-bnorm{opacity:0}
+.mood-angry .hs-angry,.mood-angry .hs-bangry,.mood-angry .hs-steam{opacity:1}
+.mood-angry .hs-red{opacity:.35}
+.mood-angry .hs-body{animation:hsShake .18s linear infinite}
+@keyframes hsShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.mood-angry .hs-pup{animation:none;transform:translate(0,3px)}
+.mood-angry .hs-earl{animation:none;transform:rotate(-22deg)}.mood-angry .hs-earr{animation:none;transform:rotate(22deg)}
+.mood-angry .hs-armr{animation:hsStomp .3s ease-in-out infinite}
+@keyframes hsStomp{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-8deg)}}
+.hs-steam{animation:hsSteam 1.2s ease-out infinite}
+@keyframes hsSteam{0%{transform:translateY(0) scale(.5)}100%{transform:translateY(22px) scale(1.4)}}
+/* думає — очі вгору, копитце до підборіддя */
+.thinking .hs-pup{animation:none;transform:translate(7px,-8px)}
+.thinking .hs-armr{animation:none;transform:rotate(-34deg) translate(-26px,14px)}
+/* говорить */
+.talking:not(.mood-happy):not(.mood-angry) .hs-norm{opacity:0}
+.talking:not(.mood-happy):not(.mood-angry) .hs-talk{opacity:1}
+.hs-talkin{transform-origin:200px 292px;animation:hsTalk .32s ease-in-out infinite alternate}
+@keyframes hsTalk{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+/* тапнули — здивувався */
+.poked .hs-body{animation:hsPoke .7s cubic-bezier(.3,1.8,.5,1)}
+@keyframes hsPoke{0%{transform:scale(1,1)}20%{transform:scale(1.08,.9) translateY(10px)}50%{transform:scale(.95,1.08) translateY(-18px)}100%{transform:none}}
+.poked .hs-pup{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}
+.poked .hs-bnorm{opacity:0}.poked .hs-bhappy{opacity:1;transform:translateY(-8px)}
+.poked .hs-norm{opacity:0}.poked .hs-talk{opacity:1}.poked .hs-talkin{animation:none}
+.poked .hs-earl{animation:none;transform:rotate(12deg)}.poked .hs-earr{animation:none;transform:rotate(-12deg)}
 </style>
 <defs>
-<pattern id="chk" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#f4f1e6"/><rect width="14" height="14" fill="#3a8f4b"/><rect x="14" y="14" width="14" height="14" fill="#3a8f4b"/></pattern>
+<pattern id="hsChk" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#f4f1e6"/><rect width="14" height="14" fill="#3a8f4b"/><rect x="14" y="14" width="14" height="14" fill="#3a8f4b"/></pattern>
+<linearGradient id="hsCar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f2711c"/><stop offset=".5" stop-color="#ff9a3c"/><stop offset="1" stop-color="#e2600f"/></linearGradient>
 </defs>
-<!-- шия й тулуб -->
-<path d="M118 400 C124 340 140 300 165 285 L235 285 C260 300 276 340 282 400 Z" fill="#c9854a"/>
-<path d="M60 400 C70 360 110 340 150 336 L250 336 C290 340 330 360 340 400 Z" fill="#e2574c"/>
-<!-- шарф у клітинку -->
-<path d="M138 318 C170 334 230 334 262 318 L268 350 C232 368 168 368 132 350 Z" fill="url(#chk)"/>
-<path d="M232 344 L262 346 L252 400 L220 400 Z" fill="url(#chk)"/>
-<g class="head">
-<!-- грива ззаду -->
-<path d="M112 150 C92 200 96 250 120 290 C104 240 110 196 128 160 Z" fill="#5b3a1e"/>
-<!-- вуха -->
-<path d="M128 108 L108 22 L176 82 Z" fill="#c9854a"/><path d="M134 96 L122 46 L162 84 Z" fill="#f2a7a0"/>
-<path d="M272 108 L292 22 L224 82 Z" fill="#c9854a"/><path d="M266 96 L278 46 L238 84 Z" fill="#f2a7a0"/>
-<!-- голова -->
-<ellipse cx="200" cy="190" rx="98" ry="112" fill="#d99a5b"/>
-<!-- морда -->
-<ellipse cx="200" cy="262" rx="80" ry="60" fill="#f2c99a"/>
-<ellipse cx="174" cy="258" rx="10" ry="7" fill="#8a5530"/><ellipse cx="226" cy="258" rx="10" ry="7" fill="#8a5530"/>
-<g class="mouth"><path d="M168 284 Q200 312 232 284 Q200 298 168 284 Z" fill="#6b2f22"/></g>
-<!-- щічки -->
-<ellipse cx="124" cy="226" rx="20" ry="12" fill="#f07b72" opacity=".45"/><ellipse cx="276" cy="226" rx="20" ry="12" fill="#f07b72" opacity=".45"/>
-<!-- брови -->
-<path d="M132 128 Q158 112 184 126" stroke="#5b3a1e" stroke-width="8" stroke-linecap="round" fill="none"/>
-<path d="M216 126 Q242 112 268 128" stroke="#5b3a1e" stroke-width="8" stroke-linecap="round" fill="none"/>
-<!-- очі -->
-<g class="eyes">
-<ellipse cx="160" cy="172" rx="31" ry="36" fill="#fff"/><ellipse cx="240" cy="172" rx="31" ry="36" fill="#fff"/>
-<g class="pup"><circle cx="164" cy="180" r="17" fill="#2b2140"/><circle cx="244" cy="180" r="17" fill="#2b2140"/>
-<circle cx="171" cy="172" r="6" fill="#fff"/><circle cx="251" cy="172" r="6" fill="#fff"/></g>
-</g>
-<!-- чубчик -->
-<path d="M150 96 C160 60 200 52 222 70 C246 62 262 84 250 104 C236 92 222 96 214 110 C204 94 184 92 172 112 C168 100 158 96 150 96 Z" fill="#5b3a1e"/>
-<!-- корона -->
-<g transform="rotate(-10 230 52)"><path d="M196 70 L190 30 L210 48 L226 22 L242 48 L262 30 L256 70 Z" fill="#ffc83d" stroke="#e0a21a" stroke-width="3" stroke-linejoin="round"/>
-<circle cx="226" cy="58" r="5" fill="#e2574c"/></g>
+<g class="hs-body">
+  <!-- шия і светр -->
+  <path d="M130 330 C136 300 160 290 200 290 C240 290 264 300 270 330 Z" fill="#c9854a"/>
+  <path d="M84 400 C88 350 128 322 200 320 C272 322 312 350 316 400 Z" fill="#e2574c"/>
+  <path d="M140 376 h120 M132 392 h136" stroke="#f07a70" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+  <!-- шарф у клітинку -->
+  <path d="M134 322 C168 340 232 340 266 322 L272 352 C234 372 166 372 128 352 Z" fill="url(#hsChk)"/>
+  <path d="M232 348 L264 350 L254 400 L220 400 Z" fill="url(#hsChk)"/>
+  <!-- грива ззаду -->
+  <path class="hs-mane" d="M110 150 C88 200 92 250 118 292 C102 240 108 196 126 160 Z" fill="#5b3a1e"/>
+  <!-- вуха -->
+  <g class="hs-earl"><path d="M128 108 L108 22 L176 82 Z" fill="#c9854a"/><path d="M134 96 L122 46 L162 84 Z" fill="#f2a7a0"/></g>
+  <g class="hs-earr"><path d="M272 108 L292 22 L224 82 Z" fill="#c9854a"/><path d="M266 96 L278 46 L238 84 Z" fill="#f2a7a0"/></g>
+  <!-- голова -->
+  <ellipse cx="200" cy="190" rx="98" ry="112" fill="#d99a5b"/>
+  <ellipse class="hs-red" cx="200" cy="200" rx="96" ry="106" fill="#ff3b30"/>
+  <!-- морда -->
+  <ellipse cx="200" cy="262" rx="80" ry="60" fill="#f2c99a"/>
+  <ellipse cx="174" cy="258" rx="10" ry="7" fill="#8a5530"/><ellipse cx="226" cy="258" rx="10" ry="7" fill="#8a5530"/>
+  <ellipse class="hs-blush" cx="124" cy="226" rx="20" ry="12" fill="#f07b72" opacity=".45"/><ellipse class="hs-blush" cx="276" cy="226" rx="20" ry="12" fill="#f07b72" opacity=".45"/>
+  <!-- роти -->
+  <path class="hs-norm" d="M168 284 Q200 312 232 284 Q200 298 168 284 Z" fill="#6b2f22"/>
+  <g class="hs-talk"><g class="hs-talkin"><ellipse cx="200" cy="292" rx="20" ry="15" fill="#6b2f22"/><ellipse cx="200" cy="300" rx="11" ry="5" fill="#e5645a"/></g></g>
+  <g class="hs-happy"><path d="M160 280 Q200 330 240 280 Z" fill="#6b2f22"/><path d="M168 282 L232 282 L228 290 L172 290 Z" fill="#fff"/><ellipse cx="200" cy="308" rx="16" ry="7" fill="#e5645a"/></g>
+  <g class="hs-angry"><path d="M166 302 Q200 276 234 302 Q200 292 166 302 Z" fill="#6b2f22"/><path d="M176 296 L224 296" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>
+  <!-- пара з ніздрів -->
+  <g class="hs-steam" fill="#fff" opacity=".85"><circle cx="164" cy="272" r="9"/><circle cx="156" cy="286" r="6"/><circle cx="236" cy="272" r="9"/><circle cx="244" cy="286" r="6"/></g>
+  <!-- брови -->
+  <g stroke="#5b3a1e" stroke-width="8" stroke-linecap="round" fill="none">
+    <path class="hs-bnorm" d="M132 128 Q158 112 184 126"/><path class="hs-bnorm" d="M216 126 Q242 112 268 128"/>
+    <path class="hs-bhappy" d="M132 120 Q158 100 184 114"/><path class="hs-bhappy" d="M216 114 Q242 100 268 120"/>
+    <path class="hs-bangry" d="M132 116 L184 140"/><path class="hs-bangry" d="M268 116 L216 140"/>
+  </g>
+  <!-- очі -->
+  <g class="hs-eyes">
+    <ellipse cx="160" cy="172" rx="31" ry="36" fill="#fff"/><ellipse cx="240" cy="172" rx="31" ry="36" fill="#fff"/>
+    <g class="hs-pup"><circle cx="164" cy="180" r="17" fill="#2b2140"/><circle cx="244" cy="180" r="17" fill="#2b2140"/>
+      <circle cx="171" cy="172" r="6" fill="#fff"/><circle cx="251" cy="172" r="6" fill="#fff"/></g>
+  </g>
+  <g class="hs-eyeshappy" stroke="#2b2140" stroke-width="8" stroke-linecap="round" fill="none"><path d="M136 180 Q160 156 184 180"/><path d="M216 180 Q240 156 264 180"/></g>
+  <!-- чубчик і корона -->
+  <g class="hs-mane"><path d="M150 96 C160 60 200 52 222 70 C246 62 262 84 250 104 C236 92 222 96 214 110 C204 94 184 92 172 112 C168 100 158 96 150 96 Z" fill="#5b3a1e"/></g>
+  <g transform="rotate(-10 230 52)"><path d="M196 70 L190 30 L210 48 L226 22 L242 48 L262 30 L256 70 Z" fill="#ffc83d" stroke="#e0a21a" stroke-width="3" stroke-linejoin="round"/><circle cx="226" cy="58" r="5" fill="#e2574c"/></g>
+  <!-- ліва нога-рука з морквиною -->
+  <g class="hs-arml">
+    <path d="M108 344 C92 362 96 384 118 386" fill="none" stroke="#e2574c" stroke-width="30" stroke-linecap="round"/>
+    <g transform="translate(116 382) rotate(-38)">
+      <path d="M-10 0 C-12 -30 -6 -60 4 -78 C10 -58 14 -30 10 0 Z" fill="url(#hsCar)" stroke="#c4540c" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M-4 -20 h8 M-3 -40 h7 M-1 -58 h5" stroke="#c4540c" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M4 -78 C-4 -92 -12 -96 -16 -94 M4 -78 C4 -94 8 -100 12 -100 M4 -78 C12 -90 20 -92 24 -88" fill="none" stroke="#3aa35c" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <ellipse cx="120" cy="384" rx="18" ry="15" fill="#6b4526"/>
+    <path d="M106 390 q14 6 28 0" stroke="#3d2614" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- права нога-рука: копитце махає -->
+  <g class="hs-armr">
+    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="#e2574c" stroke-width="30" stroke-linecap="round"/>
+    <path d="M314 292 q16 -8 32 0" stroke="#f07a70" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M313 284 C312 264 348 264 347 284 Z" fill="#d99a5b"/>
+    <path d="M312 268 C312 246 348 246 348 268 Z" fill="#6b4526"/>
+    <path d="M312 268 h36" stroke="#3d2614" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <!-- іскорки -->
+  <g class="hs-spark" fill="#ffd23f"><path d="M70 110 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z"/><path d="M330 124 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z"/></g>
 </g>
 </svg>
