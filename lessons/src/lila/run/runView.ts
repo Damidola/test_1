@@ -6,7 +6,7 @@ import chessground from '../chessground';
 import { hashHref } from '../hashRouting';
 import type { LearnCtrl } from '../ctrl';
 import type { LevelCtrl } from '../levelCtrl';
-import { makeStars, progressView } from '../progressView';
+import { progressView } from '../progressView';
 import { getLevelRank } from '../score';
 import { SECTIONS, STEPS } from '../../../../shared/path.js';
 import { promotionView } from '../promotionView';
@@ -39,7 +39,8 @@ const renderCompleted = (level: LevelCtrl): VNode => {
     },
     [
       h2(list[level.blueprint.id % list.length] || congrats()),
-      level.blueprint.nextButton ? button(i18n.learn.next) : makeStars(level.blueprint, level.vm.score),
+      // без зірочок у бульбашці: зелена (ідеально) чи жовта (пройдено) — і так видно
+      ...(level.blueprint.nextButton ? [button(i18n.learn.next)] : []),
     ],
   );
 };

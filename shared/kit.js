@@ -510,6 +510,58 @@
     ]);
     document.body.appendChild(bar);
   }
+  // Вихід — завжди стрілкою ‹ у лівому верхньому куті (на сторінках, де своєї стрілки ще немає — CSS ховає цю)
+  function exitArrow() {
+    if (document.querySelector('.lg-exit')) return;
+    const a = el('a', { class: 'lg-top-btn lg-exit', href: homeHref(), 'aria-label': 'Назад до меню' });
+    a.innerHTML = ICONS['↩️'];
+    document.body.appendChild(a);
+  }
+  // Одна нижня панель: кнопки гри з рядка під дошкою (.lg-controls) — у нижній панелі разом із «Підказкою» й «Поясненням».
+  // Самі кнопки гри лишаються на місці (прихованими) — у панелі їхні копії, які натискають оригінал; стан (сховано, вимкнено,
+  // підпис) копії повторюють. «Меню»/«Уроки» внизу немає — для виходу стрілка ‹ угорі.
+  function mergeControls() {
+    const bar = document.querySelector('.lg-nav'); if (!bar) return;
+    bar.classList.add('lg-merged');
+    let ctr = null, obs = null, queued = false;
+    const isExit = b => /^(Уроки|Меню|До уроків)$/.test((b.querySelector('.lbl') || b).textContent.trim()) || (b.querySelector('.ico') || {}).textContent === '🎓';
+    const isHint = b => b.id === 'hint' || /^Підказка$/.test((b.querySelector('.lbl') || b).textContent.trim());
+    const sync = () => {
+      queued = false;
+      bar.querySelectorAll('.lg-ctl-copy').forEach(x => x.remove());
+      if (hintBtn) hintBtn.classList.remove('lg-dup');
+      if (!ctr || !ctr.isConnected || ctr.hidden) return;
+      const own = [...ctr.querySelectorAll('button, a')].filter(b => !b.hidden && getComputedStyle(b).display !== 'none' && !isExit(b));
+      // своя «Підказка» гри — замість загальної (щоб не було двох)
+      const ownHint = own.some(isHint);
+      if (hintBtn) hintBtn.classList.toggle('lg-dup', ownHint);
+      let at = bar.firstChild;
+      own.forEach(b => {
+        const hint = isHint(b);
+        const c = navBtn(hint ? '💡' : '', '', { onclick: e => { e.preventDefault(); b.click(); } });
+        c.classList.add('lg-ctl-copy'); if (b.classList.contains('on')) c.classList.add('on');
+        c.disabled = !!b.disabled; if (b.id) c.dataset.of = b.id;
+        c.querySelector('.lbl').textContent = (b.querySelector('.lbl') || b).textContent.trim();
+        if (!hint) { const i = b.querySelector('.ico'); c.querySelector('.ico').innerHTML = i ? i.innerHTML : ''; }
+        if (hint && hintBtn && !hintBtn.hidden) { hintBtn.before(c); return; }
+        bar.insertBefore(c, at);
+      });
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(sync); } };
+    const attach = () => {
+      const c = document.querySelector('main .lg-controls, .lg-play .lg-controls, .lg-controls');
+      if (c === ctr) return;
+      ctr = c; if (obs) obs.disconnect();
+      if (ctr) {
+        ctr.classList.add('lg-ctl-hidden');
+        obs = new MutationObserver(queue);
+        obs.observe(ctr, { subtree: true, childList: true, attributes: true, characterData: true });
+      }
+      queue();
+    };
+    attach();
+    new MutationObserver(attach).observe(document.body, { childList: true, subtree: true });
+  }
   // Лише «Меню · Підказка · …свої кнопки» (гра з роботом: Назад, Вперед)
   function navOnly(extra) {
     const bar = document.querySelector('.lg-nav'); if (!bar) return [];
@@ -607,6 +659,8 @@
     document.body.classList.add('lg-game', 'lg-game-' + gameId);
     document.title = game.title + ' · Шахи';
     buildBar();
+    exitArrow();
+    mergeControls();
     tickStart = Date.now();
     setInterval(flushTime, 15000);
     document.addEventListener('visibilitychange', () => { flushTime(); if (!document.hidden) tickStart = Date.now(); });
