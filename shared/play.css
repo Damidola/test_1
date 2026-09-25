@@ -242,3 +242,4 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 cg-board square.current-premove { background-color: rgba(52, 120, 246, .62) !important; }
 cg-board square.premove-dest { background: radial-gradient(rgba(52, 120, 246, .7) 19%, rgba(0, 0, 0, 0) 20%); }
 cg-board square.oc.premove-dest { background: radial-gradient(transparent 0%, transparent 79%, rgba(52, 120, 246, .55) 80%); }
+.lg-top-r { display: flex; gap: 8px; }

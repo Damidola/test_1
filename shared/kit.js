@@ -40,12 +40,18 @@
     const f = document.exitFullscreen || document.webkitExitFullscreen;
     if (f && fsEl()) try { f.call(document); } catch (e) { /* */ }
   }
+  // Вийшли з повного екрана самі (жест «назад», кнопка) — налаштування вимикається, щоб Профіль і кнопка показували правду.
+  // Вихід через перезавантаження чи закриття сторінки не рахується.
+  let fsLeaving = false;
+  addEventListener('beforeunload', () => { fsLeaving = true; });
+  addEventListener('pagehide', () => { fsLeaving = true; });
   ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+    if (!fsEl() && !fsToggling && !fsLeaving && window.top === window) store.set('fullscreen', false);
     document.documentElement.classList.toggle('lg-fs', !!fsEl());
     dispatchEvent(new Event('resize'));
   }));
   let fsToggling = false;
-  // Налаштування вмикається й вимикається лише в Профілі. Вийшли з повного екрана жестом — наступний дотик повертає його.
+  // Після перезавантаження сторінки з увімкненим налаштуванням повний екран повертається з першим дотиком.
   const inFrame = window.top !== window;
   if (fsOk && !inFrame) {
     const again = () => { if (store.get('fullscreen', false) && !fsEl()) fsEnter(); };
@@ -513,11 +519,17 @@
   const LG = window.LG = {
     lang: () => lang,
     go, _fsClose: fsClose,
-    fullscreen: {
-      supported: fsOk,
-      on: () => !!fsEl(),
-      set(on) { store.set('fullscreen', !!on); fsToggling = true; (on ? fsEnter() : Promise.resolve(fsExit())).then(() => setTimeout(() => { fsToggling = false; }, 300)); }
-    },
+    // У рамці (гра поверх головної) повним екраном керує головне вікно
+    fullscreen: (() => {
+      const own = {
+        supported: fsOk,
+        on: () => !!fsEl(),
+        set(on) { store.set('fullscreen', !!on); fsToggling = true; (on ? fsEnter() : Promise.resolve(fsExit())).then(() => setTimeout(() => { fsToggling = false; }, 300)); },
+        onChange(cb) { ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, cb)); }
+      };
+      let t = null; try { t = inFrame && window.top.LG && window.top.LG.fullscreen; } catch (e) { /* */ }
+      return t || own;
+    })(),
     setLang: l => { store.set('lang', l === 'en' ? 'en' : 'uk'); location.reload(); },
     t: s => (window.LG_T ? window.LG_T(s) : s),
     boardTheme: () => store.get('boardTheme', 'brown'),
