@@ -47,10 +47,12 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   #main-wrap:has(.learn--run) { padding-bottom: 4px; }
   #main-wrap:has(.learn--run) > #learn-app { min-height: 100%; display: flex; flex-direction: column; }
   #learn-app > .learn--run { flex: 1; width: 100%; }
-  /* вчитель зі словами — угорі під рядком рівнів, дошка — унизу, над кнопками (вільне місце — між ними) */
-  .learn.learn--run { gap: 6px; min-height: 100%; grid-template-areas: "top" "table" "." "main"; grid-template-rows: auto auto minmax(0, 1fr) auto;
+  /* рівні вгорі; вчитель зі словами — одразу над дошкою; вільне місце — переважно над вчителем, трохи під дошкою */
+  .learn.learn--run { gap: 6px; min-height: 100%; grid-template-areas: "top" "." "table" "main" "."; grid-template-rows: auto minmax(0, 1fr) auto auto minmax(0, .35fr);
     grid-template-columns: minmax(0, 1fr); }
-  .learn--run .learn__table { min-height: 0; }
+  /* вчитель — одразу над дошкою; без картки lila під ним (вона обрізала кружок) */
+  .learn--run .learn__table, .learn--run .learn__table .wrap { min-height: 0; background: none !important; box-shadow: none !important; border: 0 !important; overflow: visible !important; }
+  .learn--run .learn__table .wrap { padding-top: 4px; padding-bottom: 4px; }
   .learn--run .learn__table .wrap { display: grid; grid-template-columns: var(--teach) minmax(0, 1fr); align-items: center; gap: 4px 10px; padding: 0 8px;
     --teach: clamp(84px, min(30vw, 17svh), 140px); }
   .learn--run .learn__table .wrap > :not(.lg-teacher) { grid-column: 2; }
@@ -80,7 +82,7 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   .lg-run-top .progress a.done.perfect::after { content: '✓'; position: absolute; color: #fff; font-weight: 900; font-size: 18px; }
   .lg-run-top .lg-run-menu { flex: none; width: 46px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: rgba(255,255,255,.07); color: #fff; font-size: 22px; }
   .learn--run .learn__table .progress, .learn--run .learn__table .lg-demo-open { display: none; }
-  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--lg-bar-h, 38px) - 20px - 62px - clamp(84px, min(30vw, 17svh), 140px) - 30px)); }
+  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--lg-bar-h, 38px) - 20px - 62px - max(clamp(84px, min(30vw, 17svh), 140px), 136px) - 36px)); }
   .learn--run .learn__table { margin: 0; }
   .learn--run .learn__table .goal { font-size: 16px; font-weight: 700; padding: 8px 10px; min-height: 0; }
   /* слова вчителя — не довше 4 рядків */
