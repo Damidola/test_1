@@ -339,3 +339,8 @@ html.lg-night .lg-play .lg-controls button:active { background: #3A4360; transfo
   html.lg .lg-play:has(> .lv-teach) .lg-board-wrap { width: 100vw !important; max-width: none !important; }
   .lv-teach { height: calc(var(--teach) + 12px); padding-top: 5px; box-sizing: border-box; }
 }
+/* кружечки рівнів і коло Сови — з запасом по краях: обідки (box-shadow) ніколи не обрізаються */
+.lv-row { overflow: visible !important; }
+.lv-row > .lv-bar { overflow: visible !important; padding: 6px 6px !important; }
+.lv-teach { padding-left: 5px; padding-right: 5px; box-sizing: border-box; }
+.lv-teach .lg-teacher { margin: 1px 0 0 1px; }
