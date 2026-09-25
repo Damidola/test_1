@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790317751';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790317751';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790317751';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790317791';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790317791';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790317791';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -197,12 +197,12 @@ function renderProfile() {
   paintBoards();
   $('p-boards').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.setBoardTheme(b.dataset.t); LG.play('tap'); paintBoards(); });
   // перемикачі: крапки ходів і репліки суперника
-  const sw = (id, key) => {
-    const paint = () => $(id).classList.toggle('on', !!LG.store.get(key, true));
+  const sw = (id, key, def) => {
+    const paint = () => $(id).classList.toggle('on', !!LG.store.get(key, def));
     paint();
-    $(id).addEventListener('click', () => { LG.store.set(key, !LG.store.get(key, true)); LG.play('tap'); paint(); });
+    $(id).addEventListener('click', () => { LG.store.set(key, !LG.store.get(key, def)); LG.play('tap'); paint(); });
   };
-  sw('p-dots', 'showDests'); sw('p-say', 'oppSay');
+  sw('p-dots', 'showDests', true); sw('p-say', 'oppSay', false); // репліки суперника типово вимкнені
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); }));
