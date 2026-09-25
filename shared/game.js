@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790321110';
-import { aiMove, hintMove } from './ai.js?v=1790321110';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790321110';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790321270';
+import { aiMove, hintMove } from './ai.js?v=1790321270';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790321270';
 
 const LG = window.LG;
 
@@ -96,7 +96,7 @@ export function startGame(cfg) {
 
   // Вигляд поля: за замовчуванням — дошка Lichess; ігри з іншим полем (хрестики-нулики,
   // чотири в ряд) дають свій view: { render(s, {mine, moves}), hint(m), clearHint() }
-  const board = cfg.view ? null : createBoard($('.lg-board-el'), { onMove: (o, d) => userMove(o, d), onSelect: key => tapPassSquare(key) });
+  const board = cfg.view ? null : createBoard($('.lg-board-el'), { onMove: (o, d) => userMove(o, d), onSelect: key => tapPassSquare(key), premove: !!cfg.premove });
   // Посеред серії стрибків («Кути»): шашка, що стрибає, лишається вибраною з наступними стрибками,
   // а ще один тап по ній — «досить, хід закінчено» (замість окремої кнопки)
   let autoSelected = null;
@@ -129,7 +129,11 @@ export function startGame(cfg) {
     if (view) view.render(s, { mine, moves: mine ? rules.moves(s) : [], player: friend ? rules.turn(s) : player, friend });
     else {
       board.setPosition(rules.pieces(s), { lastMove: s.lastMove, animate, check: rules.check ? rules.check(s) : false });
-      board.setMovable(mine ? colorName(rules.turn(s)) : null, mine ? dests(s) : new Map());
+      // Хід суперника: можна зробити хід наперед (синім) — зіграється, щойно суперник походить
+      const pre = !mine && cfg.premove && !over && !friend && human(player);
+      if (mine) board.setMovable(colorName(rules.turn(s)), dests(s));
+      else if (pre) board.setMovable(colorName(player), new Map(), colorName(rules.turn(s)));
+      else { board.setMovable(null, new Map()); board.cg.cancelPremove(); }
       board.clearHint();
       if (rules.marks) board.marks(rules.marks(s));
     }
@@ -232,6 +236,8 @@ export function startGame(cfg) {
     else render();
   }
 
+  // Скільки робот «думає» (Профіль → Гра з роботом → «Робот думає»), ± чверть секунди
+  const thinkMs = () => Math.max(200, Number(LG.store.get('botThink', 1500)) - 250 + Math.random() * 500);
   function robotMove() {
     thinking = true; hero.setThinking(true); render();
     // раз за партію суперник щось каже (на одному з перших ходів)
@@ -253,7 +259,8 @@ export function startGame(cfg) {
       commit(move);
       render();
       afterMove();
-    }, again ? 400 : 850 + Math.random() * 450); // «думає» трохи менше за півтори секунди — не миттєво
+      if (board && cfg.premove && !over) setTimeout(() => board.cg.playPremove(), 60); // хід наперед — одразу після ходу суперника
+    }, again ? 400 : thinkMs()); // «думає» — скільки задано в Профілі (типово ~1,6 с), трохи випадково
   }
 
   function finish(r) {
@@ -276,6 +283,7 @@ export function startGame(cfg) {
   }
   function newGame() {
     clearTimeout(aiTimer); thinking = false; over = false; hero.setThinking(false); hero.setMood(null);
+    if (board) board.cg.cancelPremove();
     robotMoves = 0; sayAt = 2 + Math.floor(Math.random() * 5);
     history = [rules.initial(cfg.options ? cfg.options() : {})];
     pos = 0; lastHint = null;
@@ -297,6 +305,7 @@ export function startGame(cfg) {
     else render();
   }
   function undo() {
+    if (board) board.cg.cancelPremove();
     hero.setMood(null);
     if (friend) return;
     // Спершу знаходимо, куди повертатись (свій хід), — і лише тоді зупиняємо робота

@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321110';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321110';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321110';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321270';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321270';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321270';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -177,6 +177,7 @@ function renderProfile() {
         <div class="mg-sub">
           <div class="mg-row"><span>Підказки</span><div class="mg-pill mg-lim" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
           <div class="mg-row"><span>Ходи назад</span><div class="mg-pill mg-lim" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
+          <div class="mg-row"><span>Робот думає</span><div class="mg-think"><input type="range" min="300" max="4000" step="100" id="p-think" aria-label="Скільки робот думає"><b id="p-think-v"></b></div></div>
           <div class="mg-row"><span>Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
           <button type="button" class="mg-done">Готово</button>
         </div>
@@ -185,6 +186,10 @@ function renderProfile() {
     <button type="button" class="mg-reset" id="p-reset">Скинути прогрес</button>`;
   // розкрите чи ні — пам'ятаємо, поки відкрита сторінка
   $('view-profile').querySelector('.pf-more').addEventListener('toggle', e => { pfOpen = e.target.open; });
+  // скільки робот думає перед ходом (мс; типово 1,5 с)
+  const paintThink = () => { const v = +LG.store.get('botThink', 1500); $('p-think').value = v; $('p-think-v').textContent = (v / 1000).toFixed(1).replace('.', ',') + ' с'; $('p-think').style.setProperty('--v', ((v - 300) / 37) + '%'); };
+  paintThink();
+  $('p-think').addEventListener('input', e => { LG.store.set('botThink', +e.target.value); paintThink(); });
   // шторку «Гра з роботом» закриває «Готово» або тап повз неї
   const more = $('view-profile').querySelector('.pf-more');
   more.querySelector('.mg-done').addEventListener('click', () => { more.open = false; });
@@ -228,7 +233,7 @@ function renderProfile() {
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); const em = $('view-profile').querySelector('.mg-more em'); if (em) em.firstChild.textContent = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`; }));
   $('p-reset').addEventListener('click', () => {
     if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
-    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
+    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay|botThink|fullscreen)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
     seen.clear(); renderAll(); renderProfile();
   });
 }

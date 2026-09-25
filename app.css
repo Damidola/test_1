@@ -399,3 +399,8 @@ body:has(#view-profile.mg:not([hidden])) { background: #000; }
 .mg-more[open] > .mg-sub .mg-row { min-height: 50px; }
 .mg-reset { flex: none; margin: clamp(2px, .8svh, 10px) auto 0; padding: 4px 12px; font-size: clamp(12px, 2svh, 14px); }
 .mg-done { display: block; margin: 8px auto 0; min-width: 140px; height: 40px; border: 0; border-radius: 20px; background: #2ee6b8; color: #04241d; font: 800 14px Manrope, sans-serif; cursor: pointer; }
+.mg-think { flex: 1; max-width: 200px; display: flex; align-items: center; gap: 10px; }
+.mg-think input { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; outline: none; background: linear-gradient(90deg, #2ee6b8 var(--v, 30%), #2a2a2a var(--v, 30%)); }
+.mg-think input::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #fff; }
+.mg-think input::-moz-range-thumb { width: 20px; height: 20px; border: 0; border-radius: 50%; background: #fff; }
+.mg-think b { flex: none; min-width: 44px; text-align: right; font: 800 13px Manrope, sans-serif; color: #fff; }

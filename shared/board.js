@@ -74,7 +74,7 @@ export function lichessTouch(cg) {
     const orig = dragOrig; dragOrig = null;
     if (orig && e.type === 'pointerup') {
       const key = cg.getKeyAtDomPos([e.clientX, e.clientY]), color = cg.state.movable.color, ds = cg.state.movable.dests && cg.state.movable.dests.get(orig);
-      if (key && key !== orig && color && cg.state.pieces.get(orig)?.color === color && !(ds && ds.includes(key)) && window.LG) window.LG.play('illegal');
+      if (key && key !== orig && color && cg.state.turnColor === color && cg.state.pieces.get(orig)?.color === color && !(ds && ds.includes(key)) && window.LG) window.LG.play('illegal'); // хід наперед (не наш хід) — не «помилка»
     }
     wrap.classList.remove('lg-lifted');
     if (!tap || wasSelected) return;
@@ -109,7 +109,7 @@ export function createBoard(el, opts = {}) {
     animation: { enabled: true, duration: 200 },
     highlight: { lastMove: true, check: true },
     movable: { free: false, color: undefined, showDests: true, events: { after: (o, d) => opts.onMove && opts.onMove(o, d) } },
-    premovable: { enabled: false },
+    premovable: { enabled: !!opts.premove, showDests: true }, // хід наперед (як на Lichess) — лише в грі з роботом
     // Тап лише вибирає фігуру (вона не зрушує); тягнути — після руху пальця на 5 px
     draggable: { enabled: true, showGhost: true, distance: 5, autoDistance: false },
     selectable: { enabled: true },
@@ -131,8 +131,9 @@ export function createBoard(el, opts = {}) {
     if (o.animate === false) cg.set({ animation: { enabled: true } });
     cg.set({ lastMove: o.lastMove || undefined, check: o.check || false });
   }
-  function setMovable(color, dests) {
-    cg.set({ turnColor: color || cg.state.turnColor, movable: { color: color || undefined, dests: dests || new Map() } });
+  // turn — чий зараз хід (для ходу наперед: фігури свої, а ходить суперник)
+  function setMovable(color, dests, turn) {
+    cg.set({ turnColor: turn || color || cg.state.turnColor, movable: { color: color || undefined, dests: dests || new Map() } });
   }
   return {
     cg,

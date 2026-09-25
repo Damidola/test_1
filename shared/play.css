@@ -238,3 +238,7 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 .lg-mats > .lg-material b { color: #1d1b30; text-shadow: none; }
 .lg-mats > .lg-material mpiece { width: 20px; height: 20px; }
 .lg-mats > .lg-material mpiece + mpiece { margin-left: -12px; }
+/* хід наперед (поки думає суперник) — яскраво-синім, як на Lichess / chess.com */
+cg-board square.current-premove { background-color: rgba(52, 120, 246, .62) !important; }
+cg-board square.premove-dest { background: radial-gradient(rgba(52, 120, 246, .7) 19%, rgba(0, 0, 0, 0) 20%); }
+cg-board square.oc.premove-dest { background: radial-gradient(transparent 0%, transparent 79%, rgba(52, 120, 246, .55) 80%); }
