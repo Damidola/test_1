@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790320445';
-import { aiMove, hintMove } from './ai.js?v=1790320445';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790320445';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790320619';
+import { aiMove, hintMove } from './ai.js?v=1790320619';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790320619';
 
 const LG = window.LG;
 
@@ -166,13 +166,12 @@ export function startGame(cfg) {
       return [...groups].map(([role, n]) => `<div>${`<mpiece class="${role} ${colorName(victimColor)}"></mpiece>`.repeat(n)}</div>`).join('') +
         (lead > 0 ? `<b>+${lead}</b>` : '');
     };
-    // Перевага в матеріалі за цінністю фігур (як на Lichess): пішак 1, кінь і слон 3, тура 5, ферзь 9 — число лише в того, хто попереду
+    // Скільки всього збито за цінністю фігур: пішак 1, кінь і слон 3, тура 5, ферзь 9 (ферзь + пішак = +10) — у кожного свій рахунок
     const VAL = { P: 1, N: 3, B: 3, R: 5, Q: 9, K: 0 };
     const worth = list => list.reduce((s, r) => s + (VAL[String(r).toUpperCase()[0]] ?? 1), 0);
     const ai = player === 'w' ? 'b' : 'w';
-    const diff = worth(cap[player]) - worth(cap[ai]);
-    lead = -diff; $('[data-side="top"]').innerHTML = row(cap[ai], player);
-    lead = diff; $('[data-side="bottom"]').innerHTML = row(cap[player], ai);
+    lead = worth(cap[ai]); $('[data-side="top"]').innerHTML = row(cap[ai], player);
+    lead = worth(cap[player]); $('[data-side="bottom"]').innerHTML = row(cap[player], ai);
   }
 
   function renderButtons() {

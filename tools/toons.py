@@ -22,10 +22,11 @@ def css(p, eye_y, mouth_y):
 .{p}-earl{{transform-origin:140px 110px;animation:{p}Ear 3.6s ease-in-out infinite}}
 .{p}-earr{{transform-origin:260px 110px;animation:{p}Ear 3.6s ease-in-out infinite reverse}}
 @keyframes {p}Ear{{0%,80%,100%{{transform:rotate(0)}}88%{{transform:rotate(-8deg)}}}}
-.{p}-armr{{transform-origin:292px 344px;animation:{p}RestR 3.6s ease-in-out infinite}}
-@keyframes {p}RestR{{0%,100%{{transform:rotate(0)}}50%{{transform:rotate(4deg)}}}}
+.{p}-armr{{transform-origin:292px 344px;animation:{p}Wave 2.8s ease-in-out infinite}}
+@keyframes {p}Wave{{0%,60%,100%{{transform:rotate(0)}}70%{{transform:rotate(-14deg)}}80%{{transform:rotate(6deg)}}90%{{transform:rotate(-10deg)}}}}
 .{p}-arml{{transform-origin:108px 344px;animation:{p}Rest 3.6s ease-in-out infinite}}
 @keyframes {p}Rest{{0%,100%{{transform:rotate(0)}}50%{{transform:rotate(-4deg)}}}}
+.{p}-armr{{display:none}}.lg-hero .{p}-armr{{display:inline}}.lg-hero .{p}-armrest{{display:none}}
 .{p}-happy,.{p}-angry,.{p}-bhappy,.{p}-bangry,.{p}-eyeshappy,.{p}-steam,.{p}-red,.{p}-talk,.{p}-spark{{opacity:0}}
 .{p}-happy,.{p}-angry,.{p}-norm,.{p}-talk{{transition:opacity .2s}}
 .mood-happy .{p}-norm,.mood-happy .{p}-bnorm,.mood-happy .{p}-eyes{{opacity:0}}
@@ -34,9 +35,9 @@ def css(p, eye_y, mouth_y):
 @keyframes {p}Jump{{0%,100%{{transform:translateY(0)}}50%{{transform:translateY(-14px)}}}}
 .mood-happy .{p}-blush{{opacity:.8}}
 .mood-happy .{p}-armr{{animation:{p}Cheer .55s ease-in-out infinite}}
-@keyframes {p}Cheer{{0%,100%{{transform:rotate(-150deg)}}50%{{transform:rotate(-172deg)}}}}
+@keyframes {p}Cheer{{0%,100%{{transform:rotate(-8deg)}}50%{{transform:rotate(-26deg)}}}}
 .mood-happy .{p}-arml{{animation:{p}CheerL .55s ease-in-out infinite}}
-@keyframes {p}CheerL{{0%,100%{{transform:rotate(150deg)}}50%{{transform:rotate(172deg)}}}}
+@keyframes {p}CheerL{{0%,100%{{transform:rotate(0)}}50%{{transform:rotate(14deg)}}}}
 .{p}-spark{{animation:{p}Spark 1.2s ease-in-out infinite}}
 @keyframes {p}Spark{{0%,100%{{transform:scale(.6)}}50%{{transform:scale(1.15)}}}}
 .mood-angry .{p}-norm,.mood-angry .{p}-bnorm{{opacity:0}}
@@ -51,7 +52,7 @@ def css(p, eye_y, mouth_y):
 .{p}-steam{{animation:{p}Steam 1.4s ease-out infinite}}
 @keyframes {p}Steam{{0%{{transform:translateY(8px) scale(.6)}}100%{{transform:translateY(-28px) scale(1.3)}}}}
 .thinking .{p}-pup{{animation:none;transform:translate(7px,-7px)}}
-.thinking .{p}-armr{{animation:none;transform:rotate(100deg)}}
+.thinking .{p}-armr{{animation:none;transform:rotate(-34deg) translate(-26px,14px)}}
 .talking:not(.mood-happy):not(.mood-angry) .{p}-norm{{opacity:0}}
 .talking:not(.mood-happy):not(.mood-angry) .{p}-talk{{opacity:1}}
 .{p}-talkin{{transform-origin:200px {mouth_y}px;animation:{p}Talk .32s ease-in-out infinite alternate}}
@@ -61,7 +62,6 @@ def css(p, eye_y, mouth_y):
 .poked .{p}-pup{{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}}
 .poked .{p}-bnorm{{opacity:0}}.poked .{p}-bhappy{{opacity:1;transform:translateY(-8px)}}
 .poked .{p}-norm{{opacity:0}}.poked .{p}-talk{{opacity:1}}.poked .{p}-talkin{{animation:none}}
-.poked .{p}-armr{{animation:none;transform:rotate(-60deg)}}.poked .{p}-arml{{animation:none;transform:rotate(60deg)}}
 .poked .{p}-earl{{animation:none;transform:rotate(12deg)}}.poked .{p}-earr{{animation:none;transform:rotate(-12deg)}}
 """
 
@@ -103,10 +103,18 @@ def arms(p, fur, paw, pad=None):
     <ellipse cx="128" cy="384" rx="18" ry="15" fill="{paw}"/>
     <path d="M118 378 q5 -3 10 0 M121 386 q5 -3 10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
   </g>
-  <g class="{p}-armr">
+  <g class="{p}-armrest">
     <path d="M292 344 C306 362 300 384 276 386" fill="none" stroke="{fur}" stroke-width="30" stroke-linecap="round"/>
     <ellipse cx="272" cy="384" rx="18" ry="15" fill="{paw}"/>
-    <path d="M282 378 q-5 -3 -10 0 M279 386 q-5 -3 -10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <g class="{p}-armr">
+    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="{fur}" stroke-width="30" stroke-linecap="round"/>
+    <g transform="translate(332 272)">
+      <ellipse cx="0" cy="0" rx="20" ry="21" fill="{paw}"/>
+      <g fill="{paw}"><ellipse cx="-13" cy="-17" rx="7" ry="9"/><ellipse cx="0" cy="-22" rx="7" ry="9"/><ellipse cx="13" cy="-17" rx="7" ry="9"/></g>
+      <ellipse cx="0" cy="4" rx="9" ry="8" fill="{pad}"/>
+      <g fill="{pad}"><circle cx="-12" cy="-17" r="3.5"/><circle cx="0" cy="-21" r="3.5"/><circle cx="12" cy="-17" r="3.5"/></g>
+    </g>
   </g>
 """
 

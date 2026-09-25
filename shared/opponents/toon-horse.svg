@@ -3,6 +3,7 @@
      .mood-happy (виграє / забрав фігуру), .mood-angry (програє / втратив фігуру), .thinking, .talking, .poked (тапнули).
      Без класів — спокійний: кліпає, озирається, погойдується, вушка ворушаться, махає копитцем. -->
 <style>
+.hs-armr{display:none}.lg-hero .hs-armr{display:inline}.lg-hero .hs-armrest{display:none}
 .hs-body{transform-origin:200px 400px;animation:hsSway 5s ease-in-out infinite}
 @keyframes hsSway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
 .hs-eyes{transform-origin:200px 172px;animation:hsBlink 4.2s infinite}
@@ -14,8 +15,8 @@
 @keyframes hsEar{0%,80%,100%{transform:rotate(0)}88%{transform:rotate(-10deg)}}
 .hs-mane{transform-origin:200px 90px;animation:hsMane 2.6s ease-in-out infinite}
 @keyframes hsMane{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
-.hs-armr{transform-origin:292px 344px;animation:hsRestR 3.6s ease-in-out infinite}
-@keyframes hsRestR{0%,100%{transform:rotate(0)}50%{transform:rotate(4deg)}}
+.hs-armr{transform-origin:292px 344px;animation:hsWave 2.6s ease-in-out infinite}
+@keyframes hsWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
 .hs-arml{transform-origin:108px 344px;animation:hsRest 3.4s ease-in-out infinite}
 @keyframes hsRest{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
 .hs-happy,.hs-angry,.hs-bhappy,.hs-bangry,.hs-eyeshappy,.hs-steam,.hs-red,.hs-talk,.hs-spark{opacity:0}
@@ -27,9 +28,9 @@
 @keyframes hsJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 .mood-happy .hs-blush{opacity:.8}
 .mood-happy .hs-armr{animation:hsCheer .55s ease-in-out infinite}
-@keyframes hsCheer{0%,100%{transform:rotate(-150deg)}50%{transform:rotate(-172deg)}}
+@keyframes hsCheer{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-26deg)}}
 .mood-happy .hs-arml{animation:hsCheerL .55s ease-in-out infinite}
-@keyframes hsCheerL{0%,100%{transform:rotate(150deg)}50%{transform:rotate(172deg)}}
+@keyframes hsCheerL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
 .hs-spark{animation:hsSpark 1.2s ease-in-out infinite}
 @keyframes hsSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
 /* злиться: червоніє, пара з ніздрів, б'є копитом */
@@ -46,7 +47,7 @@
 @keyframes hsSteam{0%{transform:translateY(0) scale(.5)}100%{transform:translateY(22px) scale(1.4)}}
 /* думає — очі вгору, копитце до підборіддя */
 .thinking .hs-pup{animation:none;transform:translate(7px,-8px)}
-.thinking .hs-armr{animation:none;transform:rotate(100deg)}
+.thinking .hs-armr{animation:none;transform:rotate(-34deg) translate(-26px,14px)}
 /* говорить */
 .talking:not(.mood-happy):not(.mood-angry) .hs-norm{opacity:0}
 .talking:not(.mood-happy):not(.mood-angry) .hs-talk{opacity:1}
@@ -113,10 +114,16 @@
     <path d="M106 390 q14 6 28 0" stroke="#3d2614" stroke-width="3" fill="none" stroke-linecap="round"/>
   </g>
   <!-- права нога-рука: копитце махає -->
-  <g class="hs-armr">
+  <g class="hs-armrest">
     <path d="M292 344 C306 362 300 384 276 386" fill="none" stroke="#e2574c" stroke-width="30" stroke-linecap="round"/>
     <ellipse cx="272" cy="384" rx="18" ry="15" fill="#6b4526"/>
-    <path d="M258 390 q14 6 28 0" stroke="#3d2614" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  <g class="hs-armr">
+    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="#e2574c" stroke-width="30" stroke-linecap="round"/>
+    <path d="M314 292 q16 -8 32 0" stroke="#f07a70" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M313 284 C312 264 348 264 347 284 Z" fill="#d99a5b"/>
+    <path d="M312 268 C312 246 348 246 348 268 Z" fill="#6b4526"/>
+    <path d="M312 268 h36" stroke="#3d2614" stroke-width="4" stroke-linecap="round"/>
   </g>
   <!-- іскорки -->
   <g class="hs-spark" fill="#ffd23f"><path d="M70 110 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z"/><path d="M330 124 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z"/></g>
