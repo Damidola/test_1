@@ -27,7 +27,7 @@
   <script>
     // відео-знайомство з фігурою перед першим проходженням уроку (плейлист ChessKid)
     (function () {
-      const V = { 3: ['queen', '4wnfdWWiv3w', 'Знайомся з ферзем!'], 4: ['king', 'KVeMgVMslNM', 'Знайомся з королем!'], 5: ['knight', 'pbMAQk-5bHU', 'Знайомся з конем!'], 6: ['pawn', 'e015cjCtkl8', 'Знайомся з пішаком!'] };
+      const V = { 2: ['bishop', 'MKLW3oh7_wE', 'Знайомся зі слоном!'], 3: ['queen', '4wnfdWWiv3w', 'Знайомся з ферзем!'], 4: ['king', 'KVeMgVMslNM', 'Знайомся з королем!'], 5: ['knight', 'pbMAQk-5bHU', 'Знайомся з конем!'], 6: ['pawn', 'e015cjCtkl8', 'Знайомся з пішаком!'] };
       function check() {
         document.querySelector('.lv-vid')?.remove();
         const v = V[(location.hash.match(/^#\/(\d+)/) || [])[1]]; if (!v) return;
