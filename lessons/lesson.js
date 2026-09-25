@@ -1,14 +1,14 @@
 /* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, parseUci, makeUci, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790366531';
-import { LESSONS } from './lessons.js?v=1790366531';
-import { goNext, markSeen } from '../shared/path.js?v=1790366531';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790366531';
+import { createBoard } from '../shared/board.js?v=1790366740';
+import { LESSONS } from './lessons.js?v=1790366740';
+import { goNext, markSeen } from '../shared/path.js?v=1790366740';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790366740';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
-const items = lesson.items;
+const items = lesson.items.filter(it => !it.demo); // одразу завдання — без анімацій-прикладів на початку (приклад — у «Гайд»)
 let idx = 0, pos, token = 0, done = false, lock = false, errs = 0;
 // кружечки рівнів угорі (приклади й завдання по черзі); після прикладу — одразу далі, без кнопки
 const lv = createLevels($('levels'), 'mini:' + location.hash.slice(1), items.length, i => { idx = i; load(); });

@@ -1,9 +1,9 @@
 /* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 10 коротких завдань «побий найдорожчу».
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790366531';
-import { goNext, markSeen } from '../shared/path.js?v=1790366531';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790366531';
+import { createBoard } from '../shared/board.js?v=1790366740';
+import { goNext, markSeen } from '../shared/path.js?v=1790366740';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790366740';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
@@ -60,14 +60,9 @@ function load() {
   $('wrap').classList.remove('solved');
   board.setPosition(pcs, { animate: false });
   board.setMovable('white', caps);
-  $('goal').textContent = idx === 0 ? 'Приклад' : 'Побий найдорожчу фігуру';
+  $('goal').textContent = 'Побий найдорожчу фігуру';
   task(t[2]);
-  // у прикладі — стрілки від фігури до всіх, кого можна побити, з ціною
-  if (idx === 0) board.shapes([...caps].flatMap(([from, list]) => list.map(to => {
-    const v = VALUE[pcs.get(to).role];
-    return { orig: from, dest: to, brush: v === best(pcs, caps) ? 'green' : 'red', label: { text: String(v) } };
-  })));
-  else board.clearHint();
+  board.clearHint();
 }
 const best = (pcs, caps) => Math.max(...[...caps.values()].flat().map(k => VALUE[pcs.get(k).role]));
 function task(text, cls = '') { $('task').textContent = text; $('task').className = 'vl-task ' + cls; }

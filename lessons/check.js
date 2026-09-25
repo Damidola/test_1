@@ -2,18 +2,14 @@
    потім прості завдання: 2 — «постав шах», по 3 — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790366531';
-import { goNext, markSeen } from '../shared/path.js?v=1790366531';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790366531';
+import { createBoard } from '../shared/board.js?v=1790366740';
+import { goNext, markSeen } from '../shared/path.js?v=1790366740';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790366740';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();
 
-// Приклад: чорна тура шахує; можна втекти, побити слоном або закритися турою — найкраще побити
-const DEMO = { fen: '4r2k/8/8/1B6/R7/8/8/4K3 w - - 0 1', kind: 'capture',
-  text: 'Чорна тура шахує короля. Зелені стрілки — куди втекти, синя — як закритися, червона — побити. Найкраще тут — побити туру слоном!' };
 const TASKS = [
-  { ...DEMO, title: 'Приклад' },
   ...DATA.chk_rook.slice(0, 1).map(z => ({ fen: z[1], kind: 'give', role: 'rook', title: 'Постав шах', text: 'Тепер ти: постав шах турою чорному королю.' })),
   ...DATA.chk_bishop.slice(0, 1).map(z => ({ fen: z[1], kind: 'give', role: 'bishop', title: 'Постав шах', text: 'Постав шах слоном — навскоси.' })),
   ...DATA.esc_run.slice(0, 3).map(z => ({ fen: z[1], kind: 'run', title: 'Утечи 🏃', text: 'Твоєму королю шах! Відведи короля туди, де його не б’ють.' })),
