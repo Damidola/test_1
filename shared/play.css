@@ -296,3 +296,6 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 .lg-mats > .lg-material mpiece { flex: none; width: 20px; height: 20px; }
 .lg-mats > .lg-material mpiece + mpiece { margin-left: calc(var(--st, 8px) - 20px); }
 .lg-mats > .lg-material b { flex: none; margin-left: 4px; font-size: 14px; }
+/* цифри тепер на лівому краї (клітинки там протилежного кольору, ніж на правому) — міняємо кольори, щоб усі цифри було видно */
+.cg-wrap coords.ranks .coord-light { color: var(--cg-coord-white, #f0d9b5) !important; }
+.cg-wrap coords.ranks .coord-dark { color: var(--cg-coord-black, #946f51) !important; }

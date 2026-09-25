@@ -170,3 +170,5 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 /* приклад: кнопки «Ще раз» / «Почати» — компактні, в один рядок */
 .learn--run .lg-demo-btns { padding: 6px 0 0 !important; gap: 8px; }
 .learn--run .lg-demo-btns button { padding: 6px 10px !important; font-size: 14px !important; white-space: nowrap; min-height: 0; line-height: 1.2; }
+.learn__main .cg-wrap coords.ranks .coord-light { color: var(--cg-coord-white, #f0d9b5) !important; }
+.learn__main .cg-wrap coords.ranks .coord-dark { color: var(--cg-coord-black, #946f51) !important; }
