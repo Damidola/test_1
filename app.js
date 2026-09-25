@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321631';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321631';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321631';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321962';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321962';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321962';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -80,7 +80,7 @@ $('road').addEventListener('click', e => {
   const links = STEPS[+n.dataset.i][3];
   if (links.length === 1) { // один пункт — одразу його, без аркуша
     const href = links[0][2]; seen.add(href); LG.store.set('path:seen', [...seen]);
-    if (href.startsWith('#')) location.hash = href; else location.href = href;
+    if (href.startsWith("#")) location.hash = href; else LG.go(href);
     return;
   }
   openStep(+n.dataset.i);

@@ -54,7 +54,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790321631').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1790321962').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';
@@ -72,7 +72,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
     const tick = t => { const k = Math.min(1, Math.max(0, (t - t0) / 3000)); b.textContent = Math.round(score * k); if (k < 1) requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
     o.querySelector('.next')?.addEventListener('click', () => goNext(here));
-    o.querySelector('.home').addEventListener('click', () => { location.href = ROOT + 'index.html#learn'; });
+    o.querySelector('.home').addEventListener('click', () => { (window.LG && LG.go ? LG.go : h => { location.href = h; })(ROOT + 'index.html#learn'); });
     o.addEventListener('click', e => { if (e.target === o) { o.remove(); onAgain && onAgain(); } });
   });
 }

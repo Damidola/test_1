@@ -49,5 +49,5 @@ export function nextAfter(href) {
 export function goNext(href) {
   markSeen(href);
   const n = nextAfter(href);
-  location.href = '../' + (n ? (n.href.startsWith('#') ? 'index.html' + n.href : n.href) : 'index.html#learn');
+  (window.LG && LG.go ? LG.go : h => { location.href = h; })('../' + (n ? (n.href.startsWith('#') ? 'index.html' + n.href : n.href) : 'index.html#learn'));
 }

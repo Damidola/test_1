@@ -40,19 +40,59 @@
     const f = document.exitFullscreen || document.webkitExitFullscreen;
     if (f && fsEl()) try { f.call(document); } catch (e) { /* */ }
   }
-  let fsLeaving = false;
-  addEventListener('pagehide', () => { fsLeaving = true; });
   ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
-    // вийшли самі (жестом «назад» чи кнопкою) — вимикаємо налаштування, щоб не вмикати знову
-    if (!fsEl() && !fsLeaving && store.get('fullscreen', false) && !fsToggling) store.set('fullscreen', false);
     document.documentElement.classList.toggle('lg-fs', !!fsEl());
     dispatchEvent(new Event('resize'));
   }));
   let fsToggling = false;
-  if (fsOk && store.get('fullscreen', false)) {
+  // Налаштування вмикається й вимикається лише в Профілі. Вийшли з повного екрана жестом — наступний дотик повертає його.
+  const inFrame = window.top !== window;
+  if (fsOk && !inFrame) {
     const again = () => { if (store.get('fullscreen', false) && !fsEl()) fsEnter(); };
     ['pointerup', 'touchend', 'click'].forEach(t => addEventListener(t, again, { capture: true, passive: true }));
   }
+  // Щоб повний екран не злітав при переході на іншу сторінку (браузер його при переході завжди вимикає),
+  // у повному екрані сторінки відкриваються поверх поточної у рамці на весь екран — без справжнього переходу.
+  // Коли в рамці відкривається ця ж сторінка (кнопка «додому»), рамка закривається. «Назад» працює як звичайно.
+  let fsFrame = null;
+  const samePage = u => u.origin === location.origin && u.pathname.replace(/index\.html$/, '') === location.pathname.replace(/index\.html$/, '');
+  function fsClose(hash) {
+    if (!fsFrame) return;
+    fsFrame.remove(); fsFrame = null; document.documentElement.classList.remove('lg-framed');
+    if (history.state && history.state.lgFrame) history.replaceState(null, '');
+    if (hash !== undefined && hash !== location.hash) location.hash = hash;
+    else dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+  }
+  function go(href) {
+    const u = new URL(href, location.href);
+    if (inFrame) { const t = topPage(u); if (t) t.LG._fsClose(u.hash); else location.href = u.href; return; }
+    if (!fsEl() || u.origin !== location.origin || samePage(u)) { location.href = u.href; return; }
+    if (fsFrame) { fsFrame.src = u.href; return; }
+    fsFrame = document.createElement('iframe');
+    fsFrame.className = 'lg-fsframe'; fsFrame.allow = 'fullscreen; autoplay';
+    fsFrame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483000;background:#000';
+    fsFrame.addEventListener('load', () => {
+      let w; try { w = fsFrame.contentWindow.location; } catch (e) { return; }
+      if (w.href !== 'about:blank' && samePage(w)) fsClose(w.hash);
+      else try { document.title = fsFrame.contentDocument.title; } catch (e) { /* */ }
+    });
+    fsFrame.src = u.href;
+    history.pushState({ lgFrame: 1 }, '');
+    document.documentElement.classList.add('lg-framed');
+    document.body.appendChild(fsFrame);
+  }
+  addEventListener('popstate', () => { if (fsFrame && !(history.state && history.state.lgFrame)) { fsFrame.remove(); fsFrame = null; document.documentElement.classList.remove('lg-framed'); dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); } });
+  // у рамці: посилання на головну сторінку одразу закриває рамку, без завантаження головної ще раз
+  const topPage = u => { try { const t = window.top; return t.LG && t.LG._fsClose && u.origin === t.location.origin && u.pathname.replace(/index\.html$/, '') === t.location.pathname.replace(/index\.html$/, '') ? t : null; } catch (e) { return null; } };
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href]');
+    if (!a || e.defaultPrevented || a.target || a.hasAttribute('download') || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    const href = a.getAttribute('href'); if (!href || href.startsWith('#')) return;
+    const u = new URL(a.href);
+    if (inFrame) { const t = topPage(u); if (t) { e.preventDefault(); t.LG._fsClose(u.hash); } return; }
+    if (!fsEl() || u.origin !== location.origin || samePage(u)) return;
+    e.preventDefault(); go(a.href);
+  });
 
 
   const lang = store.get('lang', 'uk') === 'en' ? 'en' : 'uk';
@@ -472,6 +512,7 @@
 
   const LG = window.LG = {
     lang: () => lang,
+    go, _fsClose: fsClose,
     fullscreen: {
       supported: fsOk,
       on: () => !!fsEl(),
