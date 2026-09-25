@@ -653,6 +653,20 @@
     draw: (msg, opts) => result('draw', msg, opts)
   };
 
+  // ---------- Пан Сова (учитель в уроках) реагує на дотик: підстрибує й дивується.
+  // Якщо тикати надто часто (більше 3 разів за 4 с) — 5 с не реагує, щоб не заважати уроку.
+  (function teacherPoke() {
+    let taps = [], quietUntil = 0, timer = 0;
+    document.addEventListener('pointerdown', e => {
+      const t = e.target.closest && e.target.closest('.lg-teacher'); if (!t) return;
+      const now = Date.now(); if (now < quietUntil) return;
+      taps = taps.filter(x => now - x < 4000); taps.push(now);
+      if (taps.length > 3) { quietUntil = now + 5000; taps = []; return; }
+      t.classList.remove('poked'); void t.offsetWidth; t.classList.add('poked');
+      clearTimeout(timer); timer = setTimeout(() => t.classList.remove('poked'), 800);
+    }, { passive: true });
+  })();
+
   // ---------- Telegram Mini App ----------
   // У Telegram сайт відкривається як застосунок: на весь екран, без свайпу-закриття, кнопка «Назад» Telegram, наші кольори.
   // Скрипт Telegram вантажимо лише всередині Telegram (поза ним сайт не залежить від telegram.org).
