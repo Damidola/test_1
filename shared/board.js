@@ -49,7 +49,7 @@ export function lichessTouch(cg) {
   // не перетягує пішака на сусідню клітинку
   const dragDist = () => { const w = wrap.getBoundingClientRect().width; if (w) cg.set({ draggable: { distance: Math.max(10, Math.round(w / 8 * 0.4)) } }); };
   dragDist(); requestAnimationFrame(dragDist);
-  window.addEventListener('resize', dragDist);
+  window.addEventListener('resize', () => (fingerDown ? afterRelease(dragDist) : dragDist()));
   let start = null, wasSelected, dragOrig = null;
   // Дошка могла зсунутися (змінилась розкладка сторінки) — перед кожним дотиком chessground заново міряє її положення,
   // інакше тап потрапляє не в ту клітинку
@@ -57,10 +57,12 @@ export function lichessTouch(cg) {
   for (const ev of ['pointerdown', 'touchstart', 'mousedown']) wrap.addEventListener(ev, remeasure, { capture: true, passive: true });
   // змінився розмір дошки (сторінка перебудувалась) — перемальовуємо: інакше крапки ходів малюються не там
   let lastW = 0;
-  if (window.ResizeObserver) new ResizeObserver(() => {
+  const onSize = () => {
+    if (fingerDown || cg.state.draggable.current) return afterRelease(onSize); // перемальовка під пальцем обриває перетягування
     const w = Math.round(wrap.getBoundingClientRect().width);
     if (w && w !== lastW) { lastW = w; remeasure(); dragDist(); cg.redrawAll(); }
-  }).observe(wrap);
+  };
+  if (window.ResizeObserver) new ResizeObserver(onSize).observe(wrap);
   window.addEventListener('scroll', remeasure, { passive: true });
   wrap.addEventListener('pointerdown', e => { start = [e.clientX, e.clientY]; wasSelected = cg.state.selected; dragOrig = null; }, { capture: true, passive: true });
   wrap.addEventListener('pointermove', e => {
@@ -101,6 +103,20 @@ export function lichessTouch(cg) {
 
 /* Один розмір дошки для всіх сторінок: на всю ширину екрана (до 560px), але так, щоб усе під дошкою
    (текст завдання, кнопки гри) вміщалося над нижньою панеллю. Меряє реальну сторінку — без формул під кожну сторінку. */
+// Палець на екрані: зміни розміру дошки відкладаються до відпускання (після touchend, щоб chessground встиг завершити хід)
+let fingerDown = false;
+const pending = new Set();
+function afterRelease(f) { pending.add(f); }
+if (typeof window !== 'undefined') {
+  const release = () => {
+    fingerDown = false;
+    setTimeout(() => { if (fingerDown) return; const fs = [...pending]; pending.clear(); fs.forEach(f => f()); }, 60);
+  };
+  addEventListener('pointerdown', () => { fingerDown = true; }, { capture: true, passive: true });
+  addEventListener('pointerup', release, { capture: true, passive: true });
+  addEventListener('pointercancel', release, { capture: true, passive: true });
+}
+
 export function fitBoard(box) {
   if (!box || box.closest('.kt-crop') || box.dataset.fit) return;
   box.dataset.fit = '1';
@@ -118,6 +134,7 @@ export function fitBoard(box) {
   let busy = false;
   const fit = () => {
     if (busy || !box.isConnected) return;
+    if (fingerDown) return afterRelease(fit); // у Telegram висота екрана змінюється під час дотику — дошку не чіпаємо, доки палець на екрані
     // лише телефон вертикально; на планшеті/комп'ютері — розкладка сторінки як є
     if (innerWidth > 799 || innerWidth > innerHeight) { box.style.width = ''; return; }
     busy = true;

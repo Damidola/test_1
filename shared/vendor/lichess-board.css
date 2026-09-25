@@ -16,6 +16,7 @@ cg-board square.current-premove { background-color: rgb(20 30 85 / 0.5) !importa
   cg-board square.premove-dest:hover { background: rgb(20 30 85 / 0.2); }
 }
 
+.cg-wrap { touch-action: none; }
 .cg-wrap piece { z-index: 2; will-change: transform; pointer-events: none; }
 .cg-wrap piece.dragging { cursor: move; z-index: 204 !important; }
 /* Як у застосунку Lichess: фігура під пальцем удвічі більша, центр — рівно під пальцем.

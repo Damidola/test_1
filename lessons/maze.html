@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Лабіринт</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790375198">
-  <link rel="stylesheet" href="../shared/play.css?v=1790375198">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790377574">
+  <link rel="stylesheet" href="../shared/play.css?v=1790377574">
   <style>
     .mz { justify-content: flex-start; gap: 8px; }
     .mz-intro { display: none; }
@@ -21,7 +21,7 @@
     @keyframes mzPush { 50% { transform: var(--p); } }
     /* дошка-лабіринт: на всю ширину, клітинки як у шаховій дошці, стіни — об'ємні блоки */
     .mz-wrap { flex: none; position: relative; width: 100vw; max-width: 560px; aspect-ratio: var(--w) / var(--h); }
-    .mz-grid { position: absolute; inset: 0; touch-action: none; display: grid; grid-template-columns: repeat(var(--w), 1fr); grid-template-rows: repeat(var(--h), 1fr); touch-action: manipulation; user-select: none; }
+    .mz-grid { position: absolute; inset: 0; touch-action: none; display: grid; grid-template-columns: repeat(var(--w), 1fr); grid-template-rows: repeat(var(--h), 1fr); user-select: none; }
     .mz-grid > div { position: relative; background: #f0d9b5; }
     .mz-grid > div.dk { background: #b58863; }
     .mz-grid > div.wall::after { content: ''; position: absolute; inset: 5%; border-radius: 12%; background: #3A4466; box-shadow: inset 0 -7px 0 rgba(0,0,0,.35), 0 3px 6px rgba(0,0,0,.35); }
@@ -41,6 +41,7 @@
     .mz-video iframe { position: absolute; top: 0; left: 50%; height: 100%; aspect-ratio: 16 / 9; transform: translateX(-50%); border: 0; }
     .mz-intro:has(.mz-video:not([hidden])) .mz-arrows { display: none; }
     .mz-intro:has(.mz-video:not([hidden])) { justify-content: flex-start; padding: 0 0 8px; }
+    body:has(.mz[data-step="intro"]) .lg-nav { display: none !important; }
     .mz-go { margin-top: 10px; min-height: 48px; padding: 0 28px; border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 17px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
   </style>
 </head>
@@ -61,8 +62,8 @@
       <button type="button" id="again"><span class="ico">🔁</span><span class="lbl">Заново</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790375198"></script>
-  <script src="../shared/kit.js?v=1790375198" data-game="path" data-night="on"></script>
-  <script type="module" src="maze.js?v=1790375198"></script>
+  <script src="../shared/games.js?v=1790377574"></script>
+  <script src="../shared/kit.js?v=1790377574" data-game="path" data-night="on"></script>
+  <script type="module" src="maze.js?v=1790377574"></script>
 </body>
 </html>

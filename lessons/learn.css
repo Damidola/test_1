@@ -21,7 +21,7 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
 #learn-app > .learn { max-width: 1100px; margin: 0 auto; }
 #learn-app > .learn--run { max-width: 600px; }
 .learn__main.main-board { position: relative; width: 100%; aspect-ratio: 1; }
-.learn__main.main-board > .cg-wrap { position: absolute; inset: 0; }
+.learn__main.main-board > .cg-wrap { position: absolute; inset: 0; touch-action: none; }
 
 /* фігура-картинка на екрані «Етап N» (у lila — .no-square зі спільних стилів) */
 .no-square { width: 110px; height: 110px; margin: 0 auto 12px; }
