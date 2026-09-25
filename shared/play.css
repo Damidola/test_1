@@ -242,7 +242,10 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 cg-board square.current-premove { background-color: rgba(52, 120, 246, .62) !important; }
 cg-board square.premove-dest { background: radial-gradient(rgba(52, 120, 246, .7) 19%, rgba(0, 0, 0, 0) 20%); }
 cg-board square.oc.premove-dest { background: radial-gradient(transparent 0%, transparent 79%, rgba(52, 120, 246, .55) 80%); }
-.lg-top-r { display: flex; gap: 8px; }
+.lg-top-r { display: flex; flex-direction: column-reverse; gap: 6px; } /* звук угорі, повний екран під ним — не на тваринці */
+/* кнопки в кутах гри — менші й прозоріші, щоб не заважали */
+.lg-topbtns .lg-top-btn { width: 36px; height: 36px; background: rgba(20, 19, 43, .28); opacity: .8; }
+.lg-topbtns .lg-top-btn svg { width: 20px; height: 20px; }
 
 /* кнопка повного екрана в уроках і задачах (така сама, як у грі з роботом) */
 .lv-row { flex: none; display: flex; align-items: center; gap: 6px; width: min(100% - 16px, 560px); }
