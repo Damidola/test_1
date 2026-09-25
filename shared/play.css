@@ -334,3 +334,8 @@ html.lg-night .lg-play .lg-controls button:active { background: #2c2c2c; transfo
 .lg-hero-lv { display: flex; gap: 4px; }
 .lg-hero-lv i { width: 7px; height: 7px; border-radius: 50%; }
 .lg-picker .lg-hero-name { display: none; }
+/* міні-уроки на телефоні: дошка від краю до краю, коло Сови не обрізане, у пройдених кружечках — лише ✓ */
+@media (max-width: 799px) and (orientation: portrait) {
+  html.lg .lg-play:has(> .lv-teach) .lg-board-wrap { width: 100vw !important; max-width: none !important; }
+  .lv-teach { height: calc(var(--teach) + 12px); padding-top: 5px; box-sizing: border-box; }
+}

@@ -206,3 +206,10 @@ html.lg body.lg-game.lg-game-learn { background: #000 !important; }
   .learn--run .learn__table .result.completed h2 { color: #04241d !important; }
   .learn--run .learn__table .result.completed .stars { color: #fff; }
 }
+/* телефон: дошка завжди від краю до краю, Сова в колі ніколи не обрізана, у пройдених кружечках — лише ✓ без цифри */
+@media (max-width: 799px) and (orientation: portrait) {
+  .learn--run .learn__main.main-board { width: 100vw !important; max-width: none !important; margin-left: calc(50% - 50vw) !important; margin-right: 0 !important; }
+  .learn .learn--run, .learn.learn--run { --teach-h: max(calc(clamp(84px, min(30vw, 15svh), 140px) + 12px), 118px); }
+  .learn--run .learn__table .wrap { padding: 6px 8px !important; box-sizing: border-box; }
+  .lg-run-top .progress a.done { color: transparent !important; }
+}
