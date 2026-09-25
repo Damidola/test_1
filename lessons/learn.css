@@ -206,10 +206,20 @@ html.lg body.lg-game.lg-game-learn { background: #000 !important; }
   .learn--run .learn__table .result.completed h2 { color: #04241d !important; }
   .learn--run .learn__table .result.completed .stars { color: #fff; }
 }
-/* телефон: дошка завжди від краю до краю, Сова в колі ніколи не обрізана, у пройдених кружечках — лише ✓ без цифри */
+/* телефон: угорі лише назва + кружечки рівнів (без ‹ і ⛶), вчитель, одразу під ним дошка — від краю до краю, якщо влазить по висоті;
+   нижні кнопки нижчі; Сова в колі ніколи не обрізана; у пройдених кружечках — лише ✓ */
+html.lg:has(body.lg-game-learn) { --lg-bar-h: 46px; }
+body.lg-game-learn .lg-nav { padding-top: 4px !important; padding-bottom: calc(4px + env(safe-area-inset-bottom)) !important; }
+body.lg-game-learn .lg-nav-btn { flex-direction: row !important; gap: 8px !important; font-size: 14px !important; }
+body.lg-game-learn .lg-nav-btn .ico { font-size: 18px !important; }
+body.lg-game-learn .lg-nav-btn .ico svg { width: 20px; height: 20px; }
 @media (max-width: 799px) and (orientation: portrait) {
-  .learn--run .learn__main.main-board { width: 100vw !important; max-width: none !important; margin-left: calc(50% - 50vw) !important; margin-right: 0 !important; }
-  .learn .learn--run, .learn.learn--run { --teach-h: max(calc(clamp(84px, min(30vw, 15svh), 140px) + 12px), 118px); }
+  .learn.learn--run { grid-template-areas: "top" "table" "main" "." !important; grid-template-rows: auto auto auto minmax(0, 1fr) !important; gap: 8px !important; }
+  .learn--run .lg-run-top { grid-template-columns: auto auto !important; grid-template-areas: "title prog" !important; justify-content: center; gap: 12px !important; padding: 8px 8px 0 !important; }
+  .lg-run-top .lg-run-menu, .lg-run-top .lg-run-fs { display: none !important; }
+  .learn .learn--run, .learn.learn--run { --teach-h: max(calc(clamp(84px, min(30vw, 15svh), 140px) + 12px), 118px);
+    --bw: min(100vw, calc(100svh - var(--lg-bar-h) - env(safe-area-inset-bottom) - var(--teach-h) - 70px)); }
+  .learn--run .learn__main.main-board { width: var(--bw) !important; max-width: none !important; margin: 0 0 0 calc(50% - var(--bw) / 2) !important; }
   .learn--run .learn__table .wrap { padding: 6px 8px !important; box-sizing: border-box; }
   .lg-run-top .progress a.done { color: transparent !important; }
 }
