@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790333719';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790333719';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790333719';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790333806';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790333806';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790333806';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -24,7 +24,7 @@ const KIND = { play: ['#2ECC9A', 'Гра'], task: ['#FF9F1C', 'Задачі'], l
 // Новий вигляд (як Magnus) у кольорах і з фігурами старого: вгорі вкладки розділів, під ними — лише кроки
 // вибраного розділу зигзагом (центр → ліворуч → праворуч → центр…), тонкі лінії, білі галочки. Усе на одному екрані.
 let curStep = 0, curSec = -1;
-const SEC_SHORT = ['ФІГУРИ', 'НАПАД', 'ШАХ І МАТ', 'ОСОБЛИВІ', 'МАЙСТЕР'];
+const SEC_SHORT = ['ФІГУРИ', 'ОСОБЛИВІ', 'ШАХ', 'МАТ', 'МАЙСТЕР'];
 const secRange = si => [SECTIONS[si][0], (SECTIONS[si + 1] || [STEPS.length])[0]];
 const secIndexOf = i => SECTIONS.reduce((k, x, j) => (x[0] <= i ? j : k), 0);
 function renderLearn() {

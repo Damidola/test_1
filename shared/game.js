@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790333719';
-import { aiMove, hintMove } from './ai.js?v=1790333719';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790333719';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790333806';
+import { aiMove, hintMove } from './ai.js?v=1790333806';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790333806';
 
 const LG = window.LG;
 

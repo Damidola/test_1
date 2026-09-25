@@ -2,7 +2,17 @@
    Підключається з shared/kit.js, коли в Профілі обрано мову English (i18n/translate.js перекладає сторінку).
    Нова фраза на сайті — додай сюди рядок; фраза без перекладу лишається українською. */
 window.LG_EN = {
-  "ФІГУРИ": "PIECES", "НАПАД": "ATTACK", "ШАХ І МАТ": "CHECKMATE", "ОСОБЛИВІ": "SPECIAL", "МАЙСТЕР": "MASTER",
+  "Бий фігури": "Capture pieces", "Утечи": "Run away", "Шах в 1 хід": "Check in one", "Шах у 2 ходи": "Check in two", "Особливі ходи": "Special moves",
+  "Кожною фігурою побий фігуру суперника — ту, яку ніхто не захищає.": "Capture an enemy piece with each of your pieces — one nobody defends.",
+  "Пішак дійшов до краю — стає ферзем (або іншою фігурою).": "A pawn that reaches the end becomes a queen (or another piece).",
+  "Особливе взяття пішака, який стрибнув на дві клітинки.": "A special capture of a pawn that jumped two squares.",
+  "Сховай короля й виведи туру — одним ходом.": "Hide your king and bring out the rook — in one move.",
+  "Напад на короля. Постав шах кожною фігурою!": "An attack on the king. Give check with every piece!",
+  "Від шаху можна втекти королем.": "You can run away from check with the king.",
+  "Постав свою фігуру між королем і нападником.": "Put your piece between the king and the attacker.",
+  "Побий фігуру, яка шахує, — часто найкращий спосіб.": "Capture the checking piece — often the best way.",
+  "Усі три способи разом: утечи, закрийся або побий.": "All three ways together: run, block or capture.",
+  "ФІГУРИ": "PIECES", "ОСОБЛИВІ": "SPECIAL", "ШАХ": "CHECK", "МАТ": "MATE", "МАЙСТЕР": "MASTER",
   "Робот думає": "Robot thinks",
   "Скільки робот думає": "How long the robot thinks",
   "ПРОФІЛЬ": "PROFILE",

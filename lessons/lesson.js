@@ -1,10 +1,10 @@
 /* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, parseUci, makeUci, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790333719';
-import { LESSONS } from './lessons.js?v=1790333719';
-import { goNext, markSeen } from '../shared/path.js?v=1790333719';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790333719';
+import { createBoard } from '../shared/board.js?v=1790333806';
+import { LESSONS } from './lessons.js?v=1790333806';
+import { goNext, markSeen } from '../shared/path.js?v=1790333806';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790333806';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
