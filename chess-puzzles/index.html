@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #16152F; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790338337">
-  <link rel="stylesheet" href="../shared/play.css?v=1790338337">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790339072">
+  <link rel="stylesheet" href="../shared/play.css?v=1790339072">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
@@ -76,12 +76,41 @@
     .mt-exp-arrow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
     .mt-exp-text { margin: 12px 4px 4px; font: 800 16px/1.4 var(--lg-font); }
     .mt-exp-task { margin: 4px 4px 12px; font: 700 14px/1.4 var(--lg-font); opacity: .85; }
+
+    /* ================= Новий дизайн задачі: ‹ назад · ‹ 4 / 40 › · ⛶ угорі; над дошкою — розділ і хто ходить ================= */
+    .mt .mt-top { position: fixed; z-index: 30; top: calc(8px + env(safe-area-inset-top) + var(--fs-top, 0px)); left: 0; right: 0; display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; width: min(100% - 24px, 560px); margin: 0 auto; }
+    .mt { padding-top: 50px; box-sizing: border-box; }
+    .mt[data-mode="menu"] > .mt-top { display: grid !important; }
+    .mt-back { width: 40px; height: 40px; border-radius: 50%; background: #161616; color: #fff; display: grid; place-items: center; text-decoration: none; font: 400 30px/1 Manrope, sans-serif; padding-bottom: 4px; box-sizing: border-box; }
+    .mt-top .mt-nav { justify-self: center; gap: 4px; }
+    .mt-top .mt-count { padding: 0 10px; border: 0; background: none; font: 700 15px Manrope, sans-serif; letter-spacing: 1px; color: #fff; }
+    .mt-top .mt-arr { width: 36px; height: 36px; border-radius: 50%; background: #161616; font: 400 24px/1 Manrope, sans-serif; }
+    .mt:not([data-mode="puzzle"]) .mt-top .mt-count { display: none; }
+    .mt-fsslot { display: flex; justify-content: flex-end; }
+    .mt-fsslot .lg-top-fs { position: static !important; width: 40px !important; height: 40px !important; border-radius: 50% !important; background: #161616 !important; }
+    .mt-fsslot .lg-top-fs svg { width: 20px !important; height: 20px !important; }
+    .mt-goal { flex-direction: column; gap: 2px; font: 700 16px Manrope, var(--lg-font), sans-serif; }
+    .mt-goal .mt-sec { display: block; font: 700 11.5px Manrope, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #8c8c8c; }
+    .mt-goal .mt-who { display: flex; align-items: center; gap: 7px; }
+    .mt-goal.ok { color: #2ee6b8; } .mt-goal.bad { color: #F5C542; }
+    .mt-task { font: 600 14px/1.35 Manrope, var(--lg-font), sans-serif; color: #8c8c8c; }
+    .mt-side { border-color: #555; }
+    /* меню розділів — як «Практика»: рядки на чорному з кружечками кольору розділу */
+    .mt-menu h2 { font: 700 11.5px Manrope, sans-serif !important; letter-spacing: 1.5px; text-transform: uppercase; color: #8c8c8c !important; margin: 14px 6px 6px !important; }
+    .mt-list { gap: 0 !important; }
+    .mt-card { background: none !important; border: 0 !important; border-top: 1px solid #141414 !important; border-radius: 0 !important; box-shadow: none !important; color: #fff !important; }
+    .mt-card .ic { border-radius: 50% !important; background: #1d1d1d !important; }
+    .mt-card b { font-family: Manrope, sans-serif !important; font-weight: 700 !important; }
+    .mt-card small { font-family: Manrope, sans-serif !important; color: #8c8c8c !important; opacity: 1 !important; }
   </style>
 </head>
 <body>
   <main class="lg-play mt" data-mode="menu">
+    <div class="mt-top"><a class="mt-back" href="../index.html#practice" aria-label="Назад">‹</a>
+      <span class="mt-nav"><button type="button" class="mt-arr" id="pv" aria-label="Попередня задача">‹</button><span class="mt-count" id="count"></span><button type="button" class="mt-arr" id="nx" aria-label="Наступна задача">›</button></span>
+      <span class="mt-fsslot"></span></div>
     <section class="mt-menu" id="menu" aria-label="Розділи задач"></section>
-    <div class="mt-goal"><span id="goal"></span><span class="mt-lives" id="lives"></span><span class="mt-nav"><button type="button" class="mt-arr" id="pv" aria-label="Попередня задача">‹</button><span class="mt-count" id="count"></span><button type="button" class="mt-arr" id="nx" aria-label="Наступна задача">›</button></span><button type="button" class="mt-ex" id="ex" title="Приклад">📖 Приклад</button></div>
+    <div class="mt-goal"><span id="goal"></span><span class="mt-lives" id="lives"></span><button type="button" class="mt-ex" id="ex" title="Приклад">📖 Приклад</button></div>
     <div class="lg-board-wrap" id="wrap"><div class="lg-board-el" id="board"></div></div>
     <div class="mt-task" id="task"></div>
     <div class="lg-controls">
@@ -92,8 +121,8 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790338337"></script>
-  <script src="../shared/kit.js?v=1790338337" data-game="mate" data-night="on"></script>
-  <script type="module" src="mate.js?v=1790338337"></script>
+  <script src="../shared/games.js?v=1790339072"></script>
+  <script src="../shared/kit.js?v=1790339072" data-game="mate" data-night="on"></script>
+  <script type="module" src="mate.js?v=1790339072"></script>
 </body>
 </html>

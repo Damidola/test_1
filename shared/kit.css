@@ -344,3 +344,23 @@ html body { transition: opacity .15s ease-out; }
 /* повний екран: угорі чорна смуга (як у шахових застосунках) — вміст починається під нею */
 html.lg-fs { --fs-top: 28px; background: #000; }
 html.lg-fs body { border-top: var(--fs-top) solid #000; box-sizing: border-box; }
+
+/* ================= Новий дизайн ігрових екранів (урок, задача, гра з роботом) =================
+   Чорне тло й Manrope, як у Профілі; нижня панель — темні «плитки» як у Magnus, підказка з бірюзовою лампочкою. */
+html.lg.lg-night { --lg-bg: #000; --lg-surface: #161616; --lg-surface-2: #232323; --lg-line: #262626; --lg-muted: #8c8c8c; --mg-acc: #2ee6b8;
+  --lg-font: Manrope, 'Nunito', system-ui, sans-serif; background: #000; }
+html.lg.lg-night body.lg-game { background: #000; font-family: var(--lg-font); }
+html.lg .lg-nav { background: #161616; padding: 7px 10px calc(8px + env(safe-area-inset-bottom)); gap: 10px; }
+html.lg .lg-nav-btn { background: #232323; color: #fff; box-shadow: none; border-radius: 14px; font: 700 12px Manrope, var(--lg-font), sans-serif; }
+html.lg .lg-nav-btn:active { background: #2c2c2c; transform: scale(.97); box-shadow: none; }
+html.lg .lg-nav-btn .ico svg { width: 23px; height: 23px; }
+html.lg .lg-nav-btn .lbl { opacity: 1; }
+html.lg .lg-nav-btn.lg-hintbtn .ico { color: #2ee6b8; }
+html.lg .lg-nav-btn:is([disabled], .is-off) { opacity: 1; background: #1b1b1b; color: #555; }
+html.lg .lg-nav-btn .ico[data-n]::after { background: #2ee6b8; color: #04241d; }
+
+/* вікна (результат гри, правила, пояснення) — темна картка, Manrope, бірюзова головна кнопка */
+html.lg.lg-night .lg-modal-card { background: #111; border: 1px solid #262626; color: #fff; font-family: Manrope, var(--lg-font), sans-serif; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+html.lg.lg-night .lg-modal-card h2 { font-weight: 800; }
+html.lg.lg-night .lg-btn { background: #232323; color: #fff; border-color: #232323; box-shadow: none; font-family: Manrope, var(--lg-font), sans-serif; font-weight: 800; }
+html.lg.lg-night .lg-btn-primary { background: #2ee6b8; color: #04241d; border-color: #2ee6b8; }

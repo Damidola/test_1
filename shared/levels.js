@@ -14,7 +14,18 @@ export function createLevels(el, key, n, onPick) {
   el.addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b || b.disabled) return; onPick(+b.dataset.i); });
   // праворуч від кружечків — кнопка повного екрана (як у грі з роботом)
   const fsb = LG.fsButton && LG.fsButton('lv-fs');
-  if (fsb && el.parentNode) { const row = document.createElement('div'); row.className = 'lv-row'; el.parentNode.insertBefore(row, el); row.append(el, fsb); }
+  // верхній рядок (новий дизайн): ‹ НАЗВА ⛶, під ними — кружечки рівнів
+  if (el.parentNode) {
+    const row = document.createElement('div'); row.className = 'lv-row';
+    const back = document.createElement('a'); back.className = 'lv-back'; back.href = new URL('../index.html#learn', import.meta.url).href;
+    back.setAttribute('aria-label', 'До уроків'); back.textContent = '‹';
+    const title = document.createElement('div'); title.className = 'lv-title';
+    const main = el.closest('main'), src = main && main.querySelector('#title');
+    const setTitle = () => { title.textContent = ({ check: 'Шах', value: 'Цінність фігур' })[key] || (src && src.textContent.trim()) || 'Урок'; };
+    setTitle(); if (src) new MutationObserver(setTitle).observe(src, { childList: true, characterData: true, subtree: true });
+    el.parentNode.insertBefore(row, el);
+    row.append(back, title, fsb || document.createElement('span'), el);
+  }
   mountTeacher(el.closest('main'));
   return {
     open,
@@ -58,7 +69,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790338337').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1790339072').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';

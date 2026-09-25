@@ -4,13 +4,13 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790338337';
-import { createRules } from '../chess/rules.js?v=1790338337';
-import { hintMove } from '../shared/ai.js?v=1790338337';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790339072';
+import { createRules } from '../chess/rules.js?v=1790339072';
+import { hintMove } from '../shared/ai.js?v=1790339072';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
-{ const fsb = LG.fsButton && LG.fsButton('mt-fs'); if (fsb) document.body.appendChild(fsb); }
+{ const fsb = LG.fsButton && LG.fsButton(); if (fsb) document.querySelector('.mt-fsslot').appendChild(fsb); }
 const main = document.querySelector('main.mt'), wrap = $('wrap');
 const DATA = await (await fetch(new URL('puzzles.json', import.meta.url))).json();
 
@@ -214,7 +214,8 @@ function paint() {
     return;
   }
   const side = userColor === 'white' ? '<span class="mt-side"></span> ходять білі' : '<span class="mt-side b"></span> ходять чорні';
-  $('goal').innerHTML = done ? (mistakes >= 3 ? 'Ось як треба 👆' : 'Правильно! 🎉') : `${info.title} · ${side}`;
+  $('goal').innerHTML = done ? (mistakes >= 3 ? 'Ось як треба 👆' : 'Правильно! 🎉') : `<span class="mt-sec">${info.title}</span><span class="mt-who">${side}</span>`;
+  $('goal').classList.toggle('ok', done && mistakes < 3); $('goal').classList.toggle('bad', done && mistakes >= 3);
   $('lives').textContent = '❤️'.repeat(Math.max(0, 3 - mistakes)) + '🤍'.repeat(Math.min(3, mistakes));
   $('count').textContent = `${idx + 1} / ${DATA[sec].length}`;
   $('pv').disabled = idx <= 0;

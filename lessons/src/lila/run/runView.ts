@@ -8,6 +8,7 @@ import type { LearnCtrl } from '../ctrl';
 import type { LevelCtrl } from '../levelCtrl';
 import { makeStars, progressView } from '../progressView';
 import { getLevelRank } from '../score';
+import { SECTIONS, STEPS } from '../../../../shared/path.js';
 import { promotionView } from '../promotionView';
 import { withLinebreaks } from '../util';
 import congrats from './congrats';
@@ -60,6 +61,13 @@ const fitNow = (v: VNode) =>
     while (el.scrollHeight > max && fs > 11) el.style.fontSize = --fs + 'px';
   });
 
+// колір розділу, де цей етап у шляху застосунку (обідок вчителя)
+const secColor = (stageId: number): string => {
+  const i = (STEPS as any[]).findIndex(st => st[3].some((l: any) => l[2] === 'lessons/index.html#/' + stageId));
+  const sec = (SECTIONS as any[]).filter(x => x[0] <= Math.max(0, i)).pop();
+  return sec ? sec[2] : '#7C6CF0';
+};
+
 // ---------- logic-games-kids: вчитель (Пан Сова) — угорі ліворуч, праворуч його слова ----------
 let teacherSvg: Promise<string> | undefined;
 const loadTeacher = () =>
@@ -108,10 +116,11 @@ export const runView = (ctrl: LearnCtrl) => {
   if (stage.cssClass) rootClass[stage.cssClass] = true;
   if (levelCtrl.blueprint.cssClass) rootClass[levelCtrl.blueprint.cssClass] = true;
   rootClass['lg-demo-on'] = runCtrl.demo();
-  return div('.learn.learn--run', { class: rootClass }, [
-    // logic-games-kids (телефон): угорі — меню, рівні з зірочками й «Приклад», щоб усе було на одному екрані
+  return div('.learn.learn--run', { class: rootClass, attrs: { style: `--sec:${secColor(stage.id)}` } }, [
+    // logic-games-kids (телефон): угорі — меню, назва етапу, повний екран; під ними — кружечки рівнів
     div('.lg-run-top', [
-      a('../index.html#learn')('.lg-run-menu', { attrs: { title: 'Меню уроків' } }, '☰'),
+      a('../index.html#learn')('.lg-run-menu', { attrs: { title: 'Меню уроків', 'aria-label': 'Меню уроків' } }, '‹'),
+      div('.lg-run-title', stage.title),
       progressView(runCtrl),
       // кнопка повного екрана (як у грі з роботом) — її малює й веде shared/kit.js
       div('.lg-run-fs', {

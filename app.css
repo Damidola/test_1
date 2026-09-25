@@ -514,3 +514,8 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 .g2-h3 { margin: 8px 16px 5px; }
 .g2-sub { padding-bottom: 6px; }
 #view-practice.mg2 > * { flex: none; }
+
+/* Гра: без назв рівнів — лише цифра; кружечки суперників більші */
+.g2-row { grid-template-columns: 26px minmax(0, 1fr); padding-left: 12px; padding-right: 10px; gap: 4px; }
+.g2-lvl b { font-size: 24px; }
+.g2-opps .ap-opp { --s: min(calc(100cqh - 6px), calc((100cqw - 26px - 4px - 24px) / 4)); }

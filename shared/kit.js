@@ -98,6 +98,12 @@
   });
 
 
+  // новий дизайн ігрових екранів (чорне тло, Manrope): шрифт підвантажуємо на кожній сторінці
+  if (!document.querySelector('link[href*="family=Manrope"]')) {
+    const f = document.createElement('link'); f.rel = 'stylesheet';
+    f.href = 'https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap';
+    document.head.appendChild(f);
+  }
   // координати біля дошки (цифри й літери) — можна вимкнути в Профілі
   if (store.get('coords', true) === false) document.documentElement.classList.add('lg-nocoords');
 
@@ -466,6 +472,7 @@
   };
   function navBtn(ico, label, attrs) {
     const a = { class: 'lg-nav-btn', ...attrs };
+    if (ico === '💡') a.class += ' lg-hintbtn'; // підказка — з бірюзовою лампочкою (новий дизайн)
     if (!a.href) a.type = 'button';
     const i = el('span', { class: 'ico', text: ICONS[ico] ? '' : ico });
     if (ICONS[ico]) i.innerHTML = ICONS[ico];

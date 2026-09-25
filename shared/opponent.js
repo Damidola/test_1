@@ -72,6 +72,7 @@ export function mountOpponent(el, opts = {}) {
   el.classList.add('lg-hero');
   el.innerHTML = `
     <button type="button" class="lg-hero-pic" aria-label="Обрати суперника"><img alt=""><span class="lg-toon" hidden></span></button>
+    <div class="lg-hero-name"><b></b><span class="lg-hero-lv"></span></div>
     <button type="button" class="lg-hero-arrow l" aria-label="Попередній суперник">‹</button>
     <button type="button" class="lg-hero-arrow r" aria-label="Наступний суперник">›</button>`;
   // Стрілки ‹ › — лише де просили (у грі з роботом їх немає: суперника обирають тапом по ньому)
@@ -112,6 +113,10 @@ export function mountOpponent(el, opts = {}) {
       el.style.setProperty('--pic-pos', o.pos);
       el.classList.toggle('toon', o.toon);
       img.src = o.avatar; img.alt = o.name;
+      // ім'я суперника й крапки рівня (колір рівня) — під персонажем, як у новому дизайні
+      const lv = Math.min(5, Math.max(1, +q.get('level') || o.level || 1)), LVC = ['#2ECC9A', '#3FA7F5', '#7C6CF0', '#FF9F1C', '#FF5C6C'];
+      el.querySelector('.lg-hero-name b').textContent = o.name;
+      el.querySelector('.lg-hero-lv').innerHTML = [1, 2, 3, 4, 5].map(i => `<i style="background:${i <= lv ? LVC[lv - 1] : 'rgba(255,255,255,.25)'}"></i>`).join('');
       if (o.toon) loadSvg(o.avatar).then(t => { if (OPPONENTS[index] !== o) return; toon.innerHTML = t; toon.hidden = !t; img.hidden = !!t; readyRes(); });
       else { toon.hidden = true; toon.innerHTML = ''; img.hidden = false; readyRes(); }
       el.classList.remove('switching');

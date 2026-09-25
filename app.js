@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790338337';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790338337';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790338337';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790339072';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790339072';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790339072';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -115,7 +115,7 @@ function renderPlay() {
   $('view-play').innerHTML = `<div class="g2-head">ГРА З РОБОТОМ</div>
     <div class="g2-side" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>
     <div class="g2-rows">${ROWS.map((row, r) => `
-      <div class="g2-row" style="--lc:${LV_COLORS[r]}"><div class="g2-lvl"><b>${r + 1}</b><span>${esc(LEVEL_NAMES[r])}</span></div>
+      <div class="g2-row" style="--lc:${LV_COLORS[r]}"><div class="g2-lvl"><b>${r + 1}</b></div>
         <div class="g2-opps">${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></a>`).join('')}</div></div>`).join('')}
     </div>`;
 }
