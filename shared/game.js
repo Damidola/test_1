@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790338107';
-import { aiMove, hintMove } from './ai.js?v=1790338107';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790338107';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790338190';
+import { aiMove, hintMove } from './ai.js?v=1790338190';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790338190';
 
 const LG = window.LG;
 
@@ -168,10 +168,10 @@ export function startGame(cfg) {
   // Збиті фігури вміщаються в плашку: якщо тісно — стопки щільніші, види ближче один до одного
   function fitMats() {
     root.querySelectorAll('.lg-mats > .lg-material').forEach(m => {
-      let st = 6, gp = 3;
+      let st = 4, gp = 2;
       m.style.setProperty('--st', st + 'px'); m.style.setProperty('--gp', gp + 'px');
-      while (m.scrollWidth > m.clientWidth && (st > 3 || gp > -8)) {
-        if (st > 3) st--; else gp--;
+      while (m.scrollWidth > m.clientWidth && (st > 2 || gp > -5)) {
+        if (st > 2) st--; else gp--;
         m.style.setProperty('--st', st + 'px'); m.style.setProperty('--gp', gp + 'px');
       }
     });
@@ -381,10 +381,10 @@ export function startGame(cfg) {
   if (cfg.navOnly) {
     root.querySelector('.lg-controls').hidden = true;
     root.classList.add('lg-navonly');
-    // збиті фігури обох — одним рядком під дошкою (зліва — взяті тобою, справа — суперником); фон суперника — до самої дошки
+    // збиті фігури обох — одним рядком під дошкою (зліва — взяті суперником, справа — тобою); фон суперника — до самої дошки
     const mats = document.createElement('div'); mats.className = 'lg-mats';
     root.querySelector('.lg-board-wrap').after(mats);
-    mats.append(root.querySelector('.lg-material[data-side="bottom"]'), root.querySelector('.lg-material[data-side="top"]')); // зліва — твої взяті, справа — суперника
+    mats.append(root.querySelector('.lg-material[data-side="top"]'), root.querySelector('.lg-material[data-side="bottom"]')); // зліва — взяті суперником, справа — твої
     if (root.querySelector('.lg-quick')) root.querySelector('.lg-quick').hidden = true; // режим обирають у «Практиці»
     // cfg.navOnly: true → Назад · Вперед; або список дій: ['flip', 'level', 'undo', 'redo']
     const acts = Array.isArray(cfg.navOnly) ? cfg.navOnly : ['undo', 'redo'];

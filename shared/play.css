@@ -290,15 +290,15 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 .lv-hint { font-size: calc(var(--say-fs, 15.5px) - 1.5px) !important; }
 /* збиті фігури — як у шахових застосунках: без плашок, маленькі фігурки поруч (однакові — стопкою), «+N» — у того, хто попереду.
    Кожна сторона — не ширше половини рядка; якщо тісно — фігурки самі стають щільніше (game.js: fitMats) */
-.lg-mats { min-height: 30px; padding: 0 10px !important; }
-.lg-mats > .lg-material { max-width: calc(50% - 6px); height: 24px; flex: 0 1 auto; overflow: hidden; padding: 0; border-radius: 0; background: none !important; justify-content: flex-start !important; }
-.lg-mats > .lg-material[data-side="top"] { justify-content: flex-end !important; }
+.lg-mats { min-height: 20px; padding: 0 10px !important; }
+.lg-mats > .lg-material { max-width: calc(50% - 6px); height: 16px; flex: 0 1 auto; overflow: hidden; padding: 0; border-radius: 0; background: none !important; justify-content: flex-start !important; }
+.lg-mats > .lg-material[data-side="bottom"] { justify-content: flex-end !important; }
 .lg-mats > .lg-material:empty { visibility: hidden; }
 .lg-mats > .lg-material > div { display: flex; flex: none; margin-right: 0; }
-.lg-mats > .lg-material > div + div { margin-left: var(--gp, 3px); }
-.lg-mats > .lg-material mpiece { flex: none; width: 18px; height: 18px; }
-.lg-mats > .lg-material mpiece + mpiece { margin-left: calc(var(--st, 6px) - 18px); }
-.lg-mats > .lg-material b { flex: none; margin-left: 5px; font-size: 14px; font-weight: 800; color: var(--lg-ink, #fff) !important; opacity: .85; }
+.lg-mats > .lg-material > div + div { margin-left: var(--gp, 2px); }
+.lg-mats > .lg-material mpiece { flex: none; width: 12px; height: 12px; }
+.lg-mats > .lg-material mpiece + mpiece { margin-left: calc(var(--st, 4px) - 12px); }
+.lg-mats > .lg-material b { flex: none; margin-left: 4px; font-size: 10px; font-weight: 800; color: var(--lg-ink, #fff) !important; opacity: .85; }
 /* цифри тепер на лівому краї (клітинки там протилежного кольору, ніж на правому) — міняємо кольори, щоб усі цифри було видно */
 .cg-wrap coords.ranks .coord-light { color: var(--cg-coord-white, #f0d9b5) !important; }
 .cg-wrap coords.ranks .coord-dark { color: var(--cg-coord-black, #946f51) !important; }
