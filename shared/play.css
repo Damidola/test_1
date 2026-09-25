@@ -5,7 +5,7 @@
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 html.lg { --lg-bar-h: 62px; } /* нижня панель */
 html.lg body.lg-game {
-  position: fixed; inset: 0; margin: 0; height: 100svh; min-height: 0;
+  position: fixed; inset: 0; margin: 0; height: calc(100svh - var(--fs-top, 0px)); min-height: 0;
   padding: 8px 0 calc(var(--lg-bar-h) + 6px + env(safe-area-inset-bottom)); touch-action: manipulation;
 }
 html.lg .lg-bar .lg-icon-btn { width: 30px; height: 30px; font-size: 14px; border-radius: 10px; }
@@ -220,7 +220,7 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 }
 
 /* кнопки у верхніх кутах (гра з роботом): ← меню ліворуч, звук праворуч — поверх фону суперника */
-.lg-topbtns { position: fixed; top: calc(10px + env(safe-area-inset-top)); left: 0; right: 0; z-index: 6; pointer-events: none;
+.lg-topbtns { position: fixed; top: calc(10px + env(safe-area-inset-top) + var(--fs-top, 0px)); left: 0; right: 0; z-index: 6; pointer-events: none;
   display: flex; justify-content: space-between; padding: 0 10px; width: min(100vw, 560px); margin: 0 auto; box-sizing: border-box; }
 .lg-top-btn { pointer-events: auto; width: 44px; height: 44px; border-radius: 50%; border: 0; padding: 0; display: grid; place-items: center;
   background: rgba(20, 19, 43, .45); color: #fff; cursor: pointer; -webkit-tap-highlight-color: transparent; backdrop-filter: blur(4px); }

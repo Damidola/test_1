@@ -161,7 +161,7 @@ html, body { overflow-x: clip; }
 .ap-go:active { transform: translateY(3px); box-shadow: none; }
 
 /* «Гра» — рівно один екран без прокрутки: звірята зменшуються під висоту */
-#view-play:not([hidden]) { display: flex; flex-direction: column; height: 100svh; min-height: 0; overflow: hidden;
+#view-play:not([hidden]) { display: flex; flex-direction: column; height: calc(100svh - var(--fs-top, 0px)); min-height: 0; overflow: hidden;
   padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
 #view-play .ap-h { flex: none; margin: 4px 2px 8px; }
 #view-play .ap-opprows { flex: 1 1 auto; min-height: 0; display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 6px; }
@@ -280,9 +280,9 @@ html, body { overflow-x: clip; }
 .pf-more[open] .pf-chev { transform: rotate(90deg); }
 /* Практика й Профіль — рівно на висоту екрана (як «Гра»): сторінка не прокручується «на хвостик»;
    якщо на малому телефоні щось не влазить (розкритий спойлер) — гортається лише сам вміст */
-#view-practice:not([hidden]), #view-profile:not([hidden]) { height: 100svh; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+#view-practice:not([hidden]), #view-profile:not([hidden]) { height: calc(100svh - var(--fs-top, 0px)); min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
 html:has(#view-practice:not([hidden])), html:has(#view-play:not([hidden])), html:has(#view-profile:not([hidden])),
-html:has(#view-practice:not([hidden])) body, html:has(#view-play:not([hidden])) body, html:has(#view-profile:not([hidden])) body { height: 100svh; overflow: hidden; }
+html:has(#view-practice:not([hidden])) body, html:has(#view-play:not([hidden])) body, html:has(#view-profile:not([hidden])) body { height: calc(100svh - var(--fs-top, 0px)); overflow: hidden; }
 @media (max-height: 700px) {
   .ap-subtiles { gap: 6px; } .ap-subtiles .ap-tile { min-height: 0; padding: 7px 8px; gap: 2px; }
   .ap-subtiles .ap-tile .pcs { height: 24px; } .ap-subtiles .ap-tile .pcs img { width: 24px; height: 24px; } .ap-subtiles .ap-tile .pcs .emo { font-size: 20px; }
@@ -371,7 +371,7 @@ body:has(#view-profile.mg:not([hidden])) { background: #000; }
 .ap-tabs a:active { color: #fff; }
 
 /* ---------- Профіль ЗАВЖДИ на одному екрані: рядки ділять висоту порівну й стискаються, нічого не гортається ---------- */
-#view-profile.mg:not([hidden]) { display: flex; flex-direction: column; height: 100svh; overflow: hidden;
+#view-profile.mg:not([hidden]) { display: flex; flex-direction: column; height: calc(100svh - var(--fs-top, 0px)); overflow: hidden;
   padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: calc(78px + env(safe-area-inset-bottom)); box-sizing: border-box; }
 .mg-me { flex: none; }
 .mg-av { width: clamp(40px, 7svh, 56px); height: clamp(40px, 7svh, 56px); }
@@ -407,7 +407,7 @@ body:has(#view-profile.mg:not([hidden])) { background: #000; }
 
 /* ---------- Уроки в новому дизайні: чорне тло, вкладки розділів угорі, зигзаг тонкими лініями — один екран без прокрутки ---------- */
 body:has(#view-learn:not([hidden])) { background: #000; }
-#view-learn:not([hidden]) { display: flex; flex-direction: column; height: 100svh; overflow: hidden; background: #000;
+#view-learn:not([hidden]) { display: flex; flex-direction: column; height: calc(100svh - var(--fs-top, 0px)); overflow: hidden; background: #000;
   padding: env(safe-area-inset-top) 0 calc(74px + env(safe-area-inset-bottom)); font-family: Manrope, var(--lg-font), sans-serif; }
 #view-learn .ap-secbar { flex: none; display: flex; gap: 0; margin: 0; padding: 0; overflow: hidden; border-bottom: 1px solid #1c1c1c; }
 #view-learn .ap-secbar button { flex: 1 1 0; min-width: 0; height: 46px; padding: 0 2px; border-radius: 0; background: none; color: #8c8c8c;

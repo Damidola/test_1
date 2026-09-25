@@ -340,3 +340,7 @@ html.lg .lg-nav-btn:is([disabled], .is-off) { opacity: .4; }
 /* без блимання: поки картинки гри вантажаться, сторінка прихована (тло вже темне), потім з'являється вся одразу */
 html.lg-wait body { opacity: .001 !important; transition: none; }
 html body { transition: opacity .15s ease-out; }
+
+/* повний екран: угорі чорна смуга (як у шахових застосунках) — вміст починається під нею */
+html.lg-fs { --fs-top: 28px; background: #000; }
+html.lg-fs body { border-top: var(--fs-top) solid #000; box-sizing: border-box; }
