@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790337428';
-import { aiMove, hintMove } from './ai.js?v=1790337428';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790337428';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790337662';
+import { aiMove, hintMove } from './ai.js?v=1790337662';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790337662';
 
 const LG = window.LG;
 
@@ -165,7 +165,20 @@ export function startGame(cfg) {
 
   // Збиті фігури — як на Lichess: згруповані за видом, тим самим набором фігур, що й на дошці
   const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
+  // Збиті фігури вміщаються в плашку: якщо тісно — стопки щільніші, види ближче один до одного
+  function fitMats() {
+    root.querySelectorAll('.lg-mats > .lg-material').forEach(m => {
+      let st = 8, gp = 3;
+      m.style.setProperty('--st', st + 'px'); m.style.setProperty('--gp', gp + 'px');
+      while (m.scrollWidth > m.clientWidth && (st > 3 || gp > -8)) {
+        if (st > 3) st--; else gp--;
+        m.style.setProperty('--st', st + 'px'); m.style.setProperty('--gp', gp + 'px');
+      }
+    });
+  }
+  window.addEventListener('resize', () => requestAnimationFrame(fitMats));
   function renderMaterial() {
+    requestAnimationFrame(fitMats);
     const top = player === 'w' ? 'b' : 'w';
     if (rules.score) { // рахунок гри (фішки, квадратики, стінки) — замість збитих фігур
       const sc = rules.score(state());

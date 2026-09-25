@@ -288,9 +288,11 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 .lg-play:has(> .lv-teach) > .lg-controls { min-height: 44px; }
 .lv-say > * { flex: none !important; }
 .lv-hint { font-size: calc(var(--say-fs, 15.5px) - 1.5px) !important; }
-/* збиті фігури видно всі — плашка не обрізає; фігури трохи менші й щільніші */
-.lg-mats > .lg-material { max-width: none; flex: 0 1 auto; overflow: visible; padding: 0 7px; }
-.lg-mats > .lg-material > div { margin-right: 3px; }
-.lg-mats > .lg-material mpiece { width: 19px; height: 19px; }
-.lg-mats > .lg-material mpiece + mpiece { margin-left: -12px; }
-.lg-mats > .lg-material b { font-size: 14px; }
+/* збиті фігури: плашка фіксованої ширини (половина рядка); однакові — стопкою зі зсувом (як на Lichess),
+   якщо фігур багато — зсув і відстань між видами самі зменшуються (game.js: fitMats), видно всі */
+.lg-mats > .lg-material { max-width: calc(50% - 4px); flex: 0 1 auto; overflow: hidden; padding: 0 8px 0 6px; justify-content: flex-start !important; }
+.lg-mats > .lg-material > div { display: flex; flex: none; margin-right: 0; }
+.lg-mats > .lg-material > div + div { margin-left: var(--gp, 3px); }
+.lg-mats > .lg-material mpiece { flex: none; width: 20px; height: 20px; }
+.lg-mats > .lg-material mpiece + mpiece { margin-left: calc(var(--st, 8px) - 20px); }
+.lg-mats > .lg-material b { flex: none; margin-left: 4px; font-size: 14px; }
