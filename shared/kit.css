@@ -374,3 +374,12 @@ html.lg.lg-night .lg-btn-primary { background: #2ee6b8; color: #04241d; border-c
 .lg-result-lose .lg-result-hero { box-shadow: 0 0 0 3px #FF5C6C; }
 html.lg.lg-night .lg-result h2 { color: #fff; font-family: Manrope, var(--lg-font), sans-serif; font-weight: 800; }
 html.lg.lg-night .lg-result-win h2 { color: #2ee6b8; }
+
+/* вікно кінця партії з роботом — як у шахових застосунках, у нашому дизайні */
+.lg-result-app { text-align: center; }
+.lg-result-app .lg-result-hero { width: 104px; height: 104px; margin-bottom: 8px; }
+.lg-result-app h2 { font-size: 30px !important; margin: 0 !important; }
+.lg-result-sub { margin: 4px 0 16px !important; font: 700 15px/1.3 Manrope, var(--lg-font), sans-serif !important; color: #8c8c8c; }
+.lg-result-wide { display: flex; flex-direction: column; gap: 10px; }
+.lg-wide-btn { display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; border-radius: 16px !important; font: 800 18px Manrope, var(--lg-font), sans-serif !important; text-decoration: none; box-sizing: border-box; }
+.lg-wide-btn:focus, .lg-wide-btn:focus-visible { outline: none; }

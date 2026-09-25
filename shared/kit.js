@@ -406,6 +406,17 @@
     }
     if (opts && opts.reward && !opts.image && !opts.hero) { opts = { ...opts, image: takeReward(), video: true }; }
     if (opts && opts.image) children.push(imgSlot);
+    // гра з роботом (є суперник) — вікно як у шахових застосунках: заголовок, чим закінчилось, дві широкі кнопки
+    if (opts && opts.hero) {
+      if (message && message !== cfg.title) children.splice(children.findIndex(c => c.tagName === 'H2') + 1, 0, el('p', { class: 'lg-result-sub', text: message }));
+      const again2 = opts.onAgain;
+      children.push(el('div', { class: 'lg-result-wide' }, [
+        el('button', { class: 'lg-btn lg-btn-primary lg-wide-btn', text: '↻  Реванш', onclick: () => { closeModal(); if (again2) again2(); } }),
+        el('a', { class: 'lg-btn lg-wide-btn', href: homeHref(), text: '+  Нова гра' })
+      ]));
+      setTimeout(() => openModal(el('div', { class: 'lg-result lg-result-' + kind + ' lg-result-app' }, children)), (opts.delay) || 700);
+      return;
+    }
     const buttons = el('div', { class: 'lg-result-btns' });
     const again = opts && opts.onAgain;
     // Домик зліва, «ще раз» справа від нього
