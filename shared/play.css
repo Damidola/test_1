@@ -288,3 +288,9 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 .lg-play:has(> .lv-teach) > .lg-controls { min-height: 44px; }
 .lv-say > * { flex: none !important; }
 .lv-hint { font-size: calc(var(--say-fs, 15.5px) - 1.5px) !important; }
+/* збиті фігури видно всі — плашка не обрізає; фігури трохи менші й щільніші */
+.lg-mats > .lg-material { max-width: none; flex: 0 1 auto; overflow: visible; padding: 0 7px; }
+.lg-mats > .lg-material > div { margin-right: 3px; }
+.lg-mats > .lg-material mpiece { width: 19px; height: 19px; }
+.lg-mats > .lg-material mpiece + mpiece { margin-left: -12px; }
+.lg-mats > .lg-material b { font-size: 14px; }
