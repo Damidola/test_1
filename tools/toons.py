@@ -282,4 +282,73 @@ build('pf', 'teacher',
       eye=(48, 174, 26, 28, 15), iris='#6b4a2a', brow='#e7eaf0', mouth=(262, 18), mouth_col='#6b3a1a',
       fur='#7c8aa6', paw='#4d5a73', pad='#eef0f4', blush=216, blush_dx=92)
 
+# ---------- Тигр: помаранчевий, чорні смужки, біла морда ----------
+build('tg', 'tiger',
+      back="""
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#f08a24"/>
+  <path d="M140 400 C144 356 170 332 200 330 C230 332 256 356 260 400 Z" fill="#fff6ea"/>
+  <g stroke="#2b1a10" stroke-width="9" stroke-linecap="round"><path d="M104 360 l26 10 M100 384 l24 6 M296 360 l-26 10 M300 384 l-24 6"/></g>""",
+      head="""
+  <g class="tg-earl"><circle cx="118" cy="104" r="30" fill="#f08a24"/><circle cx="118" cy="106" r="16" fill="#fff6ea"/></g>
+  <g class="tg-earr"><circle cx="282" cy="104" r="30" fill="#f08a24"/><circle cx="282" cy="106" r="16" fill="#fff6ea"/></g>
+  <path d="M88 196 C88 124 138 88 200 88 C262 88 312 124 312 196 C312 266 264 308 200 308 C136 308 88 266 88 196 Z" fill="#f59a34"/>
+  <ellipse class="tg-red" cx="200" cy="200" rx="108" ry="106" fill="#ff3b30"/>
+  <g fill="#2b1a10"><path d="M200 92 l-12 30 h24 z"/><path d="M168 96 l-8 24 h14 z"/><path d="M232 96 l8 24 h-14 z"/>
+    <path d="M90 180 l34 8 -34 10 z"/><path d="M92 214 l30 4 -28 10 z"/><path d="M310 180 l-34 8 34 10 z"/><path d="M308 214 l-30 4 28 10 z"/></g>
+  <path d="M120 226 C124 196 160 190 200 204 C240 190 276 196 280 226 C282 280 244 306 200 306 C156 306 118 280 120 226 Z" fill="#fff6ea"/>
+  <path d="M184 222 L216 222 L200 240 Z" fill="#e5737a"/>
+  <path d="M200 240 v10" stroke="#2b1a10" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#2b1a10" opacity=".6"><circle cx="162" cy="244" r="3"/><circle cx="150" cy="236" r="3"/><circle cx="238" cy="244" r="3"/><circle cx="250" cy="236" r="3"/></g>""",
+      eye=(46, 168, 21, 23, 12), iris='#7cb342', brow='#2b1a10', mouth=(268, 22), mouth_col='#5a2a14',
+      fur='#f08a24', paw='#fff6ea', pad='#e5979a', blush=214, blush_dx=88)
+
+# ---------- Слон: сіро-блакитний, великі вуха, хобот, рожеві щічки ----------
+build('el', 'elephant',
+      back="""
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#8fa3b8"/>
+  <path d="M150 400 C154 362 174 342 200 340 C226 342 246 362 250 400 Z" fill="#a9bbcd"/>""",
+      head="""
+  <g class="el-earl"><path d="M122 120 C60 90 30 150 44 210 C54 256 96 266 128 244 Z" fill="#8fa3b8"/><path d="M116 136 C74 118 56 162 66 204 C74 234 100 240 120 226 Z" fill="#f2b8c6"/></g>
+  <g class="el-earr"><path d="M278 120 C340 90 370 150 356 210 C346 256 304 266 272 244 Z" fill="#8fa3b8"/><path d="M284 136 C326 118 344 162 334 204 C326 234 300 240 280 226 Z" fill="#f2b8c6"/></g>
+  <path d="M104 190 C104 124 146 90 200 90 C254 90 296 124 296 190 C296 250 262 290 200 290 C138 290 104 250 104 190 Z" fill="#9db0c4"/>
+  <ellipse class="el-red" cx="200" cy="192" rx="96" ry="100" fill="#ff3b30"/>
+  <path d="M176 206 C172 250 168 290 184 318 C192 332 212 330 214 316 C216 300 204 296 206 284 C210 262 226 240 224 206 Z" fill="#9db0c4"/>
+  <g stroke="#7d91a6" stroke-width="3" fill="none" stroke-linecap="round"><path d="M184 256 q16 5 32 0 M184 276 q14 5 28 0 M188 296 q10 4 20 0"/></g>
+  <path d="M160 226 C150 244 152 262 162 268" fill="none" stroke="#fffdf6" stroke-width="10" stroke-linecap="round"/><path d="M240 226 C250 244 248 262 238 268" fill="none" stroke="#fffdf6" stroke-width="10" stroke-linecap="round"/>""",
+      eye=(50, 164, 20, 22, 12), iris='#2b3240', brow='#5f7185', mouth=(248, 14), mouth_col='#5a3a4a',
+      fur='#8fa3b8', paw='#b7c7d6', pad='#8fa3b8', blush=200, blush_dx=76)
+
+# ---------- Панда: біла голова, чорні вуха й «окуляри» навколо очей ----------
+build('pd', 'panda',
+      back="""
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#23232a"/>
+  <path d="M140 400 C144 356 170 332 200 330 C230 332 256 356 260 400 Z" fill="#f7f7f5"/>
+  <path d="M252 318 l26 -60 M262 318 l30 -54" stroke="#7cb342" stroke-width="7" stroke-linecap="round"/><ellipse cx="292" cy="258" rx="14" ry="6" fill="#8bc34a" transform="rotate(-40 292 258)"/>""",
+      head="""
+  <g class="pd-earl"><circle cx="114" cy="104" r="32" fill="#23232a"/></g>
+  <g class="pd-earr"><circle cx="286" cy="104" r="32" fill="#23232a"/></g>
+  <path d="M90 192 C90 122 140 88 200 88 C260 88 310 122 310 192 C310 264 262 306 200 306 C138 306 90 264 90 192 Z" fill="#f7f7f5" stroke="#dcdcd8" stroke-width="3"/>
+  <ellipse class="pd-red" cx="200" cy="196" rx="106" ry="106" fill="#ff3b30"/>
+  <ellipse cx="152" cy="178" rx="36" ry="30" fill="#23232a" transform="rotate(-24 152 178)"/><ellipse cx="248" cy="178" rx="36" ry="30" fill="#23232a" transform="rotate(24 248 178)"/>
+  <ellipse cx="200" cy="244" rx="38" ry="28" fill="#fff"/>
+  <ellipse cx="200" cy="226" rx="14" ry="10" fill="#23232a"/>
+  <path d="M200 236 v10" stroke="#23232a" stroke-width="4" stroke-linecap="round"/>""",
+      eye=(48, 176, 17, 19, 11), iris='#3a2a1a', brow='#23232a', mouth=(262, 20), mouth_col='#3a2a2a',
+      fur='#23232a', paw='#33333b', pad='#55555e', blush=222, blush_dx=90, sclera='#fff')
+
+# ---------- Лисичка: руда, гострі вуха з чорними кінчиками, біла мордочка ----------
+build('fx', 'fox',
+      back="""
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#e8662a"/>
+  <path d="M146 400 C150 356 172 334 200 332 C228 334 250 356 254 400 Z" fill="#fff4ea"/>""",
+      head="""
+  <g class="fx-earl"><path d="M100 150 L104 36 L184 104 Z" fill="#e8662a"/><path d="M114 132 L116 62 L164 104 Z" fill="#fff0e4"/><path d="M104 36 L116 62 L128 54 Z" fill="#2b1a10"/></g>
+  <g class="fx-earr"><path d="M300 150 L296 36 L216 104 Z" fill="#e8662a"/><path d="M286 132 L284 62 L236 104 Z" fill="#fff0e4"/><path d="M296 36 L284 62 L272 54 Z" fill="#2b1a10"/></g>
+  <path d="M84 170 C92 116 140 90 200 90 C260 90 308 116 316 170 C320 230 280 300 200 310 C120 300 80 230 84 170 Z" fill="#f07534"/>
+  <ellipse class="fx-red" cx="200" cy="200" rx="110" ry="106" fill="#ff3b30"/>
+  <path d="M84 186 C110 200 150 206 176 222 C188 230 194 250 200 310 C206 250 212 230 224 222 C250 206 290 200 316 186 C314 250 272 304 200 310 C128 304 86 250 84 186 Z" fill="#fff4ea"/>
+  <ellipse cx="200" cy="262" rx="14" ry="10" fill="#2b1a10"/><ellipse cx="195" cy="258" rx="5" ry="3" fill="#fff" opacity=".6"/>""",
+      eye=(46, 176, 19, 22, 12), iris='#d4891c', brow='#8a3a10', mouth=(284, 18), mouth_col='#5a2a14',
+      fur='#e8662a', paw='#2b1a10', pad='#5a3a2a', blush=226, blush_dx=86)
+
 print('ok')

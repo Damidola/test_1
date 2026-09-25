@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" class="tg">
+<!-- «tiger» — мультяшний суперник (tools/toons.py). Настрій — класом на панелі суперника:
+     .mood-happy, .mood-angry, .thinking, .talking, .poked. Без класів — спокійний: кліпає, озирається, махає лапкою. -->
+<style>
+.tg-body{transform-origin:200px 400px;animation:tgSway 5s ease-in-out infinite}
+@keyframes tgSway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.tg-eyes{transform-origin:200px 168px;animation:tgBlink 4.4s infinite}
+@keyframes tgBlink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+.tg-pup{animation:tgLook 7.5s ease-in-out infinite;transition:transform .3s}
+@keyframes tgLook{0%,40%,100%{transform:translate(0,0)}48%,62%{transform:translate(6px,-1px)}70%,80%{transform:translate(-6px,0)}}
+.tg-earl{transform-origin:140px 110px;animation:tgEar 3.6s ease-in-out infinite}
+.tg-earr{transform-origin:260px 110px;animation:tgEar 3.6s ease-in-out infinite reverse}
+@keyframes tgEar{0%,80%,100%{transform:rotate(0)}88%{transform:rotate(-8deg)}}
+.tg-armr{transform-origin:292px 344px;animation:tgWave 2.8s ease-in-out infinite}
+@keyframes tgWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
+.tg-arml{transform-origin:108px 344px;animation:tgRest 3.6s ease-in-out infinite}
+@keyframes tgRest{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
+.tg-armr{display:none}.lg-hero .tg-armr{display:inline}.lg-hero .tg-armrest{display:none}
+.tg-happy,.tg-angry,.tg-bhappy,.tg-bangry,.tg-eyeshappy,.tg-steam,.tg-red,.tg-talk,.tg-spark{opacity:0}
+.tg-happy,.tg-angry,.tg-norm,.tg-talk{transition:opacity .2s}
+.mood-happy .tg-norm,.mood-happy .tg-bnorm,.mood-happy .tg-eyes{opacity:0}
+.mood-happy .tg-happy,.mood-happy .tg-bhappy,.mood-happy .tg-eyeshappy,.mood-happy .tg-spark{opacity:1}
+.mood-happy .tg-body{animation:tgJump .55s ease-in-out infinite}
+@keyframes tgJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.mood-happy .tg-blush{opacity:.8}
+.mood-happy .tg-armr{animation:tgCheer .55s ease-in-out infinite}
+@keyframes tgCheer{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-26deg)}}
+.mood-happy .tg-arml{animation:tgCheerL .55s ease-in-out infinite}
+@keyframes tgCheerL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+.tg-spark{animation:tgSpark 1.2s ease-in-out infinite}
+@keyframes tgSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
+.mood-angry .tg-norm,.mood-angry .tg-bnorm{opacity:0}
+.mood-angry .tg-angry,.mood-angry .tg-bangry,.mood-angry .tg-steam{opacity:1}
+.mood-angry .tg-red{opacity:.35}
+.mood-angry .tg-body{animation:tgShake .18s linear infinite}
+@keyframes tgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.mood-angry .tg-pup{animation:none;transform:translate(0,3px)}
+.mood-angry .tg-earl{animation:none;transform:rotate(-18deg)}.mood-angry .tg-earr{animation:none;transform:rotate(18deg)}
+.mood-angry .tg-armr{animation:tgFist .3s ease-in-out infinite}
+@keyframes tgFist{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-8deg)}}
+.tg-steam{animation:tgSteam 1.4s ease-out infinite}
+@keyframes tgSteam{0%{transform:translateY(8px) scale(.6)}100%{transform:translateY(-28px) scale(1.3)}}
+.thinking .tg-pup{animation:none;transform:translate(7px,-7px)}
+.thinking .tg-armr{animation:none;transform:rotate(-34deg) translate(-26px,14px)}
+.talking:not(.mood-happy):not(.mood-angry) .tg-norm{opacity:0}
+.talking:not(.mood-happy):not(.mood-angry) .tg-talk{opacity:1}
+.tg-talkin{transform-origin:200px 268px;animation:tgTalk .32s ease-in-out infinite alternate}
+@keyframes tgTalk{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.poked .tg-body{animation:tgPoke .7s cubic-bezier(.3,1.8,.5,1)}
+@keyframes tgPoke{0%{transform:scale(1,1)}20%{transform:scale(1.08,.9) translateY(10px)}50%{transform:scale(.95,1.08) translateY(-18px)}100%{transform:none}}
+.poked .tg-pup{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}
+.poked .tg-bnorm{opacity:0}.poked .tg-bhappy{opacity:1;transform:translateY(-8px)}
+.poked .tg-norm{opacity:0}.poked .tg-talk{opacity:1}.poked .tg-talkin{animation:none}
+.poked .tg-earl{animation:none;transform:rotate(12deg)}.poked .tg-earr{animation:none;transform:rotate(-12deg)}
+</style>
+<g class="tg-body">
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#f08a24"/>
+  <path d="M140 400 C144 356 170 332 200 330 C230 332 256 356 260 400 Z" fill="#fff6ea"/>
+  <g stroke="#2b1a10" stroke-width="9" stroke-linecap="round"><path d="M104 360 l26 10 M100 384 l24 6 M296 360 l-26 10 M300 384 l-24 6"/></g>
+  <g class="tg-earl"><circle cx="118" cy="104" r="30" fill="#f08a24"/><circle cx="118" cy="106" r="16" fill="#fff6ea"/></g>
+  <g class="tg-earr"><circle cx="282" cy="104" r="30" fill="#f08a24"/><circle cx="282" cy="106" r="16" fill="#fff6ea"/></g>
+  <path d="M88 196 C88 124 138 88 200 88 C262 88 312 124 312 196 C312 266 264 308 200 308 C136 308 88 266 88 196 Z" fill="#f59a34"/>
+  <ellipse class="tg-red" cx="200" cy="200" rx="108" ry="106" fill="#ff3b30"/>
+  <g fill="#2b1a10"><path d="M200 92 l-12 30 h24 z"/><path d="M168 96 l-8 24 h14 z"/><path d="M232 96 l8 24 h-14 z"/>
+    <path d="M90 180 l34 8 -34 10 z"/><path d="M92 214 l30 4 -28 10 z"/><path d="M310 180 l-34 8 34 10 z"/><path d="M308 214 l-30 4 28 10 z"/></g>
+  <path d="M120 226 C124 196 160 190 200 204 C240 190 276 196 280 226 C282 280 244 306 200 306 C156 306 118 280 120 226 Z" fill="#fff6ea"/>
+  <path d="M184 222 L216 222 L200 240 Z" fill="#e5737a"/>
+  <path d="M200 240 v10" stroke="#2b1a10" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#2b1a10" opacity=".6"><circle cx="162" cy="244" r="3"/><circle cx="150" cy="236" r="3"/><circle cx="238" cy="244" r="3"/><circle cx="250" cy="236" r="3"/></g>
+  <ellipse class="tg-blush" cx="112" cy="214" rx="20" ry="11" fill="#f08a7e" opacity=".45"/><ellipse class="tg-blush" cx="288" cy="214" rx="20" ry="11" fill="#f08a7e" opacity=".45"/>
+  <g stroke="#2b1a10" stroke-width="8" stroke-linecap="round" fill="none">
+    <path class="tg-bnorm" d="M130 133 Q154 121 178 131"/><path class="tg-bnorm" d="M222 131 Q246 121 270 133"/>
+    <path class="tg-bhappy" d="M130 127 Q154 109 178 123"/><path class="tg-bhappy" d="M222 123 Q246 109 270 127"/>
+    <path class="tg-bangry" d="M130 123 L178 143"/><path class="tg-bangry" d="M270 123 L222 143"/>
+  </g>
+  <g class="tg-eyes">
+    <ellipse cx="154" cy="168" rx="21" ry="23" fill="#fff"/><ellipse cx="246" cy="168" rx="21" ry="23" fill="#fff"/>
+    <g class="tg-pup"><circle cx="157" cy="173" r="12" fill="#7cb342"/><circle cx="249" cy="173" r="12" fill="#7cb342"/>
+      <circle cx="157" cy="173" r="6.6" fill="#1c1410"/><circle cx="249" cy="173" r="6.6" fill="#1c1410"/>
+      <circle cx="162" cy="167" r="4.2" fill="#fff"/><circle cx="254" cy="167" r="4.2" fill="#fff"/></g>
+  </g>
+  <g class="tg-eyeshappy" stroke="#2b1a10" stroke-width="8" stroke-linecap="round" fill="none"><path d="M134 174 Q154 152 174 174"/><path d="M226 174 Q246 152 266 174"/></g>
+  <path class="tg-norm" d="M178 262 Q200 280 222 262" fill="none" stroke="#5a2a14" stroke-width="6" stroke-linecap="round"/>
+  <g class="tg-talk"><g class="tg-talkin"><ellipse cx="200" cy="268" rx="18" ry="14" fill="#5a2a14"/><ellipse cx="200" cy="275" rx="10" ry="5" fill="#e5645a"/></g></g>
+  <g class="tg-happy"><path d="M170 256 Q200 302 230 256 Z" fill="#5a2a14"/><path d="M178 258 L222 258 L218 265 L182 265 Z" fill="#fff"/><ellipse cx="200" cy="282" rx="14" ry="6" fill="#e5645a"/></g>
+  <g class="tg-angry"><path d="M178 278 Q200 254 222 278 Q200 268 178 278 Z" fill="#5a2a14"/><path d="M188 272 L212 272" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>
+  <g class="tg-steam" fill="#fff" opacity=".85"><circle cx="96" cy="104" r="14"/><circle cx="82" cy="86" r="10"/><circle cx="304" cy="104" r="14"/><circle cx="318" cy="86" r="10"/></g>
+  <g class="tg-spark" fill="#ffd23f"><path d="M64 120 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z"/><path d="M332 120 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z"/></g>
+
+  <g class="tg-arml">
+    <path d="M108 344 C94 362 100 384 124 386" fill="none" stroke="#f08a24" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="128" cy="384" rx="18" ry="15" fill="#fff6ea"/>
+    <path d="M118 378 q5 -3 10 0 M121 386 q5 -3 10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <g class="tg-armrest">
+    <path d="M292 344 C306 362 300 384 276 386" fill="none" stroke="#f08a24" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="272" cy="384" rx="18" ry="15" fill="#fff6ea"/>
+  </g>
+  <g class="tg-armr">
+    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="#f08a24" stroke-width="30" stroke-linecap="round"/>
+    <g transform="translate(332 272)">
+      <ellipse cx="0" cy="0" rx="20" ry="21" fill="#fff6ea"/>
+      <g fill="#fff6ea"><ellipse cx="-13" cy="-17" rx="7" ry="9"/><ellipse cx="0" cy="-22" rx="7" ry="9"/><ellipse cx="13" cy="-17" rx="7" ry="9"/></g>
+      <ellipse cx="0" cy="4" rx="9" ry="8" fill="#e5979a"/>
+      <g fill="#e5979a"><circle cx="-12" cy="-17" r="3.5"/><circle cx="0" cy="-21" r="3.5"/><circle cx="12" cy="-17" r="3.5"/></g>
+    </g>
+  </g>
+</g>
+</svg>

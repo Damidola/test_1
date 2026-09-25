@@ -9,14 +9,15 @@ const A = f => ROOT + 'shared/opponents/' + f + VER;
 // Рівень 1 — піддається … 5 — сильний. Італійські «брейнроти» — в кінці списку.
 // У кожного суперника свій фон (shared/bg/*.svg) — жоден не повторюється.
 export const OPPONENTS = [
-  // Мультяшні (SVG, tools/toons.py): емоції, реакція на тап — на рівнях 1–2
+  // Мультяшні (SVG, tools/toons.py): емоції, реакція на тап — рівні 1–3; по 4 на рівень (у вкладці «Гра» — ряд на рівень)
   ['Мавпочка', 1, 'toon-monkey.svg', 'jungle-toon'], ['Коник Гоп', 1, 'toon-horse.svg', 'meadow-toon'],
   ['Капібара', 1, 'toon-capybara.svg', 'onsen-toon'], ['Собака', 1, 'toon-doge.svg', 'beach-toon'],
   ['Кіт Смадж', 2, 'toon-smudge.svg', 'kitchen-toon'], ['Тун-тун-тун-сахур', 2, 'toon-tung.svg', 'lanterns-toon'],
   ['Хом’ячок', 2, 'toon-hamster.svg', 'wildwest-toon'], ['Сова', 2, 'toon-owl.svg', 'nightforest-toon'],
-  // Фото — рівні 3–5
-  ['Балерина Капучина', 3, 'ballerina.jpg', 'rainbow'], ['Кіт Очі-блюдця', 3, 'bigeyes.jpg', 'candy'], ['Зелений робот', 3, 'robot-green.jpg', 'space'], ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'],
-  ['Кіт', 4, 'cat.jpg', 'room'], ['Драматичний мопс', 4, 'pug.jpg', 'stage'], ['Хитрий кіт', 4, 'evilcat.jpg', 'rooftops'], ['Тралалело Тралала', 4, 'tralalero.jpg', 'underwater'],
+  ['Тигреня', 3, 'toon-tiger.svg', 'jungle'], ['Слоненя', 3, 'toon-elephant.svg', 'savanna'], ['Панда', 3, 'toon-panda.svg', 'lanterns'], ['Лисичка', 3, 'toon-fox.svg', 'autumn'],
+  // Фото — рівні 4–5. Сховані поки що: ['Балерина Капучина', 3, 'ballerina.jpg', 'rainbow'], ['Драматичний мопс', 4, 'pug.jpg', 'stage']
+  ['Кіт Очі-блюдця', 4, 'bigeyes.jpg', 'candy'], ['Зелений робот', 4, 'robot-green.jpg', 'space'], ['Лірілі Ларіла', 4, 'lirili.jpg', 'savanna'],
+  ['Кіт', 4, 'cat.jpg', 'room'], ['Хитрий кіт', 5, 'evilcat.jpg', 'rooftops'], ['Тралалело Тралала', 5, 'tralalero.jpg', 'underwater'],
   ['Жовтий робот', 5, 'robot-yellow.jpg', 'factory'], ['Брр Брр Патапім', 5, 'patapim.jpg', 'autumn']
 ].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), thumb: ROOT + 'shared/opponents/thumbs/' + file.replace(/\.\w+$/, '.webp') + VER, sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' + VER }));
 
@@ -50,6 +51,10 @@ const LINES = {
   'tung-tung.jpg': ['Тун-тун-тун… стукаю по дошці 🥁'],
   'toon-tung.svg': ['Тун-тун-тун… стукаю по дошці 🥁'],
   'patapim.jpg': ['Брр-брр… Патапім думає 🌳'],
+  'toon-tiger.svg': ['Р-р-р! Я полюю на твого ферзя 🐯', 'Тигри ходять тихо… і раптом — стриб!'],
+  'toon-elephant.svg': ['Слони все пам’ятають. Навіть твої помилки 🐘', 'Туп-туп — мій хід!'],
+  'toon-panda.svg': ['Спершу бамбук, потім мат 🎋', 'Панди не поспішають… але виграють.'],
+  'toon-fox.svg': ['Лисичка знає хитрий хід 🦊', 'Хі-хі, а ти помітив мою пастку?'],
   'toon-horse.svg': ['Гоп-гоп! Я стрибаю літерою «Г» 🐴', 'Іго-го! Мій хід буде хитрим!', 'Моя корона — для найкращого ходу 👑']
 };
 const GENERIC = [

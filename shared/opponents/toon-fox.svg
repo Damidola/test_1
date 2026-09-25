@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" class="fx">
+<!-- «fox» — мультяшний суперник (tools/toons.py). Настрій — класом на панелі суперника:
+     .mood-happy, .mood-angry, .thinking, .talking, .poked. Без класів — спокійний: кліпає, озирається, махає лапкою. -->
+<style>
+.fx-body{transform-origin:200px 400px;animation:fxSway 5s ease-in-out infinite}
+@keyframes fxSway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.fx-eyes{transform-origin:200px 176px;animation:fxBlink 4.4s infinite}
+@keyframes fxBlink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+.fx-pup{animation:fxLook 7.5s ease-in-out infinite;transition:transform .3s}
+@keyframes fxLook{0%,40%,100%{transform:translate(0,0)}48%,62%{transform:translate(6px,-1px)}70%,80%{transform:translate(-6px,0)}}
+.fx-earl{transform-origin:140px 110px;animation:fxEar 3.6s ease-in-out infinite}
+.fx-earr{transform-origin:260px 110px;animation:fxEar 3.6s ease-in-out infinite reverse}
+@keyframes fxEar{0%,80%,100%{transform:rotate(0)}88%{transform:rotate(-8deg)}}
+.fx-armr{transform-origin:292px 344px;animation:fxWave 2.8s ease-in-out infinite}
+@keyframes fxWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
+.fx-arml{transform-origin:108px 344px;animation:fxRest 3.6s ease-in-out infinite}
+@keyframes fxRest{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
+.fx-armr{display:none}.lg-hero .fx-armr{display:inline}.lg-hero .fx-armrest{display:none}
+.fx-happy,.fx-angry,.fx-bhappy,.fx-bangry,.fx-eyeshappy,.fx-steam,.fx-red,.fx-talk,.fx-spark{opacity:0}
+.fx-happy,.fx-angry,.fx-norm,.fx-talk{transition:opacity .2s}
+.mood-happy .fx-norm,.mood-happy .fx-bnorm,.mood-happy .fx-eyes{opacity:0}
+.mood-happy .fx-happy,.mood-happy .fx-bhappy,.mood-happy .fx-eyeshappy,.mood-happy .fx-spark{opacity:1}
+.mood-happy .fx-body{animation:fxJump .55s ease-in-out infinite}
+@keyframes fxJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.mood-happy .fx-blush{opacity:.8}
+.mood-happy .fx-armr{animation:fxCheer .55s ease-in-out infinite}
+@keyframes fxCheer{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-26deg)}}
+.mood-happy .fx-arml{animation:fxCheerL .55s ease-in-out infinite}
+@keyframes fxCheerL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+.fx-spark{animation:fxSpark 1.2s ease-in-out infinite}
+@keyframes fxSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
+.mood-angry .fx-norm,.mood-angry .fx-bnorm{opacity:0}
+.mood-angry .fx-angry,.mood-angry .fx-bangry,.mood-angry .fx-steam{opacity:1}
+.mood-angry .fx-red{opacity:.35}
+.mood-angry .fx-body{animation:fxShake .18s linear infinite}
+@keyframes fxShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.mood-angry .fx-pup{animation:none;transform:translate(0,3px)}
+.mood-angry .fx-earl{animation:none;transform:rotate(-18deg)}.mood-angry .fx-earr{animation:none;transform:rotate(18deg)}
+.mood-angry .fx-armr{animation:fxFist .3s ease-in-out infinite}
+@keyframes fxFist{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-8deg)}}
+.fx-steam{animation:fxSteam 1.4s ease-out infinite}
+@keyframes fxSteam{0%{transform:translateY(8px) scale(.6)}100%{transform:translateY(-28px) scale(1.3)}}
+.thinking .fx-pup{animation:none;transform:translate(7px,-7px)}
+.thinking .fx-armr{animation:none;transform:rotate(-34deg) translate(-26px,14px)}
+.talking:not(.mood-happy):not(.mood-angry) .fx-norm{opacity:0}
+.talking:not(.mood-happy):not(.mood-angry) .fx-talk{opacity:1}
+.fx-talkin{transform-origin:200px 284px;animation:fxTalk .32s ease-in-out infinite alternate}
+@keyframes fxTalk{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.poked .fx-body{animation:fxPoke .7s cubic-bezier(.3,1.8,.5,1)}
+@keyframes fxPoke{0%{transform:scale(1,1)}20%{transform:scale(1.08,.9) translateY(10px)}50%{transform:scale(.95,1.08) translateY(-18px)}100%{transform:none}}
+.poked .fx-pup{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}
+.poked .fx-bnorm{opacity:0}.poked .fx-bhappy{opacity:1;transform:translateY(-8px)}
+.poked .fx-norm{opacity:0}.poked .fx-talk{opacity:1}.poked .fx-talkin{animation:none}
+.poked .fx-earl{animation:none;transform:rotate(12deg)}.poked .fx-earr{animation:none;transform:rotate(-12deg)}
+</style>
+<g class="fx-body">
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#e8662a"/>
+  <path d="M146 400 C150 356 172 334 200 332 C228 334 250 356 254 400 Z" fill="#fff4ea"/>
+  <g class="fx-earl"><path d="M100 150 L104 36 L184 104 Z" fill="#e8662a"/><path d="M114 132 L116 62 L164 104 Z" fill="#fff0e4"/><path d="M104 36 L116 62 L128 54 Z" fill="#2b1a10"/></g>
+  <g class="fx-earr"><path d="M300 150 L296 36 L216 104 Z" fill="#e8662a"/><path d="M286 132 L284 62 L236 104 Z" fill="#fff0e4"/><path d="M296 36 L284 62 L272 54 Z" fill="#2b1a10"/></g>
+  <path d="M84 170 C92 116 140 90 200 90 C260 90 308 116 316 170 C320 230 280 300 200 310 C120 300 80 230 84 170 Z" fill="#f07534"/>
+  <ellipse class="fx-red" cx="200" cy="200" rx="110" ry="106" fill="#ff3b30"/>
+  <path d="M84 186 C110 200 150 206 176 222 C188 230 194 250 200 310 C206 250 212 230 224 222 C250 206 290 200 316 186 C314 250 272 304 200 310 C128 304 86 250 84 186 Z" fill="#fff4ea"/>
+  <ellipse cx="200" cy="262" rx="14" ry="10" fill="#2b1a10"/><ellipse cx="195" cy="258" rx="5" ry="3" fill="#fff" opacity=".6"/>
+  <ellipse class="fx-blush" cx="114" cy="226" rx="20" ry="11" fill="#f08a7e" opacity=".45"/><ellipse class="fx-blush" cx="286" cy="226" rx="20" ry="11" fill="#f08a7e" opacity=".45"/>
+  <g stroke="#8a3a10" stroke-width="8" stroke-linecap="round" fill="none">
+    <path class="fx-bnorm" d="M130 142 Q154 130 178 140"/><path class="fx-bnorm" d="M222 140 Q246 130 270 142"/>
+    <path class="fx-bhappy" d="M130 136 Q154 118 178 132"/><path class="fx-bhappy" d="M222 132 Q246 118 270 136"/>
+    <path class="fx-bangry" d="M130 132 L178 152"/><path class="fx-bangry" d="M270 132 L222 152"/>
+  </g>
+  <g class="fx-eyes">
+    <ellipse cx="154" cy="176" rx="19" ry="22" fill="#fff"/><ellipse cx="246" cy="176" rx="19" ry="22" fill="#fff"/>
+    <g class="fx-pup"><circle cx="157" cy="181" r="12" fill="#d4891c"/><circle cx="249" cy="181" r="12" fill="#d4891c"/>
+      <circle cx="157" cy="181" r="6.6" fill="#1c1410"/><circle cx="249" cy="181" r="6.6" fill="#1c1410"/>
+      <circle cx="162" cy="175" r="4.2" fill="#fff"/><circle cx="254" cy="175" r="4.2" fill="#fff"/></g>
+  </g>
+  <g class="fx-eyeshappy" stroke="#2b1a10" stroke-width="8" stroke-linecap="round" fill="none"><path d="M134 182 Q154 160 174 182"/><path d="M226 182 Q246 160 266 182"/></g>
+  <path class="fx-norm" d="M182 278 Q200 296 218 278" fill="none" stroke="#5a2a14" stroke-width="6" stroke-linecap="round"/>
+  <g class="fx-talk"><g class="fx-talkin"><ellipse cx="200" cy="284" rx="18" ry="14" fill="#5a2a14"/><ellipse cx="200" cy="291" rx="10" ry="5" fill="#e5645a"/></g></g>
+  <g class="fx-happy"><path d="M174 272 Q200 318 226 272 Z" fill="#5a2a14"/><path d="M182 274 L218 274 L214 281 L186 281 Z" fill="#fff"/><ellipse cx="200" cy="298" rx="14" ry="6" fill="#e5645a"/></g>
+  <g class="fx-angry"><path d="M182 294 Q200 270 218 294 Q200 284 182 294 Z" fill="#5a2a14"/><path d="M192 288 L208 288" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>
+  <g class="fx-steam" fill="#fff" opacity=".85"><circle cx="96" cy="104" r="14"/><circle cx="82" cy="86" r="10"/><circle cx="304" cy="104" r="14"/><circle cx="318" cy="86" r="10"/></g>
+  <g class="fx-spark" fill="#ffd23f"><path d="M64 120 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z"/><path d="M332 120 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z"/></g>
+
+  <g class="fx-arml">
+    <path d="M108 344 C94 362 100 384 124 386" fill="none" stroke="#e8662a" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="128" cy="384" rx="18" ry="15" fill="#2b1a10"/>
+    <path d="M118 378 q5 -3 10 0 M121 386 q5 -3 10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <g class="fx-armrest">
+    <path d="M292 344 C306 362 300 384 276 386" fill="none" stroke="#e8662a" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="272" cy="384" rx="18" ry="15" fill="#2b1a10"/>
+  </g>
+  <g class="fx-armr">
+    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="#e8662a" stroke-width="30" stroke-linecap="round"/>
+    <g transform="translate(332 272)">
+      <ellipse cx="0" cy="0" rx="20" ry="21" fill="#2b1a10"/>
+      <g fill="#2b1a10"><ellipse cx="-13" cy="-17" rx="7" ry="9"/><ellipse cx="0" cy="-22" rx="7" ry="9"/><ellipse cx="13" cy="-17" rx="7" ry="9"/></g>
+      <ellipse cx="0" cy="4" rx="9" ry="8" fill="#5a3a2a"/>
+      <g fill="#5a3a2a"><circle cx="-12" cy="-17" r="3.5"/><circle cx="0" cy="-21" r="3.5"/><circle cx="12" cy="-17" r="3.5"/></g>
+    </g>
+  </g>
+</g>
+</svg>
