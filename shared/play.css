@@ -9,8 +9,6 @@ html.lg body.lg-game {
   padding: 8px 0 calc(var(--lg-bar-h) + 6px + env(safe-area-inset-bottom)); touch-action: manipulation;
 }
 html.lg .lg-bar .lg-icon-btn { width: 30px; height: 30px; font-size: 14px; border-radius: 10px; }
-html.lg .lg-bar .lg-bar-title { font-size: clamp(15px, 4.4vw, 20px); }
-
 .lg-play {
   width: 100%; max-width: 560px; height: 100%; margin: 0 auto;
   display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -105,8 +103,6 @@ html.lg .lg-bar .lg-bar-title { font-size: clamp(15px, 4.4vw, 20px); }
 /* Підсвічені клітинки (будиночки, цільові кути) */
 cg-board square.mark-gold { background: rgba(255, 201, 40, .45); }
 cg-board square.mark-blue { background: rgba(77, 163, 255, .32); }
-cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
-
 /* ---------- «Грати з другом»: чий зараз хід ---------- */
 .lg-turn { flex: none; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 30px; font: 900 18px var(--lg-font); color: var(--lg-ink); }
 .lg-turn[hidden] { display: none; }
@@ -173,9 +169,7 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 
 /* ---------- хмаринка з реплікою суперника (як у коміксі): хвостик від рота тваринки ---------- */
 .lg-say { position: absolute; inset: 0 8px; z-index: 4; pointer-events: none; animation: lgBubbleIn .38s cubic-bezier(.2, 1.6, .4, 1); transform-origin: 50% 100%; }
-.lg-say.out { animation: lgBubbleOut .4s ease forwards; }
-.lg-say-tail { position: absolute; left: 0; top: 0; overflow: visible; }
-.lg-say-tail polygon { fill: #fff; stroke: #1d1b30; stroke-width: 3; stroke-linejoin: round; }
+.lg-say.out { animation: lgBubbleOut .4s ease forwards; }.lg-say-tail polygon { fill: #fff; stroke: #1d1b30; stroke-width: 3; stroke-linejoin: round; }
 .lg-bubble {
   position: absolute; left: 12px; right: 12px; bottom: 8px; max-height: 42%; overflow: hidden; box-sizing: border-box;
   padding: 7px 14px; background: rgba(255, 255, 255, .9); color: #1d1b30; text-align: center;
@@ -300,7 +294,6 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 .lg-mats > .lg-material mpiece + mpiece { margin-left: calc(var(--st, 4px) - 12px); }
 .lg-mats > .lg-material b { flex: none; margin-left: 4px; font-size: 10px; font-weight: 800; color: var(--lg-ink, #fff) !important; opacity: .85; }
 /* цифри тепер на лівому краї (клітинки там протилежного кольору, ніж на правому) — міняємо кольори, щоб усі цифри було видно */
-.cg-wrap coords.ranks .coord-light { color: var(--cg-coord-white, #f0d9b5) !important; }
 .cg-wrap coords.ranks .coord-dark { color: var(--cg-coord-black, #946f51) !important; }
 /* чорні фігурки на темному тлі — зі світлим контуром, щоб їх було видно */
 .lg-mats mpiece.black { filter: drop-shadow(0 0 1px rgba(255,255,255,.95)) drop-shadow(0 0 .5px #fff); }
