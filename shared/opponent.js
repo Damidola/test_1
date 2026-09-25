@@ -67,8 +67,12 @@ export function mountOpponent(el, opts = {}) {
   const LG = window.LG;
   // Щоразу при відкритті — випадкова тваринка. Сила робота від тваринки не залежить (кнопка «Рівень», за замовчуванням 1)
   const q = new URLSearchParams(location.search);
-  let index = q.has('opp') ? Math.min(OPPONENTS.length - 1, Math.max(0, +q.get('opp') || 0)) : Math.floor(Math.random() * OPPONENTS.length);
+  // opts.syncLevel: тваринка = рівень (кнопка «Рівень» міняє тваринку на тваринку цього рівня, вибір тваринки — рівень)
+  const sync = !!opts.syncLevel;
+  const ofLevel = l => { const ids = OPPONENTS.map((o, i) => o.level === l ? i : -1).filter(i => i >= 0); return ids[Math.floor(Math.random() * ids.length)] ?? 0; };
   let level = 1;
+  let index = q.has('opp') ? Math.min(OPPONENTS.length - 1, Math.max(0, +q.get('opp') || 0)) : sync ? ofLevel(Math.min(5, Math.max(1, +q.get('level') || 1))) : Math.floor(Math.random() * OPPONENTS.length);
+  if (sync) level = OPPONENTS[index].level;
   el.classList.add('lg-hero');
   el.innerHTML = `
     <button type="button" class="lg-hero-pic" aria-label="Обрати суперника"><img alt=""><span class="lg-toon" hidden></span></button>
@@ -101,6 +105,7 @@ export function mountOpponent(el, opts = {}) {
   function show(i, first) {
     index = (i + OPPONENTS.length) % OPPONENTS.length;
     const o = OPPONENTS[index];
+    if (sync && o.level !== level) { level = o.level; if (!first && opts.onLevel) opts.onLevel(level); }
     pic.setAttribute('aria-label', 'Суперник: ' + o.name + '. Натисни, щоб обрати іншого');
     // Плавно: нова картинка спершу вантажиться, потім з'являється
     const pre = new Image();
@@ -114,7 +119,7 @@ export function mountOpponent(el, opts = {}) {
       el.classList.toggle('toon', o.toon);
       img.src = o.avatar; img.alt = o.name;
       // ім'я суперника й крапки рівня (колір рівня) — під персонажем, як у новому дизайні
-      const lv = Math.min(5, Math.max(1, +q.get('level') || o.level || 1)), LVC = ['#2ECC9A', '#3FA7F5', '#7C6CF0', '#FF9F1C', '#FF5C6C'];
+      const lv = sync ? o.level : Math.min(5, Math.max(1, +q.get('level') || o.level || 1)), LVC = ['#2ECC9A', '#3FA7F5', '#7C6CF0', '#FF9F1C', '#FF5C6C'];
       el.querySelector('.lg-hero-name b').textContent = o.name;
       el.querySelector('.lg-hero-lv').innerHTML = [1, 2, 3, 4, 5].map(i => `<i style="background:${i <= lv ? LVC[lv - 1] : 'rgba(255,255,255,.25)'}"></i>`).join('');
       if (o.toon) loadSvg(o.avatar).then(t => { if (OPPONENTS[index] !== o) return; toon.innerHTML = t; toon.hidden = !t; img.hidden = !!t; readyRes(); });
@@ -201,7 +206,7 @@ export function mountOpponent(el, opts = {}) {
     ready,
     say,
     level: () => level,
-    setLevel: l => { level = l; },
+    setLevel: l => { level = l; if (sync && OPPONENTS[index].level !== l) show(ofLevel(l)); },
     setThinking: on => el.classList.toggle('thinking', !!on),
     // Настрій мультяшного суперника: 'happy' | 'angry' | null; ms — лише на мить, потім повертається основний
     setMood(m, ms) {

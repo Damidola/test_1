@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790343728';
-import { aiMove, hintMove } from './ai.js?v=1790343728';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790343728';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790344720';
+import { aiMove, hintMove } from './ai.js?v=1790344720';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790344720';
 
 const LG = window.LG;
 
@@ -59,8 +59,10 @@ export function startGame(cfg) {
   const human = side => friend || side === player;
   const names = cfg.sideNames || { w: 'Білі', b: 'Чорні' };
 
-  const hero = mountOpponent($('.lg-hero-slot'), { arrows: cfg.navOnly !== true });
-  level = qLevel >= 1 && qLevel <= 5 ? qLevel : 1; // за замовчуванням — найлегший; тваринка на силу не впливає
+  // cfg.syncLevel: тваринка вгорі й кнопка «Рівень» — одне й те саме (поки лише пішакова битва)
+  const hero = mountOpponent($('.lg-hero-slot'), { arrows: cfg.navOnly !== true, syncLevel: !!cfg.syncLevel,
+    onLevel: l => { level = l; setLimits(); renderButtons(); paintLevel(); } });
+  level = qLevel >= 1 && qLevel <= 5 ? qLevel : 1; // за замовчуванням — найлегший
   hero.setLevel(level);
   // Кнопка «Рівень»: крапки показують силу робота; тап відкриває над кнопками смужку 1…5
   const dots = n => '<i></i>'.repeat(n);
