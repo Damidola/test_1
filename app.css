@@ -533,3 +533,11 @@ html, body { background: #1B2133 !important; } /* усі вкладки — чо
 #view-practice.mg2 > .g2-list { flex: 1 1 auto; min-height: 0; }
 .g2-list > .g2-item .g2-ic:has(img + span, img + img) img { width: 42%; height: 42%; }
 .g2-list > .g2-item .g2-ic:has(img + span, img + img) img + img { margin-left: -12%; }
+/* Практика (як референс Lichess): картки з тонкою рамкою, вміщаються по ширині, текст переноситься — без «…» */
+.g2-list { grid-template-columns: minmax(0, 1fr); }
+.g2-item { min-width: 0; box-sizing: border-box; border: 1.5px solid #3A4466 !important; background: linear-gradient(135deg, #262D42, #2E3652); box-shadow: none; }
+.g2-list > .g2-item .g2-tx { min-width: 0; }
+.g2-list > .g2-item .g2-t { flex-wrap: wrap; }
+.g2-list > .g2-item .g2-t b { white-space: normal; line-height: 1.1; }
+.g2-list > .g2-item .g2-tx small { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.g2-list > .g2-item .g2-chev { display: none; }
