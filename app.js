@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790364174';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790364174';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790364174';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790364759';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790364759';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790364759';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -70,6 +70,9 @@ function drawRoad() {
     (road.querySelector('.ap-nextsec') && pts.length ? `<path class="bed" d="M${pts[n - 1][0]} ${pts[n - 1][1]} L${W / 2} 40"/>` : '');
 }
 window.addEventListener('resize', () => requestAnimationFrame(drawRoad));
+// розмір шляху міняється й без resize вікна (Telegram розгортається на весь екран, повернулись зі сторінки уроку) — перемальовуємо лінії
+if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(drawRoad)).observe($('road'));
+window.addEventListener('pageshow', () => requestAnimationFrame(drawRoad));
 const row = ([e, t, href, kind], sub) => `<a class="ap-row${seen.has(href) ? ' seen' : ''}" href="${href}"><span class="ic" style="--c:${KIND[kind || 'learn'][0]}">${e}</span><span>${esc(t)}<small>${esc(sub || KIND[kind || 'learn'][1])}</small></span><span class="go">${seen.has(href) ? '✓' : '›'}</span></a>`;
 function openStep(i) {
   $('card').onclick = null;
