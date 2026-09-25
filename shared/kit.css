@@ -395,3 +395,4 @@ html.lg .lg-nav .lg-nav-btn .lbl { white-space: nowrap; overflow: hidden; text-o
 .lg-top-btn.lg-exit svg { width: 21px; height: 21px; }
 /* де вже є своя стрілка «назад» (уроки) — друга не потрібна */
 body:has(.lv-back, .lg-run-menu) .lg-exit { display: none !important; }
+.lg-top-btn.lg-exit.in-slot { position: static; width: 40px; height: 40px; }

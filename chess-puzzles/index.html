@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #000; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790342393">
-  <link rel="stylesheet" href="../shared/play.css?v=1790342393">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790342538">
+  <link rel="stylesheet" href="../shared/play.css?v=1790342538">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
@@ -107,7 +107,7 @@
 </head>
 <body>
   <main class="lg-play mt" data-mode="menu">
-    <div class="mt-top"><span></span>
+    <div class="mt-top"><span class="lg-exit-slot"></span>
       <span class="mt-nav"><button type="button" class="mt-arr" id="pv" aria-label="Попередня задача">‹</button><span class="mt-count" id="count"></span><button type="button" class="mt-arr" id="nx" aria-label="Наступна задача">›</button></span>
       <span class="mt-fsslot"></span></div>
     <section class="mt-menu" id="menu" aria-label="Розділи задач"></section>
@@ -122,8 +122,8 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790342393"></script>
-  <script src="../shared/kit.js?v=1790342393" data-game="mate" data-night="on"></script>
-  <script type="module" src="mate.js?v=1790342393"></script>
+  <script src="../shared/games.js?v=1790342538"></script>
+  <script src="../shared/kit.js?v=1790342538" data-game="mate" data-night="on"></script>
+  <script type="module" src="mate.js?v=1790342538"></script>
 </body>
 </html>

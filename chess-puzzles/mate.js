@@ -4,9 +4,9 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790342393';
-import { createRules } from '../chess/rules.js?v=1790342393';
-import { hintMove } from '../shared/ai.js?v=1790342393';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790342538';
+import { createRules } from '../chess/rules.js?v=1790342538';
+import { hintMove } from '../shared/ai.js?v=1790342538';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -168,11 +168,13 @@ function route() {
   token++;
   if (!INFO[k]) { mode = 'menu'; main.dataset.mode = 'menu'; board.setMovable(null); renderMenu(); return; }
   sec = k;
+  $('list').hidden = false;
   if (PRACTICE.includes(k)) { mode = 'practice'; main.dataset.mode = 'practice'; setButtons([['🎓', 'Уроки'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); startPractice(); }
   else startPuzzles(); // одразу перша задача; пояснення — кнопкою «Пояснення» внизу
 }
 function startPuzzles() {
-  mode = 'puzzle'; main.dataset.mode = 'puzzle'; setButtons([['📋', 'Розділи'], ['💡', 'Підказка'], ['👀', 'Розв’язок'], ['▶️', 'Далі']]);
+  // унизу: Назад (відмінити хід) · Заново · Підказка · Гайд; задачі гортають стрілки вгорі, вихід — стрілка ‹
+  mode = 'puzzle'; main.dataset.mode = 'puzzle'; setButtons([['📋', 'Розділи'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); $('list').hidden = true;
   idx = openIdx();
   loadPuzzle();
 }
@@ -629,15 +631,26 @@ $('hint').addEventListener('click', async () => {
   if (hintStage === 0) { board.shapes([{ orig: from, brush: 'hint' }]); hintStage = 1; }
   else board.hint(from, to);
 });
+// «Назад» у задачі: відміняємо свій останній хід (і відповідь суперника) — позиція перед ним
+function puzzleBack() {
+  const first = line.length % 2 === 1 ? 0 : 1;
+  if (done || pos.turn !== userColor || step - 2 < first) return LG.play('error');
+  token++;
+  const n = step - 2, [, fen] = DATA[sec][idx];
+  let p = Chess.fromSetup(FEN.parseFen(fen).unwrap()).unwrap(), lm;
+  for (let i = 0; i < n; i++) { const m = parseUci(line[i]); p.play(m); lm = [makeSquare(m.from), makeSquare(m.to)]; }
+  pos = p; step = n; hintStage = 0; board.clearHint(); show(pos, lm); allowMoves(); paint();
+}
 $('show').addEventListener('click', () => {
-  if (mode === 'puzzle') return showSolution();
+  if (mode === 'puzzle') return puzzleBack();
   if (mode !== 'practice' || done || history.length < 3 || pos.turn !== 'white') return LG.play('error');
   history.splice(-2); pos = history[history.length - 1]; board.clearHint(); show(pos); allowMoves();
 });
 $('prev').addEventListener('click', () => { if (mode === 'puzzle') prevPuzzle(); });
 $('pv').addEventListener('click', () => { if (mode === 'puzzle') { LG.play('tap'); prevPuzzle(); } });
 $('nx').addEventListener('click', () => { if (mode === 'puzzle') { LG.play('tap'); nextPuzzle(); } });
-$('next').addEventListener('click', () => { if (mode === 'example') startPuzzles(); else if (mode === 'puzzle') nextPuzzle(); else if (mode === 'practice') startPractice(); });
+$('prev').hidden = true; // попередня/наступна — стрелками вгорі
+$('next').addEventListener('click', () => { if (mode === 'example') startPuzzles(); else if (mode === 'puzzle') { LG.play('tap'); loadPuzzle(); } else if (mode === 'practice') startPractice(); });
 
 document.addEventListener('touchmove', e => { if (!e.target.closest('.lg-modal, .mt-menu')) e.preventDefault(); }, { passive: false });
 route();

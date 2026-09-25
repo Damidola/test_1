@@ -515,7 +515,9 @@
     if (document.querySelector('.lg-exit')) return;
     const a = el('a', { class: 'lg-top-btn lg-exit', href: homeHref(), 'aria-label': 'Назад до меню' });
     a.innerHTML = ICONS['↩️'];
-    document.body.appendChild(a);
+    // сторінка може дати місце в своєму верхньому рядку (.lg-exit-slot) — тоді стрілка в одному ряду з іншими кнопками
+    const slot = document.querySelector('.lg-exit-slot');
+    if (slot) { a.classList.add('in-slot'); slot.appendChild(a); } else document.body.appendChild(a);
   }
   // Одна нижня панель: кнопки гри з рядка під дошкою (.lg-controls) — у нижній панелі разом із «Підказкою» й «Поясненням».
   // Самі кнопки гри лишаються на місці (прихованими) — у панелі їхні копії, які натискають оригінал; стан (сховано, вимкнено,
