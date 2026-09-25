@@ -272,3 +272,9 @@ html, body { overflow-x: clip; }
 .ap-prog::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; border-radius: 3px; background: rgba(0,0,0,.2); z-index: 0; }
 .ap-prog i { position: relative; z-index: 1; box-shadow: none; }
 .ap-prog.all span::after { content: ' 🏆'; }
+/* спойлер «Гра з роботом і ще» */
+.pf-more { margin-top: 8px; }
+.pf-sum { display: flex; align-items: center; justify-content: space-between; min-height: 50px; padding: 6px 14px; box-sizing: border-box; cursor: pointer; list-style: none; margin-top: 0; }
+.pf-sum::-webkit-details-marker { display: none; }
+.pf-chev { font: 900 24px var(--lg-font); opacity: .7; transition: transform .15s; }
+.pf-more[open] .pf-chev { transform: rotate(90deg); }

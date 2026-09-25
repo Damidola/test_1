@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790317376';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790317376';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790317376';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790317418';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790317418';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790317418';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -153,6 +153,8 @@ function solvedPuzzles() {
   for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('chk:puz:')) try { n += JSON.parse(localStorage.getItem(k)).length; } catch (e) { /* */ } }
   return n;
 }
+// «Гра з роботом» і «Скинути прогрес» — під спойлером: профіль уміщається на один екран
+let pfOpen = false;
 function renderProfile() {
   const st = LG.stats(), wins = Object.values(st).reduce((a, s) => a + (s.wins || 0), 0), d = doneCount();
   // Компактно: шапка з прогресом і цифрами, далі — рядки «назва ліворуч, керування праворуч»
@@ -166,13 +168,15 @@ function renderProfile() {
       <div class="pf-row pf-col" id="p-pieces"><span class="pf-l">Фігури</span></div>
       <div class="pf-row"><span class="pf-l">🟢 Крапки ходів</span><button type="button" class="pf-sw" id="p-dots" aria-label="Крапки ходів"></button></div>
     </div>
-    <h3 class="pf-h">Гра з роботом</h3>
+    <details class="pf-more"${pfOpen ? ' open' : ''}><summary class="pf-list pf-sum"><span class="pf-l">🤖 Гра з роботом і ще</span><span class="pf-chev">›</span></summary>
     <div class="pf-list">
       <div class="pf-row"><span class="pf-l">💡 Підказки</span><div class="ap-seg pf-lim" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
       <div class="pf-row"><span class="pf-l">↩️ Ходи назад</span><div class="ap-seg pf-lim" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
       <div class="pf-row"><span class="pf-l">💬 Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
     </div>
-    <button type="button" class="pf-reset" id="p-reset">Скинути прогрес</button>`;
+    <button type="button" class="pf-reset" id="p-reset">Скинути прогрес</button></details>`;
+  // розкрите чи ні — пам'ятаємо, поки відкрита сторінка
+  $('view-profile').querySelector('.pf-more').addEventListener('toggle', e => { pfOpen = e.target.open; });
   const paint = () => {
     const v = Math.round(LG.volume * 100);
     $('p-mute').textContent = LG.muted || v === 0 ? '🔇' : v < 40 ? '🔈' : v < 75 ? '🔉' : '🔊';
