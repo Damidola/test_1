@@ -16,8 +16,8 @@
   const nightSupported = !!(script && script.dataset.night);
 
   // ---------- сховище (може бути недоступне в приватному режимі) ----------
-  // Уся гучність сайту — удвічі тихіша за гучність телефона: повзунок у Профілі (типово 100%) множиться на це
-  const MASTER = 0.5;
+  // Уся гучність сайту — у 4 рази тихіша за гучність телефона: повзунок у Профілі (типово 100%) множиться на це
+  const MASTER = 0.25;
   const store = {
     get(key, fallback) {
       try { const v = localStorage.getItem('chk:' + key); return v === null ? fallback : JSON.parse(v); }
