@@ -43,6 +43,16 @@ const renderCompleted = (level: LevelCtrl): VNode => {
   );
 };
 
+// Слова вчителя завжди вміщаються в бульбашку: якщо текст довгий — шрифт трохи менший
+const fitSay = (v: VNode) =>
+  requestAnimationFrame(() => {
+    const el = (v.elm as HTMLElement)?.querySelector<HTMLElement>('.goal, .result, .lg-demo-say');
+    if (!el) return;
+    let fs = 16;
+    el.style.fontSize = fs + 'px';
+    while (el.scrollHeight > el.clientHeight + 1 && fs > 11) el.style.fontSize = --fs + 'px';
+  });
+
 // ---------- logic-games-kids: вчитель (Пан Сова) — угорі ліворуч, праворуч його слова ----------
 let teacherSvg: Promise<string> | undefined;
 const loadTeacher = () =>
@@ -107,7 +117,7 @@ export const runView = (ctrl: LearnCtrl) => {
       chessground(ctrl.runCtrl),
       promotionView(ctrl.runCtrl),
     ]),
-    div('.learn__table', [
+    div('.learn__table', { hook: { insert: fitSay, postpatch: (_o: VNode, v: VNode) => fitSay(v) } }, [
       div('.wrap', [
         teacherView(
           runCtrl,
