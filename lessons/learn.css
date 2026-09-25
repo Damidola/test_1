@@ -236,3 +236,5 @@ body.lg-game-learn .lg-nav-btn .ico svg { width: 20px; height: 20px; }
   .learn--run .learn__table .result.completed.passed { background: linear-gradient(135deg, #e0ad22, #F5C542) !important; color: #3d2c00 !important; }
   .learn--run .learn__table .result.completed.passed h2 { color: #3d2c00 !important; }
 }
+/* слова вчителя: розмір шрифту підбирається одразу й не «росте на очах» (у lila тут був transition: all — анімував і font-size) */
+.learn__table .result, .learn__table .goal, .learn__table .lg-demo-say { transition: filter 150ms ease !important; }
