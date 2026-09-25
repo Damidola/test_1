@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790317854';
-import { aiMove, hintMove } from './ai.js?v=1790317854';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790317854';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790317930';
+import { aiMove, hintMove } from './ai.js?v=1790317930';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790317930';
 
 const LG = window.LG;
 
@@ -80,7 +80,7 @@ export function startGame(cfg) {
     pop.addEventListener('click', e => {
       e.stopPropagation();
       const b = e.target.closest('button'); if (!b) return;
-      level = +b.dataset.l; hero.setLevel(level); LG.play('tap'); paintLevel(); pop.remove();
+      level = +b.dataset.l; hero.setLevel(level); setLimits(); renderButtons(); LG.play('tap'); paintLevel(); pop.remove();
     });
     ctr.appendChild(pop); paintLevel();
     setTimeout(() => document.addEventListener('pointerdown', function close(ev) {
@@ -260,15 +260,19 @@ export function startGame(cfg) {
     else LG.lose(r.text || 'Цього разу виграв суперник.', again);
   }
 
+  // Легкі рівні (1–2): завжди 3 підказки й ходів назад скільки завгодно; 3–5 — як у Профілі
+  function setLimits() {
+    const lim = v => (String(v) === 'inf' ? Infinity : Number(v));
+    hintsLeft = level <= 2 ? 3 : lim(LG.store.get('hints', '3'));
+    undosLeft = level <= 2 ? Infinity : lim(LG.store.get('undos', '3'));
+  }
   function newGame() {
     clearTimeout(aiTimer); thinking = false; over = false; hero.setThinking(false); hero.setMood(null);
     robotMoves = 0; sayAt = 2 + Math.floor(Math.random() * 5);
     history = [rules.initial(cfg.options ? cfg.options() : {})];
     pos = 0; lastHint = null;
     if (friend) player = 'w';
-    const lim = v => (String(v) === 'inf' ? Infinity : Number(v)); // «inf» — без обмежень (Профіль)
-    hintsLeft = lim(LG.store.get('hints', '3'));
-    undosLeft = lim(LG.store.get('undos', '3'));
+    setLimits();
     if (board) board.setOrientation(colorName(player));
     paintQuick();
     render(false);
@@ -412,7 +416,7 @@ export function startGame(cfg) {
       ${board ? `<div class="lg-set-title">Колір дошки</div>
       <div class="lg-swatches">${BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" title="${t.id}" style="background-image:url('${boardUrl(t.file)}')"></button>`).join('')}</div>` : ''}`;
     w.querySelectorAll('.lg-levels button').forEach(b => b.addEventListener('click', () => {
-      level = +b.dataset.l; hero.setLevel(level); paintLevel();
+      level = +b.dataset.l; hero.setLevel(level); setLimits(); renderButtons(); paintLevel();
       w.querySelectorAll('.lg-levels button').forEach(x => x.classList.toggle('on', x === b));
     }));
     w.querySelector('#friend').addEventListener('change', e => {
