@@ -15,6 +15,7 @@ export function createLevels(el, key, n, onPick) {
   // праворуч від кружечків — кнопка повного екрана (як у грі з роботом)
   const fsb = LG.fsButton && LG.fsButton('lv-fs');
   if (fsb && el.parentNode) { const row = document.createElement('div'); row.className = 'lv-row'; el.parentNode.insertBefore(row, el); row.append(el, fsb); }
+  mountTeacher(el.closest('main'));
   return {
     open,
     set(i) { cur = i; render(); },
@@ -57,7 +58,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790325675').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1790326365').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';
@@ -78,4 +79,42 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
     o.querySelector('.home').addEventListener('click', () => { (window.LG && LG.go ? LG.go : h => { location.href = h; })(ROOT + 'index.html#learn'); });
     o.addEventListener('click', e => { if (e.target === o) { o.remove(); onAgain && onAgain(); } });
   });
+}
+
+/* Вчитель (Пан Сова) в уроках: угорі ліворуч, праворуч — його слова (заголовок і текст завдання сторінки).
+   Хвалить, коли вийшло (.ok), задумується, коли ні (.bad), а якщо дитина довго не ходить — сам дає підказку (як 💡). */
+const HINT_MS = 15000;
+function mountTeacher(main) {
+  const task = main && main.querySelector('#task'), goal = main && main.querySelector('#goal');
+  if (!task) return;
+  const LG = window.LG, ROOT = new URL('..', import.meta.url).href, VER = new URL(import.meta.url).search;
+  const box = document.createElement('div'); box.className = 'lv-teach';
+  box.innerHTML = '<div class="lg-teacher" aria-label="Пан Сова"></div><div class="lv-say"><span class="lv-hint" hidden>💡 Підказка — дивись на дошку!</span></div>';
+  const pic = box.firstChild, say = box.querySelector('.lv-say'), hint = box.querySelector('.lv-hint');
+  fetch(ROOT + 'shared/opponents/toon-teacher.svg' + VER).then(r => r.text()).then(t => { pic.innerHTML = t; }).catch(() => {});
+  const goalWrap = goal && goal.parentElement !== main ? goal.parentElement : goal;
+  if (goalWrap) say.prepend(goalWrap);
+  say.insertBefore(task, hint);
+  const row = main.querySelector('.lv-row') || main.querySelector('#levels');
+  row.after(box);
+  // настрій
+  let moodT = 0;
+  const mood = (cls, ms) => { clearTimeout(moodT); pic.classList.remove('talking', 'mood-happy', 'thinking'); if (cls) pic.classList.add(cls); if (ms) moodT = setTimeout(() => pic.classList.remove(cls), ms); };
+  new MutationObserver(() => {
+    if (task.classList.contains('ok')) mood('mood-happy', 2600);
+    else if (task.classList.contains('bad')) mood('thinking', 2600);
+    else if (task.textContent.trim()) mood('talking', 1600);
+    hint.hidden = true; arm();
+  }).observe(task, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  // сам підказує, якщо довго нічого не відбувається
+  let idle = 0;
+  function arm() {
+    clearTimeout(idle);
+    idle = setTimeout(() => {
+      if (main.dataset.step === 'intro' || !LG.hint) return;
+      LG.hint(); hint.hidden = false; mood('thinking', 3000);
+    }, HINT_MS);
+  }
+  main.addEventListener('pointerdown', () => { hint.hidden = true; arm(); }, true);
+  arm();
 }

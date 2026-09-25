@@ -246,4 +246,40 @@ build('hm', 'hamster',
       eye=(46, 178, 18, 20, 11), iris='#2b1a10', brow='#8a4a22', mouth=(266, 20), mouth_col='#8a3a3a',
       fur='#e0a25e', paw='#f4c7a8', pad='#e5979a', blush=222, blush_dx=94)
 
+# ---------- Учитель в уроках — Пан Сова: сива сова-професор в окулярах, шапочці випускника й з метеликом ----------
+# Живе в уроках (lessons/): говорить завдання, хвалить, підказує. Махає лапкою лише коли радіє чи думає.
+build('pf', 'teacher',
+      back="""
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#5d6b86"/>
+  <path d="M140 400 C144 356 170 332 200 330 C230 332 256 356 260 400 Z" fill="#eef0f4"/>
+  <g fill="none" stroke="#c9ceda" stroke-width="4" stroke-linecap="round"><path d="M178 372 q8 7 16 0 M202 372 q8 7 16 0 M190 392 q8 7 16 0"/></g>
+  <!-- метелик -->
+  <path d="M200 324 L166 306 L166 342 Z M200 324 L234 306 L234 342 Z" fill="#e8505b"/><circle cx="200" cy="324" r="9" fill="#c23a45"/>""",
+      head="""
+  <g class="pf-earl"><path d="M106 130 L96 66 L152 104 Z" fill="#4d5a73"/></g>
+  <g class="pf-earr"><path d="M294 130 L304 66 L248 104 Z" fill="#4d5a73"/></g>
+  <ellipse cx="200" cy="192" rx="112" ry="114" fill="#7c8aa6"/>
+  <ellipse class="pf-red" cx="200" cy="196" rx="108" ry="110" fill="#ff3b30"/>
+  <circle cx="152" cy="174" r="48" fill="#eef0f4"/><circle cx="248" cy="174" r="48" fill="#eef0f4"/>
+  <path d="M186 214 L214 214 L200 242 Z" fill="#f2a93b" stroke="#c9801c" stroke-width="3" stroke-linejoin="round"/>
+  <!-- шапочка випускника -->
+  <g>
+    <path d="M140 96 C150 78 250 78 260 96 L256 112 C230 102 170 102 144 112 Z" fill="#23283a"/>
+    <path d="M200 40 L300 72 L200 104 L100 72 Z" fill="#2e3550"/>
+    <circle cx="200" cy="72" r="6" fill="#f5c542"/>
+    <path class="pf-tassel" d="M200 72 L276 84 L278 122" fill="none" stroke="#f5c542" stroke-width="4" stroke-linecap="round"/>
+    <path d="M272 118 l6 22 6 -22 z" fill="#f5c542"/>
+  </g>""",
+      front="""
+  <!-- окуляри -->
+  <g fill="none" stroke="#2e3550" stroke-width="6"><circle cx="152" cy="174" r="40"/><circle cx="248" cy="174" r="40"/><path d="M192 170 Q200 162 208 170"/>
+    <path d="M112 168 L96 160 M288 168 L304 160" stroke-linecap="round"/></g>
+  <g fill="#fff" opacity=".35"><path d="M128 150 q10 -12 24 -12 l-4 8 q-10 0 -14 10z"/><path d="M224 150 q10 -12 24 -12 l-4 8 q-10 0 -14 10z"/></g>""",
+      extra_css=""".pf-tassel{transform-origin:276px 84px;animation:pfTassel 3s ease-in-out infinite}
+@keyframes pfTassel{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg)}}
+.lg-teacher.mood-happy .pf-armr,.lg-teacher.thinking .pf-armr{display:inline}
+.lg-teacher.mood-happy .pf-armrest,.lg-teacher.thinking .pf-armrest{display:none}""",
+      eye=(48, 174, 26, 28, 15), iris='#6b4a2a', brow='#e7eaf0', mouth=(262, 18), mouth_col='#6b3a1a',
+      fur='#7c8aa6', paw='#4d5a73', pad='#eef0f4', blush=216, blush_dx=92)
+
 print('ok')

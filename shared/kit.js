@@ -551,6 +551,7 @@
     showSettings,
     addSettings: fn => { settingsBuilders.push(fn); if (gearBtn) gearBtn.hidden = false; },
     onHint: fn => { hintFn = fn; if (hintBtn) hintBtn.hidden = !fn; },
+    hint: () => hintFn && hintFn(), // підказка «як кнопкою 💡» (вчитель в уроках підказує сам, якщо дитина довго не ходить)
     onExplain: fn => { explainFn = fn; },
     navOnly: extra => { buildBar(); return navOnly(extra); },
     navIcon: ico => ICONS[ico] || ico,

@@ -1,5 +1,6 @@
 import type { DrawShape } from '@lichess-org/chessground/draw';
 import { type SquareName, makeSquare, makeUci, opposite, parseSquare } from 'chessops';
+import { makeBoardFen } from 'chessops/fen';
 
 import { type Prop, prop } from 'lib';
 import { type WithGround } from 'lib/game/ground';
@@ -16,6 +17,8 @@ import type { Level } from './stage/list';
 import * as timeouts from './timeouts';
 import { type PromotionRole, arrow } from './util';
 
+const HINT_MS = 15000; // logic-games-kids: через скільки без ходу вчитель підказує
+
 export interface LevelVm {
   score: number;
   completed: boolean;
@@ -24,6 +27,7 @@ export interface LevelVm {
   willComplete: boolean;
   nbMoves: number;
   starting?: boolean;
+  hint?: string; // logic-games-kids: підказка вчителя (з'являється, якщо дитина довго не ходить)
 }
 
 export interface LevelOpts {
@@ -145,6 +149,7 @@ export class LevelCtrl {
     };
 
     return (orig: SquareName, dest: SquareName, prom?: PromotionRole) => {
+      this.armHint();
       if (blueprint.game) return this.gameMove(orig, dest, prom);
       vm.nbMoves++;
       const enemyRoleCaptured = enemyRoleToBeCaptured(orig, dest);
@@ -347,8 +352,74 @@ export class LevelCtrl {
       }),
     );
 
+  // ---------- logic-games-kids: підказка вчителя ----------
+  // Якщо дитина HINT_MS не ходить — вчитель підказує словами, а де можна — ще й зеленою стрілкою
+  hintGen = 0;
+  hintShape?: DrawShape;
+  armHint = () => {
+    const gen = ++this.hintGen;
+    this.clearHint();
+    timeouts.setTimeout(() => {
+      if (gen !== this.hintGen || this.vm.completed || this.vm.willComplete || this.vm.failed) return;
+      this.showHint();
+    }, HINT_MS);
+  };
+  clearHint = () => {
+    if (!this.vm.hint && !this.hintShape) return;
+    this.vm.hint = undefined;
+    const sh = this.hintShape;
+    this.hintShape = undefined;
+    if (sh) this.withGround(g => g.setShapes(g.state.drawable.shapes.filter(x => x !== sh)));
+  };
+  showHint = () => {
+    const { blueprint, chess } = this;
+    let uci: string | undefined, text: string;
+    if (blueprint.game) text = 'Підказка: бий пішаків, які підійшли близько, і не став фігуру туди, де її поб’ють 😉';
+    else if ((uci = this.scenario.next())) text = 'Підказка: подивись на зелену стрілку — ось хороший хід 👇';
+    else if (this.isAppleLevel() && (uci = this.pathToApple())) text = 'Підказка: зелена стрілка показує, куди піти, щоб дістатися зірочки ⭐';
+    else if (blueprint.pointsForCapture && (uci = (m => (m ? m.orig + m.dest : undefined))(chess.findCapture())))
+      text = 'Підказка: цю фігуру можна побити — дивись на стрілку 👇';
+    else text = 'Підказка: натисни на свою фігуру — крапки покажуть, куди вона може піти. Прочитай завдання ще раз 🙂';
+    this.vm.hint = text;
+    if (uci) {
+      this.hintShape = arrow(uci, 'green');
+      const sh = this.hintShape;
+      this.withGround(g => g.setShapes([...g.state.drawable.shapes, sh]));
+    }
+    this.redraw();
+  };
+  // найкоротший шлях до будь-якої зірочки (кілька ходів поспіль своїм кольором) → перший хід шляху
+  pathToApple = (): string | undefined => {
+    const { chess, blueprint } = this;
+    const apples = new Set(this.items.appleKeys());
+    if (!apples.size) return undefined;
+    const start = chess.instance.clone();
+    start.turn = blueprint.color;
+    const seen = new Set([makeBoardFen(start.board)]);
+    let layer: [typeof start, string | undefined][] = [[start, undefined]];
+    for (let depth = 0; depth < 6 && layer.length; depth++) {
+      const next: [typeof start, string | undefined][] = [];
+      for (const [pos, first] of layer) {
+        for (const m of chess.moves(pos)) {
+          const uci = makeSquare(m.from) + makeSquare(m.to);
+          if (apples.has(makeSquare(m.to))) return first || uci;
+          const c = pos.clone();
+          c.play(m);
+          c.turn = blueprint.color;
+          const k = makeBoardFen(c.board);
+          if (seen.has(k) || seen.size > 4000) continue;
+          seen.add(k);
+          next.push([c, first || uci]);
+        }
+      }
+      layer = next;
+    }
+    return undefined;
+  };
+
   start = () => {
     levelStart();
+    this.armHint();
     if (this.blueprint.game) return;
     if (this.chess.getColor() !== this.blueprint.color) timeouts.setTimeout(this.scenario.opponent, 1000);
   };

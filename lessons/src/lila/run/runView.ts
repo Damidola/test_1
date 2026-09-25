@@ -7,6 +7,7 @@ import { hashHref } from '../hashRouting';
 import type { LearnCtrl } from '../ctrl';
 import type { LevelCtrl } from '../levelCtrl';
 import { makeStars, progressView } from '../progressView';
+import { getLevelRank } from '../score';
 import { promotionView } from '../promotionView';
 import { withLinebreaks } from '../util';
 import congrats from './congrats';
@@ -16,22 +17,53 @@ import stageStarting from './stageStarting';
 
 const renderFailed = (ctrl: RunCtrl): VNode =>
   div('.result.failed', { hook: bind('click', ctrl.restart) }, [
-    h2(i18n.learn.puzzleFailed),
+    h2('Ой, не так 🙂'),
+    p('.lg-say-sub', 'Нічого страшного — спробуй ще раз!'),
     button(i18n.learn.retry),
   ]);
 
-const renderCompleted = (level: LevelCtrl): VNode =>
-  div(
+// Вчитель хвалить: ідеально (3 зірки) — окремо, просто пройдено — «молодець», і обіцяє продовжити
+const PRAISE: Record<number, string[]> = {
+  1: ['Ідеально! Жодного зайвого ходу 🌟', 'Бездоганно! Ти справжній шахіст 🏆', 'Ідеально! Так тримати ⭐'],
+  2: ['Молодець! Вийшло 👍 Можна ще трішки швидше', 'Добра робота! Продовжуємо 🙂'],
+  3: ['Готово! Молодець 🙂 Наступного разу — меншою кількістю ходів', 'Вийшло! Ідемо далі 👍'],
+};
+const renderCompleted = (level: LevelCtrl): VNode => {
+  const rank = getLevelRank(level.blueprint, level.vm.score), list = PRAISE[rank];
+  return div(
     '.result.completed',
     {
       class: { next: !!level.blueprint.nextButton },
       hook: bind('click', level.onComplete),
     },
     [
-      h2(congrats()),
+      h2(list[level.blueprint.id % list.length] || congrats()),
       level.blueprint.nextButton ? button(i18n.learn.next) : makeStars(level.blueprint, level.vm.score),
     ],
   );
+};
+
+// ---------- logic-games-kids: вчитель (Пан Сова) — угорі ліворуч, праворуч його слова ----------
+let teacherSvg: Promise<string> | undefined;
+const loadTeacher = () =>
+  (teacherSvg ||= fetch(new URL('../shared/opponents/toon-teacher.svg', location.href).href + (document.querySelector('script[src*="app.js"]')?.getAttribute('src')?.match(/\?v=\d+/)?.[0] || ''))
+    .then(r => r.text())
+    .catch(() => ''));
+// коли слова міняються — вчитель трохи «говорить» (рот рухається)
+let sayKey = '', talkUntil = 0;
+const teacherView = (ctrl: RunCtrl, key: string, mood: string): VNode => {
+  const now = Date.now();
+  if (key !== sayKey) {
+    sayKey = key;
+    talkUntil = now + 1600;
+    setTimeout(ctrl.redraw, 1650);
+  }
+  return div('.lg-teacher', {
+    class: { talking: now < talkUntil && !mood, 'mood-happy': mood === 'happy', thinking: mood === 'thinking' },
+    attrs: { 'aria-label': 'Пан Сова' },
+    hook: { insert: (v: VNode) => void loadTeacher().then(t => ((v.elm as HTMLElement).innerHTML = t)) },
+  });
+};
 
 // logic-games-kids: приклад на початку етапу — підпис до кроку й кнопки «Ще раз» / «Почати»
 const renderDemo = (ctrl: RunCtrl): VNode =>
@@ -77,6 +109,11 @@ export const runView = (ctrl: LearnCtrl) => {
     ]),
     div('.learn__table', [
       div('.wrap', [
+        teacherView(
+          runCtrl,
+          runCtrl.demo() ? 'demo' + runCtrl.demoText() : levelCtrl.vm.failed ? 'fail' : levelCtrl.vm.completed ? 'done' : (levelCtrl.vm.hint || '') + levelCtrl.blueprint.id + stage.key,
+          levelCtrl.vm.completed ? 'happy' : !runCtrl.demo() && (levelCtrl.vm.hint || levelCtrl.vm.failed) ? 'thinking' : '',
+        ),
         div('.title', [
           img(stage.image, '')(),
           div('.text', [h2(stage.title), p('.subtitle', stage.subtitle)]),
@@ -87,7 +124,9 @@ export const runView = (ctrl: LearnCtrl) => {
           ? renderFailed(runCtrl)
           : levelCtrl.vm.completed
             ? renderCompleted(levelCtrl)
-            : div('.goal', withLinebreaks(levelCtrl.blueprint.goal)),
+            : levelCtrl.vm.hint
+              ? div('.goal.lg-hint', levelCtrl.vm.hint)
+              : div('.goal', withLinebreaks(levelCtrl.blueprint.goal)),
         progressView(runCtrl),
         !runCtrl.demo() && runCtrl.hasDemo()
           ? button('.lg-demo-open', { hook: bind('click', runCtrl.replayDemo) }, '📖 Приклад')

@@ -257,3 +257,19 @@ cg-board square.oc.premove-dest { background: radial-gradient(transparent 0%, tr
 .lg-top-fs.mt-fs svg { width: 21px; height: 21px; }
 /* уроки з кружечками рівнів: рядок рівнів угорі, дошка з завданням — унизу, ближче до кнопок */
 .lg-play > .lv-row { margin-bottom: auto; }
+
+/* вчитель у міні-уроках (levels.js): угорі під рівнями — Пан Сова й «бульбашка» з його словами; дошка — внизу */
+.lg-play > .lv-row:has(+ .lv-teach) { margin-bottom: 0; }
+.lv-teach { flex: none; display: flex; align-items: flex-start; gap: 10px; width: min(100% - 16px, 560px); margin-bottom: auto; --teach: clamp(84px, min(28vw, 16svh), 130px); }
+.lv-teach .lg-teacher { flex: none; width: var(--teach); aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #3a3970, #23224a); box-shadow: 0 0 0 3px rgba(255,255,255,.08); }
+.lv-teach .lg-teacher svg { display: block; width: 100%; height: 100%; transform: translateY(6%) scale(1.06); }
+.lv-say { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 8px 12px; border-radius: 16px;
+  background: #25244A; border: 2px solid #3A3968; }
+.lv-say::before { content: ''; position: absolute; left: -10px; top: 20px; border: 9px solid transparent; border-left: 0; border-right-color: #3A3968; }
+.lv-say > * { margin: 0 !important; max-width: none !important; min-height: 0 !important; padding: 0 !important; text-align: left !important; justify-content: flex-start !important; }
+.lv-say .cl-goal, .lv-say .vl-goal { font-size: 13px !important; opacity: .8; }
+.lv-say .cl-task, .lv-say .vl-task { font-size: 15.5px !important; }
+.lv-hint { font: 800 14px var(--lg-font); color: #f5c542; }
+/* дошка під вчителем — менша на низьких екранах, щоб не залазила під нижні кнопки */
+html.lg .lg-play:has(> .lv-teach) .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - env(safe-area-inset-bottom) - 56px - clamp(84px, min(28vw, 16svh), 130px) - 130px)); }

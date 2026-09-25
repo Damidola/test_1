@@ -8,6 +8,7 @@ export interface Scenario {
   isFailed(): boolean;
   opponent(): void;
   player(move: Uci): boolean;
+  next(): Uci | undefined; // logic-games-kids: хід, якого чекаємо від дитини (для підказки вчителя)
 }
 
 export type ScenarioLevel = (
@@ -51,6 +52,7 @@ export default function (blueprint: ScenarioLevel | undefined, opts: ScenarioOpt
   return {
     isComplete: () => it === steps.length,
     isFailed: () => isFailed,
+    next: () => steps[it]?.move,
     opponent,
     player: (move: Uci) => {
       const step = steps[it];
