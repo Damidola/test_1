@@ -344,3 +344,6 @@ html.lg-night .lg-play .lg-controls button:active { background: #3A4360; transfo
 .lv-row > .lv-bar { overflow: visible !important; padding: 6px 6px !important; }
 .lv-teach { padding-left: 5px; padding-right: 5px; box-sizing: border-box; }
 .lv-teach .lg-teacher { margin: 1px 0 0 1px; }
+/* багато рівнів (напр. «Шах» — 12): кружечки стискаються під ширину екрана, а не вилазять за край */
+.lv-row > .lv-bar { width: 100% !important; max-width: 100%; box-sizing: border-box; display: flex; justify-content: center; gap: min(8px, 1.4vw) !important; }
+.lv-bar .lv { flex: 0 1 26px !important; min-width: 18px; width: auto !important; height: auto !important; aspect-ratio: 1; }
