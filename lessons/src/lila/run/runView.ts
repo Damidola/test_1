@@ -16,11 +16,20 @@ import type { RunCtrl } from './runCtrl';
 import stageComplete from './stageComplete';
 import stageStarting from './stageStarting';
 
+// Помилка: без великої кнопки «Ще раз» (ламала бульбашку) — рівень сам починається знову через 2 с або від дотику
+let failTimer = 0;
 const renderFailed = (ctrl: RunCtrl): VNode =>
-  div('.result.failed', { hook: bind('click', ctrl.restart) }, [
+  div('.result.failed', {
+    hook: {
+      insert: (v: VNode) => {
+        (v.elm as HTMLElement).addEventListener('click', () => { clearTimeout(failTimer); ctrl.restart(); });
+        clearTimeout(failTimer); failTimer = window.setTimeout(() => ctrl.restart(), 2000);
+      },
+      destroy: () => clearTimeout(failTimer),
+    },
+  }, [
     h2('Ой, не так 🙂'),
     p('.lg-say-sub', 'Нічого страшного — спробуй ще раз!'),
-    button(i18n.learn.retry),
   ]);
 
 // Вчитель хвалить: ідеально (3 зірки) — окремо, просто пройдено — «молодець», і обіцяє продовжити
