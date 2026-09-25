@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790341914';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790341914';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790341914';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790342008';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790342008';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790342008';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -24,6 +24,8 @@ const KIND = { play: ['#2ECC9A', 'Гра'], task: ['#FF9F1C', 'Задачі'], l
 // Новий вигляд (як Magnus) у кольорах і з фігурами старого: вгорі вкладки розділів, під ними — лише кроки
 // вибраного розділу зигзагом (центр → ліворуч → праворуч → центр…), тонкі лінії, білі галочки. Усе на одному екрані.
 let curStep = 0, curSec = -1;
+// розділ, який відкривали востаннє: з уроку повертаємось саме туди, а не до першого незавершеного
+{ const s = +LG.store.get('learn:sec', -1); if (s >= 0 && s < SECTIONS.length) curSec = s; }
 const SEC_SHORT = ['ФІГУРИ', 'ОСОБЛИВІ', 'ШАХ', 'МАТ', 'МАЙСТЕР'];
 const secRange = si => [SECTIONS[si][0], (SECTIONS[si + 1] || [STEPS.length])[0]];
 const secIndexOf = i => SECTIONS.reduce((k, x, j) => (x[0] <= i ? j : k), 0);
@@ -77,6 +79,7 @@ function openStep(i) {
 }
 $('road').addEventListener('click', e => {
   const n = e.target.closest('.ap-node'); if (!n) return;
+  LG.store.set('learn:sec', curSec); // повернутись із уроку саме в цей розділ
   const links = STEPS[+n.dataset.i][3];
   if (links.length === 1) { // один пункт — одразу його, без аркуша
     const href = links[0][2]; seen.add(href); LG.store.set('path:seen', [...seen]);
@@ -85,7 +88,7 @@ $('road').addEventListener('click', e => {
   }
   openStep(+n.dataset.i);
 });
-const goSec = si => { if (si < 0 || si >= SECTIONS.length || si === curSec) return; curSec = si; LG.play('tap'); renderLearn(); gate($('view-learn')); };
+const goSec = si => { if (si < 0 || si >= SECTIONS.length || si === curSec) return; curSec = si; LG.store.set('learn:sec', si); LG.play('tap'); renderLearn(); gate($('view-learn')); };
 $('secbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) goSec(+b.dataset.s); });
 $('road').addEventListener('click', e => { const b = e.target.closest('.ap-nextsec'); if (b) goSec(+b.dataset.s); });
 // свайп ліворуч / праворуч — сусідній розділ
