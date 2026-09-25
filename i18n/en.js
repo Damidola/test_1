@@ -65,6 +65,7 @@ window.LG_EN = {
   "Іго-го! Мій хід буде хитрим!": "Neigh! My move will be sneaky!",
   "Моя корона — для найкращого ходу 👑": "My crown is for the best move 👑",
   "Крапки ходів": "Move dots",
+  "Цифри й літери біля дошки": "Board coordinates",
   "🟢 зелені крапки — куди може піти фігура": "🟢 green dots — where a piece can go",
   "🟢 Показувати": "🟢 Show",
   "Не показувати": "Hide",

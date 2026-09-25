@@ -98,6 +98,9 @@
   });
 
 
+  // координати біля дошки (цифри й літери) — можна вимкнути в Профілі
+  if (store.get('coords', true) === false) document.documentElement.classList.add('lg-nocoords');
+
   const lang = store.get('lang', 'uk') === 'en' ? 'en' : 'uk';
   if (lang === 'en' && document.readyState === 'loading') {
     const q = ((script && script.getAttribute('src') || '').match(/\?v=\d+/) || [''])[0];

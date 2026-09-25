@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790333806';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790333806';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790333806';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790334661';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790334661';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790334661';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -201,6 +201,7 @@ function renderProfile() {
       <div class="mg-row mg-col"><span>Дошка</span><div class="ap-boards" id="p-boards"></div></div>
       <div class="mg-row mg-col" id="p-pieces"><span>Фігури</span></div>
       <div class="mg-row"><span>Крапки ходів</span><button type="button" class="pf-sw" id="p-dots" aria-label="Крапки ходів"></button></div>
+      <div class="mg-row"><span>Цифри й літери біля дошки</span><button type="button" class="pf-sw" id="p-coords" aria-label="Цифри й літери біля дошки"></button></div>
       ${LG.fullscreen.supported ? `<div class="mg-row"><span>Повний екран</span><button type="button" class="pf-sw" id="p-fs" aria-label="Повний екран"></button></div>` : ''}
       <details class="pf-more mg-more"${pfOpen ? ' open' : ''}><summary class="mg-row"><span>Гра з роботом</span><em>${lims}${chev}</em></summary>
         <div class="mg-sub">
@@ -256,7 +257,8 @@ function renderProfile() {
     $('p-fs').addEventListener('click', () => { LG.fullscreen.set(!LG.store.get('fullscreen', false)); LG.play('tap'); paintFs(); });
     document.addEventListener('fullscreenchange', paintFs);
   }
-  sw('p-dots', 'showDests', true); sw('p-say', 'oppSay', false); // репліки суперника типово вимкнені
+  sw('p-dots', 'showDests', true); sw('p-coords', 'coords', true);
+  $('p-coords').addEventListener('click', () => document.documentElement.classList.toggle('lg-nocoords', !LG.store.get('coords', true))); sw('p-say', 'oppSay', false); // репліки суперника типово вимкнені
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); const em = $('view-profile').querySelector('.mg-more em'); if (em) em.firstChild.textContent = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`; }));

@@ -84,7 +84,8 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   .lg-run-top .progress a.done.perfect::after { content: '✓'; position: absolute; color: #fff; font-weight: 900; font-size: 18px; }
   .lg-run-top .lg-run-menu { flex: none; width: 46px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: rgba(255,255,255,.07); color: #fff; font-size: 22px; }
   .learn--run .learn__table .progress, .learn--run .learn__table .lg-demo-open { display: none; }
-  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--lg-bar-h, 38px) - 20px - 62px - clamp(84px, min(30vw, 15svh), 140px) - 24px)); }
+  /* розмір дошки не залежить від того, скільки тексту в учителя (приклад із кнопками вищий) — дошка не стрибає й не лізе під кнопки */
+  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--fs-top, 0px) - var(--lg-bar-h, 38px) - 20px - 62px - max(clamp(84px, min(30vw, 15svh), 140px), 150px) - 30px)); }
   .learn--run .learn__table { margin: 0; }
   .learn--run .learn__table .goal { font-size: 16px; font-weight: 700; padding: 8px 10px; min-height: 0; }
   /* слова вчителя — не довше 4 рядків */
@@ -151,8 +152,15 @@ html.lg body.lg-game.lg-game-learn { --c-bg-page: #16152F; --c-body-gradient: #2
   .learn--run .learn__table .goal p { -webkit-line-clamp: 3; }
 }
 /* координати за межами дошки: цифри ліворуч, літери під дошкою (як у грі з роботом) */
-.learn__main.main-board { aspect-ratio: 1 / 1.006; }
-.learn__main.main-board > .cg-wrap { inset: 0 auto auto 14px; width: calc(100% - 14px); height: auto; aspect-ratio: 1; }
+.learn__main.main-board { aspect-ratio: 1 / .985; }
+.learn__main.main-board > .cg-wrap { inset: 0 auto auto 14px; width: calc(100% - 22px); height: auto; aspect-ratio: 1; }
+/* без координат (налаштування в Профілі) — дошка на всю ширину */
+html.lg-nocoords .learn__main.main-board { aspect-ratio: 1; }
+html.lg-nocoords .learn__main.main-board > .cg-wrap { inset: 0; width: 100%; }
+html.lg-nocoords .cg-wrap coords { display: none !important; }
+/* приклад: кнопки «Ще раз» / «Почати» — компактні, в один рядок */
+.learn--run .lg-demo-btns { padding: 6px 0 0 !important; gap: 8px; }
+.learn--run .lg-demo-btns button { padding: 6px 10px !important; font-size: 14px !important; white-space: nowrap; min-height: 0; line-height: 1.2; }
 .learn__main .cg-wrap coords coord { color: #a9a7d6 !important; text-shadow: none; }
 .learn__main .cg-wrap coords.ranks { left: -13px; right: auto; top: 0; width: 12px; height: 100%; text-align: center; }
 .learn__main .cg-wrap coords.ranks coord { display: flex; align-items: center; justify-content: center; }
