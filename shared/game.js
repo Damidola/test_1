@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790319626';
-import { aiMove, hintMove } from './ai.js?v=1790319626';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790319626';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790320047';
+import { aiMove, hintMove } from './ai.js?v=1790320047';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790320047';
 
 const LG = window.LG;
 
@@ -158,16 +158,21 @@ export function startGame(cfg) {
     }
     if (!rules.captured) return;
     const cap = rules.captured(state()); // { w: [ролі, які збили білі], b: [...] }
+    let lead = 0;
     const row = (list, victimColor) => {
       if (!list.length) return '';
       const groups = new Map();
       for (const r of list) { const role = ROLE[r] || r.toLowerCase(); groups.set(role, (groups.get(role) || 0) + 1); }
       return [...groups].map(([role, n]) => `<div>${`<mpiece class="${role} ${colorName(victimColor)}"></mpiece>`.repeat(n)}</div>`).join('') +
-        `<b>+${list.length}</b>`;
+        (lead > 0 ? `<b>+${lead}</b>` : '');
     };
+    // Перевага в матеріалі за цінністю фігур (як на Lichess): пішак 1, кінь і слон 3, тура 5, ферзь 9 — число лише в того, хто попереду
+    const VAL = { P: 1, N: 3, B: 3, R: 5, Q: 9, K: 0 };
+    const worth = list => list.reduce((s, r) => s + (VAL[String(r).toUpperCase()[0]] ?? 1), 0);
     const ai = player === 'w' ? 'b' : 'w';
-    $('[data-side="top"]').innerHTML = row(cap[ai], player);
-    $('[data-side="bottom"]').innerHTML = row(cap[player], ai);
+    const diff = worth(cap[player]) - worth(cap[ai]);
+    lead = -diff; $('[data-side="top"]').innerHTML = row(cap[ai], player);
+    lead = diff; $('[data-side="bottom"]').innerHTML = row(cap[player], ai);
   }
 
   function renderButtons() {
@@ -186,7 +191,11 @@ export function startGame(cfg) {
   // ---------- ходи ----------
   function commit(move) {
     // мультяшний суперник реагує на взяття: забрав твою фігуру — радіє, втратив свою — злиться
-    if (move.capture && !friend) hero.setMood(human(rules.turn(state())) ? 'angry' : 'happy', 1800);
+    // Реакція лише на взяття ФІГУРИ (не пішака): забрав твою — радіє, втратив свою — злиться
+    if (move.capture && !friend && board) {
+      const victim = rules.pieces(state()).get(move.to);
+      if (victim && victim.role !== 'pawn') hero.setMood(human(rules.turn(state())) ? 'angry' : 'happy', 1800);
+    }
     const next = rules.play(state(), move);
     next.lastMove = move.from && move.to ? [move.from, move.to] : state().lastMove;
     history = history.slice(0, pos + 1); // новий хід — «вперед» більше нікуди

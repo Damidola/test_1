@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+<!-- Сова: нічний ліс — великий місяць, зорі мерехтять, світлячки кружляють, гілка -->
+<style>
+.tw{animation:tw 2.2s ease-in-out infinite}.tw2{animation-delay:-.8s}.tw3{animation-delay:-1.5s}@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+.ff{animation:ff 6s ease-in-out infinite}.ff2{animation-delay:-2s}.ff3{animation-delay:-4s}
+@keyframes ff{0%,100%{transform:translate(0,0);opacity:.2}25%{opacity:1}50%{transform:translate(24px,-18px);opacity:.6}75%{transform:translate(-14px,-30px);opacity:1}}
+</style>
+<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#101a3a"/><stop offset="1" stop-color="#23406a"/></linearGradient>
+<radialGradient id="mg"><stop offset="0" stop-color="#fff6c8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
+<radialGradient id="fg"><stop offset="0" stop-color="#e8ff7a"/><stop offset="1" stop-color="#e8ff7a" stop-opacity="0"/></radialGradient></defs>
+<rect width="800" height="320" fill="url(#sk)"/>
+<circle cx="560" cy="90" r="120" fill="url(#mg)"/><circle cx="560" cy="90" r="54" fill="#fff3c4"/>
+<g fill="#e8d98a" opacity=".5"><circle cx="545" cy="80" r="8"/><circle cx="575" cy="104" r="6"/><circle cx="560" cy="70" r="4"/></g>
+<g fill="#fff"><circle class="tw" cx="80" cy="40" r="2.5"/><circle class="tw tw2" cx="200" cy="70" r="2"/><circle class="tw tw3" cx="330" cy="30" r="2.5"/><circle class="tw" cx="420" cy="80" r="2"/><circle class="tw tw2" cx="700" cy="40" r="2.5"/><circle class="tw tw3" cx="760" cy="110" r="2"/></g>
+<!-- ялинки -->
+<g fill="#16304f"><path d="M40 320 L90 150 L140 320 Z"/><path d="M120 320 L180 110 L240 320 Z"/><path d="M600 320 L660 120 L720 320 Z"/><path d="M700 320 L750 160 L800 320 Z"/></g>
+<g fill="#0e2340"><path d="M0 320 L40 190 L80 320 Z"/><path d="M200 320 L250 180 L300 320 Z"/><path d="M520 320 L570 190 L620 320 Z"/><path d="M740 320 L780 200 L820 320 Z"/></g>
+<rect x="0" y="286" width="800" height="34" fill="#0b1c33"/>
+<!-- світлячки -->
+<g><circle class="ff" cx="140" cy="230" r="10" fill="url(#fg)"/><circle class="ff ff2" cx="300" cy="260" r="9" fill="url(#fg)"/><circle class="ff ff3" cx="520" cy="240" r="10" fill="url(#fg)"/><circle class="ff" cx="690" cy="270" r="9" fill="url(#fg)"/></g>
+</svg>

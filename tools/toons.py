@@ -199,4 +199,46 @@ build('tt', 'tung',
       eye=(44, 164, 24, 28, 13), iris='#2b1a10', brow='#3d2614', mouth=(272, 26), mouth_col='#4a2a14',
       fur='#c68d52', paw='#d8a765', pad='#b07a45', blush=212, blush_dx=70)
 
+# ---------- Сова: велика кругла голова, пір'яні вушка, великі очі в «окулярах» з пір'я, дзьоб ----------
+build('ow', 'owl',
+      back="""
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#8a6a4f"/>
+  <path d="M136 400 C140 356 166 330 200 328 C234 330 260 356 264 400 Z" fill="#e9dcc6"/>
+  <g fill="none" stroke="#c9b597" stroke-width="4" stroke-linecap="round"><path d="M166 356 q8 7 16 0 M190 356 q8 7 16 0 M214 356 q8 7 16 0 M178 378 q8 7 16 0 M202 378 q8 7 16 0"/></g>""",
+      head="""
+  <g class="ow-earl"><path d="M104 128 L96 58 L150 100 Z" fill="#6f533c"/></g>
+  <g class="ow-earr"><path d="M296 128 L304 58 L250 100 Z" fill="#6f533c"/></g>
+  <ellipse cx="200" cy="190" rx="112" ry="116" fill="#8a6a4f"/>
+  <ellipse class="ow-red" cx="200" cy="196" rx="108" ry="110" fill="#ff3b30"/>
+  <circle cx="152" cy="172" r="50" fill="#e9dcc6"/><circle cx="248" cy="172" r="50" fill="#e9dcc6"/>
+  <path d="M200 92 L186 128 L214 128 Z" fill="#6f533c"/>
+  <path d="M186 212 L214 212 L200 240 Z" fill="#f2a93b" stroke="#c9801c" stroke-width="3" stroke-linejoin="round"/>""",
+      eye=(48, 172, 30, 32, 18), iris='#f2a93b', brow='#4a3524', mouth=(262, 18), mouth_col='#6b3a1a',
+      fur='#8a6a4f', paw='#6f533c', pad='#e9dcc6', blush=214, blush_dx=92)
+
+# ---------- Хом'ячок у ковбойському капелюсі: руда кругла мордочка, пухкі білі щічки ----------
+build('hm', 'hamster',
+      back="""
+  <path d="M84 400 C88 344 132 312 200 310 C268 312 312 344 316 400 Z" fill="#e0a25e"/>
+  <path d="M140 400 C144 356 170 332 200 330 C230 332 256 356 260 400 Z" fill="#fff4e4"/>""",
+      head="""
+  <g class="hm-earl"><circle cx="112" cy="116" r="30" fill="#d38c45"/><circle cx="112" cy="118" r="17" fill="#f4b3a8"/></g>
+  <g class="hm-earr"><circle cx="288" cy="116" r="30" fill="#d38c45"/><circle cx="288" cy="118" r="17" fill="#f4b3a8"/></g>
+  <ellipse cx="200" cy="200" rx="116" ry="106" fill="#e8a862"/>
+  <ellipse class="hm-red" cx="200" cy="204" rx="112" ry="102" fill="#ff3b30"/>
+  <ellipse cx="136" cy="238" rx="54" ry="44" fill="#fff4e4"/><ellipse cx="264" cy="238" rx="54" ry="44" fill="#fff4e4"/>
+  <ellipse cx="200" cy="246" rx="44" ry="36" fill="#fff4e4"/>
+  <ellipse cx="200" cy="228" rx="10" ry="7" fill="#e5737a"/>
+  <path d="M200 236 v8" stroke="#8a4a3a" stroke-width="3" stroke-linecap="round"/>
+  <!-- ковбойський капелюх -->
+  <g>
+    <ellipse cx="200" cy="112" rx="132" ry="24" fill="#6b3f1f"/>
+    <path d="M136 112 C136 58 158 36 184 46 C192 50 208 50 216 46 C242 36 264 58 264 112 Z" fill="#7d4a24"/>
+    <path d="M140 96 C170 104 230 104 260 96 L262 110 C230 118 170 118 138 110 Z" fill="#3d2412"/>
+    <path d="M200 50 v44" stroke="#5e3619" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+    <path d="M78 108 C92 128 124 132 150 124 M322 108 C308 128 276 132 250 124" fill="none" stroke="#5e3619" stroke-width="5" stroke-linecap="round"/>
+  </g>""",
+      eye=(46, 178, 18, 20, 11), iris='#2b1a10', brow='#8a4a22', mouth=(266, 20), mouth_col='#8a3a3a',
+      fur='#e0a25e', paw='#f4c7a8', pad='#e5979a', blush=222, blush_dx=94)
+
 print('ok')

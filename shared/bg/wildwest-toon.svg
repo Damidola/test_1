@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+<!-- Хом'ячок-ковбой: Дикий Захід — спекотне сонце, столові гори, кактуси, перекотиполе котиться -->
+<style>
+.tb{animation:tb 9s linear infinite}@keyframes tb{from{transform:translate(-80px,0) rotate(0)}to{transform:translate(900px,0) rotate(900deg)}}
+.hz{animation:hz 3s ease-in-out infinite}@keyframes hz{0%,100%{opacity:.25}50%{opacity:.45}}
+</style>
+<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb35c"/><stop offset="1" stop-color="#ffe2a8"/></linearGradient></defs>
+<rect width="800" height="320" fill="url(#sk)"/>
+<circle cx="600" cy="80" r="44" fill="#fff1b8"/><circle class="hz" cx="600" cy="80" r="74" fill="#fff1b8"/>
+<!-- столові гори -->
+<path d="M0 220 L40 150 L150 150 L180 220 Z" fill="#d9774a"/><path d="M40 150 L150 150 L146 160 L44 160 Z" fill="#b85a36"/>
+<path d="M560 220 L600 130 L740 130 L780 220 Z" fill="#cf6b43"/><path d="M600 130 L740 130 L736 142 L604 142 Z" fill="#a9502f"/>
+<path d="M0 224 Q200 200 400 216 Q600 200 800 222 L800 320 L0 320 Z" fill="#f2c27a"/>
+<path d="M0 262 Q220 244 420 258 Q620 244 800 262 L800 320 L0 320 Z" fill="#e8ad62"/>
+<!-- кактуси -->
+<g fill="#3f9b5a"><rect x="70" y="170" width="22" height="100" rx="11"/><path d="M70 214 h-16 a10 10 0 0 1 -10 -10 v-22 a8 8 0 0 1 16 0 v16 h10 z"/><path d="M92 204 h14 v-26 a8 8 0 0 1 16 0 v30 a12 12 0 0 1 -12 12 h-18 z"/>
+<rect x="700" y="190" width="20" height="84" rx="10"/><path d="M700 226 h-14 a9 9 0 0 1 -9 -9 v-18 a7 7 0 0 1 14 0 v13 h9 z"/></g>
+<g fill="#2f7d47" opacity=".6"><rect x="78" y="176" width="3" height="90"/><rect x="707" y="196" width="3" height="74"/></g>
+<!-- камінці -->
+<g fill="#c98a4a"><ellipse cx="260" cy="286" rx="18" ry="8"/><ellipse cx="520" cy="292" rx="14" ry="6"/></g>
+<!-- перекотиполе -->
+<g class="tb" transform="translate(0 0)"><g transform="translate(0 270)"><circle r="16" fill="none" stroke="#a8743c" stroke-width="3"/><path d="M-12 -8 L12 8 M-10 10 L10 -10 M0 -15 L0 15 M-15 2 L15 -2" stroke="#a8743c" stroke-width="2"/></g></g>
+</svg>

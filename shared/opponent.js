@@ -13,24 +13,26 @@ export const OPPONENTS = [
   ['Мавпочка', 1, 'toon-monkey.svg', 'jungle-toon'], ['Коник Гоп', 1, 'toon-horse.svg', 'meadow-toon'],
   ['Капібара', 1, 'toon-capybara.svg', 'onsen-toon'], ['Собака', 1, 'toon-doge.svg', 'beach-toon'],
   ['Кіт Смадж', 2, 'toon-smudge.svg', 'kitchen-toon'], ['Тун-тун-тун-сахур', 2, 'toon-tung.svg', 'lanterns-toon'],
-  // Фото — рівні 2–5
-  ['Хом’ячок', 2, 'hamster.png', 'wildwest'], ['Балерина Капучина', 2, 'ballerina.jpg', 'rainbow'],
-  ['Сова', 3, 'owl.jpg', 'nightforest'], ['Кіт Очі-блюдця', 3, 'bigeyes.jpg', 'candy'], ['Зелений робот', 3, 'robot-green.jpg', 'space'], ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'],
+  ['Хом’ячок', 2, 'toon-hamster.svg', 'wildwest-toon'], ['Сова', 2, 'toon-owl.svg', 'nightforest-toon'],
+  // Фото — рівні 3–5
+  ['Балерина Капучина', 3, 'ballerina.jpg', 'rainbow'], ['Кіт Очі-блюдця', 3, 'bigeyes.jpg', 'candy'], ['Зелений робот', 3, 'robot-green.jpg', 'space'], ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'],
   ['Кіт', 4, 'cat.jpg', 'room'], ['Драматичний мопс', 4, 'pug.jpg', 'stage'], ['Хитрий кіт', 4, 'evilcat.jpg', 'rooftops'], ['Тралалело Тралала', 4, 'tralalero.jpg', 'underwater'],
   ['Жовтий робот', 5, 'robot-yellow.jpg', 'factory'], ['Брр Брр Патапім', 5, 'patapim.jpg', 'autumn']
 ].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' + VER }));
 
 // Старі фото тих, кого перемальовано, — файли лишаються в shared/opponents/ і shared/bg/, щоб можна було повернути:
 // ['Мавпочка', 'monkey.jpg', 'jungle'], ['Капібара', 'capybara.jpg', 'summer'], ['Кіт Смадж', 'smudge.jpg', 'kitchen'],
-// ['Собака', 'dog.jpg', 'beach'], ['Тун-тун-тун-сахур', 'tung-tung.jpg', 'lanterns'], ['Коник Гоп', старий SVG — у git-історії]
+// ['Собака', 'dog.jpg', 'beach'], ['Тун-тун-тун-сахур', 'tung-tung.jpg', 'lanterns'], ['Хом’ячок', 'hamster.png', 'wildwest'], ['Сова', 'owl.jpg', 'nightforest'], ['Коник Гоп', старий SVG — у git-історії]
 const scene = n => ROOT + 'shared/bg/' + n + '.svg' + VER;
 
 // Репліки суперника (раз за партію — у хмаринці, як у коміксі)
 const LINES = {
+  'toon-hamster.svg': ['Я сховав твого пішака за щічку! 🐹', 'Хрум-хрум… я думаю.'],
   'hamster.png': ['Я сховав твого пішака за щічку! 🐹', 'Хрум-хрум… я думаю.'],
   'toon-monkey.svg': ['Банан за гарний хід! 🍌', 'У-у-а-а! Я стрибаю, як кінь!'],
   'capybara.jpg': ['Я спокійна, як капібара у ванні 🛁', 'Не поспішаймо… ми ж капібари.'],
   'toon-capybara.svg': ['Я спокійна, як капібара у ванні 🛁', 'Не поспішаймо… ми ж капібари.'],
+  'toon-owl.svg': ['Угу. Я бачу всю дошку, навіть уночі 🦉', 'Мудрі сови думають двічі.'],
   'owl.jpg': ['Угу. Я бачу всю дошку, навіть уночі 🦉', 'Мудрі сови думають двічі.'],
   'bigeyes.jpg': ['Мої очі бачать УСІ ходи 👀', 'Ой, а що це ти задумав?'],
   'robot-green.jpg': ['Біп-буп. Обчислюю… 🤖', 'Мої батарейки заряджені на перемогу!'],
