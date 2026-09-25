@@ -53,6 +53,9 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   /* вчитель — одразу над дошкою; без картки lila під ним (вона обрізала кружок) */
   .learn--run .learn__table, .learn--run .learn__table .wrap { min-height: 0; background: none !important; box-shadow: none !important; border: 0 !important; overflow: visible !important; }
   .learn--run .learn__table .wrap { padding-top: 4px; padding-bottom: 4px; }
+  /* висота блоку вчителя — завжди однакова: що б він не казав (завдання, похвала, підказка), дошка не рухається */
+  .learn--run .learn__table { height: calc(clamp(84px, min(30vw, 15svh), 140px) + 8px); overflow: hidden; }
+  .learn--run .learn__table .wrap { height: 100%; align-items: start; }
   .learn--run .learn__table .wrap { display: grid; grid-template-columns: var(--teach) minmax(0, 1fr); align-items: center; gap: 4px 10px; padding: 0 8px;
     --teach: clamp(84px, min(30vw, 15svh), 140px); }
   .learn--run .learn__table .wrap > :not(.lg-teacher) { grid-column: 2; }

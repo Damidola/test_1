@@ -285,3 +285,7 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 .lg-board-wrap > .lg-board-el.cg-wrap coords.ranks coord { display: flex; align-items: center; justify-content: center; }
 .lg-board-wrap > .lg-board-el.cg-wrap coords.files { bottom: -16px; height: 15px; }
 .lg-board-wrap > .lg-board-el.cg-wrap coords.files coord { padding-left: 0; text-align: center; }
+
+/* міні-уроки: блок вчителя однакової висоти, рядок кнопок під дошкою завжди займає місце — дошка не рухається */
+.lv-teach { height: calc(var(--teach) + 4px); overflow: hidden; }
+.lg-play:has(> .lv-teach) > .lg-controls { min-height: 44px; }
