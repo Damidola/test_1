@@ -3,7 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node tools/build-learn.mjs"
+    "build": "node tools/build-learn.mjs",
+    "test": "node --import ./tools/test/register.mjs --test 'tools/test/*.test.mjs'",
+    "check:pages": "node tools/check-pages.mjs",
+    "check": "npm test && node tools/check-lessons.mjs > /dev/null && node tools/check-pages.mjs"
   },
   "devDependencies": {
     "@lichess-org/chessground": "^10.2.0",
