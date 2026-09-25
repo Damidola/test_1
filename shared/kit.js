@@ -527,6 +527,16 @@
       let t = null; try { t = inFrame && window.top.LG && window.top.LG.fullscreen; } catch (e) { /* */ }
       return t || own;
     })(),
+    // Кругла кнопка повного екрана (гра з роботом, уроки, задачі): сама малює свій стан; без підтримки браузера — null
+    fsButton(extra) {
+      const fs = LG.fullscreen; if (!fs.supported) return null;
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'lg-top-btn lg-top-fs' + (extra ? ' ' + extra : '');
+      const ic = d => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+      const paint = () => { const on = fs.on(); b.innerHTML = ic(on ? 'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5' : 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5'); b.setAttribute('aria-label', on ? 'Вийти з повного екрана' : 'Повний екран'); };
+      paint(); fs.onChange(() => setTimeout(paint, 50));
+      b.addEventListener('click', () => { fs.set(!fs.on()); LG.play('tap'); setTimeout(paint, 400); });
+      return b;
+    },
     setLang: l => { store.set('lang', l === 'en' ? 'en' : 'uk'); location.reload(); },
     t: s => (window.LG_T ? window.LG_T(s) : s),
     boardTheme: () => store.get('boardTheme', 'brown'),

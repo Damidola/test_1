@@ -64,6 +64,10 @@ export const runView = (ctrl: LearnCtrl) => {
     div('.lg-run-top', [
       a('../index.html#learn')('.lg-run-menu', { attrs: { title: 'Меню уроків' } }, '☰'),
       progressView(runCtrl),
+      // кнопка повного екрана (як у грі з роботом) — її малює й веде shared/kit.js
+      div('.lg-run-fs', {
+        hook: { insert: (v: VNode) => { const b = (window as any).LG?.fsButton?.(); if (b) (v.elm as HTMLElement).appendChild(b); } },
+      }),
     ]),
     div('.learn__main.main-board', { class: { apples: levelCtrl.isAppleLevel() } }, [
       runCtrl.stageStarting() ? stageStarting(runCtrl) : null,

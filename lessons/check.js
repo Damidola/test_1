@@ -2,9 +2,9 @@
    потім прості завдання: 2 — «постав шах», по 3 — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790325219';
-import { goNext, markSeen } from '../shared/path.js?v=1790325219';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790325219';
+import { createBoard } from '../shared/board.js?v=1790325601';
+import { goNext, markSeen } from '../shared/path.js?v=1790325601';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790325601';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();

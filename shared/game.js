@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790325219';
-import { aiMove, hintMove } from './ai.js?v=1790325219';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790325219';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790325601';
+import { aiMove, hintMove } from './ai.js?v=1790325601';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790325601';
 
 const LG = window.LG;
 
@@ -384,17 +384,10 @@ export function startGame(cfg) {
       home.hidden = true;
       const top = document.createElement('div'); top.className = 'lg-topbtns';
       top.innerHTML = `<a class="lg-top-btn" href="${home.getAttribute('href')}" aria-label="Меню">${LG.navIcon('⬅️')}</a>
-        <span class="lg-top-r">${LG.fullscreen.supported ? '<button type="button" class="lg-top-btn lg-top-fs" aria-label="Повний екран"></button>' : ''}<button type="button" class="lg-top-btn lg-top-sound" aria-label="Звук"></button></span>`;
+        <span class="lg-top-r"><button type="button" class="lg-top-btn lg-top-sound" aria-label="Звук"></button></span>`;
       root.appendChild(top);
       // повний екран: кнопка поруч зі звуком (вийшли жестом «назад» — тут можна одразу ввімкнути знову)
-      const fsb = top.querySelector('.lg-top-fs');
-      if (fsb) {
-        const FS_ON = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
-        const FS_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
-        const paintFs = () => { const on = LG.fullscreen.on(); fsb.innerHTML = on ? FS_OFF : FS_ON; fsb.setAttribute('aria-label', on ? 'Вийти з повного екрана' : 'Повний екран'); };
-        paintFs(); LG.fullscreen.onChange(() => setTimeout(paintFs, 50));
-        fsb.addEventListener('click', () => { LG.fullscreen.set(!LG.fullscreen.on()); LG.play('tap'); setTimeout(paintFs, 400); });
-      }
+      const fsb = LG.fsButton(); if (fsb) top.querySelector('.lg-top-r').prepend(fsb);
       const snd = top.querySelector('.lg-top-sound');
       const paintSnd = () => { snd.innerHTML = LG.navIcon(LG.muted || LG.volume <= 0 ? '🔇' : '🔊'); snd.classList.toggle('off', LG.muted || LG.volume <= 0); };
       paintSnd();

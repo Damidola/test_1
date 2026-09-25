@@ -243,3 +243,14 @@ cg-board square.current-premove { background-color: rgba(52, 120, 246, .62) !imp
 cg-board square.premove-dest { background: radial-gradient(rgba(52, 120, 246, .7) 19%, rgba(0, 0, 0, 0) 20%); }
 cg-board square.oc.premove-dest { background: radial-gradient(transparent 0%, transparent 79%, rgba(52, 120, 246, .55) 80%); }
 .lg-top-r { display: flex; gap: 8px; }
+
+/* кнопка повного екрана в уроках і задачах (така сама, як у грі з роботом) */
+.lv-row { flex: none; display: flex; align-items: center; gap: 6px; width: min(100% - 16px, 560px); }
+.lv-row .lv-bar { flex: 1; width: auto; min-width: 0; }
+.lv-row .lg-top-fs, .lg-run-fs .lg-top-btn { flex: none; width: 40px; height: 40px; border-radius: 14px; background: rgba(255,255,255,.07); backdrop-filter: none; }
+.lv-row .lg-top-fs svg, .lg-run-fs .lg-top-btn svg { width: 22px; height: 22px; }
+.lg-run-fs { flex: none; display: flex; align-items: center; }
+.lg-top-fs.mt-fs { position: fixed; top: calc(8px + env(safe-area-inset-top)); right: 8px; z-index: 50; width: 38px; height: 38px; }
+.lg-top-fs.mt-fs svg { width: 21px; height: 21px; }
+/* уроки з кружечками рівнів: рядок рівнів угорі, дошка з завданням — унизу, ближче до кнопок */
+.lg-play > .lv-row { margin-bottom: auto; }

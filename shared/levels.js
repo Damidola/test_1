@@ -12,6 +12,9 @@ export function createLevels(el, key, n, onPick) {
     }).join('');
   }
   el.addEventListener('click', e => { const b = e.target.closest('.lv'); if (!b || b.disabled) return; onPick(+b.dataset.i); });
+  // праворуч від кружечків — кнопка повного екрана (як у грі з роботом)
+  const fsb = LG.fsButton && LG.fsButton('lv-fs');
+  if (fsb && el.parentNode) { const row = document.createElement('div'); row.className = 'lv-row'; el.parentNode.insertBefore(row, el); row.append(el, fsb); }
   return {
     open,
     set(i) { cur = i; render(); },
@@ -54,7 +57,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790325219').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1790325601').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';
