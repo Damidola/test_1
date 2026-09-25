@@ -628,7 +628,7 @@
     pieceSetPicker,
     game,
     muted: store.get('muted', false),
-    volume: store.get('volume', 0.8),
+    volume: store.get('volume', 0.4),
     playFile,
     showSettings,
     addSettings: fn => { settingsBuilders.push(fn); if (gearBtn) gearBtn.hidden = false; },
