@@ -11,8 +11,8 @@
 .dg-earl{transform-origin:140px 110px;animation:dgEar 3.6s ease-in-out infinite}
 .dg-earr{transform-origin:260px 110px;animation:dgEar 3.6s ease-in-out infinite reverse}
 @keyframes dgEar{0%,80%,100%{transform:rotate(0)}88%{transform:rotate(-8deg)}}
-.dg-armr{transform-origin:292px 344px;animation:dgWave 2.8s ease-in-out infinite}
-@keyframes dgWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
+.dg-armr{transform-origin:292px 344px;animation:dgRestR 3.6s ease-in-out infinite}
+@keyframes dgRestR{0%,100%{transform:rotate(0)}50%{transform:rotate(4deg)}}
 .dg-arml{transform-origin:108px 344px;animation:dgRest 3.6s ease-in-out infinite}
 @keyframes dgRest{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
 .dg-happy,.dg-angry,.dg-bhappy,.dg-bangry,.dg-eyeshappy,.dg-steam,.dg-red,.dg-talk,.dg-spark{opacity:0}
@@ -23,9 +23,9 @@
 @keyframes dgJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 .mood-happy .dg-blush{opacity:.8}
 .mood-happy .dg-armr{animation:dgCheer .55s ease-in-out infinite}
-@keyframes dgCheer{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-26deg)}}
+@keyframes dgCheer{0%,100%{transform:rotate(-150deg)}50%{transform:rotate(-172deg)}}
 .mood-happy .dg-arml{animation:dgCheerL .55s ease-in-out infinite}
-@keyframes dgCheerL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+@keyframes dgCheerL{0%,100%{transform:rotate(150deg)}50%{transform:rotate(172deg)}}
 .dg-spark{animation:dgSpark 1.2s ease-in-out infinite}
 @keyframes dgSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
 .mood-angry .dg-norm,.mood-angry .dg-bnorm{opacity:0}
@@ -40,7 +40,7 @@
 .dg-steam{animation:dgSteam 1.4s ease-out infinite}
 @keyframes dgSteam{0%{transform:translateY(8px) scale(.6)}100%{transform:translateY(-28px) scale(1.3)}}
 .thinking .dg-pup{animation:none;transform:translate(7px,-7px)}
-.thinking .dg-armr{animation:none;transform:rotate(-34deg) translate(-26px,14px)}
+.thinking .dg-armr{animation:none;transform:rotate(100deg)}
 .talking:not(.mood-happy):not(.mood-angry) .dg-norm{opacity:0}
 .talking:not(.mood-happy):not(.mood-angry) .dg-talk{opacity:1}
 .dg-talkin{transform-origin:200px 270px;animation:dgTalk .32s ease-in-out infinite alternate}
@@ -50,6 +50,7 @@
 .poked .dg-pup{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}
 .poked .dg-bnorm{opacity:0}.poked .dg-bhappy{opacity:1;transform:translateY(-8px)}
 .poked .dg-norm{opacity:0}.poked .dg-talk{opacity:1}.poked .dg-talkin{animation:none}
+.poked .dg-armr{animation:none;transform:rotate(-60deg)}.poked .dg-arml{animation:none;transform:rotate(60deg)}
 .poked .dg-earl{animation:none;transform:rotate(12deg)}.poked .dg-earr{animation:none;transform:rotate(-12deg)}
 </style>
 <g class="dg-body">
@@ -92,13 +93,9 @@
     <path d="M118 378 q5 -3 10 0 M121 386 q5 -3 10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
   </g>
   <g class="dg-armr">
-    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="#e39a4c" stroke-width="30" stroke-linecap="round"/>
-    <g transform="translate(332 272)">
-      <ellipse cx="0" cy="0" rx="20" ry="21" fill="#fbecd6"/>
-      <g fill="#fbecd6"><ellipse cx="-13" cy="-17" rx="7" ry="9"/><ellipse cx="0" cy="-22" rx="7" ry="9"/><ellipse cx="13" cy="-17" rx="7" ry="9"/></g>
-      <ellipse cx="0" cy="4" rx="9" ry="8" fill="#c98f55"/>
-      <g fill="#c98f55"><circle cx="-12" cy="-17" r="3.5"/><circle cx="0" cy="-21" r="3.5"/><circle cx="12" cy="-17" r="3.5"/></g>
-    </g>
+    <path d="M292 344 C306 362 300 384 276 386" fill="none" stroke="#e39a4c" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="272" cy="384" rx="18" ry="15" fill="#fbecd6"/>
+    <path d="M282 378 q-5 -3 -10 0 M279 386 q-5 -3 -10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
   </g>
 </g>
 </svg>

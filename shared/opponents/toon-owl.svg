@@ -11,8 +11,8 @@
 .ow-earl{transform-origin:140px 110px;animation:owEar 3.6s ease-in-out infinite}
 .ow-earr{transform-origin:260px 110px;animation:owEar 3.6s ease-in-out infinite reverse}
 @keyframes owEar{0%,80%,100%{transform:rotate(0)}88%{transform:rotate(-8deg)}}
-.ow-armr{transform-origin:292px 344px;animation:owWave 2.8s ease-in-out infinite}
-@keyframes owWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-10deg)}}
+.ow-armr{transform-origin:292px 344px;animation:owRestR 3.6s ease-in-out infinite}
+@keyframes owRestR{0%,100%{transform:rotate(0)}50%{transform:rotate(4deg)}}
 .ow-arml{transform-origin:108px 344px;animation:owRest 3.6s ease-in-out infinite}
 @keyframes owRest{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
 .ow-happy,.ow-angry,.ow-bhappy,.ow-bangry,.ow-eyeshappy,.ow-steam,.ow-red,.ow-talk,.ow-spark{opacity:0}
@@ -23,9 +23,9 @@
 @keyframes owJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 .mood-happy .ow-blush{opacity:.8}
 .mood-happy .ow-armr{animation:owCheer .55s ease-in-out infinite}
-@keyframes owCheer{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-26deg)}}
+@keyframes owCheer{0%,100%{transform:rotate(-150deg)}50%{transform:rotate(-172deg)}}
 .mood-happy .ow-arml{animation:owCheerL .55s ease-in-out infinite}
-@keyframes owCheerL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+@keyframes owCheerL{0%,100%{transform:rotate(150deg)}50%{transform:rotate(172deg)}}
 .ow-spark{animation:owSpark 1.2s ease-in-out infinite}
 @keyframes owSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
 .mood-angry .ow-norm,.mood-angry .ow-bnorm{opacity:0}
@@ -40,7 +40,7 @@
 .ow-steam{animation:owSteam 1.4s ease-out infinite}
 @keyframes owSteam{0%{transform:translateY(8px) scale(.6)}100%{transform:translateY(-28px) scale(1.3)}}
 .thinking .ow-pup{animation:none;transform:translate(7px,-7px)}
-.thinking .ow-armr{animation:none;transform:rotate(-34deg) translate(-26px,14px)}
+.thinking .ow-armr{animation:none;transform:rotate(100deg)}
 .talking:not(.mood-happy):not(.mood-angry) .ow-norm{opacity:0}
 .talking:not(.mood-happy):not(.mood-angry) .ow-talk{opacity:1}
 .ow-talkin{transform-origin:200px 262px;animation:owTalk .32s ease-in-out infinite alternate}
@@ -50,6 +50,7 @@
 .poked .ow-pup{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}
 .poked .ow-bnorm{opacity:0}.poked .ow-bhappy{opacity:1;transform:translateY(-8px)}
 .poked .ow-norm{opacity:0}.poked .ow-talk{opacity:1}.poked .ow-talkin{animation:none}
+.poked .ow-armr{animation:none;transform:rotate(-60deg)}.poked .ow-arml{animation:none;transform:rotate(60deg)}
 .poked .ow-earl{animation:none;transform:rotate(12deg)}.poked .ow-earr{animation:none;transform:rotate(-12deg)}
 </style>
 <g class="ow-body">
@@ -89,13 +90,9 @@
     <path d="M118 378 q5 -3 10 0 M121 386 q5 -3 10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
   </g>
   <g class="ow-armr">
-    <path d="M292 344 C314 334 326 310 330 290" fill="none" stroke="#8a6a4f" stroke-width="30" stroke-linecap="round"/>
-    <g transform="translate(332 272)">
-      <ellipse cx="0" cy="0" rx="20" ry="21" fill="#6f533c"/>
-      <g fill="#6f533c"><ellipse cx="-13" cy="-17" rx="7" ry="9"/><ellipse cx="0" cy="-22" rx="7" ry="9"/><ellipse cx="13" cy="-17" rx="7" ry="9"/></g>
-      <ellipse cx="0" cy="4" rx="9" ry="8" fill="#e9dcc6"/>
-      <g fill="#e9dcc6"><circle cx="-12" cy="-17" r="3.5"/><circle cx="0" cy="-21" r="3.5"/><circle cx="12" cy="-17" r="3.5"/></g>
-    </g>
+    <path d="M292 344 C306 362 300 384 276 386" fill="none" stroke="#8a6a4f" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="272" cy="384" rx="18" ry="15" fill="#6f533c"/>
+    <path d="M282 378 q-5 -3 -10 0 M279 386 q-5 -3 -10 0" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2.5" stroke-linecap="round"/>
   </g>
 </g>
 </svg>
