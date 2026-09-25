@@ -35,7 +35,8 @@ export function applyBoardLook() {
 /* Дотики як у застосунку Lichess (для будь-якої дошки chessground):
    — фігура збільшується лише тоді, коли її справді тягнуть, а не від дотику;
    — легкий тап із ковзанням пальця не перетягує фігуру на сусідню клітинку;
-   — тап по клітинці, куди може піти лише одна фігура (напр. ворожа фігура під боєм), одразу робить цей хід. */
+   — тап по клітинці, куди може піти лише одна фігура (напр. ворожа фігура під боєм), одразу робить цей хід;
+   — коли наша фігура на дошці одна, тап по будь-якій клітинці, куди вона може піти, одразу робить хід. */
 export function lichessTouch(cg) {
   const wrap = cg.state.dom.elements.wrap;
   // Зелені крапки ходів можна повністю вимкнути в Профілі — тоді жодна гра чи урок їх не вмикає
@@ -82,9 +83,11 @@ export function lichessTouch(cg) {
       if (cg.state.selected) return; // тапнули свою фігуру — звичайний вибір
       const key = cg.getKeyAtDomPos(pos), color = cg.state.movable.color, dests = cg.state.movable.dests;
       if (!key || !color || !dests) return;
-      // лише взяття: тап по ворожій фігурі, яку може побити тільки одна наша фігура (тап по порожній клітинці нічого не рухає)
+      // взяття: тап по ворожій фігурі, яку може побити тільки одна наша фігура;
+      // якщо наша фігура на дошці лише одна — тап по будь-якій клітинці, куди вона може піти, одразу робить хід
       const target = cg.state.pieces.get(key);
-      if (!target || target.color === color) return;
+      if (target && target.color === color) return;
+      if (!target && [...cg.state.pieces.values()].filter(p => p.color === color).length !== 1) return;
       const from = [...dests].filter(([o, ds]) => ds.includes(key) && cg.state.pieces.get(o)?.color === color).map(([o]) => o);
       if (from.length !== 1) return;
       cg.selectSquare(from[0]);
