@@ -3,7 +3,7 @@
 export function createLevels(el, key, n, onPick) {
   const LG = window.LG, get = () => LG.store.get('lvl:' + key, []);
   let cur = 0;
-  const open = () => { const r = get(); let i = 0; while (i < n - 1 && r[i]) i++; return i; };
+  const open = () => { const r = get(); let i = 0; while (i < n - 1 && r[i]) i++; return r[n - 1] ? 0 : i; };
   function render() {
     const r = get(), o = open();
     el.innerHTML = Array.from({ length: n }, (_, i) => {
