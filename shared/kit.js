@@ -191,6 +191,7 @@
   }
   setTimeout(() => ['move', 'capture', 'error', 'illegal', 'win'].forEach(n => load(root + FILES[n])), 0); // щоб перший хід не чекав завантаження
   function play(name) {
+    if (name === 'tap') return; // кнопки й меню — без звуку, звучить лише сама гра
     if (FILES[name]) return playFile(root + FILES[name], name === 'win' ? 0.5 : 1); // звук перемоги — удвічі тихіше
     if (LG.muted || !SOUNDS[name]) return;
     try {
