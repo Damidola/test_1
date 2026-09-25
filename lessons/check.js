@@ -2,9 +2,10 @@
    потім прості завдання: 2 — «постав шах», по 3 — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790366740';
-import { goNext, markSeen } from '../shared/path.js?v=1790366740';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790366740';
+import { createBoard } from '../shared/board.js?v=1790369512';
+import { goNext, markSeen } from '../shared/path.js?v=1790369512';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790369512';
+import { mountGuide } from '../shared/guide.js?v=1790369512';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();
@@ -82,6 +83,13 @@ $('go').addEventListener('click', startTasks);
 $('go').textContent = 'Зрозуміло 👍';
 setTimeout(startTasks, 0);
 $('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
+// «Гайд»: приклад — чорна тура шахує; стрілки: куди втекти, як закритися, кого побити — і слон б'є туру
+const guide = mountGuide(document.querySelector('.vl-intro'), [{ demo: '4r2k/8/8/1B6/R7/8/8/4K3 w - - 0 1', steps: [
+  { say: 'Чорна тура шахує білого короля!', arrows: 'e8e1:red', wait: 2200 },
+  { say: 'Утекти: король відходить (зелені стрілки).', arrows: 'e1d2 e1f2 e1d1 e1f1', wait: 2400 },
+  { say: 'Закритися: тура стає між королем і нападником.', arrows: 'a4e4:blue', wait: 2400 },
+  { say: 'Побити: слон з’їдає туру — найкраще!', arrows: 'b5e8:red', wait: 2000 }, { move: 'b5e8', wait: 2200 }] }]);
+new MutationObserver(() => (main.dataset.step === 'intro' ? guide.play() : guide.stop())).observe(main, { attributes: true, attributeFilter: ['data-step'] });
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });
 // Нижня панель: 💡 — хід-підказка, 📖 — що таке шах
