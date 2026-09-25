@@ -300,3 +300,65 @@ html:has(#view-practice:not([hidden])) body, html:has(#view-play:not([hidden])) 
 #view-practice .ap-cat small { display: block; -webkit-line-clamp: unset; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #view-practice .ap-cat .pcs > span:not(.emo) { display: none; } /* без «vs» у рядку — назва влазить */
 #view-practice .ap-cat .pcs img + img { margin-left: -12px; }
+
+/* ---------- Профіль у новому дизайні (як Magnus Trainer): чорне тло, бірюзові акценти, тонкі лінії ---------- */
+#view-profile.mg { --mg-acc: #2ee6b8; --mg-muted: #8c8c8c; --mg-line: #161616;
+  background: #000; font-family: Manrope, var(--lg-font), sans-serif; color: #fff; padding-left: 0; padding-right: 0; }
+body:has(#view-profile.mg:not([hidden])) { background: #000; }
+.mg .mg-title { margin: 4px 0 12px; text-align: center; font: 700 17px Manrope, sans-serif; letter-spacing: 3px; }
+.mg-me { display: flex; align-items: center; gap: 14px; padding: 0 18px; }
+.mg-av { flex: none; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #3fd0c0, #1a9bb5); display: grid; place-items: center; }
+.mg-av svg { width: 28px; height: 28px; }
+.mg-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.mg-who b { font-size: 19px; font-weight: 800; }
+.mg-who small { font-size: 12.5px; font-weight: 600; color: var(--mg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mg-bar { height: 4px; border-radius: 2px; background: #222; overflow: hidden; }
+.mg-bar i { display: block; height: 100%; background: var(--mg-acc); border-radius: 2px; min-width: 3px; }
+.mg-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 18px 0; }
+.mg-stats div { padding: 7px 0 6px; border-radius: 12px; background: #111; text-align: center; }
+.mg-stats b { display: block; font-size: 19px; font-weight: 800; line-height: 1.1; }
+.mg-stats span { font-size: 9.5px; font-weight: 700; letter-spacing: 1px; color: var(--mg-muted); }
+.mg-label { margin: 14px 18px 4px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--mg-muted); }
+.mg-list { border-top: 1px solid var(--mg-line); }
+.mg-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 46px; padding: 0 18px; border-bottom: 1px solid var(--mg-line); box-sizing: border-box; list-style: none; cursor: default; }
+.mg-row > span { font-size: 15px; font-weight: 700; white-space: nowrap; }
+.mg-col { flex-direction: column; align-items: stretch; gap: 7px; padding-top: 8px; padding-bottom: 9px; }
+.mg-pill { display: flex; padding: 3px; border-radius: 17px; background: #1b1b1b; }
+.mg-pill button { min-width: 44px; height: 28px; padding: 0 12px; border: 0; border-radius: 14px; background: transparent; color: var(--mg-muted); font: 800 13px Manrope, sans-serif; cursor: pointer; }
+.mg-pill button.on { background: var(--mg-acc); color: #04241d; }
+.mg-lim button { min-width: 38px; padding: 0 8px; }
+.mg-vol { flex: 1; max-width: 230px; display: flex; align-items: center; gap: 12px; }
+.mg-vol button { flex: none; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: none; color: #fff; cursor: pointer; }
+.mg-vol button svg { width: 22px; height: 22px; display: block; margin: auto; }
+.mg-vol input { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; outline: none; cursor: pointer;
+  background: linear-gradient(90deg, var(--mg-acc) var(--v, 70%), #2a2a2a var(--v, 70%)); }
+.mg-vol input::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #fff; }
+.mg-vol input::-moz-range-thumb { width: 20px; height: 20px; border: 0; border-radius: 50%; background: #fff; }
+.mg-vol.muted input { filter: grayscale(1); opacity: .5; }
+.mg .ap-boards { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 5px; }
+.mg .ap-boards button { aspect-ratio: 1; border: 2px solid transparent; border-radius: 7px; box-shadow: none; }
+.mg .ap-boards button.on { border-color: var(--mg-acc); box-shadow: 0 0 0 2px var(--mg-acc); }
+.mg #p-pieces .lg-piece-sets { gap: 5px; }
+.mg #p-pieces .lg-piece-set { border-radius: 7px; }
+.mg #p-pieces .lg-piece-set.active { box-shadow: 0 0 0 2px var(--mg-acc); }
+.mg .pf-sw { width: 48px; height: 28px; border-radius: 14px; background: #2a2a2a; }
+.mg .pf-sw::after { top: 3px; left: 3px; width: 22px; height: 22px; }
+.mg .pf-sw.on { background: var(--mg-acc); } .mg .pf-sw.on::after { transform: translateX(20px); }
+.mg-more { margin: 0; }
+.mg-more > summary { cursor: pointer; }
+.mg-more > summary::-webkit-details-marker { display: none; }
+.mg-more > summary em { display: flex; align-items: center; gap: 4px; font-style: normal; font-size: 12.5px; font-weight: 600; color: var(--mg-muted); text-align: right; }
+.mg-more > summary em svg { width: 15px; height: 15px; flex: none; color: #555; transition: transform .15s; }
+.mg-more[open] > summary em svg { transform: rotate(90deg); }
+.mg-sub { background: #0a0a0a; }
+.mg-sub .mg-row > span { font-size: 14px; font-weight: 600; color: #d0d0d0; }
+.mg-reset { display: block; margin: 12px auto 0; padding: 6px 12px; border: 0; background: none; color: #ff6b6b; font: 700 14px Manrope, sans-serif; cursor: pointer; }
+.mg #p-pieces .lg-piece-set.active { border-color: var(--mg-acc) !important; box-shadow: 0 0 0 2px var(--mg-acc); outline: none; }
+@media (max-height: 700px) {
+  .mg .mg-title { margin: 0 0 8px; font-size: 15px; }
+  .mg-av { width: 46px; height: 46px; } .mg-who b { font-size: 17px; }
+  .mg-stats { margin-top: 8px; } .mg-stats div { padding: 4px 0; } .mg-stats b { font-size: 16px; }
+  .mg-label { margin: 9px 18px 3px; }
+  .mg-row { min-height: 40px; } .mg-col { gap: 5px; padding-top: 6px; padding-bottom: 7px; }
+  .mg-reset { margin-top: 4px; }
+}

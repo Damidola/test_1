@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790320619';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790320619';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790320619';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790320812';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790320812';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790320812';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -157,30 +157,39 @@ function solvedPuzzles() {
 let pfOpen = false;
 function renderProfile() {
   const st = LG.stats(), wins = Object.values(st).reduce((a, s) => a + (s.wins || 0), 0), d = doneCount();
-  // Компактно: шапка з прогресом і цифрами, далі — рядки «назва ліворуч, керування праворуч»
+  // Профіль у стилі нового дизайну (Magnus): чорне тло, бірюзові акценти, рядки налаштувань з тонкими лініями
+  const cur = Math.min(d, STEPS.length - 1), sec = secOf(cur);
+  const kingSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5v4M10 4.5h4M8 20h8l-1-4c2-1 3-3 3-5 0-2.2-2-3.5-6-3.5S6 8.8 6 11c0 2 1 4 3 5z"/></svg>';
+  const chev = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+  const lims = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`;
+  $('view-profile').classList.add('mg');
   $('view-profile').innerHTML = `
-    <div class="pf-head"><span class="av">${piece('K')}</span><div class="pf-me"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length}</small><div class="bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div>
-      <div class="pf-stats"><span><b>${d}</b> кроків</span><span><b>${solvedPuzzles()}</b> задач</span><span><b>${wins}</b> перемог</span></div></div></div>
-    <div class="pf-list">
-      <div class="pf-row"><span class="pf-l">🌐 Мова</span><div class="ap-seg pf-seg" id="p-lang">${[['uk', '🇺🇦 UA'], ['en', '🇬🇧 EN']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
-      <div class="pf-row"><span class="pf-l">Звук</span><div class="ap-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
-      <div class="pf-row pf-col"><span class="pf-l">Дошка</span><div class="ap-boards" id="p-boards"></div></div>
-      <div class="pf-row pf-col" id="p-pieces"><span class="pf-l">Фігури</span></div>
-      <div class="pf-row"><span class="pf-l">🟢 Крапки ходів</span><button type="button" class="pf-sw" id="p-dots" aria-label="Крапки ходів"></button></div>
-      ${LG.fullscreen.supported ? `<div class="pf-row"><span class="pf-l">⛶ Повний екран</span><button type="button" class="pf-sw" id="p-fs" aria-label="Повний екран"></button></div>` : ''}
+    <h1 class="mg-title">ПРОФІЛЬ</h1>
+    <div class="mg-me"><span class="mg-av">${kingSvg}</span><div class="mg-who"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length} · ${sec ? sec[1] : ''}</small><div class="mg-bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
+    <div class="mg-stats"><div><b>${d}</b><span>КРОКИ</span></div><div><b>${solvedPuzzles()}</b><span>ЗАДАЧІ</span></div><div><b>${wins}</b><span>ПЕРЕМОГИ</span></div></div>
+    <div class="mg-label">НАЛАШТУВАННЯ</div>
+    <div class="mg-list">
+      <div class="mg-row"><span>Мова</span><div class="mg-pill" id="p-lang">${[['uk', 'UA'], ['en', 'EN']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
+      <div class="mg-row"><span>Звук</span><div class="mg-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
+      <div class="mg-row mg-col"><span>Дошка</span><div class="ap-boards" id="p-boards"></div></div>
+      <div class="mg-row mg-col" id="p-pieces"><span>Фігури</span></div>
+      <div class="mg-row"><span>Крапки ходів</span><button type="button" class="pf-sw" id="p-dots" aria-label="Крапки ходів"></button></div>
+      ${LG.fullscreen.supported ? `<div class="mg-row"><span>Повний екран</span><button type="button" class="pf-sw" id="p-fs" aria-label="Повний екран"></button></div>` : ''}
+      <details class="pf-more mg-more"${pfOpen ? ' open' : ''}><summary class="mg-row"><span>Гра з роботом</span><em>${lims}${chev}</em></summary>
+        <div class="mg-sub">
+          <div class="mg-row"><span>Підказки</span><div class="mg-pill mg-lim" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
+          <div class="mg-row"><span>Ходи назад</span><div class="mg-pill mg-lim" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
+          <div class="mg-row"><span>Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
+        </div>
+      </details>
     </div>
-    <details class="pf-more"${pfOpen ? ' open' : ''}><summary class="pf-list pf-sum"><span class="pf-l">🤖 Гра з роботом і ще</span><span class="pf-chev">›</span></summary>
-    <div class="pf-list">
-      <div class="pf-row"><span class="pf-l">💡 Підказки</span><div class="ap-seg pf-lim" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
-      <div class="pf-row"><span class="pf-l">↩️ Ходи назад</span><div class="ap-seg pf-lim" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '<span class="inf">∞</span>' : v}</button>`).join('')}</div></div>
-      <div class="pf-row"><span class="pf-l">💬 Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
-    </div>
-    <button type="button" class="pf-reset" id="p-reset">Скинути прогрес</button></details>`;
+    <button type="button" class="mg-reset" id="p-reset">Скинути прогрес</button>`;
   // розкрите чи ні — пам'ятаємо, поки відкрита сторінка
   $('view-profile').querySelector('.pf-more').addEventListener('toggle', e => { pfOpen = e.target.open; });
   const paint = () => {
     const v = Math.round(LG.volume * 100);
-    $('p-mute').textContent = LG.muted || v === 0 ? '🔇' : v < 40 ? '🔈' : v < 75 ? '🔉' : '🔊';
+    const off = LG.muted || v === 0;
+    $('p-mute').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/>${off ? '<path d="M16 9.5l5 5M21 9.5l-5 5"/>' : '<path d="M15.5 9a4.2 4.2 0 0 1 0 6"/>' + (v >= 60 ? '<path d="M18 6.5a7.8 7.8 0 0 1 0 11"/>' : '')}</svg>`;
     $('p-range').value = v; $('p-range').style.setProperty('--v', v + '%');
     $('p-vol').classList.toggle('muted', LG.muted);
   };
@@ -213,7 +222,7 @@ function renderProfile() {
   sw('p-dots', 'showDests', true); sw('p-say', 'oppSay', false); // репліки суперника типово вимкнені
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();
-  $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); }));
+  $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); const em = $('view-profile').querySelector('.mg-more em'); if (em) em.firstChild.textContent = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`; }));
   $('p-reset').addEventListener('click', () => {
     if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
     for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
