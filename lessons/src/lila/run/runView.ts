@@ -44,13 +44,20 @@ const renderCompleted = (level: LevelCtrl): VNode => {
 };
 
 // Слова вчителя завжди вміщаються в бульбашку: якщо текст довгий — шрифт трохи менший
-const fitSay = (v: VNode) =>
+const fitSay = (v: VNode) => {
+  fitNow(v);
+  setTimeout(() => fitNow(v), 400); // ще раз, коли анімація появи бульбашки закінчиться
+};
+const fitNow = (v: VNode) =>
   requestAnimationFrame(() => {
     const el = (v.elm as HTMLElement)?.querySelector<HTMLElement>('.goal, .result, .lg-demo-say');
     if (!el) return;
+    // межа — висота блоку вчителя (бульбашка росте вниз до неї, далі — менший шрифт)
+    const max = (v.elm as HTMLElement).clientHeight - 6;
+    if (max < 40) return;
     let fs = 16;
     el.style.fontSize = fs + 'px';
-    while (el.scrollHeight > el.clientHeight + 1 && fs > 11) el.style.fontSize = --fs + 'px';
+    while (el.scrollHeight > max && fs > 11) el.style.fontSize = --fs + 'px';
   });
 
 // ---------- logic-games-kids: вчитель (Пан Сова) — угорі ліворуч, праворуч його слова ----------

@@ -58,7 +58,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790336292').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1790336917').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';
@@ -100,6 +100,13 @@ function mountTeacher(main) {
   // настрій
   let moodT = 0;
   const mood = (cls, ms) => { clearTimeout(moodT); pic.classList.remove('talking', 'mood-happy', 'thinking'); if (cls) pic.classList.add(cls); if (ms) moodT = setTimeout(() => pic.classList.remove(cls), ms); };
+  // слова завжди вміщаються в бульбашку: довгий текст — трохи дрібнішим шрифтом
+  const fit = () => requestAnimationFrame(() => {
+    let fs = 15.5; say.style.setProperty('--say-fs', fs + 'px');
+    while (say.scrollHeight > say.clientHeight + 1 && fs > 11) say.style.setProperty('--say-fs', (fs -= 0.5) + 'px');
+  });
+  fit(); addEventListener('resize', fit);
+  new MutationObserver(fit).observe(say, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class'] });
   new MutationObserver(() => {
     if (task.classList.contains('ok')) mood('mood-happy', 2600);
     else if (task.classList.contains('bad')) mood('thinking', 2600);

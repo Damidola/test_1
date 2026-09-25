@@ -92,7 +92,7 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   .lg-run-top .lg-run-menu { flex: none; width: 46px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: rgba(255,255,255,.07); color: #fff; font-size: 22px; }
   .learn--run .learn__table .progress, .learn--run .learn__table .lg-demo-open { display: none; }
   /* розмір дошки не залежить від того, скільки тексту в учителя (приклад із кнопками вищий) — дошка не стрибає й не лізе під кнопки */
-  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--fs-top, 0px) - var(--lg-bar-h, 38px) - 20px - 62px - max(clamp(84px, min(30vw, 15svh), 140px), 118px) - 26px)); }
+  .learn--run .learn__main.main-board { margin: 0 auto; width: min(100%, calc(100svh - var(--fs-top, 0px) - var(--lg-bar-h, 38px) - 20px - 62px - max(clamp(84px, min(30vw, 15svh), 140px), 118px) - 32px)); }
   .learn--run .learn__table { margin: 0; }
   .learn--run .learn__table .goal { font-size: 16px; font-weight: 700; padding: 8px 10px; min-height: 0; }
   /* слова вчителя — не довше 4 рядків */
@@ -104,7 +104,8 @@ body.lg-game-learn { ---block-gap: 10px; ---box-padding: clamp(10px, calc(10px +
   .learn--run .lg-demo-btns button { padding: 7px 10px; font-size: 15px; }
   .learn--run .learn__table .result { min-height: 0; }
   .learn--run .learn__table .result { padding: 8px 12px; }
-  .learn--run .learn__table .result h2 { font: 800 17px/1.3 var(--lg-font, sans-serif); margin: 0 0 4px; }
+  .learn--run .learn__table .result h2 { font: 800 1.05em/1.25 var(--lg-font, sans-serif); margin: 0 0 2px; }
+  .learn--run .learn__table .result .stars { font-size: 1.2em; }
 }
 /* комп'ютер: дошка на всю висоту екрана (у lila ширину дошки задають спільні змінні сторінки) */
 @media (min-width: 800px) {
@@ -158,12 +159,13 @@ html.lg body.lg-game.lg-game-learn { --c-bg-page: #16152F; --c-body-gradient: #2
   .learn--run .learn__table .goal { font-size: 14px; padding: 6px 9px; }
   .learn--run .learn__table .goal p { -webkit-line-clamp: 3; }
 }
-/* координати за межами дошки: цифри ліворуч, літери під дошкою (як у грі з роботом) */
-.learn__main.main-board { aspect-ratio: 1 / .985; }
-.learn__main.main-board > .cg-wrap { inset: 0 auto auto 14px; width: calc(100% - 22px); height: auto; aspect-ratio: 1; }
+/* координати — на самій дошці: цифри в лівому верхньому куті клітинок, літери — у правому нижньому */
+.learn__main .cg-wrap coords { font-size: clamp(9px, 2.9vw, 13px); font-weight: 700; }
+.learn__main .cg-wrap coords.ranks { left: 2px; right: auto; top: 0; width: 1.2em; height: 100%; }
+.learn__main .cg-wrap coords.ranks coord { display: flex; align-items: flex-start; padding-top: 1px; }
+.learn__main .cg-wrap coords.files { bottom: 0; left: 0; top: auto; height: 1.3em; }
+.learn__main .cg-wrap coords.files coord { padding: 0 3px 0 0; text-align: right; }
 /* без координат (налаштування в Профілі) — дошка на всю ширину */
-html.lg-nocoords .learn__main.main-board { aspect-ratio: 1; }
-html.lg-nocoords .learn__main.main-board > .cg-wrap { inset: 0; width: 100%; }
 html.lg-nocoords .cg-wrap coords { display: none !important; }
 /* приклад: кнопки «Ще раз» / «Почати» — компактні, в один рядок */
 .learn--run .lg-demo-btns { padding: 6px 0 0 !important; gap: 8px; }
