@@ -174,33 +174,33 @@ html.lg-nocoords .cg-wrap coords { display: none !important; }
 .learn__main .cg-wrap coords.ranks .coord-dark { color: var(--cg-coord-black, #946f51) !important; }
 
 /* ================= Новий дизайн уроку: чорне тло, Manrope; угорі ‹ НАЗВА ⛶, під ними — кружечки рівнів ================= */
-html.lg body.lg-game.lg-game-learn { background: #000 !important; }
+html.lg body.lg-game.lg-game-learn { background: #1B2133 !important; }
 #main-wrap { font-family: Manrope, 'Noto Sans', sans-serif; }
 @media (max-width: 799px) and (orientation: portrait) {
   .learn--run .lg-run-top { display: grid !important; grid-template-columns: 44px minmax(0, 1fr) 44px; grid-template-areas: "menu title fs" "prog prog prog";
     align-items: center; gap: 6px 8px; padding: 6px 12px 0 !important; }
-  .lg-run-top .lg-run-menu { grid-area: menu; width: 40px !important; height: 40px !important; border-radius: 50% !important; background: #161616 !important;
+  .lg-run-top .lg-run-menu { grid-area: menu; width: 40px !important; height: 40px !important; border-radius: 50% !important; background: #262D42 !important;
     font: 400 30px/1 Manrope, sans-serif !important; padding-bottom: 4px; box-sizing: border-box; }
   .lg-run-title { grid-area: title; text-align: center; font: 700 15px Manrope, sans-serif; letter-spacing: 2.5px; text-transform: uppercase; color: #fff;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .lg-run-fs { grid-area: fs; justify-content: flex-end; }
-  .lg-run-fs .lg-top-btn { width: 40px !important; height: 40px !important; border-radius: 50% !important; background: #161616 !important; }
+  .lg-run-fs .lg-top-btn { width: 40px !important; height: 40px !important; border-radius: 50% !important; background: #262D42 !important; }
   .lg-run-fs .lg-top-btn svg { width: 20px !important; height: 20px !important; }
   /* кружечки рівнів: ідеально — бірюзова галочка, пройдено — жовта, поточний — біле кільце, закриті — темно-сірі */
   .lg-run-top .progress { grid-area: prog; justify-self: center; gap: 8px !important; padding: 2px 0 !important; background: none !important; border-radius: 0 !important; }
   .lg-run-top .progress a, .lg-run-top .progress .locked { flex: none !important; width: 26px; height: 26px; max-height: none !important; box-shadow: none !important;
     font: 800 12px Manrope, sans-serif !important; }
-  .lg-run-top .progress a { background: #232323 !important; color: #bdbdbd !important; }
-  .lg-run-top .progress .locked { background: #141414 !important; color: #444 !important; }
-  .lg-run-top .progress a.active { background: #000 !important; color: #fff !important; box-shadow: 0 0 0 2px #fff !important; }
+  .lg-run-top .progress a { background: #30384F !important; color: #bdbdbd !important; }
+  .lg-run-top .progress .locked { background: #20263A !important; color: #444 !important; }
+  .lg-run-top .progress a.active { background: #1B2133 !important; color: #fff !important; box-shadow: 0 0 0 2px #fff !important; }
   .lg-run-top .progress a.done.perfect { background: #2ee6b8 !important; }
   .lg-run-top .progress a.done.perfect::after { color: #04241d !important; font-size: 14px !important; }
   .lg-run-top .progress a.done.passed { background: #F5C542 !important; }
   .lg-run-top .progress a.done.passed::after { font-size: 14px !important; }
   .lg-run-top .progress a.done.active { box-shadow: 0 0 0 2px #000, 0 0 0 4px #fff !important; }
   /* вчитель — в колі з обідком кольору розділу; бульбашка — темна з тонкою рамкою */
-  .lg-teacher { background: radial-gradient(circle at 50% 35%, #1f1f1f, #0b0b0b) !important; box-shadow: 0 0 0 3px var(--sec, #7C6CF0) !important; }
-  .learn--run .learn__table .goal, .learn--run .learn__table .result.failed, .learn--run .lg-demo-say { background: #161616 !important; border: 1px solid #262626 !important; color: #fff !important; }
+  .lg-teacher { background: radial-gradient(circle at 50% 35%, #262D42, #1B2133) !important; box-shadow: 0 0 0 3px var(--sec, #7C6CF0) !important; }
+  .learn--run .learn__table .goal, .learn--run .learn__table .result.failed, .learn--run .lg-demo-say { background: #262D42 !important; border: 1px solid #343C55 !important; color: #fff !important; }
   .learn--run .learn__table .goal.lg-hint { background: #1c1805 !important; border-color: #F5C542 !important; color: #ffe9a8 !important; }
   .learn--run .learn__table .result.completed { background: linear-gradient(135deg, #1fbf98, #2ee6b8) !important; border: 0 !important; color: #04241d !important; }
   .learn--run .learn__table .result.completed h2 { color: #04241d !important; }
@@ -208,11 +208,6 @@ html.lg body.lg-game.lg-game-learn { background: #000 !important; }
 }
 /* телефон: угорі ‹ НАЗВА ⛶ і кружечки рівнів, нижче вчитель і дошка — від краю до краю, якщо влазить по висоті;
    нижні кнопки нижчі; Сова в колі ніколи не обрізана; у пройдених кружечках — лише ✓ */
-html.lg:has(body.lg-game-learn) { --lg-bar-h: 46px; }
-body.lg-game-learn .lg-nav { padding-top: 4px !important; padding-bottom: calc(4px + env(safe-area-inset-bottom)) !important; }
-body.lg-game-learn .lg-nav-btn { flex-direction: row !important; gap: 8px !important; font-size: 14px !important; }
-body.lg-game-learn .lg-nav-btn .ico { font-size: 18px !important; }
-body.lg-game-learn .lg-nav-btn .ico svg { width: 20px; height: 20px; }
 @media (max-width: 799px) and (orientation: portrait) {
   /* під рівнями — вчитель, одразу під ним дошка; уся вільна висота — лише знизу (інакше на телефоні дошка з'їжджає під нижні кнопки) */
   .learn.learn--run { grid-template-areas: "top" "table" "main" "." !important; grid-template-rows: auto auto auto minmax(0, 1fr) !important; gap: 8px !important; }

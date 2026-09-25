@@ -342,17 +342,17 @@ html.lg-wait body { opacity: .001 !important; transition: none; }
 html body { transition: opacity .15s ease-out; }
 
 /* повний екран: угорі чорна смуга (як у шахових застосунках) — вміст починається під нею */
-html.lg-fs { --fs-top: 28px; background: #000; }
+html.lg-fs { --fs-top: 28px; background: #1B2133; }
 html.lg-fs body { border-top: var(--fs-top) solid #000; box-sizing: border-box; }
 
 /* ================= Новий дизайн ігрових екранів (урок, задача, гра з роботом) =================
    Чорне тло й Manrope, як у Профілі; нижня панель — темні «плитки» як у Magnus, підказка з бірюзовою лампочкою. */
-html.lg.lg-night { --lg-bg: #000; --lg-surface: #161616; --lg-surface-2: #232323; --lg-line: #262626; --lg-muted: #8c8c8c; --mg-acc: #2ee6b8;
-  --lg-font: Manrope, 'Nunito', system-ui, sans-serif; background: #000; }
-html.lg.lg-night body.lg-game { background: #000; font-family: var(--lg-font); }
-html.lg .lg-nav { background: #161616; padding: 7px 10px calc(8px + env(safe-area-inset-bottom)); gap: 10px; }
-html.lg .lg-nav-btn { background: #232323; color: #fff; box-shadow: none; border-radius: 14px; font: 700 12px Manrope, var(--lg-font), sans-serif; }
-html.lg .lg-nav-btn:active { background: #2c2c2c; transform: scale(.97); box-shadow: none; }
+html.lg.lg-night { --lg-bg: #1B2133; --lg-surface: #262D42; --lg-surface-2: #30384F; --lg-line: #343C55; --lg-muted: #8c8c8c; --mg-acc: #2ee6b8;
+  --lg-font: Manrope, 'Nunito', system-ui, sans-serif; background: #1B2133; }
+html.lg.lg-night body.lg-game { background: #1B2133; font-family: var(--lg-font); }
+html.lg .lg-nav { background: #262D42; padding: 7px 10px calc(8px + env(safe-area-inset-bottom)); gap: 10px; }
+html.lg .lg-nav-btn { background: #30384F; color: #fff; box-shadow: none; border-radius: 14px; font: 700 12px Manrope, var(--lg-font), sans-serif; }
+html.lg .lg-nav-btn:active { background: #3A4360; transform: scale(.97); box-shadow: none; }
 html.lg .lg-nav-btn .ico svg { width: 23px; height: 23px; }
 html.lg .lg-nav-btn .lbl { opacity: 1; }
 html.lg .lg-nav-btn.lg-hintbtn .ico { color: #2ee6b8; }
@@ -360,9 +360,9 @@ html.lg .lg-nav-btn:is([disabled], .is-off) { opacity: 1; background: #1b1b1b; c
 html.lg .lg-nav-btn .ico[data-n]::after { background: #2ee6b8; color: #04241d; }
 
 /* вікна (результат гри, правила, пояснення) — темна картка, Manrope, бірюзова головна кнопка */
-html.lg.lg-night .lg-modal-card { background: #111; border: 1px solid #262626; color: #fff; font-family: Manrope, var(--lg-font), sans-serif; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+html.lg.lg-night .lg-modal-card { background: #111; border: 1px solid #343C55; color: #fff; font-family: Manrope, var(--lg-font), sans-serif; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
 html.lg.lg-night .lg-modal-card h2 { font-weight: 800; }
-html.lg.lg-night .lg-btn { background: #232323; color: #fff; border-color: #232323; box-shadow: none; font-family: Manrope, var(--lg-font), sans-serif; font-weight: 800; }
+html.lg.lg-night .lg-btn { background: #30384F; color: #fff; border-color: #30384F; box-shadow: none; font-family: Manrope, var(--lg-font), sans-serif; font-weight: 800; }
 html.lg.lg-night .lg-btn-primary { background: #2ee6b8; color: #04241d; border-color: #2ee6b8; }
 
 /* суперник у вікні кінця партії — великий кружок на своїй сцені, з настроєм */
@@ -387,12 +387,19 @@ html.lg.lg-night .lg-result-win h2 { color: #2ee6b8; }
 html.lg .lg-nav.lg-merged .lg-home, html.lg .lg-nav .lg-dup { display: none !important; }
 .lg-controls.lg-ctl-hidden { display: none !important; }
 html.lg .lg-nav.lg-merged .lg-nav-btn { min-width: 0; }
-html.lg .lg-nav .lg-nav-btn.on { color: #fff; background: #2c2c2c; }
+html.lg .lg-nav .lg-nav-btn.on { color: #fff; background: #3A4360; }
 html.lg .lg-nav .lg-nav-btn:disabled { opacity: .35; }
 html.lg .lg-nav .lg-ctl-copy .ico { font-size: 18px; line-height: 1; }
 html.lg .lg-nav .lg-nav-btn .lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.lg-top-btn.lg-exit { position: fixed; top: calc(8px + env(safe-area-inset-top) + var(--fs-top, 0px)); left: 8px; z-index: 50; width: 38px; height: 38px; background: #161616; text-decoration: none; }
+.lg-top-btn.lg-exit { position: fixed; top: calc(8px + env(safe-area-inset-top) + var(--fs-top, 0px)); left: 8px; z-index: 50; width: 38px; height: 38px; background: #262D42; text-decoration: none; }
 .lg-top-btn.lg-exit svg { width: 21px; height: 21px; }
 /* де вже є своя стрілка «назад» (уроки) — друга не потрібна */
 body:has(.lv-back, .lg-run-menu) .lg-exit { display: none !important; }
 .lg-top-btn.lg-exit.in-slot { position: static; width: 40px; height: 40px; }
+/* нижні кнопки — окремі великі заокруглені плитки на тлі сторінки (як на chess.com), без суцільної смуги */
+:root, html.lg, html.lg:has(body.lg-game-learn) { --lg-bar-h: 64px; }
+html.lg .lg-nav { background: transparent !important; padding: 6px 12px calc(10px + env(safe-area-inset-bottom)) !important; gap: 12px !important; }
+html.lg .lg-nav-btn { border-radius: 20px !important; background: #37405F !important; color: #fff; box-shadow: 0 3px 0 rgba(0,0,0,.18) !important; flex-direction: column !important; gap: 2px !important; font: 700 11px Manrope, var(--lg-font), sans-serif !important; }
+html.lg .lg-nav-btn:active { background: #434D70 !important; transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.18) !important; }
+html.lg .lg-nav-btn .ico svg { width: 24px !important; height: 24px !important; }
+html.lg .lg-nav-btn .lbl { opacity: .85; }

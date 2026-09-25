@@ -73,7 +73,7 @@
     if (fsFrame) { fsFrame.src = u.href; return; }
     fsFrame = document.createElement('iframe');
     fsFrame.className = 'lg-fsframe'; fsFrame.allow = 'fullscreen; autoplay';
-    fsFrame.style.cssText = 'position:fixed;left:0;right:0;bottom:0;top:var(--fs-top,0px);width:100%;height:calc(100% - var(--fs-top,0px));border:0;z-index:2147483000;background:#000';
+    fsFrame.style.cssText = 'position:fixed;left:0;right:0;bottom:0;top:var(--fs-top,0px);width:100%;height:calc(100% - var(--fs-top,0px));border:0;z-index:2147483000;background:#1B2133';
     fsFrame.addEventListener('load', () => {
       let w; try { w = fsFrame.contentWindow.location; } catch (e) { return; }
       if (w.href !== 'about:blank' && samePage(w)) fsClose(w.hash);

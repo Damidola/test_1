@@ -6,8 +6,8 @@
   "scope": "./",
   "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "#15142A",
-  "theme_color": "#15142A",
+  "background_color": "#1B2133",
+  "theme_color": "#1B2133",
   "lang": "uk",
   "icons": [{ "src": "shared/pieces/cburnett/wN.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
 }

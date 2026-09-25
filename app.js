@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790342699';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790342699';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790342699';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790343067';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790343067';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790343067';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
