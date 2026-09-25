@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790364976';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790364976';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790364976';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790365353';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790365353';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790365353';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -190,7 +190,17 @@ function renderPractice(open) {
       const prog = tot ? `<span class="g2-prog${n >= tot ? ' all' : ''}"><span>${n} / ${tot}</span><i><i style="width:${Math.max(2, Math.round(100 * n / tot))}%"></i></i></span>` : n ? `<span class="g2-cnt">✓ ${n}</span>` : '';
       return `<a class="g2-tile" href="${href}" style="--c:${cat.c}"><span class="g2-ic pcs">${art(ic)}</span><span class="g2-tx"><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${prog}</a>`;
     }).join('')}</div>`).join('');
+  markTall();
 }
+// висока плитка практики — іконка над текстом (довгі слова на кшталт «Відволікання» не вилазять і не дрібні)
+function markTall() {
+  requestAnimationFrame(() => document.querySelectorAll('#view-practice .g2-tiles .g2-tile').forEach(t => {
+    t.classList.remove('tall');
+    const ic = t.querySelector('.g2-ic'), tx = t.querySelector('.g2-tx');
+    if (t.clientHeight >= ic.offsetHeight + tx.offsetHeight + 34) t.classList.add('tall');
+  }));
+}
+addEventListener('resize', markTall);
 
 // ---------- 👤 профіль ----------
 function solvedPuzzles() {
