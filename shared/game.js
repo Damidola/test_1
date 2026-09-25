@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790339072';
-import { aiMove, hintMove } from './ai.js?v=1790339072';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790339072';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790340077';
+import { aiMove, hintMove } from './ai.js?v=1790340077';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790340077';
 
 const LG = window.LG;
 
@@ -299,9 +299,16 @@ export function startGame(cfg) {
     if (autoClose) again.autoClose = autoClose; // швидкі ігри: вікно саме зникає
     if (friend && r.winner !== 'draw') return LG.win('Переможець: ' + names[r.winner] + '!', { ...again, reward: true });
     if (!friend) hero.setMood(r.winner === 'draw' ? null : r.winner === player ? 'angry' : 'happy'); // програв — злиться, виграв — радіє
-    if (r.winner === 'draw') LG.draw(r.text || 'Нічия!', again);
-    else if (r.winner === player) LG.win(r.text || 'Перемога!', { ...again, reward: true });
-    else LG.lose(r.text || 'Цього разу виграв суперник.', again);
+    // у вікні кінця партії — той самий суперник: програв — злиться, виграв — радіє
+    const heroOpt = mood => {
+      const slot = $('.lg-hero-slot'), pic = slot && slot.querySelector('.lg-hero-pic'); if (!pic || friend) return null;
+      const toon = pic.querySelector('.lg-toon:not([hidden])'), img = pic.querySelector('img');
+      const html = toon && toon.innerHTML ? `<span class="lg-toon">${toon.innerHTML}</span>` : img ? `<img src="${img.src}" alt="">` : '';
+      return html ? { html, mood, scene: getComputedStyle(slot).getPropertyValue('--scene') } : null;
+    };
+    if (r.winner === 'draw') LG.draw(r.text || 'Нічия!', { ...again, hero: heroOpt('') });
+    else if (r.winner === player) LG.win(r.text || 'Перемога!', { ...again, reward: true, hero: heroOpt('mood-angry') });
+    else LG.lose(r.text || 'Цього разу виграв суперник.', { ...again, hero: heroOpt('mood-happy') });
   }
 
   // Легкі рівні (1–2): завжди 3 підказки й ходів назад скільки завгодно; 3–5 — як у Профілі

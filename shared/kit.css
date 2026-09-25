@@ -364,3 +364,13 @@ html.lg.lg-night .lg-modal-card { background: #111; border: 1px solid #262626; c
 html.lg.lg-night .lg-modal-card h2 { font-weight: 800; }
 html.lg.lg-night .lg-btn { background: #232323; color: #fff; border-color: #232323; box-shadow: none; font-family: Manrope, var(--lg-font), sans-serif; font-weight: 800; }
 html.lg.lg-night .lg-btn-primary { background: #2ee6b8; color: #04241d; border-color: #2ee6b8; }
+
+/* суперник у вікні кінця партії — великий кружок на своїй сцені, з настроєм */
+.lg-result-hero { position: relative; width: 150px; height: 150px; margin: 0 auto 10px; border-radius: 50%; overflow: hidden;
+  background: #1d1d1d var(--scene) center / cover no-repeat; box-shadow: 0 0 0 3px #2ee6b8; }
+.lg-result-hero > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lg-result-hero > .lg-toon { position: absolute; inset: 6% 0 0; display: block; }
+.lg-result-hero > .lg-toon svg { width: 100%; height: 100%; display: block; }
+.lg-result-lose .lg-result-hero { box-shadow: 0 0 0 3px #FF5C6C; }
+html.lg.lg-night .lg-result h2 { color: #fff; font-family: Manrope, var(--lg-font), sans-serif; font-weight: 800; }
+html.lg.lg-night .lg-result-win h2 { color: #2ee6b8; }

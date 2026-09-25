@@ -396,9 +396,15 @@
     }[kind];
     // Після перемоги — без емодзі: лише слово й котик
     const children = [el('h2', { text: cfg.title, title: message || '' })];
-    if (cfg.emoji) children.unshift(el('div', { class: 'lg-result-emoji', text: cfg.emoji }));
+    if (cfg.emoji && !(opts && opts.hero)) children.unshift(el('div', { class: 'lg-result-emoji', text: cfg.emoji }));
     const imgSlot = el('div', { class: 'lg-result-img' });
-    if (opts && opts.reward && !opts.image) { opts = { ...opts, image: takeReward(), video: true }; }
+    // суперник у вікні (гра з роботом) — замість картинки-нагороди
+    if (opts && opts.hero) {
+      const h = el('div', { class: 'lg-result-hero ' + (opts.hero.mood || '') });
+      if (opts.hero.scene) h.style.setProperty('--scene', opts.hero.scene);
+      h.innerHTML = opts.hero.html; children.unshift(h);
+    }
+    if (opts && opts.reward && !opts.image && !opts.hero) { opts = { ...opts, image: takeReward(), video: true }; }
     if (opts && opts.image) children.push(imgSlot);
     const buttons = el('div', { class: 'lg-result-btns' });
     const again = opts && opts.onAgain;
