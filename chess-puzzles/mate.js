@@ -4,9 +4,9 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790337006';
-import { createRules } from '../chess/rules.js?v=1790337006';
-import { hintMove } from '../shared/ai.js?v=1790337006';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790337090';
+import { createRules } from '../chess/rules.js?v=1790337090';
+import { hintMove } from '../shared/ai.js?v=1790337090';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -285,7 +285,7 @@ function solved() {
   if (mistakes < 3 && first && s.size === DATA[sec].length) {
     return LG.win(`Усі задачі «${INFO[sec].title}» розв’язано!`, { reward: true, onAgain: () => nextPuzzle() });
   }
-  LG.play('win'); LG.confetti();
+  LG.play('win'); // без конфеті на кожну задачу — конфеті лише за справжню перемогу
   const t = token;
   setTimeout(() => { if (t === token && done) nextPuzzle(); }, 1700);
 }
