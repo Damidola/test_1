@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790320955';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790320955';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790320955';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321110';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321110';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321110';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -164,10 +164,8 @@ function renderProfile() {
   const lims = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`;
   $('view-profile').classList.add('mg');
   $('view-profile').innerHTML = `
-    <h1 class="mg-title">ПРОФІЛЬ</h1>
     <div class="mg-me"><span class="mg-av">${kingSvg}</span><div class="mg-who"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length} · ${sec ? sec[1] : ''}</small><div class="mg-bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
     <div class="mg-stats"><div><b>${d}</b><span>КРОКИ</span></div><div><b>${solvedPuzzles()}</b><span>ЗАДАЧІ</span></div><div><b>${wins}</b><span>ПЕРЕМОГИ</span></div></div>
-    <div class="mg-label">НАЛАШТУВАННЯ</div>
     <div class="mg-list">
       <div class="mg-row"><span>Мова</span><div class="mg-pill" id="p-lang">${[['uk', 'UA'], ['en', 'EN']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
       <div class="mg-row"><span>Звук</span><div class="mg-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
@@ -180,12 +178,17 @@ function renderProfile() {
           <div class="mg-row"><span>Підказки</span><div class="mg-pill mg-lim" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
           <div class="mg-row"><span>Ходи назад</span><div class="mg-pill mg-lim" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
           <div class="mg-row"><span>Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
+          <button type="button" class="mg-done">Готово</button>
         </div>
       </details>
     </div>
     <button type="button" class="mg-reset" id="p-reset">Скинути прогрес</button>`;
   // розкрите чи ні — пам'ятаємо, поки відкрита сторінка
   $('view-profile').querySelector('.pf-more').addEventListener('toggle', e => { pfOpen = e.target.open; });
+  // шторку «Гра з роботом» закриває «Готово» або тап повз неї
+  const more = $('view-profile').querySelector('.pf-more');
+  more.querySelector('.mg-done').addEventListener('click', () => { more.open = false; });
+  $('view-profile').addEventListener('pointerdown', e => { if (more.open && !e.target.closest('.mg-sub') && !e.target.closest('.pf-more > summary')) more.open = false; });
   const paint = () => {
     const v = Math.round(LG.volume * 100);
     const off = LG.muted || v === 0;
