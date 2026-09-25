@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #16152F; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790336917">
-  <link rel="stylesheet" href="../shared/play.css?v=1790336917">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790337006">
+  <link rel="stylesheet" href="../shared/play.css?v=1790337006">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
@@ -47,6 +47,14 @@
     .mt-card .ic { grid-row: span 2; font-size: 30px; text-align: center; }
     .mt-card .ic mpiece, .mt-goal mpiece { display: inline-block; width: 40px; height: 40px; background-size: cover; vertical-align: middle; }
     .mt-goal mpiece { width: 28px; height: 28px; }
+    /* задачі: унизу лише одна панель (Меню · Підказка · Пояснення); задачу міняють стрілки біля номера */
+    .mt-lives { display: none !important; }
+    .mt[data-mode="puzzle"] > .lg-controls { display: none !important; }
+    .mt-nav { display: inline-flex; align-items: center; gap: 6px; }
+    .mt:not([data-mode="puzzle"]) .mt-arr { display: none; }
+    .mt-arr { width: 40px; height: 36px; border: 0; border-radius: 12px; background: rgba(255,255,255,.1); color: #fff; font: 900 26px/1 var(--lg-font); cursor: pointer; padding: 0 0 3px; }
+    .mt-arr:active { transform: scale(.92); }
+    .mt-arr:disabled { opacity: .3; }
     .mt-card b { font-size: 16px; font-weight: 900; }
     .mt-card small { grid-column: 2; font-size: 12px; font-weight: 700; color: var(--lg-muted); line-height: 1.2; }
     .mt-card .pr { grid-row: 1 / span 2; grid-column: 3; font-size: 13px; font-weight: 900; color: var(--lg-muted); white-space: nowrap; }
@@ -73,7 +81,7 @@
 <body>
   <main class="lg-play mt" data-mode="menu">
     <section class="mt-menu" id="menu" aria-label="Розділи задач"></section>
-    <div class="mt-goal"><span id="goal"></span><span class="mt-lives" id="lives"></span><span class="mt-count" id="count"></span><button type="button" class="mt-ex" id="ex" title="Приклад">📖 Приклад</button></div>
+    <div class="mt-goal"><span id="goal"></span><span class="mt-lives" id="lives"></span><span class="mt-nav"><button type="button" class="mt-arr" id="pv" aria-label="Попередня задача">‹</button><span class="mt-count" id="count"></span><button type="button" class="mt-arr" id="nx" aria-label="Наступна задача">›</button></span><button type="button" class="mt-ex" id="ex" title="Приклад">📖 Приклад</button></div>
     <div class="lg-board-wrap" id="wrap"><div class="lg-board-el" id="board"></div></div>
     <div class="mt-task" id="task"></div>
     <div class="lg-controls">
@@ -84,8 +92,8 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790336917"></script>
-  <script src="../shared/kit.js?v=1790336917" data-game="mate" data-night="on"></script>
-  <script type="module" src="mate.js?v=1790336917"></script>
+  <script src="../shared/games.js?v=1790337006"></script>
+  <script src="../shared/kit.js?v=1790337006" data-game="mate" data-night="on"></script>
+  <script type="module" src="mate.js?v=1790337006"></script>
 </body>
 </html>

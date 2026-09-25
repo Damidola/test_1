@@ -4,9 +4,9 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790336917';
-import { createRules } from '../chess/rules.js?v=1790336917';
-import { hintMove } from '../shared/ai.js?v=1790336917';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790337006';
+import { createRules } from '../chess/rules.js?v=1790337006';
+import { hintMove } from '../shared/ai.js?v=1790337006';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -216,7 +216,8 @@ function paint() {
   const side = userColor === 'white' ? '<span class="mt-side"></span> ходять білі' : '<span class="mt-side b"></span> ходять чорні';
   $('goal').innerHTML = done ? (mistakes >= 3 ? 'Ось як треба 👆' : 'Правильно! 🎉') : `${info.title} · ${side}`;
   $('lives').textContent = '❤️'.repeat(Math.max(0, 3 - mistakes)) + '🤍'.repeat(Math.min(3, mistakes));
-  $('count').textContent = `${idx + 1} / ${DATA[sec].length} · ✅ ${solvedOf(sec).size}`;
+  $('count').textContent = `${idx + 1} / ${DATA[sec].length}`;
+  $('pv').disabled = idx <= 0;
 }
 async function puzzleMove(from, to) {
   if (done || pos.turn !== userColor) return;
@@ -312,7 +313,7 @@ function prevPuzzle() {
 }
 function nextPuzzle() {
   const list = DATA[sec];
-  if (!done && idx >= openIdx()) { LG.play('error'); shake(); return say('Спершу розв’яжи цю задачу 🙂 Не виходить — натисни 💡 або 👀', 2200); }
+  // задачі можна гортати вільно (стрілками біля номера)
   if (idx >= list.length - 1) { idx = 0; return loadPuzzle(); }
   idx++;
   if (idx > LG.store.get('puzopen:' + sec, 0)) LG.store.set('puzopen:' + sec, idx);
@@ -631,6 +632,8 @@ $('show').addEventListener('click', () => {
   history.splice(-2); pos = history[history.length - 1]; board.clearHint(); show(pos); allowMoves();
 });
 $('prev').addEventListener('click', () => { if (mode === 'puzzle') prevPuzzle(); });
+$('pv').addEventListener('click', () => { if (mode === 'puzzle') { LG.play('tap'); prevPuzzle(); } });
+$('nx').addEventListener('click', () => { if (mode === 'puzzle') { LG.play('tap'); nextPuzzle(); } });
 $('next').addEventListener('click', () => { if (mode === 'example') startPuzzles(); else if (mode === 'puzzle') nextPuzzle(); else if (mode === 'practice') startPractice(); });
 
 document.addEventListener('touchmove', e => { if (!e.target.closest('.lg-modal, .mt-menu')) e.preventDefault(); }, { passive: false });
