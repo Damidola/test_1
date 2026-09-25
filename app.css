@@ -520,3 +520,16 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 .g2-lvl b { font-size: 24px; }
 .g2-opps .ap-opp { --s: min(calc(100cqh - 6px), calc((100cqw - 26px - 4px - 24px) / 4)); }
 html, body { background: #1B2133 !important; } /* усі вкладки — чорні: без фіолетових спалахів між сторінками */
+/* Практика: пункти — великі картки на всю висоту екрана (без прокручування), а не вузькі рядки з порожнечею знизу */
+.g2-list { max-height: none; gap: 8px; padding: 2px 12px 12px; }
+.g2-item { gap: clamp(12px, 3vw, 18px); padding: 0 14px; border: 0 !important; border-radius: 18px; background: #262D42; box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+.g2-item:active { background: #30384F; transform: translateY(2px); }
+.g2-list > .g2-item .g2-ic { width: clamp(44px, 8.5svh, 72px); height: clamp(44px, 8.5svh, 72px); }
+.g2-list > .g2-item .g2-ic .emo { font-size: clamp(22px, 4.4svh, 36px); }
+.g2-list > .g2-item .g2-ic span:not(.emo) { font-size: clamp(9px, 1.5svh, 12px); }
+.g2-list > .g2-item .g2-t b { font-size: clamp(16px, 2.9svh, 22px); }
+.g2-list > .g2-item .g2-tx small { font-size: clamp(12px, 2svh, 15px); }
+.g2-list > .g2-item .g2-t em { font-size: clamp(12.5px, 2svh, 15px); }
+#view-practice.mg2 > .g2-list { flex: 1 1 auto; min-height: 0; }
+.g2-list > .g2-item .g2-ic:has(img + span, img + img) img { width: 42%; height: 42%; }
+.g2-list > .g2-item .g2-ic:has(img + span, img + img) img + img { margin-left: -12%; }
