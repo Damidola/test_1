@@ -34,7 +34,7 @@ const renderCompleted = (level: LevelCtrl): VNode => {
   return div(
     '.result.completed',
     {
-      class: { next: !!level.blueprint.nextButton },
+      class: { next: !!level.blueprint.nextButton, passed: rank > 1 },
       hook: bind('click', level.onComplete),
     },
     [

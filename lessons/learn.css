@@ -222,4 +222,9 @@ body.lg-game-learn .lg-nav-btn .ico svg { width: 20px; height: 20px; }
   .learn--run .learn__main.main-board { width: var(--bw) !important; max-width: none !important; margin: 0 0 0 calc(50% - var(--bw) / 2) !important; }
   .learn--run .learn__table .wrap { padding: 6px 8px !important; box-sizing: border-box; }
   .lg-run-top .progress a.done { color: transparent !important; }
+  /* кружечки рівнів: біле кільце поточного не обрізається */
+  .lg-run-top .progress { overflow: visible !important; padding: 5px 4px !important; }
+  /* пройдено не ідеально — бульбашка вчителя жовта, як кружечок рівня */
+  .learn--run .learn__table .result.completed.passed { background: linear-gradient(135deg, #e0ad22, #F5C542) !important; color: #3d2c00 !important; }
+  .learn--run .learn__table .result.completed.passed h2 { color: #3d2c00 !important; }
 }
