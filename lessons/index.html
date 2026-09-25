@@ -6,17 +6,15 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Як ходять фігури</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790373508">
-  <link rel="stylesheet" href="../shared/play.css?v=1790373508">
-  <link rel="stylesheet" href="lila-learn.css?v=1790373508">
-  <link rel="stylesheet" href="learn.css?v=1790373508">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790374393">
+  <link rel="stylesheet" href="../shared/play.css?v=1790374393">
+  <link rel="stylesheet" href="lila-learn.css?v=1790374393">
+  <link rel="stylesheet" href="learn.css?v=1790374393">
 </head>
 <body data-asset-url=".">
   <main id="main-wrap"><div id="learn-app"></div></main>
-  <script src="../shared/games.js?v=1790373508"></script>
-  <script src="../shared/kit.js?v=1790373508" data-game="learn" data-night="on"></script>
-  <script type="module" src="app.js?v=1790373508"></script>
-
+  <script src="../shared/games.js?v=1790374393"></script>
+  <script src="../shared/kit.js?v=1790374393" data-game="learn" data-night="on"></script>
   <style>
     .lv-vid { position: fixed; left: 0; right: 0; bottom: 0; top: var(--fs-top, 0px); z-index: 3000; display: flex; flex-direction: column; align-items: center; padding: calc(16px + env(safe-area-inset-top)) 0 calc(16px + env(safe-area-inset-bottom)); background: #1B2133; color: #fff; overflow: auto; box-sizing: border-box; }
     .lv-vid h2 { color: #fff; margin: 6px 16px 12px; font: 800 24px Manrope, var(--lg-font), sans-serif; text-align: center; }
@@ -24,30 +22,35 @@
     .lv-vid-box iframe { position: absolute; top: 0; left: 50%; height: 100%; aspect-ratio: 16 / 9; transform: translateX(-50%); border: 0; }
     .lv-vid p { margin: 12px 18px 0; max-width: 420px; font: 700 16px/1.4 Manrope, var(--lg-font), sans-serif; text-align: center; }
     .lv-vid button { margin-top: 14px; min-height: 48px; padding: 0 28px; border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 17px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
+    body:has(.lv-vid) .lg-nav { display: none !important; }
   </style>
   <script>
-    // відео-знайомство з фігурою перед першим проходженням уроку (плейлист ChessKid)
+    // Відео-знайомство з фігурою. Поки воно на екрані, урок ще не завантажений — дошка з'являється лише після «До вправ».
     (function () {
-      const V = { 2: ['bishop', 'MKLW3oh7_wE', 'Знайомся зі слоном!', 'Слон ходить навскоси — по діагоналі, скільки завгодно клітинок, і завжди лишається на клітинках свого кольору.'], 3: ['queen', '4wnfdWWiv3w', 'Знайомся з ферзем!', 'Ферзь ходить і прямо, як тура, і навскоси, як слон, — скільки завгодно клітинок. Це найсильніша фігура!'], 4: ['king', 'KVeMgVMslNM', 'Знайомся з королем!', 'Король ходить у будь-який бік, але лише на одну клітинку. Це найважливіша фігура — його треба берегти!'], 5: ['knight', 'pbMAQk-5bHU', 'Знайомся з конем!', 'Кінь стрибає літерою «Г»: дві клітинки прямо й одна вбік. Він єдиний уміє перестрибувати через інші фігури.'], 6: ['pawn', 'e015cjCtkl8', 'Знайомся з пішаком!', 'Пішак ходить лише вперед на одну клітинку (з початку — можна на дві), а б’є навскоси. Дійшов до краю — стає ферзем!'] };
-      let last = null;
-      function check() {
-        const id = (location.hash.match(/^#\/(\d+)/) || [])[1];
-        if (id === last) return; // перехід між рівнями того ж уроку — без відео
-        last = id; document.querySelector('.lv-vid')?.remove();
-        const v = V[id]; if (!v) return;
-        // оновили сторінку (кнопка «Оновити» в Telegram чи браузері) — лишаємось у вправах, без відео
-        if (!check.done && (performance.getEntriesByType('navigation')[0] || {}).type === 'reload') { check.done = true; return; }
-        check.done = true;
+      const V = {
+        2: ['MKLW3oh7_wE', 'Знайомся зі слоном!', 'Слон ходить навскоси — по діагоналі, скільки завгодно клітинок, і завжди лишається на клітинках свого кольору.'],
+        3: ['4wnfdWWiv3w', 'Знайомся з ферзем!', 'Ферзь ходить і прямо, як тура, і навскоси, як слон, — скільки завгодно клітинок. Це найсильніша фігура!'],
+        4: ['KVeMgVMslNM', 'Знайомся з королем!', 'Король ходить у будь-який бік, але лише на одну клітинку. Це найважливіша фігура — його треба берегти!'],
+        5: ['pbMAQk-5bHU', 'Знайомся з конем!', 'Кінь стрибає літерою «Г»: дві клітинки прямо й одна вбік. Він єдиний уміє перестрибувати через інші фігури.'],
+        6: ['e015cjCtkl8', 'Знайомся з пішаком!', 'Пішак ходить лише вперед на одну клітинку (з початку — можна на дві), а б’є навскоси. Дійшов до краю — стає ферзем!']
+      };
+      const stage = () => (location.hash.match(/^#\/(\d+)/) || [])[1];
+      const start = () => import('./app.js?v=1790374393');
+      const s0 = stage(), v = V[s0];
+      const reload = (performance.getEntriesByType('navigation')[0] || {}).type === 'reload';
+      if (!v || reload) start();
+      else document.addEventListener('DOMContentLoaded', () => {
         const o = document.createElement('div'); o.className = 'lv-vid';
-        o.innerHTML = '<h2></h2><div class="lv-vid-box"><iframe src="https://www.youtube-nocookie.com/embed/' + v[1] + '?playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Відео"></iframe></div><p></p><button type="button">До вправ ▶️</button>';
-        o.querySelector('h2').textContent = v[2]; o.querySelector('p').textContent = v[3];
-        // після відео дошка заново міряє своє місце на екрані — інакше фігури не перетягуються
-        o.querySelector('button').onclick = () => { o.remove(); requestAnimationFrame(() => dispatchEvent(new Event('resize'))); };
+        o.innerHTML = '<h2></h2><div class="lv-vid-box"><iframe src="https://www.youtube-nocookie.com/embed/' + v[0] + '?playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Відео"></iframe></div><p></p><button type="button">До вправ ▶️</button>';
+        o.querySelector('h2').textContent = v[1]; o.querySelector('p').textContent = v[2];
+        o.querySelector('button').onclick = () => { o.remove(); start(); };
         document.body.appendChild(o);
-      }
-      addEventListener('hashchange', check);
-      addEventListener('DOMContentLoaded', check);
+      });
+      // «Далі» веде до уроку іншої фігури — відкриваємо його заново, щоб спершу показати її відео
+      let cur = s0;
+      addEventListener('hashchange', () => { const s = stage(); if (s === cur) return; cur = s; if (V[s]) location.replace(location.pathname + '?n=' + Date.now() + location.hash); });
     })();
   </script>
+
 </body>
 </html>
