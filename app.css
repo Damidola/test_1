@@ -404,3 +404,31 @@ body:has(#view-profile.mg:not([hidden])) { background: #000; }
 .mg-think input::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #fff; }
 .mg-think input::-moz-range-thumb { width: 20px; height: 20px; border: 0; border-radius: 50%; background: #fff; }
 .mg-think b { flex: none; min-width: 44px; text-align: right; font: 800 13px Manrope, sans-serif; color: #fff; }
+
+/* ---------- Уроки в новому дизайні: чорне тло, вкладки розділів угорі, зигзаг тонкими лініями — один екран без прокрутки ---------- */
+body:has(#view-learn:not([hidden])) { background: #000; }
+#view-learn:not([hidden]) { display: flex; flex-direction: column; height: 100svh; overflow: hidden; background: #000;
+  padding: env(safe-area-inset-top) 0 calc(74px + env(safe-area-inset-bottom)); font-family: Manrope, var(--lg-font), sans-serif; }
+#view-learn .ap-secbar { flex: none; display: flex; gap: 0; margin: 0; padding: 0; overflow: hidden; border-bottom: 1px solid #1c1c1c; }
+#view-learn .ap-secbar button { flex: 1 1 0; min-width: 0; height: 46px; padding: 0 2px; border-radius: 0; background: none; color: #8c8c8c;
+  font: 800 clamp(9.5px, 2.7vw, 12.5px)/1.1 Manrope, var(--lg-font), sans-serif; letter-spacing: .4px; white-space: normal; text-align: center;
+  justify-content: center; border-bottom: 3px solid transparent; transition: color .15s, border-color .15s; }
+#view-learn .ap-secbar button.on { color: #fff; border-bottom-color: var(--c); }
+#view-learn .ap-road { flex: 1; min-height: 0; display: block; margin: 0 auto; width: 100%; max-width: 480px; }
+#view-learn .ap-road-svg .bed { stroke: #333; stroke-width: 3; }
+#view-learn .ap-road-svg .done { stroke-width: 3; opacity: 1; }
+#view-learn .ap-node { position: absolute; width: calc(var(--sz, 64px) + 44px); padding: 0; gap: 4px; transform: translate(-50%, calc(var(--sz, 64px) / -2)); }
+#view-learn .ap-dot { width: var(--sz, 64px); height: var(--sz, 64px); font-size: calc(var(--sz, 64px) * .45);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--c) 80%, #fff), color-mix(in srgb, var(--c) 80%, #000)); box-shadow: none; }
+#view-learn .ap-dot img { width: 66%; height: 66%; }
+#view-learn .ap-node:not(.done):not(.cur) .ap-dot { filter: saturate(.55) brightness(.75); }
+#view-learn .ap-node:active .ap-dot { transform: scale(.94); }
+#view-learn .ap-node b { font: 700 clamp(10.5px, 1.6svh, 12.5px)/1.15 Manrope, var(--lg-font), sans-serif; color: #d6d6d6; text-shadow: none;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+#view-learn .ap-node.cur b { color: #fff; }
+#view-learn .ap-node.done .ap-dot::after { right: auto; left: -2px; top: -2px; width: 22px; height: 22px; background: #fff; color: #000; font: 900 13px/22px Manrope, sans-serif; box-shadow: 0 0 0 3px #000; }
+#view-learn .ap-node.cur .ap-dot { outline: 3px solid var(--c); outline-offset: 4px; box-shadow: 0 0 26px color-mix(in srgb, var(--c) 55%, transparent); animation: mgpulse 1.8s ease-in-out infinite; }
+@keyframes mgpulse { 50% { outline-offset: 7px; outline-color: color-mix(in srgb, var(--c) 35%, transparent); } }
+#view-learn .ap-nextsec { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 1; display: flex; align-items: center; gap: 8px;
+  height: 34px; padding: 0 16px; border: 1.5px solid #333; border-radius: 17px; background: #000; color: #bdbdbd; font: 700 13px Manrope, var(--lg-font), sans-serif; white-space: nowrap; cursor: pointer; }
+#view-learn .ap-nextsec i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }

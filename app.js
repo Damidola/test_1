@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321270';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321270';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321270';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790321631';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790321631';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790321631';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -21,31 +21,51 @@ const secOf = i => SECTIONS.filter(x => x[0] <= i).pop();
 const KIND = { play: ['#2ECC9A', 'Гра'], task: ['#FF9F1C', 'Задачі'], learn: ['#7C6CF0', 'Урок'] };
 
 // ---------- 🎓 уроки ----------
-let curStep = 0;
+// Новий вигляд (як Magnus) у кольорах і з фігурами старого: вгорі вкладки розділів, під ними — лише кроки
+// вибраного розділу зигзагом (центр → ліворуч → праворуч → центр…), тонкі лінії, білі галочки. Усе на одному екрані.
+let curStep = 0, curSec = -1;
+const SEC_SHORT = ['ФІГУРИ', 'НАПАД', 'ШАХ І МАТ', 'ОСОБЛИВІ', 'МАЙСТЕР'];
+const secRange = si => [SECTIONS[si][0], (SECTIONS[si + 1] || [STEPS.length])[0]];
+const secIndexOf = i => SECTIONS.reduce((k, x, j) => (x[0] <= i ? j : k), 0);
 function renderLearn() {
   curStep = STEPS.findIndex((_, i) => !stepDone(i)); if (curStep < 0) curStep = STEPS.length - 1;
-  const rows = Math.ceil(STEPS.length / 3);
-  // рядок r знизу: парні — зліва направо, непарні — справа наліво
-  const cells = STEPS.map(([ic, title], i) => {
-    const r = Math.floor(i / 3), k = i % 3, col = r % 2 ? 3 - k : k + 1, sec = secOf(i);
-    return `<button type="button" class="ap-node${stepDone(i) ? ' done' : ''}${i === curStep ? ' cur' : ''}" id="s${i}" data-i="${i}" style="grid-row:${rows - r};grid-column:${col};--c:${sec[2]}">
-      <span class="ap-dot">${icon(ic)}<span class="n">${i + 1}</span></span><b>${esc(title)}</b></button>`;
-  }).join('');
-  $('road').innerHTML = '<svg class="ap-road-svg" id="road-svg" aria-hidden="true"></svg>' + cells;
+  if (curSec < 0) curSec = secIndexOf(curStep);
   $('secbar').innerHTML = SECTIONS.map(([from, name, c], si) => {
-    const to = (SECTIONS[si + 1] || [STEPS.length])[0], n = STEPS.slice(from, to).filter((_, j) => stepDone(from + j)).length;
-    return `<button type="button" data-s="${from}" style="--c:${c}"><i></i>${name} <small>${n}/${to - from}</small></button>`;
+    const [f, t] = secRange(si), n = STEPS.slice(f, t).filter((_, j) => stepDone(f + j)).length;
+    return `<button type="button" data-s="${si}" class="${si === curSec ? 'on' : ''}" style="--c:${c}" aria-label="${esc(name)}: ${n} з ${t - f}">${SEC_SHORT[si] || esc(name)}</button>`;
   }).join('');
+  const [f, t] = secRange(curSec), c = SECTIONS[curSec][2];
+  const cells = STEPS.slice(f, t).map(([ic, title], j) => {
+    const i = f + j;
+    return `<button type="button" class="ap-node${stepDone(i) ? ' done' : ''}${i === curStep ? ' cur' : ''}" id="s${i}" data-i="${i}" style="--c:${c}">
+      <span class="ap-dot">${icon(ic)}</span><b>${esc(title)}</b></button>`;
+  }).join('');
+  const next = SECTIONS[curSec + 1];
+  $('road').innerHTML = '<svg class="ap-road-svg" id="road-svg" aria-hidden="true"></svg>' + cells +
+    (next ? `<button type="button" class="ap-nextsec" data-s="${curSec + 1}" style="--c:${next[2]}"><i></i><span>${esc(next[1])}</span> ›</button>` : '');
   requestAnimationFrame(drawRoad);
 }
-// Дорога між кружечками: широка «смуга», пунктир посередині й зелений пройдений шлях
+// Розставляємо кружечки: знизу вгору центр, ліворуч, праворуч, центр… і малюємо лінії між ними
 function drawRoad() {
   const road = $('road'), svg = $('road-svg'); if (!road || road.offsetParent === null) return;
-  const base = road.getBoundingClientRect();
-  const pts = STEPS.map((_, i) => { const d = $('s' + i).querySelector('.ap-dot').getBoundingClientRect(); return [d.left + d.width / 2 - base.left, d.top + d.height / 2 - base.top]; });
+  const [f, t] = secRange(curSec), n = t - f, W = road.clientWidth, H = road.clientHeight;
+  const slot = k => ['C', 'L', 'R'][k % 3];
+  // ряди: C — свій ряд, пара L/R — спільний ряд
+  const rows = []; for (let k = 0; k < n; k++) { const sl = slot(k); if (sl === 'R') rows[rows.length - 1].push(k); else rows.push([k]); }
+  const top = road.querySelector('.ap-nextsec') ? 56 : 12, bottom = 8;
+  const gap = (H - top - bottom) / rows.length, size = Math.max(44, Math.min(78, gap * 0.52, W * 0.2));
+  const X = { C: W / 2, L: W * 0.24, R: W * 0.76 }, pts = [];
+  rows.forEach((row, r) => row.forEach(k => {
+    const x = X[slot(k)], y = H - bottom - gap * (r + 0.5) - 10;
+    pts[k] = [x, y];
+    const el = $('s' + (f + k));
+    el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.setProperty('--sz', size + 'px');
+  }));
   const path = list => list.map(([x, y], i) => (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1)).join(' ');
-  svg.setAttribute('viewBox', `0 0 ${base.width} ${base.height}`);
-  svg.innerHTML = `<path class="bed" d="${path(pts)}"/><path class="dash" d="${path(pts)}"/>` + (curStep > 0 ? `<path class="done" d="${path(pts.slice(0, curStep + 1))}"/>` : '');
+  const doneUpTo = Math.min(n - 1, curStep - f);
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = `<path class="bed" d="${path(pts)}"/>` + (doneUpTo > 0 ? `<path class="done" d="${path(pts.slice(0, doneUpTo + 1))}" style="stroke:${SECTIONS[curSec][2]}"/>` : '') +
+    (road.querySelector('.ap-nextsec') && pts.length ? `<path class="bed" d="M${pts[n - 1][0]} ${pts[n - 1][1]} L${W / 2} 40"/>` : '');
 }
 window.addEventListener('resize', () => requestAnimationFrame(drawRoad));
 const row = ([e, t, href, kind], sub) => `<a class="ap-row${seen.has(href) ? ' seen' : ''}" href="${href}"><span class="ic" style="--c:${KIND[kind || 'learn'][0]}">${e}</span><span>${esc(t)}<small>${esc(sub || KIND[kind || 'learn'][1])}</small></span><span class="go">${seen.has(href) ? '✓' : '›'}</span></a>`;
@@ -65,7 +85,16 @@ $('road').addEventListener('click', e => {
   }
   openStep(+n.dataset.i);
 });
-$('secbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) $('s' + b.dataset.s).scrollIntoView({ block: 'center', behavior: 'smooth' }); });
+const goSec = si => { if (si < 0 || si >= SECTIONS.length || si === curSec) return; curSec = si; LG.play('tap'); renderLearn(); };
+$('secbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) goSec(+b.dataset.s); });
+$('road').addEventListener('click', e => { const b = e.target.closest('.ap-nextsec'); if (b) goSec(+b.dataset.s); });
+// свайп ліворуч / праворуч — сусідній розділ
+let sw0 = null;
+$('view-learn').addEventListener('touchstart', e => { const t = e.touches[0]; sw0 = [t.clientX, t.clientY]; }, { passive: true });
+$('view-learn').addEventListener('touchend', e => {
+  if (!sw0) return; const t = e.changedTouches[0], dx = t.clientX - sw0[0], dy = t.clientY - sw0[1]; sw0 = null;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goSec(curSec + (dx < 0 ? 1 : -1));
+}, { passive: true });
 $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').hidden = true; if (e.target.closest('a[href^="#"]')) $('sheet').hidden = true; });
 
 // ---------- 🤖 гра з роботом ----------
@@ -250,7 +279,7 @@ function show(hash) {
   if (tab === 'practice') renderPractice(sub);
   if (tab === 'profile') renderProfile();
   if (tab === 'play') renderPlay();
-  if (tab === 'learn') requestAnimationFrame(() => { drawRoad(); $('s' + curStep)?.scrollIntoView({ block: 'center' }); });
+  if (tab === 'learn') requestAnimationFrame(drawRoad);
   else window.scrollTo(0, 0);
 }
 function renderAll() { renderLearn(); renderPractice(); }
