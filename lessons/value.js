@@ -1,9 +1,9 @@
 /* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 10 коротких завдань «побий найдорожчу».
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790372866';
-import { goNext, markSeen } from '../shared/path.js?v=1790372866';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790372866';
+import { createBoard } from '../shared/board.js?v=1790372904';
+import { goNext, markSeen } from '../shared/path.js?v=1790372904';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790372904';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
