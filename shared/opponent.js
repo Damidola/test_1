@@ -2,7 +2,9 @@
    маленькі стрілочки, вибір на весь екран. Тваринка щоразу випадкова й на силу робота не впливає.
    У налаштуваннях тварину з фоном можна сховати. */
 const ROOT = new URL('..', import.meta.url).href;
-const A = f => ROOT + 'shared/opponents/' + f;
+// ?v=… — та сама версія, що й у цього файлу: після оновлення сайту телефон бере нові картинки, а не старі з кешу
+const VER = new URL(import.meta.url).search;
+const A = f => ROOT + 'shared/opponents/' + f + VER;
 
 // Рівень 1 — піддається … 5 — сильний. Італійські «брейнроти» — в кінці списку.
 // У кожного суперника свій фон (shared/bg/*.svg) — жоден не повторюється.
@@ -18,9 +20,9 @@ export const OPPONENTS = [
   ['Лірілі Ларіла', 3, 'lirili.jpg', 'savanna'], ['Тралалело Тралала', 3, 'tralalero.jpg', 'underwater'], ['Тун-тун-тун-сахур', 4, 'tung-tung.jpg', 'lanterns'],
   ['Брр Брр Патапім', 4, 'patapim.jpg', 'autumn'],
   ['Коник Гоп', 2, 'toon-horse.svg', 'chessgreen'] // мультяшний (SVG) — без рамки, стоїть на низу сцени
-].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' }));
+].map(([name, level, file, bg, pos]) => ({ name, level, avatar: A(file), bg, pos: pos || 'center', toon: file.endsWith('.svg'), sceneUrl: ROOT + 'shared/bg/' + bg + '.svg' + VER }));
 
-const scene = n => ROOT + 'shared/bg/' + n + '.svg';
+const scene = n => ROOT + 'shared/bg/' + n + '.svg' + VER;
 
 // Репліки суперника (раз за партію — у хмаринці, як у коміксі)
 const LINES = {
@@ -144,7 +146,7 @@ export function mountOpponent(el, opts = {}) {
   let bubble = null, bubbleTimer = 0, talkTimer = 0;
   function say(text) {
     if (el.hidden || !LG.store.get('oppSay', false)) return; // репліки типово вимкнені — вмикаються в Профілі
-    const o = OPPONENTS[index], own = LINES[o.avatar.split('/').pop()] || [];
+    const o = OPPONENTS[index], own = LINES[o.avatar.split('/').pop().split('?')[0]] || [];
     const pool = own.length && Math.random() < 0.55 ? own : GENERIC;
     text = text || pool[Math.floor(Math.random() * pool.length)];
     hide(true); clearTimeout(bubbleTimer);
