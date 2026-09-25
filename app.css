@@ -519,3 +519,4 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 .g2-row { grid-template-columns: 26px minmax(0, 1fr); padding-left: 12px; padding-right: 10px; gap: 4px; }
 .g2-lvl b { font-size: 24px; }
 .g2-opps .ap-opp { --s: min(calc(100cqh - 6px), calc((100cqw - 26px - 4px - 24px) / 4)); }
+html, body { background: #000 !important; } /* усі вкладки — чорні: без фіолетових спалахів між сторінками */
