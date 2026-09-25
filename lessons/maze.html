@@ -6,11 +6,12 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Лабіринт</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790372760">
-  <link rel="stylesheet" href="../shared/play.css?v=1790372760">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790372866">
+  <link rel="stylesheet" href="../shared/play.css?v=1790372866">
   <style>
     .mz { justify-content: flex-start; gap: 8px; }
     .mz-intro { display: none; }
+    body:has(.mz[data-step="intro"]) .lg-nav { display: none !important; }
     .mz[data-step="intro"] > :not(.mz-intro) { display: none !important; }
     .mz[data-step="intro"] > .mz-intro { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 8px 18px; text-align: center; }
     .mz-intro h2 { font: 800 24px Manrope, var(--lg-font), sans-serif; margin: 6px 0; }
@@ -61,8 +62,8 @@
       <button type="button" id="again"><span class="ico">🔁</span><span class="lbl">Заново</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790372760"></script>
-  <script src="../shared/kit.js?v=1790372760" data-game="path" data-night="on"></script>
-  <script type="module" src="maze.js?v=1790372760"></script>
+  <script src="../shared/games.js?v=1790372866"></script>
+  <script src="../shared/kit.js?v=1790372866" data-game="path" data-night="on"></script>
+  <script type="module" src="maze.js?v=1790372866"></script>
 </body>
 </html>
