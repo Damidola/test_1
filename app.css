@@ -502,3 +502,15 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 .g2-prog.all span { color: #2ee6b8; }
 .g2-tile:has(.g2-prog) { padding-bottom: 18px; }
 .g2-cnt { position: absolute; top: 6px; right: 8px; font: 700 11px Manrope, sans-serif; color: #8c8c8c; }
+/* практика: якщо все ж не вміщається (великий шрифт у телефоні) — гортається пальцем; картки компактніші */
+#view-practice.mg2:not([hidden]) { overflow-y: auto !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+.g2-tiles { gap: 6px; }
+.g2-tile { min-height: 0; padding: 6px 8px; gap: 8px; border-radius: 12px; }
+.g2-tile .g2-ic { width: clamp(30px, 5svh, 38px); height: clamp(30px, 5svh, 38px); }
+.g2-tile .g2-tx b { font-size: clamp(12.5px, 1.9svh, 14px); line-height: 1.15; }
+.g2-tile .g2-tx small { font-size: 10.5px; -webkit-line-clamp: 1; }
+.g2-tile:has(.g2-prog) { padding-bottom: 16px; }
+.g2-prog { bottom: 4px; left: 8px; right: 8px; }
+.g2-h3 { margin: 8px 16px 5px; }
+.g2-sub { padding-bottom: 6px; }
+#view-practice.mg2 > * { flex: none; }
