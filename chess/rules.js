@@ -1,7 +1,7 @@
 /* Шахи за правилами Lichess (chessops): шах, мат, пат, рокіровка, взяття на проході.
    Пішак, що дійшов до кінця, одразу стає ферзем. */
 import { Chess, makeSquare, fen, attacks } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { bestUci } from '../shared/engine.js?v=1790369727';
+import { bestUci } from '../shared/engine.js?v=1790369995';
 const { makeFen } = fen;
 
 const VALUE = { pawn: 100, knight: 300, bishop: 320, rook: 500, queen: 900, king: 0 };

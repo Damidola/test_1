@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура доходить до кружечка, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, dests, shortest } from './mazes.js?v=1790369727';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790369727';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790369727';
+import { MAZES, dests, shortest } from './mazes.js?v=1790369995';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790369995';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790369995';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -12,6 +12,9 @@ $('intro-text').textContent = M.text;
 const lv = createLevels($('levels'), 'maze:' + K, M.levels.length, i => { idx = i; load(); });
 const grid = $('grid'), wrap = $('wrap');
 let idx = lv.open(), L, at, moves = 0, sel = false, done = false, hintStep = 0, pieceEl;
+// картинка фігури — з набору, вибраного в Профілі
+const pieceImg = role => new URL('../shared/pieces/' + (LG.store.get('pieceSet', 'cburnett') || 'cburnett') + '/w' + { rook: 'R', bishop: 'B', queen: 'Q', knight: 'N', king: 'K', pawn: 'P' }[role] + '.svg', import.meta.url).href;
+document.querySelector('.mz-arrows mpiece')?.replaceWith(Object.assign(document.createElement('img'), { className: 'mz-arrows-pc', src: pieceImg(M.piece), alt: '' }));
 const same = (a, b) => a[0] === b[0] && a[1] === b[1];
 const cell = ([c, r]) => grid.children[r * L.w + c];
 
@@ -28,7 +31,7 @@ function load() {
     if (same([c, r], L.to)) d.classList.add('goal');
     d.dataset.c = c; d.dataset.r = r; grid.appendChild(d);
   }
-  pieceEl = document.createElement('div'); pieceEl.className = 'mz-piece'; pieceEl.innerHTML = '<mpiece class="' + M.piece + ' white"></mpiece>';
+  pieceEl = document.createElement('div'); pieceEl.className = 'mz-piece'; pieceEl.innerHTML = '<img alt="" src="' + pieceImg(M.piece) + '">';
   grid.appendChild(pieceEl); place(false);
   say(idx === 0 ? 'Доведи туру до білого кружечка! Натисни на туру — крапки покажуть, куди можна піти.' : 'Дійди до кружечка якнайменшою кількістю ходів.');
   select(true);

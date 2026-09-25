@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Лабіринт</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790369727">
-  <link rel="stylesheet" href="../shared/play.css?v=1790369727">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790369995">
+  <link rel="stylesheet" href="../shared/play.css?v=1790369995">
   <style>
     .mz { justify-content: flex-start; gap: 8px; }
     .mz-intro { display: none; }
@@ -16,7 +16,7 @@
     .mz-intro h2 { font: 800 24px Manrope, var(--lg-font), sans-serif; margin: 6px 0; }
     .mz-intro p { font: 700 16px/1.4 Manrope, var(--lg-font), sans-serif; margin: 6px 0; max-width: 420px; }
     .mz-arrows { position: relative; width: 170px; height: 170px; margin: 10px auto; }
-    .mz-arrows mpiece { position: absolute; left: 50%; top: 50%; width: 80px; height: 80px; transform: translate(-50%, -50%); background-size: cover; }
+    .mz-arrows .mz-arrows-pc { position: absolute; left: 50%; top: 50%; width: 80px; height: 80px; transform: translate(-50%, -50%); background-size: cover; }
     .mz-arrows i { position: absolute; font: 900 34px/1 Manrope, sans-serif; color: #2ee6b8; font-style: normal; animation: mzPush 1.2s ease-in-out infinite; }
     @keyframes mzPush { 50% { transform: var(--p); } }
     /* дошка-лабіринт: на всю ширину, клітинки як у шаховій дошці, стіни — об'ємні блоки */
@@ -29,9 +29,9 @@
     .mz-grid > div.goal::before { content: ''; position: absolute; left: 50%; top: 50%; width: 42%; height: 42%; transform: translate(-50%, -50%); border-radius: 50%; background: #fff; box-shadow: 0 0 0 0 rgba(255,255,255,.7); animation: mzPulse 1.3s ease-out infinite; }
     @keyframes mzPulse { 70% { box-shadow: 0 0 0 14px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
     .mz-grid > div.hint { box-shadow: inset 0 0 0 4px #FF9F1C; }
-    .mz-piece { position: absolute; width: calc(100% / var(--w)); height: calc(100% / var(--h)); transition: transform .28s ease; pointer-events: none; z-index: 2; }
-    .mz-piece mpiece { display: block; width: 100%; height: 100%; background-size: cover; }
-    .mz-piece.sel mpiece { filter: drop-shadow(0 0 6px #2ee6b8); }
+    .mz-grid > .mz-piece { position: absolute; left: 0; top: 0; background: none; box-shadow: none; width: calc(100% / var(--w)); height: calc(100% / var(--h)); transition: transform .28s ease; pointer-events: none; z-index: 2; }
+    .mz-piece img { display: block; width: 100%; height: 100%; }
+    .mz-piece.sel img { filter: drop-shadow(0 0 6px #2ee6b8); }
     .mz-wrap.solved { box-shadow: 0 0 0 4px #2ee6b8; }
     /* відео-знайомство: з кадру 16:9 лишаємо квадрат із дошкою посередині, на всю ширину екрана */
     .mz-video { position: relative; width: 100vw; max-width: 560px; aspect-ratio: 1; overflow: hidden; margin: 4px 0 8px; background: #000; flex: none; }
@@ -58,8 +58,8 @@
       <button type="button" id="again"><span class="ico">🔁</span><span class="lbl">Заново</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790369727"></script>
-  <script src="../shared/kit.js?v=1790369727" data-game="path" data-night="on"></script>
-  <script type="module" src="maze.js?v=1790369727"></script>
+  <script src="../shared/games.js?v=1790369995"></script>
+  <script src="../shared/kit.js?v=1790369995" data-game="path" data-night="on"></script>
+  <script type="module" src="maze.js?v=1790369995"></script>
 </body>
 </html>
