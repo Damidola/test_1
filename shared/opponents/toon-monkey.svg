@@ -21,6 +21,13 @@
 .mood-angry .mk-armr{animation:mkFist .3s ease-in-out infinite}
 @keyframes mkFist{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-8deg)}}
 .thinking .mk-armr{animation:none;transform:rotate(-32deg) translate(-22px,10px)}
+/* тапнули по мавпочці — здивувалась: підстрибнула, очі круглі, брови вгору, рот «О» */
+.poked .mk-body{animation:mkPoke .7s cubic-bezier(.3,1.8,.5,1)}
+@keyframes mkPoke{0%{transform:scale(1,1)}20%{transform:scale(1.08,.9) translateY(10px)}50%{transform:scale(.95,1.08) translateY(-18px)}100%{transform:none}}
+.poked .mk-pup{animation:none;transform:scale(.7);transform-box:fill-box;transform-origin:center}
+.poked .mk-bnorm{opacity:0}.poked .mk-bhappy{opacity:1;transform:translateY(-8px)}
+.poked .mk-norm{opacity:0}.poked .mk-talk{opacity:1}.poked .mk-talkin{animation:none}
+.poked .mk-armr{animation:none;transform:rotate(-30deg)}
 .mk-tail{transform-origin:330px 390px;animation:mkTail 3s ease-in-out infinite}
 @keyframes mkTail{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(8deg)}}
 .mk-happy,.mk-angry,.mk-bhappy,.mk-bangry,.mk-eyeshappy,.mk-steam,.mk-red,.mk-talk,.mk-spark{opacity:0}

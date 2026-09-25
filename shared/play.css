@@ -227,3 +227,7 @@ cg-board square.mark-red { background: rgba(255, 107, 107, .32); }
 .lg-top-btn svg { width: 24px; height: 24px; }
 .lg-top-btn:active { transform: scale(.92); }
 .lg-top-sound.off { color: #FF9F9F; }
+
+/* будь-який мультяшний суперник: тап — підстрибує (у мавпочки ще й свій вираз обличчя) */
+.lg-hero.poked .lg-toon > svg { animation: lgPoke .6s cubic-bezier(.3, 1.8, .5, 1); transform-origin: 50% 100%; }
+@keyframes lgPoke { 25% { transform: scale(1.06, .92); } 55% { transform: scale(.96, 1.06) translateY(-4%); } }

@@ -132,7 +132,17 @@ export function mountOpponent(el, opts = {}) {
     if (e.target === picker || e.target.closest('.lg-picker-x')) closePicker();
   });
   img.addEventListener('click', openPicker);
-  toon.addEventListener('click', openPicker);
+  // Мультяшного суперника тапаєш — він реагує (здивувався, а потім хихоче), а не відкриває вибір
+  let pokeTimer = 0;
+  toon.addEventListener('click', () => {
+    clearTimeout(pokeTimer);
+    el.classList.remove('poked'); void el.offsetWidth; el.classList.add('poked');
+    LG.play('tap');
+    pokeTimer = setTimeout(() => {
+      el.classList.remove('poked');
+      if (!el.classList.contains('mood-happy') && !el.classList.contains('mood-angry')) api.setMood('happy', 1100);
+    }, 750);
+  });
   prev.addEventListener('click', () => show(index - 1));
   next.addEventListener('click', () => show(index + 1));
 
@@ -171,7 +181,7 @@ export function mountOpponent(el, opts = {}) {
   function place(box) { box.querySelector('svg')?.remove(); }
 
   let moodTimer = 0, baseMood = null;
-  return {
+  const api = {
     say,
     level: () => level,
     setLevel: l => { level = l; },
@@ -184,4 +194,5 @@ export function mountOpponent(el, opts = {}) {
     },
     applyVisible
   };
+  return api;
 }
