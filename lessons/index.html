@@ -17,5 +17,31 @@
   <script src="../shared/kit.js?v=1790370967" data-game="learn" data-night="on"></script>
   <script type="module" src="app.js?v=1790370967"></script>
 
+  <style>
+    .lv-vid { position: fixed; inset: 0; z-index: 3000; display: flex; flex-direction: column; align-items: center; padding: 12px 0 16px; background: #1B2133; overflow: auto; }
+    .lv-vid h2 { margin: 6px 16px 10px; font: 800 24px Manrope, var(--lg-font), sans-serif; text-align: center; }
+    .lv-vid-box { position: relative; width: 100vw; max-width: 560px; aspect-ratio: 1; overflow: hidden; background: #000; flex: none; }
+    .lv-vid-box iframe { position: absolute; top: 0; left: 50%; height: 100%; aspect-ratio: 16 / 9; transform: translateX(-50%); border: 0; }
+    .lv-vid button { margin-top: 14px; min-height: 48px; padding: 0 28px; border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 17px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
+  </style>
+  <script>
+    // відео-знайомство з фігурою перед першим проходженням уроку (плейлист ChessKid)
+    (function () {
+      const V = { 3: ['queen', '4wnfdWWiv3w', 'Знайомся з ферзем!'], 4: ['king', 'KVeMgVMslNM', 'Знайомся з королем!'], 5: ['knight', 'pbMAQk-5bHU', 'Знайомся з конем!'], 6: ['pawn', 'e015cjCtkl8', 'Знайомся з пішаком!'] };
+      function check() {
+        document.querySelector('.lv-vid')?.remove();
+        const v = V[(location.hash.match(/^#\/(\d+)/) || [])[1]]; if (!v) return;
+        let prog = {}; try { prog = JSON.parse(localStorage.getItem('chk.learn.progress')) || {}; } catch (e) { /* */ }
+        if (prog.stages && prog.stages[v[0]] && prog.stages[v[0]].scores.some(x => x)) return;
+        const o = document.createElement('div'); o.className = 'lv-vid';
+        o.innerHTML = '<h2></h2><div class="lv-vid-box"><iframe src="https://www.youtube-nocookie.com/embed/' + v[1] + '?playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Відео"></iframe></div><button type="button">До вправ ▶️</button>';
+        o.querySelector('h2').textContent = v[2];
+        o.querySelector('button').onclick = () => o.remove();
+        document.body.appendChild(o);
+      }
+      addEventListener('hashchange', check);
+      addEventListener('DOMContentLoaded', check);
+    })();
+  </script>
 </body>
 </html>
