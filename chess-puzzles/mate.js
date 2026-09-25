@@ -4,9 +4,9 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790342563';
-import { createRules } from '../chess/rules.js?v=1790342563';
-import { hintMove } from '../shared/ai.js?v=1790342563';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790342661';
+import { createRules } from '../chess/rules.js?v=1790342661';
+import { hintMove } from '../shared/ai.js?v=1790342661';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -168,13 +168,13 @@ function route() {
   token++;
   if (!INFO[k]) { mode = 'menu'; main.dataset.mode = 'menu'; board.setMovable(null); renderMenu(); return; }
   sec = k;
-  $('list').hidden = false;
+  $('list').hidden = $('show').hidden = $('next').hidden = false;
   if (PRACTICE.includes(k)) { mode = 'practice'; main.dataset.mode = 'practice'; setButtons([['🎓', 'Уроки'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); startPractice(); }
   else startPuzzles(); // одразу перша задача; пояснення — кнопкою «Пояснення» внизу
 }
 function startPuzzles() {
-  // унизу: Назад (відмінити хід) · Заново · Підказка · Гайд; задачі гортають стрілки вгорі, вихід — стрілка ‹
-  mode = 'puzzle'; main.dataset.mode = 'puzzle'; setButtons([['📋', 'Розділи'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); $('list').hidden = true;
+  // задачі гортають стрілки вгорі, вихід — стрілка ‹
+  mode = 'puzzle'; main.dataset.mode = 'puzzle'; setButtons([['📋', 'Розділи'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); $('list').hidden = true; $('show').hidden = $('next').hidden = true; // у задачах унизу лише Підказка й Гайд
   idx = openIdx();
   loadPuzzle();
 }
