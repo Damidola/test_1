@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790407704';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790407704';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790407704';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790407962';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790407962';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790407962';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -202,7 +202,7 @@ function renderPractice(open) {
     const st = puz.map(k => [k, puzStats(k)]), all = st.reduce((a, [, x]) => ({ n: a.n + x.n, done: a.done + x.done, tried: a.tried + x.tried, sum: a.sum + x.sum }), { n: 0, done: 0, tried: 0, sum: 0 });
     const [ck, cs] = st.find(([, x]) => x.done < x.n) || st[0], [, fen, moves] = puzData[ck][cs.next], pct = all.tried ? Math.round(all.sum / all.tried) : 0;
     head = `<div class="pr-head" style="--c:${cat.c}">${miniBoard(fen, moves)}<div class="pr-info"><b class="pr-t">${esc(cat.t)}</b>
-      <span>Розвʼязано: <b>${all.done}</b> з ${all.n}</span><span class="pr-rate">Успіх: <i class="pr-bar"><i style="width:${pct}%"></i></i> ${pct}%</span>
+      <span>Розвʼязано: <b>${all.done}</b> з ${all.n}</span><span class="pr-rate">Успіх: <i class="pr-bar"><i style="width:${pct}%"></i></i> ${pct}%</span>${all.tried ? `<small class="pr-note">у ${all.tried} ${all.tried === 1 ? 'спробі' : 'спробах'}, не лише розвʼязаних</small>` : ''}
       <a class="pr-go" href="chess-puzzles/index.html#${ck}">${all.tried ? 'Продовжити' : 'Почати'}</a></div></div>`;
   }
   const PLAY = '<svg class="pr-play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z"/></svg>';

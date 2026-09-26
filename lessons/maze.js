@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, dests, shortest } from './mazes.js?v=1790407704';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790407704';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790407704';
+import { MAZES, dests, shortest } from './mazes.js?v=1790407962';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790407962';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790407962';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');

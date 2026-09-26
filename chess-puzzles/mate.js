@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790407704';
-import { createRules } from '../chess/rules.js?v=1790407704';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790407704';
-import { hintMove } from '../shared/ai.js?v=1790407704';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790407962';
+import { createRules } from '../chess/rules.js?v=1790407962';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790407962';
+import { hintMove } from '../shared/ai.js?v=1790407962';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -102,7 +102,6 @@ const board = createBoard($('board'), { onMove: (o, d) => userMove(o, d) });
 const solvedOf = k => new Set(LG.store.get('puz:' + k, []));
 
 let mode = 'menu', sec = null, idx = 0, pos = null, line = [], step = 0, userColor = 'white';
-let firstEntry = true;
 let mistakes = 0, done = false, hintStage = 0, lastMove, token = 0, history = [];
 
 // ---------- дрібниці ----------
@@ -173,6 +172,8 @@ function route() {
   const k = decodeURIComponent(location.hash.slice(1));
   token++;
   document.querySelector('.pk')?.remove();
+  // свого меню розділів тут немає — розділи вибирають у вкладці «Практика» застосунку
+  if (!INFO[k] && !LESSON) { location.replace('../index.html#practice'); return; }
   if (!INFO[k]) { mode = 'menu'; main.dataset.mode = 'menu'; board.setMovable(null); renderMenu(); return; }
   sec = k;
   $('list').hidden = $('show').hidden = $('next').hidden = false;
@@ -194,8 +195,6 @@ function startPuzzles() {
   }
   idx = openIdx();
   loadPuzzle();
-  if (firstEntry) showPicker(true);
-  firstEntry = false;
 }
 // урок: наступний рівень, а після останнього — вікно «Урок пройдено!»
 function lessonNext() {
@@ -212,7 +211,7 @@ function openIdx() {
   return Math.min(list.length - 1, Math.max(first, LG.store.get('puzopen:' + sec, 0)));
 }
 window.addEventListener('hashchange', route);
-$('list').addEventListener('click', () => { if (mode === 'practice') location.href = '../lessons/index.html'; else location.hash = ''; });
+$('list').addEventListener('click', () => { if (mode === 'practice') location.href = '../lessons/index.html'; else location.href = '../index.html#practice'; });
 
 // ---------- задачі Lichess ----------
 function loadPuzzle() {
@@ -391,7 +390,7 @@ function showPicker(fromMenu) {
   o.innerHTML = `<div class="pk-top"><button type="button" class="pk-back" aria-label="Назад">‹</button><b>${info.title}</b></div>
     <div class="pk-head">${miniBoard(fen, moves)}<div class="pk-info">
       <div class="pk-solved">Розвʼязано: <b>${tried.filter(r => r !== 'r').length}</b> з ${list.length}</div>
-      <div class="pk-rate">Успіх: <span class="pk-bar"><span style="width:${pct}%"></span></span> ${pct}%</div>
+      <div class="pk-rate">Успіх: <span class="pk-bar"><span style="width:${pct}%"></span></span> ${pct}%</div><div class="pk-note">${tried.length ? `у ${tried.length} ${tried.length === 1 ? 'спробі' : 'спробах'}: 🟩 ${res.filter(r => r === 'g').length} · 🟧 ${res.filter(r => r === 'y').length} · 🟥 ${res.filter(r => r === 'r').length}` : 'ще не пробував'}</div>
       <button type="button" class="pk-go">${fromMenu ? (tried.length ? 'Продовжити' : 'Почати') : 'Повернутися'} · №${cont + 1}</button></div></div>
     <div class="pk-legend"><span><i class="g"></i>без помилок</span><span><i class="y"></i>з помилками</span><span><i class="r"></i>не вийшло</span></div>
     <div class="pk-grid">${res.map((r, i) => `<button type="button" class="${r}${i === cont ? ' cur' : ''}" data-i="${i}">${i + 1}</button>`).join('')}</div>`;
