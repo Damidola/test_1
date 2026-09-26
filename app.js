@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790379803';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790379803';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790379803';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790380479';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790380479';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790380479';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -26,7 +26,7 @@ const KIND = { play: ['#2ECC9A', 'Гра'], task: ['#FF9F1C', 'Задачі'], l
 let curStep = 0, curSec = -1;
 // розділ, який відкривали востаннє: з уроку повертаємось саме туди, а не до першого незавершеного
 { const s = +LG.store.get('learn:sec', -1); if (s >= 0 && s < SECTIONS.length) curSec = s; }
-const SEC_SHORT = ['ФІГУРИ', 'ОСОБЛИВІ', 'ШАХ', 'МАТ', 'МАЙСТЕР'];
+const SEC_SHORT = ['ФІГУРИ', 'ОСОБЛИВІ', 'ШАХ', 'МАТ', 'ТАКТИКА', 'МАЙСТЕР'];
 const secRange = si => [SECTIONS[si][0], (SECTIONS[si + 1] || [STEPS.length])[0]];
 const secIndexOf = i => SECTIONS.reduce((k, x, j) => (x[0] <= i ? j : k), 0);
 function renderLearn() {

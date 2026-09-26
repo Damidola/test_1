@@ -29,7 +29,7 @@ const browser = await pw.chromium.launch();
 let problems = 0;
 for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
   const page = await browser.newPage({ viewport: { width: W, height: H }, isMobile: true, hasTouch: true });
-  await page.route(/cdn\.jsdelivr\.net|telegram\.org|fonts\.g/, r => {
+  await page.route(/cdn\.jsdelivr\.net|telegram\.org|fonts\.g|youtube-nocookie\.com/, r => {
     const u = r.request().url();
     if (u.includes('chessops')) return r.fulfill({ body: chessops, contentType: 'text/javascript' });
     if (u.includes('chessground') && u.endsWith('.css')) return r.fulfill({ path: join(cg, 'assets/chessground.base.css'), contentType: 'text/css' });
@@ -38,6 +38,7 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
   });
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto(base + url); await page.waitForTimeout(2000);
+  const vidBtn = await page.$('.lv-vid button'); if (vidBtn) { await vidBtn.click(); await page.waitForTimeout(300); }
   const bad = await page.evaluate(() => {
     const out = [], vw = innerWidth;
     const board = [...document.querySelectorAll('cg-container')].map(e => e.getBoundingClientRect()).find(r => r.width > 50);
