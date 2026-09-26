@@ -47,7 +47,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
   if (!document.getElementById('lg-done-css')) {
     const st = document.createElement('style'); st.id = 'lg-done-css';
     st.textContent = `
-.lg-done { position: fixed; inset: 0; z-index: 2000; display: grid; background: rgba(0,0,0,.6); cursor: pointer; }
+.lg-done { position: fixed; inset: 0; z-index: 2000; display: grid; background: rgba(0,0,0,.6); }
 .lg-done-box { margin: auto; box-sizing: border-box; width: min(340px, calc(100vw - 32px)); max-height: 100%; overflow: auto; padding: 20px 14px 14px; border-radius: 16px; text-align: center; cursor: default;
   background: rgb(35,34,80); color: rgb(186,186,186); font-family: 'Noto Sans', var(--lg-font), sans-serif; box-shadow: 0 14px 28px rgba(0,0,0,.15), 0 10px 10px rgba(0,0,0,.12); }
 .lg-done-box > * { animation: lgDoneIn 1s cubic-bezier(.37,.82,.2,1) both; }
@@ -69,7 +69,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790410498').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1790410810').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';
@@ -88,7 +88,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
     requestAnimationFrame(tick);
     o.querySelector('.next')?.addEventListener('click', () => goNext(here));
     o.querySelector('.home').addEventListener('click', () => { (window.LG && LG.go ? LG.go : h => { location.href = h; })(ROOT + 'index.html#learn'); });
-    o.addEventListener('click', e => { if (e.target === o) { o.remove(); onAgain && onAgain(); } });
+    // повз вікно тапати не можна: лише «Далі» або «До уроків»
   });
 }
 

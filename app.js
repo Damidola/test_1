@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790410498';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790410498';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790410498';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790410810';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790410810';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790410810';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -128,9 +128,9 @@ const PRACTICE = [
   { id: 'check', ic: 'K', t: 'Шах', s: 'постав шах і врятуйся від шаху', c: '#3FA7F5', groups: [
     ['Постав шах', [['R', 'Турою', '', P('chk_rook')], ['B', 'Слоном', '', P('chk_bishop')], ['Q', 'Ферзем', '', P('chk_queen')], ['N', 'Конем', '', P('chk_knight')], ['P', 'Пішаком', '', P('chk_pawn')]]],
     ['Урятуйся від шаху', [['🏃', 'Утечи королем', '', P('esc_run')], ['⚔️', 'Побий', 'того, хто шахує', P('esc_capture')], ['🛡️', 'Закрийся', 'іншою фігурою', P('esc_block')], ['🎲', 'Різні', 'здогадайся сам', P('esc_mixed')]]]] },
-  { id: 'mate1', ic: 'Q', t: 'Мат в 1 хід', s: 'обери фігуру, якою ставиш мат', c: '#FF5C6C', groups: [
-    [null, [['R', 'Турою', '', P('m1rook')], ['B', 'Слоном', '', P('m1bishop')], ['P', 'Пішаком', '', P('m1pawn')], ['Q', 'Ферзем', '', P('m1queen')], ['N', 'Конем', '', P('m1knight')], ['🎲', 'Різні', 'будь-якою фігурою', P('m1mix')]]]] },
-  { id: 'mate2', ic: '🏆', t: 'Мат у 2 ходи', s: 'хід, відповідь — мат', c: '#E0567A', href: P('mate2') },
+  { id: 'mate1', ic: 'Q', t: 'Мат', s: 'в 1 хід кожною фігурою і в 2 ходи', c: '#FF5C6C', groups: [
+    ['Мат в 1 хід', [['R', 'Турою', '', P('m1rook')], ['B', 'Слоном', '', P('m1bishop')], ['P', 'Пішаком', '', P('m1pawn')], ['Q', 'Ферзем', '', P('m1queen')], ['N', 'Конем', '', P('m1knight')], ['🎲', 'Різні', 'будь-якою фігурою', P('m1mix')]]],
+    ['Мат у 2 ходи', [['🏆', 'Мат у 2 ходи', 'хід, відповідь — мат', P('mate2')]]]] },
   { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, простріл та інші', c: '#FF9F1C', groups: [
     [null, [['🎁', 'Незахищена фігура', '', P('hanging')], ['🍴', 'Вилка', '', P('fork')], ['📌', 'Зв’язка', '', P('pin')], ['🏹', 'Простріл', '', P('skewer')], ['💥', 'Відкритий напад', '', P('discovered')],
       ['🎣', 'Відволікання', '', P('deflection')], ['🧲', 'Заманювання', '', P('attraction')], ['👑', 'Пішак у ферзі', '', P('promotion')]]]] },

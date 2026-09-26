@@ -23,13 +23,7 @@ export default function (ctrl: RunCtrl) {
   const next = nextAfter(here);
   const score = ctrl.stageScore();
   return h(
-    'div.learn__screen-overlay',
-    {
-      hook: bind(
-        'click',
-        e => (e.target as HTMLElement).classList?.contains('learn__screen-overlay') && hashNavigate(),
-      ),
-    },
+    'div.learn__screen-overlay', // повз вікно тапати не можна: лише «Далі» або «До уроків»
     h('div.learn__screen', [
       h('div.stars', makeStars(getStageRank(stage, score))),
       h('h1', `Урок «${stage.title}» пройдено!`),
