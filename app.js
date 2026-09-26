@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790416815';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790416815';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790416815';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790421438';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790421438';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790421438';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -140,8 +140,7 @@ const PRACTICE = [
   { id: 'pvp', ic: ['Q', 'vs', 'P'], t: 'Фігури проти пішаків', s: 'не пропусти жодного пішака до краю', c: '#7C6CF0', groups: [
     [null, [[['Q', 'vs', 'P'], 'Ферзь проти 8', '', W('q_p8')], [['R', 'vs', 'P'], 'Тура проти 5', '', W('r_p5')], [['B', 'vs', 'P'], 'Слон проти 3', '', W('b_p3')],
       [['N', 'vs', 'P'], 'Кінь проти 3', '', W('n_p3')], [['B', 'B', 'vs', 'P'], '2 слони проти 8', '', W('bb_p8')], [['N', 'N', 'vs', 'P'], '2 коні проти 6', '', W('nn_p6')], [['R', 'R', 'vs', 'P'], '2 тури проти 8', 'крайні пішаки на a3 і h3', W('rr_p8')],
-      [['K', 'P', 'vs', 'K', 'P'], 'Король і пішаки', 'проти короля й пішаків — постав мат', 'chess/index.html?level=2&fen=' + encodeURIComponent('4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3 w - - 0 1')],
-      ['🛠️', 'Своя позиція', 'розстав фігури сам', 'editor/index.html']]]] },
+      [['K', 'P', 'vs', 'K', 'P'], 'Король і пішаки', 'проти короля й пішаків — постав мат', 'chess/index.html?level=2&fen=' + encodeURIComponent('4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3 w - - 0 1')]]]] },
   { id: 'games', ic: '⭐', t: 'Головоломки', s: 'хід конем, 8 ферзів', c: '#8C6CF0', groups: [
     [null, [[['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html'], [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html']]]] },
   { id: 'friend', ic: '👫', t: 'Гра з другом', s: 'удвох на одному телефоні', c: '#E056C1', groups: [
@@ -155,9 +154,12 @@ const PRACTICE = [
       ['🙃', 'Піддавки', 'бити обовʼязково — віддай усі фігури', 'pieces-vs-pawns/free.html?friend=1&mode=give&fen=' + encodeURIComponent('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1')]]]] },
   { id: 'pawns', ic: ['P', 'vs', 'P'], t: 'Пішакова битва', s: 'хто перший до краю', c: '#4DB6AC', href: 'pawns/index.html' }
 ];
+// у кружечку — щонайбільше дві фігури (до «vs» — білі, після — чорні), щоб усі значки були однакові й ніщо не обрізалось
 const art = ic => {
-  const vs = Array.isArray(ic) ? ic.indexOf('vs') : -1; // до «vs» — білі фігури, після — чорні
-  return Array.isArray(ic) ? ic.map((x, j) => x === 'vs' ? '<span>vs</span>' : piece(x, vs >= 0 && j > vs ? 'b' : 'w')).join('') : /^[PRBQNK]$/.test(ic) ? piece(ic) : `<span class="emo">${ic}</span>`;
+  if (!Array.isArray(ic)) return /^[PRBQNK]$/.test(ic) ? piece(ic) : `<span class="emo">${ic}</span>`;
+  const vs = ic.indexOf('vs');
+  if (vs < 0) return ic.slice(0, 2).map(x => piece(x)).join('');
+  return piece(ic[0], 'w') + '<span>vs</span>' + piece(ic[vs + 1], 'b');
 };
 // скільки задач розділу вже розв'язано (chess-puzzles зберігає chk:puz:<розділ>)
 const solvedOf = hrefs => hrefs.reduce((n, h) => { const k = h.startsWith('chess-puzzles/') && h.split('#')[1]; return n + (k ? (LG.store.get('puz:' + k, []) || []).length : 0); }, 0);

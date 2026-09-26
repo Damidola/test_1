@@ -5,7 +5,7 @@
    а перетягнута за дошку — зникає. */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790416815';
+import { applyBoardLook } from '../shared/board.js?v=1790421438';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const PRESETS = {
@@ -157,7 +157,7 @@ function fit() {
   wrap.style.width = max + 'px';
   const kids = [...main.children].filter(c => c.offsetParent), gap = parseFloat(getComputedStyle(main).rowGap) || 0;
   // скільки місця справді видно: від верху сторінки (під шапкою Telegram) до низу екрана
-  const room = innerHeight - (parseFloat(getComputedStyle(document.body).borderTopWidth) || 0) - 14;
+  const room = innerHeight - (parseFloat(getComputedStyle(document.body).borderTopWidth) || 0) - 26;
   const over = kids.reduce((h, c) => h + c.offsetHeight, 0) + gap * (kids.length - 1) - room;
   if (over > 0) wrap.style.width = Math.max(200, max - over - 4) + 'px';
   cg.redrawAll();

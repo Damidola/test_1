@@ -6,16 +6,16 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахи</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790416815">
-  <link rel="stylesheet" href="../shared/play.css?v=1790416815">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790421438">
+  <link rel="stylesheet" href="../shared/play.css?v=1790421438">
 </head>
 <body>
   <main></main>
-  <script src="../shared/games.js?v=1790416815"></script>
-  <script src="../shared/kit.js?v=1790416815" data-game="chess" data-night="on"></script>
+  <script src="../shared/games.js?v=1790421438"></script>
+  <script src="../shared/kit.js?v=1790421438" data-game="chess" data-night="on"></script>
   <script type="module">
-    import { startGame } from '../shared/game.js?v=1790416815';
-    import { createRules } from './rules.js?v=1790416815';
+    import { startGame } from '../shared/game.js?v=1790421438';
+    import { createRules } from './rules.js?v=1790421438';
     // ?fen=… — своя стартова позиція (королі й пішаки, конструктор позиції); замок рівнів — лише у звичайних шахах
     const fen = new URLSearchParams(location.search).get('fen');
     startGame({ rules: createRules({ fen, promoAsk: LG.store.get('promoAuto', true) === false }), navOnly: true, record: true, levelLock: !fen, premove: LG.store.get('premove', false) === true });

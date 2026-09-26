@@ -474,3 +474,14 @@ html, body { background: #1B2133 !important; } /* усі вкладки — чо
 .g2-list > .g2-item .g2-tx small { font-size: 13px !important; line-height: 1.2; }
 .g2-list > .g2-item .g2-tx small { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 html.lg-tg .g2-sub .g2-back { display: none; } /* у Telegram «Назад» — його кнопка зверху */
+
+/* кружечки однакові скрізь: у підрозділах Практики й у шапці розділу теж */
+.pr-row .g2-ic, .g2-sub .g2-ic, .pr-list:has(.g2-ic img ~ span:not(.emo)) .pr-row .g2-ic { width: 44px !important; height: 44px !important; min-width: 44px !important; padding: 0 !important; border-radius: 50% !important; flex: none; overflow: hidden; gap: 0 !important; justify-content: center; }
+.pr-row .g2-ic img, .g2-sub .g2-ic img { width: 28px !important; height: 28px !important; margin: 0 !important; }
+.pr-row .g2-ic:has(img ~ img, img ~ span:not(.emo)) img, .g2-sub .g2-ic:has(img ~ img, img ~ span:not(.emo)) img { width: 17px !important; height: 17px !important; }
+.pr-row .g2-ic:has(img ~ img ~ img) img, .g2-sub .g2-ic:has(img ~ img ~ img) img { width: 12px !important; height: 12px !important; }
+.pr-row .g2-ic:has(img ~ img ~ img ~ img) img { width: 10px !important; height: 10px !important; }
+.pr-row .g2-ic span:not(.emo), .g2-sub .g2-ic span:not(.emo) { font-size: 7px !important; margin: 0 !important; }
+.pr-row .g2-ic .emo, .g2-sub .g2-ic .emo { font-size: 23px !important; }
+.pr-row { padding-top: 8px !important; padding-bottom: 8px !important; }
+.pr-row .g2-ic:has(img ~ span:not(.emo)) img { width: 15px !important; height: 15px !important; }

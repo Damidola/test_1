@@ -379,3 +379,6 @@ html.lg-tg .lv-back, html.lg-tg .lg-run-menu, html.lg-tg .lv-vid-back, html.lg-t
 html.lg-tg .lg-exit, html.lg-tg .lv-back, html.lg-tg .lg-top-back, html.lg-tg .lv-vid-back, html.lg-tg .gm-back, html.lg-tg .ed-back, html.lg-tg .g2-back,
 html.lg-tg a[aria-label^="Назад"], html.lg-tg button[aria-label^="Назад"], html.lg-tg [aria-label="Меню"], html.lg-tg [aria-label="До уроків"], html.lg-tg [aria-label="До меню"],
 html.lg-tg [data-back-arrow] { display: none !important; }
+
+/* Android/Telegram: без синьої підсвітки від тапу (інакше дошка на мить синіє) */
+html, body, * { -webkit-tap-highlight-color: transparent; }
