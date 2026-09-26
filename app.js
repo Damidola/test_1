@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790413835';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790413835';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790413835';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790414122';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790414122';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790414122';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -143,6 +143,15 @@ const PRACTICE = [
       ['🛠️', 'Своя позиція', 'розстав фігури сам', 'editor/index.html']]]] },
   { id: 'games', ic: '⭐', t: 'Головоломки', s: 'хід конем, 8 ферзів', c: '#8C6CF0', groups: [
     [null, [[['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html'], [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html']]]] },
+  { id: 'friend', ic: '👫', t: 'Гра з другом', s: 'удвох на одному телефоні', c: '#E056C1', groups: [
+    [null, [[['K', 'vs', 'K'], 'Шахи', 'звичайна партія', 'chess/index.html?friend=1'],
+      [['K', 'P', 'vs', 'K', 'P'], 'Королі й пішаки', 'хто перший поставить мат', 'chess/index.html?friend=1&fen=' + encodeURIComponent('4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3 w - - 0 1')],
+      [['P', 'vs', 'P'], 'Пішакова битва', 'хто перший до краю', 'pawns/index.html?friend=1'],
+      [['Q', 'vs', 'P'], 'Ферзь проти 8 пішаків', '', 'pieces-vs-pawns/index.html?friend=1#q_p8'],
+      [['R', 'R', 'vs', 'P'], '2 тури проти 8 пішаків', '', 'pieces-vs-pawns/index.html?friend=1#rr_p8'],
+      [['N', 'N', 'vs', 'P'], '2 коні проти 6 пішаків', '', 'pieces-vs-pawns/index.html?friend=1#nn_p6'],
+      [['Q', 'vs', 'Q'], 'Побий усіх', 'без королів — збий усі фігури', 'pieces-vs-pawns/free.html?friend=1&fen=' + encodeURIComponent('rnbq1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQ1BNR w - - 0 1')],
+      ['🙃', 'Піддавки', 'бити обовʼязково — віддай усі фігури', 'pieces-vs-pawns/free.html?friend=1&mode=give&fen=' + encodeURIComponent('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1')]]]] },
   { id: 'pawns', ic: ['P', 'vs', 'P'], t: 'Пішакова битва', s: 'хто перший до краю', c: '#4DB6AC', href: 'pawns/index.html' }
 ];
 const art = ic => {

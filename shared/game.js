@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790413835';
-import { aiMove, hintMove } from './ai.js?v=1790413835';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790413835';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790414122';
+import { aiMove, hintMove } from './ai.js?v=1790414122';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790414122';
 
 const LG = window.LG;
 
@@ -55,7 +55,9 @@ export function startGame(cfg) {
   const state = () => history[pos];
   // «Грати з другом»: обидві сторони — люди на одному телефоні, робота немає
   const gameId = LG.game ? LG.game.id : 'game';
-  let friend = LG.store.get('friend:' + gameId, false);
+  // ?friend=1 (Практика → «Гра з другом») — удвох на одному телефоні; ?friend=0 — завжди з роботом
+  const qFriend = new URLSearchParams(location.search).get('friend');
+  let friend = qFriend === '1' ? true : qFriend === '0' ? false : LG.store.get('friend:' + gameId, false);
   const human = side => friend || side === player;
   const names = cfg.sideNames || { w: 'Білі', b: 'Чорні' };
 

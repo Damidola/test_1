@@ -2,7 +2,7 @@
    Фігури ходять за шаховими правилами, але без шаху (король — звичайна фігура, ходить на 1 клітинку).
    Пішак на останньому ряду стає ферзем. Виграє той, хто зіб'є всі фігури суперника.
    Нічия: 30 ходів (60 півходів) ніхто нікого не бив, або тому, чия черга, нема куди ходити. */
-import { squareName as N } from '../shared/board.js?v=1790413835';
+import { squareName as N } from '../shared/board.js?v=1790414122';
 
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
 const VALUE = { P: 100, N: 320, B: 330, R: 500, Q: 900, K: 250 };
@@ -31,7 +31,8 @@ export function parseBoard(fen) {
   return { b, t: turn === 'b' ? 'b' : 'w' };
 }
 
-export function createCaptureRules(fen) {
+export function createCaptureRules(fen, opts = {}) {
+  const give = !!opts.giveaway; // піддавки: бити обовʼязково, виграє той, хто позбувся всіх своїх фігур
   function pieceMoves(b, i) {
     const p = b[i], out = [], r0 = i >> 3, c0 = i & 7;
     if (p.t === 'P') {
@@ -59,6 +60,12 @@ export function createCaptureRules(fen) {
     return out;
   }
   function moves(s) {
+    const all = rawMoves(s);
+    if (!give) return all;
+    const caps = all.filter(m => m.capture);
+    return caps.length ? caps : all;
+  }
+  function rawMoves(s) {
     const out = [];
     for (let i = 0; i < 64; i++) if (s.b[i] && s.b[i].c === s.t)
       for (const j of pieceMoves(s.b, i)) out.push({ i, j, from: N(i), to: N(j), capture: !!s.b[j], gain: s.b[j] ? VALUE[s.b[j].t] : 0 });
@@ -76,6 +83,11 @@ export function createCaptureRules(fen) {
   function result(s) {
     let w = 0, bl = 0;
     for (const p of s.b) if (p) { if (p.c === 'w') w++; else bl++; }
+    if (give) {
+      if (!w) return { winner: 'w', text: 'Білі віддали всі фігури — перемога в піддавки!' };
+      if (!bl) return { winner: 'b', text: 'Чорні віддали всі фігури — перемога в піддавки!' };
+      if (!moves(s).length) return { winner: s.t, text: 'Ходів немає — у піддавки це перемога!' };
+    }
     if (!w) return { winner: 'b', text: 'Усі білі фігури збиті!' };
     if (!bl) return { winner: 'w', text: 'Усі чорні фігури збиті!' };
     if (s.quiet >= DRAW_PLIES) return { winner: 'draw', text: '30 ходів ніхто нікого не збив — нічия.' };
@@ -90,7 +102,7 @@ export function createCaptureRules(fen) {
       if (p.t === 'P') { const adv = p.c === 'w' ? 6 - (i >> 3) : (i >> 3) - 1; x += adv * adv * 6; }
       v += p.c === side ? x : -x;
     }
-    return v;
+    return give ? -v : v;
   }
   const start = parseBoard(fen);
   return {
