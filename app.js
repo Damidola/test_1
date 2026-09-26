@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790406861';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790406861';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790406861';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790407327';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790407327';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790407327';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -79,7 +79,6 @@ $('road').addEventListener('click', e => {
   LG.store.set('learn:sec', curSec); // повернутись із уроку саме в цей розділ
   const links = STEPS[+n.dataset.i][3];
   const href = (links.find(l => !seen.has(l[2])) || links[0])[2];
-  seen.add(href); LG.store.set('path:seen', [...seen]);
   if (href.startsWith("#")) location.hash = href; else LG.go(href);
 });
 const goSec = si => { if (si < 0 || si >= SECTIONS.length || si === curSec) return; curSec = si; LG.store.set('learn:sec', si); LG.play('tap'); renderLearn(); gate($('view-learn')); };
@@ -328,11 +327,6 @@ function show(hash) {
   gate(document.querySelector(`.ap-view[data-tab="${tab}"]`));
 }
 function renderAll() { renderLearn(); renderPractice(); }
-// відкрите посилання уроку зараховується
-document.addEventListener('click', e => {
-  const a = e.target.closest('a.ap-row, a.ap-tile'); if (!a) return;
-  seen.add(a.getAttribute('href')); LG.store.set('path:seen', [...seen]);
-});
 window.addEventListener('hashchange', () => show(location.hash.slice(1)));
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 renderAll();

@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790406861';
-import { createRules } from '../chess/rules.js?v=1790406861';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790406861';
-import { hintMove } from '../shared/ai.js?v=1790406861';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790407327';
+import { createRules } from '../chess/rules.js?v=1790407327';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790407327';
+import { hintMove } from '../shared/ai.js?v=1790407327';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -102,6 +102,7 @@ const board = createBoard($('board'), { onMove: (o, d) => userMove(o, d) });
 const solvedOf = k => new Set(LG.store.get('puz:' + k, []));
 
 let mode = 'menu', sec = null, idx = 0, pos = null, line = [], step = 0, userColor = 'white';
+let firstEntry = true;
 let mistakes = 0, done = false, hintStage = 0, lastMove, token = 0, history = [];
 
 // ---------- дрібниці ----------
@@ -167,8 +168,7 @@ function renderMenu() {
     return `<button type="button" class="mt-card" data-k="${k}"><span class="ic">${icon(ic)}</span><b>${name}</b><small>${sub}</small>${pr}</button>`;
   }).join('')}</div>`).join('');
 }
-let pickFirst = false;
-$('menu').addEventListener('click', e => { const b = e.target.closest('.mt-card'); if (b) { history.length = 0; pickFirst = true; location.hash = b.dataset.k; } });
+$('menu').addEventListener('click', e => { const b = e.target.closest('.mt-card'); if (b) { history.length = 0; location.hash = b.dataset.k; } });
 function route() {
   const k = decodeURIComponent(location.hash.slice(1));
   token++;
@@ -194,8 +194,8 @@ function startPuzzles() {
   }
   idx = openIdx();
   loadPuzzle();
-  if (pickFirst) showPicker(true);
-  pickFirst = false;
+  if (firstEntry) showPicker(true);
+  firstEntry = false;
 }
 // урок: наступний рівень, а після останнього — вікно «Урок пройдено!»
 function lessonNext() {

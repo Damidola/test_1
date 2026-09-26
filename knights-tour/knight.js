@@ -2,7 +2,8 @@
    Дошка — та сама дошка Lichess (chessground), обрізана до n×n (видно лівий нижній кут, a1…).
    Кінь стартує в куті a1; зеленими крапками — куди можна стрибнути; на пройдених клітинках — номер ходу.
    Підказка — правило Варнсдорфа (стрибай туди, звідки найменше виходів) з перевіркою, що обхід ще можливий. */
-import { createBoard } from '../shared/board.js?v=1790406861';
+import { createBoard } from '../shared/board.js?v=1790407327';
+import { markSeen } from '../shared/path.js?v=1790407327';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const JUMPS = [[1, 2], [2, 1], [-1, 2], [-2, 1], [1, -2], [2, -1], [-1, -2], [-2, -1]];
@@ -71,6 +72,7 @@ function jump(to) {
   if (path.length === n * n) {
     won = true; render();
     $('task').textContent = 'Уся дошка пройдена! 🎉';
+    markSeen('knights-tour/index.html');
     return LG.win(`Кінь обійшов усі ${n * n} клітинок!`, { reward: true, onAgain: start });
   }
   render();
