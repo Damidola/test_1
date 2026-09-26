@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, dests, shortest } from './mazes.js?v=1790404681';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790404681';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790404681';
+import { MAZES, dests, shortest } from './mazes.js?v=1790405212';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790405212';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790405212';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -36,10 +36,19 @@ function load() {
   say(idx === 0 ? 'З’їж полуничку 🍓! Перетягни туру або натисни на неї — крапки покажуть, куди можна піти.' : 'З’їж полуничку 🍓 якнайменшою кількістю ходів.');
   select(true);
 }
+// ходи йдуть по черзі: наступний починається, коли попередній доїхав (інакше швидкі тапи зрізають по діагоналі)
+let queue = [], qT = 0, moving = false;
 function place(anim) {
-  pieceEl.style.transition = anim ? '' : 'none';
-  pieceEl.style.transform = 'translate(' + at[0] * 100 + '%,' + at[1] * 100 + '%)';
+  const t = 'translate(' + at[0] * 100 + '%,' + at[1] * 100 + '%)';
+  if (!anim) { stopQueue(); pieceEl.style.transition = 'none'; pieceEl.style.transform = t; return; }
+  queue.push(t); if (!moving) step();
 }
+function step() {
+  const t = queue.shift(); moving = !!t; if (!t) return;
+  pieceEl.style.transition = ''; pieceEl.style.transform = t;
+  qT = setTimeout(step, 280);
+}
+function stopQueue() { queue = []; clearTimeout(qT); moving = false; }
 function say(t, cls) { const el = $('task'); el.textContent = t; el.classList.remove('ok', 'bad'); if (cls) el.classList.add(cls); }
 function select(on) {
   sel = on && !done; pieceEl.classList.toggle('sel', sel);
@@ -67,7 +76,7 @@ grid.addEventListener('pointermove', e => {
   if (!drag || e.pointerId !== drag.id) return;
   const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (!drag.moved && Math.hypot(dx, dy) < 6) return;
-  if (!drag.moved) { drag.moved = true; select(true); pieceEl.classList.add('drag'); }
+  if (!drag.moved) { drag.moved = true; stopQueue(); select(true); pieceEl.classList.add('drag'); }
   pieceEl.style.transition = 'none';
   const w = pieceEl.offsetWidth, h = pieceEl.offsetHeight;
   pieceEl.style.transform = 'translate(' + (at[0] * w + dx) + 'px,' + (at[1] * h + dy) + 'px) scale(1.15)';

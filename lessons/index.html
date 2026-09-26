@@ -6,15 +6,15 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Як ходять фігури</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790404681">
-  <link rel="stylesheet" href="../shared/play.css?v=1790404681">
-  <link rel="stylesheet" href="lila-learn.css?v=1790404681">
-  <link rel="stylesheet" href="learn.css?v=1790404681">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790405212">
+  <link rel="stylesheet" href="../shared/play.css?v=1790405212">
+  <link rel="stylesheet" href="lila-learn.css?v=1790405212">
+  <link rel="stylesheet" href="learn.css?v=1790405212">
 </head>
 <body data-asset-url=".">
   <main id="main-wrap"><div id="learn-app"></div></main>
-  <script src="../shared/games.js?v=1790404681"></script>
-  <script src="../shared/kit.js?v=1790404681" data-game="learn" data-night="on"></script>
+  <script src="../shared/games.js?v=1790405212"></script>
+  <script src="../shared/kit.js?v=1790405212" data-game="learn" data-night="on"></script>
   <style>
     .lv-vid { position: fixed; left: 0; right: 0; bottom: 0; top: var(--fs-top, 0px); z-index: 3000; display: flex; flex-direction: column; padding: calc(16px + var(--tg-top, 0px) + env(safe-area-inset-top)) 0 calc(16px + env(safe-area-inset-bottom)); background: #1B2133; color: #fff; overflow: auto; box-sizing: border-box; }
     .lv-vid-in { margin: auto 0; display: flex; flex-direction: column; align-items: center; width: 100%; }
@@ -40,7 +40,7 @@
         15: ['xwNtd8XqLME', 'Особливі пішаки', 'Пішак, який стрибнув на дві клітинки повз твого пішака, можна побити «на проході» — ніби він пішов лише на одну.']
       };
       const stage = () => (location.hash.match(/^#\/(\d+)/) || [])[1];
-      const start = () => import('./app.js?v=1790404681');
+      const start = () => import('./app.js?v=1790405212');
       const s0 = stage(), v = V[s0];
       const reload = (performance.getEntriesByType('navigation')[0] || {}).type === 'reload';
       if (!v || reload) start();
