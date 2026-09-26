@@ -1,8 +1,8 @@
 /* Шахи за правилами Lichess (chessops): шах, мат, пат, рокіровка, взяття на проході.
    Пішак, що дійшов до кінця, одразу стає ферзем. */
 import { Chess, makeSquare, fen, attacks } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { bestUci } from '../shared/engine.js?v=1790409961';
-const { makeFen } = fen;
+import { bestUci } from '../shared/engine.js?v=1790410199';
+const { makeFen, parseFen } = fen;
 
 const VALUE = { pawn: 100, knight: 300, bishop: 320, rook: 500, queen: 900, king: 0 };
 const LETTER = { pawn: 'P', knight: 'N', bishop: 'B', rook: 'R', queen: 'Q', king: 'K' };
@@ -105,7 +105,10 @@ function humanMove(pos, list, level) {
   return top[0].mv;
 }
 
-export function createRules() {
+export function createRules(opts = {}) {
+  // своя стартова позиція (FEN), напр. лише королі й пішаки
+  const start = () => (opts.fen ? Chess.fromSetup(parseFen(opts.fen).unwrap()).unwrap() : Chess.default());
+  const startCount = (() => { const n = { white: {}, black: {} }; for (const [, p] of start().board) n[p.color][p.role] = (n[p.color][p.role] || 0) + 1; return n; })();
   function moves(pos) {
     const out = [];
     for (const [from, dests] of pos.allDests()) {
@@ -145,11 +148,11 @@ export function createRules() {
   function captured(pos) {
     const left = { white: {}, black: {} };
     for (const [, p] of pos.board) left[p.color][p.role] = (left[p.color][p.role] || 0) + 1;
-    const lost = c => Object.entries(START).flatMap(([r, n]) => Array(Math.max(0, n - (left[c][r] || 0))).fill(LETTER[r]));
+    const lost = c => Object.entries(START).flatMap(([r]) => Array(Math.max(0, (startCount[c][r] || 0) - (left[c][r] || 0))).fill(LETTER[r]));
     return { w: lost('black'), b: lost('white') }; // що збили білі — це втрати чорних
   }
   return {
-    initial: () => Chess.default(),
+    initial: start,
     moves, play, result, evaluate, captured,
     // хід наперед (синім): лише туди, куди фігура справді може піти в цій позиції (як зелені крапки), а не будь-куди
     premovePos: (pos, color) => { const p = pos.clone(); p.turn = color === 'w' ? 'white' : 'black'; return p; },

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Своя позиція</title>
+  <link rel="stylesheet" href="../shared/kit.css?v=1790410199">
+  <link rel="stylesheet" href="../shared/play.css?v=1790410199">
+  <style>
+    .ed { justify-content: center; gap: 8px; }
+    .ed .lg-board-wrap { width: min(100vw - 16px, 520px, calc(100svh - 360px)); }
+    .ed-pal { display: flex; justify-content: center; gap: 4px; width: min(100vw - 16px, 520px); padding: 4px; box-sizing: border-box; border-radius: 14px; background: rgba(255,255,255,.05); }
+    .ed-pal button { flex: 1; max-width: 58px; aspect-ratio: 1; padding: 3px; border: 2px solid transparent; border-radius: 12px; background: none; cursor: pointer; }
+    .ed-pal button img { width: 100%; height: 100%; display: block; }
+    .ed-pal button.on { border-color: #2ee6b8; background: rgba(46,230,184,.15); }
+    .ed-pal .ed-er { font-size: 24px; color: #fff; }
+    .ed-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: min(100vw - 16px, 520px); }
+    .ed-row button { flex: 1; min-height: 38px; padding: 0 8px; border: 0; border-radius: 12px; background: rgba(255,255,255,.08); color: #fff; font: 700 13.5px Manrope, var(--lg-font), sans-serif; cursor: pointer; white-space: nowrap; }
+    .ed-row button.on { background: #7C6CF0; }
+    .ed-goal { margin: 0; min-height: 20px; font: 700 14px Manrope, var(--lg-font), sans-serif; color: #c9d2ea; text-align: center; }
+    .ed-top { display: flex; align-items: center; gap: 10px; width: min(100vw - 16px, 520px); }
+    .ed-top b { font: 800 20px Manrope, var(--lg-font), sans-serif; }
+    .ed-back { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; font: 700 28px/1 sans-serif; text-decoration: none; }
+    html.lg-tg .ed-back { visibility: hidden; }
+    .ed-go { min-height: 48px; width: min(100vw - 16px, 520px); border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 18px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <main class="lg-play ed">
+    <div class="ed-top"><a class="ed-back" href="../index.html#practice/pvp" aria-label="Назад">‹</a><b>Своя позиція</b></div>
+    <div class="ed-pal" id="pal-b" aria-label="Чорні фігури"></div>
+    <div class="lg-board-wrap"><div class="lg-board-el" id="board"></div></div>
+    <div class="ed-pal" id="pal-w" aria-label="Білі фігури"></div>
+    <div class="ed-row" id="presets">
+      <button type="button" data-p="clear">🗑 Порожньо</button>
+      <button type="button" data-p="start">Як у шахах</button>
+      <button type="button" data-p="kp">Королі й пішаки</button>
+      <button type="button" data-p="nok">Без королів</button>
+    </div>
+    <div class="ed-row" id="side"><button type="button" data-s="w">Граю білими</button><button type="button" data-s="b">Граю чорними</button></div>
+    <p class="ed-goal" id="goal"></p>
+    <button type="button" class="ed-go" id="go">Грати ▶</button>
+  </main>
+  <script src="../shared/games.js?v=1790410199"></script>
+  <script src="../shared/kit.js?v=1790410199" data-night="on"></script>
+  <script type="module" src="editor.js?v=1790410199"></script>
+</body>
+</html>

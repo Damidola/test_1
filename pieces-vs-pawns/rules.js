@@ -2,14 +2,14 @@
    Пішак, що дійшов до кінця дошки, стає ферзем — але перемога, лише якщо цього ферзя не з'їли
    наступним ходом. Фігури виграють, коли зіб'ють усіх пішаків. Фігури ходять за шаховими правилами
    (без шаху). Немає ходів — нічия. */
-import { squareName as N } from '../shared/board.js?v=1790409961';
+import { squareName as N } from '../shared/board.js?v=1790410199';
 
 // Від найпростішого для фігур до найважчого. [ключ, фігури, скільки пішаків]
 export const MODES = [
   ['q_p8', 'Q', 8], ['r_p5', 'R', 5], ['b_p3', 'B', 3], ['n_p3', 'N', 3],
-  ['bb_p8', 'BB', 8], ['nn_p6', 'NN', 6], ['p_vs_p1', 'PPPP', 4]
+  ['bb_p8', 'BB', 8], ['nn_p6', 'NN', 6], ['rr_p10', 'RR', 10], ['p_vs_p1', 'PPPP', 4]
 ];
-const NAMES = { Q: 'ферзь', R: 'тура', B: 'слон', N: 'кінь', BB: '2 слони', NN: '2 коні', PPPP: '4 пішаки' };
+const NAMES = { Q: 'ферзь', R: 'тура', B: 'слон', N: 'кінь', BB: '2 слони', NN: '2 коні', RR: '2 тури', PPPP: '4 пішаки' };
 export const modeLabel = ([, f, n]) => `${NAMES[f]} проти ${n} пішаків`;
 // Кнопка режиму: картинки фігур «проти» кількості пішаків
 export const modeButton = ([, f, n]) => {
@@ -32,7 +32,8 @@ const PAWN_COLS = { 3: [2, 3, 4], 4: [2, 3, 4, 5], 5: [1, 2, 3, 4, 5], 6: [1, 2,
 function setup(mode) {
   const [, f, n] = MODES.find(m => m[0] === mode) || MODES[0];
   const b = Array(64).fill(null), put = (r, c, color, t) => { b[r * 8 + c] = { c: color, t }; };
-  PAWN_COLS[n].forEach(c => put(6, c, 'w', 'P'));
+  if (n === 10) { PAWN_COLS[8].forEach(c => put(6, c, 'w', 'P')); put(5, 2, 'w', 'P'); put(5, 5, 'w', 'P'); } // 8 + c3 і f3, обидва захищені
+  else PAWN_COLS[n].forEach(c => put(6, c, 'w', 'P'));
   if (f.startsWith('P')) PAWN_COLS[n].forEach(c => put(1, c, 'b', 'P'));
   else if (f === 'Q') put(0, 3, 'b', 'Q');
   else if (f === 'R') put(0, 0, 'b', 'R');
@@ -40,6 +41,7 @@ function setup(mode) {
   else if (f === 'N') put(0, 6, 'b', 'N');
   else if (f === 'BB') { put(0, 2, 'b', 'B'); put(0, 5, 'b', 'B'); }
   else if (f === 'NN') { put(0, 1, 'b', 'N'); put(0, 6, 'b', 'N'); }
+  else if (f === 'RR') { put(0, 0, 'b', 'R'); put(0, 7, 'b', 'R'); }
   return b;
 }
 

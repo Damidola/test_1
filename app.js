@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790409961';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790409961';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790409961';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790410199';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790410199';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790410199';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -138,7 +138,9 @@ const PRACTICE = [
     [null, [[['K', 'Q'], 'Ферзь і король', '', P('kqk')], [['K', 'R'], 'Тура і король', '', P('krk')], [['K', 'B', 'B'], 'Два слони', '', P('kbbk')], [['K', 'P'], 'Король і пішак', '', P('kpk')]]]] },
   { id: 'pvp', ic: ['Q', 'vs', 'P'], t: 'Фігури проти пішаків', s: 'не пропусти жодного пішака до краю', c: '#7C6CF0', groups: [
     [null, [[['Q', 'vs', 'P'], 'Ферзь проти 8', '', W('q_p8')], [['R', 'vs', 'P'], 'Тура проти 5', '', W('r_p5')], [['B', 'vs', 'P'], 'Слон проти 3', '', W('b_p3')],
-      [['N', 'vs', 'P'], 'Кінь проти 3', '', W('n_p3')], [['B', 'B', 'vs', 'P'], '2 слони проти 8', '', W('bb_p8')], [['N', 'N', 'vs', 'P'], '2 коні проти 6', '', W('nn_p6')]]]] },
+      [['N', 'vs', 'P'], 'Кінь проти 3', '', W('n_p3')], [['B', 'B', 'vs', 'P'], '2 слони проти 8', '', W('bb_p8')], [['N', 'N', 'vs', 'P'], '2 коні проти 6', '', W('nn_p6')], [['R', 'R', 'vs', 'P'], '2 тури проти 10', 'два пішаки захищені', W('rr_p10')],
+      [['K', 'P', 'vs', 'K', 'P'], 'Король і пішаки', 'проти короля й пішаків — постав мат', 'chess/index.html?level=2&fen=' + encodeURIComponent('4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3 w - - 0 1')],
+      ['🛠️', 'Своя позиція', 'розстав фігури сам', 'editor/index.html']]]] },
   { id: 'games', ic: '⭐', t: 'Головоломки', s: 'хід конем, 8 ферзів', c: '#8C6CF0', groups: [
     [null, [[['N'], 'Хід конем', 'обійди всю дошку', 'knights-tour/index.html'], [['Q'], '8 ферзів', 'щоб ніхто нікого не бив', 'eight-queens/index.html']]]] },
   { id: 'pawns', ic: ['P', 'vs', 'P'], t: 'Пішакова битва', s: 'хто перший до краю', c: '#4DB6AC', href: 'pawns/index.html' }
