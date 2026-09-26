@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790407962';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790407962';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790407962';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790408122';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790408122';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790408122';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -255,6 +255,7 @@ function renderProfile() {
           <div class="mg-row"><span>Підказки</span><div class="mg-pill mg-lim" data-lim="hints">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
           <div class="mg-row"><span>Ходи назад</span><div class="mg-pill mg-lim" data-lim="undos">${['1', '3', '5', 'inf'].map(v => `<button type="button" data-v="${v}">${v === 'inf' ? '∞' : v}</button>`).join('')}</div></div>
           <div class="mg-row"><span>Робот думає</span><div class="mg-think"><input type="range" min="300" max="4000" step="100" id="p-think" aria-label="Скільки робот думає"><b id="p-think-v"></b></div></div>
+          <div class="mg-row"><span>Хід наперед</span><button type="button" class="pf-sw" id="p-pre" aria-label="Хід наперед"></button></div>
           <div class="mg-row"><span>Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
           <button type="button" class="mg-done">Готово</button>
         </div>
@@ -305,7 +306,7 @@ function renderProfile() {
     document.addEventListener('fullscreenchange', paintFs);
   }
   sw('p-dots', 'showDests', true); sw('p-coords', 'coords', true);
-  $('p-coords').addEventListener('click', () => document.documentElement.classList.toggle('lg-nocoords', !LG.store.get('coords', true))); sw('p-say', 'oppSay', true); // репліки суперника типово ввімкнені
+  $('p-coords').addEventListener('click', () => document.documentElement.classList.toggle('lg-nocoords', !LG.store.get('coords', true))); sw('p-say', 'oppSay', true); sw('p-pre', 'premove', false); // репліки суперника типово ввімкнені
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); const em = $('view-profile').querySelector('.mg-more em'); if (em) em.firstChild.textContent = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`; }));
