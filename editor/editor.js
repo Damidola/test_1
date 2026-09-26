@@ -5,7 +5,7 @@
    а перетягнута за дошку — зникає. */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790414122';
+import { applyBoardLook } from '../shared/board.js?v=1790414488';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const PRESETS = {
@@ -149,3 +149,15 @@ $('an').addEventListener('click', () => {
   if (!c.mate) { LG.play('error'); return LG.toast('Аналіз робота — лише для позицій з обома королями.'); }
   LG.go('../games/index.html?fen=' + encodeURIComponent(c.full));
 });
+
+// дошка — такого розміру, щоб усі кнопки вмістились на екрані без прокрутки
+function fit() {
+  const wrap = document.querySelector('.ed .lg-board-wrap'), main = document.querySelector('main.ed');
+  const max = Math.min(520, innerWidth - 16);
+  wrap.style.width = max + 'px';
+  const kids = [...main.children].filter(c => c.offsetParent), gap = parseFloat(getComputedStyle(main).rowGap) || 0;
+  const over = kids.reduce((h, c) => h + c.offsetHeight, 0) + gap * (kids.length - 1) + 22 - main.clientHeight;
+  if (over > 0) wrap.style.width = Math.max(200, max - over - 4) + 'px';
+  cg.redrawAll();
+}
+addEventListener('resize', fit); fit(); setTimeout(fit, 300);

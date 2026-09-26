@@ -4,13 +4,15 @@
    games/?fen=<позиція>   — аналіз однієї позиції (з «Своєї позиції») */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, parseUci, parseSquare, compat, fen as FEN, san as SAN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790414122';
-import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790414122';
-import { analyse } from '../shared/engine.js?v=1790414122';
+import { applyBoardLook } from '../shared/board.js?v=1790414488';
+import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790414488';
+import { analyse } from '../shared/engine.js?v=1790414488';
 
 const LG = window.LG, app = document.getElementById('app');
 const q = new URLSearchParams(location.search);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// українська нотація: Кр — король, Ф — ферзь, Т — тура, С — слон, К — кінь
+const UA = { K: 'Кр', Q: 'Ф', R: 'Т', B: 'С', N: 'К' }, ua = t => String(t).replace(/[KQRBN]/g, c => UA[c]);
 const RES = { w: ['Перемога', 'w'], d: ['Нічия', 'd'], l: ['Поразка', 'l'] };
 const back = href => `<a class="gm-back" href="${href}" aria-label="Назад">‹</a>`;
 const games = LG.store.get('games', []);
@@ -83,6 +85,15 @@ function viewer(main, { game }) {
     line = line.slice(0, i + 1).concat(f); lm = lm.slice(0, i + 1).concat([[o, d]]); i++;
     show();
   }
+  // дошка — такого розміру, щоб під нею вмістились усі кнопки (без прокрутки)
+  function fit() {
+    const row = document.querySelector('.gm-board-row'), max = Math.min(520, app.clientWidth - 24);
+    row.style.width = max + 'px';
+    const over = app.scrollHeight - (innerHeight - (parseFloat(getComputedStyle(document.body).borderTopWidth) || 0));
+    if (over > 0) row.style.width = Math.max(200, max - over) + 'px';
+    cg.redrawAll();
+  }
+  addEventListener('resize', () => fit());
   function show() {
     const pos = posAt(i);
     const dests = pos && !pos.isEnd() ? compat.chessgroundDests(pos) : new Map();
@@ -90,13 +101,14 @@ function viewer(main, { game }) {
       movable: { color: pos && !pos.isEnd() ? pos.turn : undefined, dests } });
     cg.setAutoShapes([]);
     const n = line.length - 1;
-    $('n').textContent = (branch >= 0 && i > branch ? 'Варіант · ' : '') + (i ? `Хід ${Math.ceil(i / 2)}${i % 2 ? '' : '…'} · ${i} / ${n}` : 'Початок');
+    $('n').textContent = (branch >= 0 && i > branch ? '🔀 ' : '') + (i ? `Хід ${Math.ceil(i / 2)}${i % 2 ? '' : '…'} · ${i}/${n}` : 'Початок');
     $('slider').max = n; $('slider').value = i; $('slider').hidden = n === 0;
     $('first').disabled = $('prev').disabled = i === 0; $('next').disabled = $('last').disabled = i === n;
     $('ret').hidden = branch < 0; $('ret').textContent = game ? '↩ Повернутися до партії' : '↩ До початкової позиції';
     $('an').classList.toggle('on', on); $('an').textContent = on ? '🔍 Аналіз увімкнено' : '🔍 Аналіз';
     $('bar').hidden = $('info').hidden = !on;
     if ($('play')) $('play').href = `../chess/index.html?level=2&side=${line[i].split(' ')[1] === 'b' ? 'b' : 'w'}&fen=${encodeURIComponent(line[i])}`;
+    fit();
     if (on) { $('info').innerHTML = 'Робот думає… 🤔'; token++; clearTimeout(wait); wait = setTimeout(() => think(pos), 250); }
   }
   const played = () => {
@@ -132,7 +144,8 @@ function viewer(main, { game }) {
     try { line = SAN.makeSanVariation(pos, r.pv.slice(0, 6).map(u => parseUci(u)).filter(Boolean)); } catch (e) { /* */ }
     cg.setAutoShapes([{ orig: r.best.slice(0, 2), dest: r.best.slice(2, 4), brush: 'best' }]);
     const p = played();
-    info.innerHTML = `<b>${text}</b><br>Найкращий хід: <b>${esc(best)}</b>${p ? (p === best ? ' ✅ так і зіграли' : ` · у партії: ${esc(p)}`) : ''}${line ? `<small>Далі: ${esc(line)}</small>` : ''}`;
+    requestAnimationFrame(fit);
+    info.innerHTML = `<b>${text}</b><br>Найкращий хід: <b>${esc(ua(best))}</b>${p ? (p === best ? ' ✅ так і зіграли' : ` · у партії: ${esc(ua(p))}`) : ''}${line ? `<small>Далі: ${esc(ua(line))}</small>` : ''}`;
   }
   const go = k => { i = Math.max(0, Math.min(line.length - 1, k)); LG.play('tap'); show(); };
   $('first').onclick = () => go(0); $('prev').onclick = () => go(i - 1); $('next').onclick = () => go(i + 1); $('last').onclick = () => go(line.length - 1);

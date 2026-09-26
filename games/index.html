@@ -6,12 +6,15 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Мої партії</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790414122">
-  <link rel="stylesheet" href="../shared/play.css?v=1790414122">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790414488">
+  <link rel="stylesheet" href="../shared/play.css?v=1790414488">
   <style>
     body { margin: 0; font-family: Manrope, var(--lg-font), sans-serif; }
-    .gm { box-sizing: border-box; min-height: 100svh; padding: calc(10px + var(--tg-top, 0px) + env(safe-area-inset-top)) 12px calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .gm { box-sizing: border-box; min-height: 100svh; padding: calc(6px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; gap: 8px; }
     .gm > * { width: min(100%, 520px); }
+    /* дошка — стільки, скільки лишається від висоти екрана: усі кнопки видно без прокрутки */
+    .gm-nav button, .gm-an, .gm-ret, .gm-play { min-height: 40px !important; }
+    .gm-info { font-size: 14px; padding: 8px 12px; }
     .gm-top { display: flex; align-items: center; gap: 10px; min-height: 44px; }
     .gm-top b { font-size: 20px; font-weight: 800; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .gm-back { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; font: 700 28px/1 sans-serif; text-decoration: none; }
@@ -36,7 +39,7 @@
     .gm-nav { display: flex; align-items: center; gap: 6px; }
     .gm-nav button { flex: 1; min-height: 46px; border: 0; border-radius: 14px; background: rgba(255,255,255,.08); color: #fff; font: 800 20px Manrope, sans-serif; cursor: pointer; }
     .gm-nav button:disabled { opacity: .35; }
-    .gm-nav .gm-n { flex: 1.4; text-align: center; font-weight: 800; font-size: 15px; color: #c9d2ea; }
+    .gm-nav .gm-n { flex: 1.6; text-align: center; font-weight: 800; font-size: 14px; white-space: nowrap; color: #c9d2ea; }
     .gm-slider { width: 100%; accent-color: #2ee6b8; }
     .gm-an { min-height: 46px; border: 0; border-radius: 14px; background: #7C6CF0; color: #fff; font: 800 16px Manrope, sans-serif; cursor: pointer; }
     .gm-an.on { background: #2ee6b8; color: #04241d; }
@@ -50,8 +53,8 @@
 </head>
 <body data-back="../index.html#profile">
   <main class="gm" id="app"></main>
-  <script src="../shared/games.js?v=1790414122"></script>
-  <script src="../shared/kit.js?v=1790414122" data-night="on"></script>
-  <script type="module" src="games.js?v=1790414122"></script>
+  <script src="../shared/games.js?v=1790414488"></script>
+  <script src="../shared/kit.js?v=1790414488" data-night="on"></script>
+  <script type="module" src="games.js?v=1790414488"></script>
 </body>
 </html>
