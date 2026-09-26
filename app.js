@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790411074';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790411074';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790411074';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790411538';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790411538';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790411538';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -197,7 +197,7 @@ function renderPractice(open) {
     }).join('')}</div>`;
     return;
   }
-  const sub = `<div class="g2-sub"><a class="g2-back" href="#practice" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><span class="g2-ic pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>`;
+  const sub = `<div class="g2-sub"><a class="g2-back" href="#practice" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><span class="g2-ic pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2><button type="button" class="g2-more" id="pr-more" aria-label="Ще">⋯</button></div>`;
   const keyOf = href => href.startsWith('chess-puzzles/') && href.split('#')[1];
   const items = cat.groups.flatMap(([, it]) => it), puz = items.map(x => keyOf(x[3])).filter(k => k && puzData && puzData[k]);
   // «Зміст» (як у ChessKid): угорі — задача, з якої продовжити, скільки розвʼязано й успіх; нижче — підрозділи рядками
@@ -217,6 +217,29 @@ function renderPractice(open) {
     }).join('')}</div>`).join('');
   markTall();
 }
+// ⋯ у розділі практики: поки одна дія — скинути прогрес розділу (для нового учня). Два підтвердження — щоб не випадково.
+const PUZ_KEYS = ['puz:', 'puzres:', 'puzopen:', 'prac:', 'lvl:puz-'];
+function resetSection(cat) {
+  const ks = cat.groups.flatMap(([, it]) => it.map(x => x[3])).filter(h => h.startsWith('chess-puzzles/')).map(h => h.split('#')[1]);
+  for (const k of ks) for (const pre of PUZ_KEYS) try { localStorage.removeItem('chk:' + pre + k); } catch (e) { /* */ }
+}
+function askSheet(title, text, yes, onYes, danger) {
+  const o = document.createElement('div'); o.className = 'pr-ask';
+  o.innerHTML = `<div class="pr-ask-card"><b></b><p></p><div class="pr-ask-btns"><button type="button" class="no">Скасувати</button><button type="button" class="yes${danger ? ' danger' : ''}"></button></div></div>`;
+  o.querySelector('b').textContent = title; o.querySelector('p').textContent = text; o.querySelector('.yes').textContent = yes;
+  o.querySelector('.no').onclick = () => { LG.play('tap'); o.remove(); };
+  o.querySelector('.yes').onclick = () => { o.remove(); onYes(); };
+  document.body.appendChild(o);
+}
+$('view-practice').addEventListener('click', e => {
+  if (!e.target.closest('#pr-more')) return;
+  const cat = PRACTICE.find(c => location.hash === '#practice/' + c.id && c.groups); if (!cat) return;
+  LG.play('tap');
+  askSheet(cat.t, 'Що зробити з розділом?', '🗑 Скинути прогрес розділу', () =>
+    askSheet('Точно скинути?', `Усі розвʼязані задачі розділу «${cat.t}», кольори й успіх зітруться. Повернути не вийде.`, 'Так, скинути назавжди', () => {
+      resetSection(cat); LG.play('tap'); renderPractice(cat.id); LG.toast('Прогрес розділу «' + cat.t + '» скинуто');
+    }, true));
+});
 // висока плитка практики — іконка над текстом (довгі слова на кшталт «Відволікання» не вилазять і не дрібні)
 function markTall() {
   requestAnimationFrame(() => document.querySelectorAll('#view-practice .g2-tiles .g2-tile').forEach(t => {

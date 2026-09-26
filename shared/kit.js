@@ -277,7 +277,8 @@
     const close = el('button', { class: 'lg-modal-x', 'aria-label': 'Закрити', text: '✕', onclick: closeModal });
     card.appendChild(close);
     card.appendChild(content);
-    modal = el('div', { class: 'lg-modal', onclick: e => { if (e.target === modal) closeModal(); } }, [card]);
+    // вікно результату партії тапом повз не закривається — лише кнопками (щоб випадковий тап по дошці його не ховав)
+    modal = el('div', { class: 'lg-modal', onclick: e => { if (e.target === modal && !(opts && opts.sticky)) closeModal(); } }, [card]);
     document.body.appendChild(modal);
     requestAnimationFrame(() => modal && modal.classList.add('lg-open'));
     const focusable = card.querySelector('.lg-btn') || close;
@@ -424,7 +425,7 @@
         el('button', { class: 'lg-btn lg-btn-primary lg-wide-btn', text: '↻  Реванш', onclick: () => { closeModal(); if (again2) again2(); } }),
         el('a', { class: 'lg-btn lg-wide-btn', href: homeHref(), text: '+  Нова гра' })
       ]));
-      setTimeout(() => openModal(el('div', { class: 'lg-result lg-result-' + kind + ' lg-result-app' }, children)), (opts.delay) || 700);
+      setTimeout(() => openModal(el('div', { class: 'lg-result lg-result-' + kind + ' lg-result-app' }, children), { sticky: true }), (opts.delay) || 700);
       return;
     }
     const buttons = el('div', { class: 'lg-result-btns' });
@@ -438,7 +439,7 @@
     if (opts && opts.onNext) buttons.appendChild(el('button', { class: 'lg-btn lg-btn-primary lg-btn-big lg-btn-next', 'aria-label': 'Далі', title: 'Далі', text: 'Далі ▶', onclick: () => { closeModal(); opts.onNext(); } }));
     children.push(buttons);
     setTimeout(() => {
-      openModal(el('div', { class: 'lg-result lg-result-' + kind }, children));
+      openModal(el('div', { class: 'lg-result lg-result-' + kind }, children), { sticky: true });
       // Швидкі ігри: вікно саме зникає і починається нова партія
       if (opts && opts.autoClose) setTimeout(() => { closeModal(); if (again) again(); }, opts.autoClose);
     }, Math.max((opts && opts.delay) || 0, (opts && opts.autoClose) ? 300 : 700));
