@@ -78,26 +78,26 @@ body:has(.lv-vid) .lg-nav { display: none !important; }`;
   }
   const ytLink = id => { const a = document.createElement('a'); a.className = 'lv-vid-yt'; a.target = '_blank'; a.rel = 'noopener'; a.href = 'https://youtu.be/' + id; a.textContent = 'Дивитися на YouTube ↗'; return a; };
   // екран на весь застосунок: заголовок, відео, пояснення, «До вправ», посилання на YouTube
-  function overlay([id, title, text], onClose) {
+  function overlay([id, title, text], onClose, key) {
     if (document.querySelector('.lv-vid')) return;
     addCss();
     const o = document.createElement('div'); o.className = 'lv-vid';
     o.innerHTML = '<div class="lv-vid-in"><h2></h2><p></p><button type="button" class="lv-vid-go">До вправ ▶️</button></div>';
     o.querySelector('h2').textContent = title; o.querySelector('p').textContent = text;
     const pl = player(id); o.querySelector('h2').after(pl.el); o.querySelector('.lv-vid-in').appendChild(ytLink(id));
-    o.querySelector('.lv-vid-go').onclick = () => { pl.destroy(); o.remove(); onClose && onClose(); };
+    o.querySelector('.lv-vid-go').onclick = () => { if (key) try { sessionStorage.setItem('vid:closed', key); } catch (e) { /* */ } pl.destroy(); o.remove(); onClose && onClose(); };
     document.body.appendChild(o);
   }
-  window.LGVideo = { player, overlay, ytLink };
+  // після оновлення сторінки відео лишається, якщо його ще не закрили кнопкою «До вправ»
+  const isReload = (performance.getEntriesByType('navigation')[0] || {}).type === 'reload';
+  const dismissed = key => { if (!isReload) return false; try { return sessionStorage.getItem('vid:closed') === key; } catch (e) { return false; } };
+  window.LGVideo = { player, overlay, ytLink, dismissed };
   function show(k) {
     const v = V[k]; if (!v) return;
-    try { sessionStorage.setItem('vid:last', k); } catch (e) { /* */ }
-    overlay(v);
+    overlay(v, null, k);
   }
   // оновлення сторінки не показує відео вдруге (але сторінки, що перезавантажуються при зміні #, — показують нове)
-  let last = null; try { last = sessionStorage.getItem('vid:last'); } catch (e) { /* */ }
-  const reload = (performance.getEntriesByType('navigation')[0] || {}).type === 'reload';
   let cur = here();
-  if (!(reload && last === cur)) (document.body ? show(cur) : document.addEventListener('DOMContentLoaded', () => show(cur)));
+  if (!dismissed(cur)) (document.body ? show(cur) : document.addEventListener('DOMContentLoaded', () => show(cur)));
   addEventListener('hashchange', () => { const k = here(); if (k !== cur) { cur = k; show(k); } });
 })();

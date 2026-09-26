@@ -60,10 +60,15 @@
   // у повному екрані сторінки відкриваються поверх поточної у рамці на весь екран — без справжнього переходу.
   // Коли в рамці відкривається ця ж сторінка (кнопка «додому»), рамка закривається. «Назад» працює як звичайно.
   let fsFrame = null;
+  // сторінка в рамці не видна в адресі — запамʼятовуємо її, щоб після оновлення відкрити ту саму, а не головну
+  const frameKey = 'lg:frame', isReload = (performance.getEntriesByType('navigation')[0] || {}).type === 'reload';
+  const setFrame = h => { try { h ? sessionStorage.setItem(frameKey, h) : sessionStorage.removeItem(frameKey); } catch (e) { /* */ } };
+  if (inFrame) { const mark = () => { try { if (window.top.LG && window.top.LG._fsClose) setFrame(location.href); } catch (e) { /* */ } }; mark(); addEventListener('hashchange', mark); }
+  if (!inFrame) { let h = null; try { h = sessionStorage.getItem(frameKey); } catch (e) { /* */ } setFrame(null); if (isReload && h) location.replace(h); }
   const samePage = u => u.origin === location.origin && u.pathname.replace(/index\.html$/, '') === location.pathname.replace(/index\.html$/, '');
   function fsClose(hash) {
     if (!fsFrame) return;
-    fsFrame.remove(); fsFrame = null; document.documentElement.classList.remove('lg-framed');
+    fsFrame.remove(); fsFrame = null; setFrame(null); document.documentElement.classList.remove('lg-framed');
     if (history.state && history.state.lgFrame) history.replaceState(null, '');
     if (hash !== undefined && hash !== location.hash) location.hash = hash;
     else dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
@@ -72,6 +77,7 @@
     const u = new URL(href, location.href);
     if (inFrame) { const t = topPage(u); if (t) t.LG._fsClose(u.hash); else location.href = u.href; return; }
     if (!fsEl() || u.origin !== location.origin || samePage(u)) { location.href = u.href; return; }
+    setFrame(u.href);
     if (fsFrame) { fsFrame.src = u.href; return; }
     fsFrame = document.createElement('iframe');
     fsFrame.className = 'lg-fsframe'; fsFrame.allow = 'fullscreen; autoplay';
@@ -79,14 +85,14 @@
     fsFrame.addEventListener('load', () => {
       let w; try { w = fsFrame.contentWindow.location; } catch (e) { return; }
       if (w.href !== 'about:blank' && samePage(w)) fsClose(w.hash);
-      else try { document.title = fsFrame.contentDocument.title; } catch (e) { /* */ }
+      else { setFrame(w.href); try { document.title = fsFrame.contentDocument.title; } catch (e) { /* */ } }
     });
     fsFrame.src = u.href;
     history.pushState({ lgFrame: 1 }, '');
     document.documentElement.classList.add('lg-framed');
     document.body.appendChild(fsFrame);
   }
-  addEventListener('popstate', () => { if (fsFrame && !(history.state && history.state.lgFrame)) { fsFrame.remove(); fsFrame = null; document.documentElement.classList.remove('lg-framed'); dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); } });
+  addEventListener('popstate', () => { if (fsFrame && !(history.state && history.state.lgFrame)) { fsFrame.remove(); fsFrame = null; setFrame(null); document.documentElement.classList.remove('lg-framed'); dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); } });
   // у рамці: посилання на головну сторінку одразу закриває рамку, без завантаження головної ще раз
   const topPage = u => { try { const t = window.top; return t.LG && t.LG._fsClose && u.origin === t.location.origin && u.pathname.replace(/index\.html$/, '') === t.location.pathname.replace(/index\.html$/, '') ? t : null; } catch (e) { return null; } };
   document.addEventListener('click', e => {
