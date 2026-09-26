@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790405633';
-import { createRules } from '../chess/rules.js?v=1790405633';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790405633';
-import { hintMove } from '../shared/ai.js?v=1790405633';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790406472';
+import { createRules } from '../chess/rules.js?v=1790406472';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790406472';
+import { hintMove } from '../shared/ai.js?v=1790406472';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -167,10 +167,12 @@ function renderMenu() {
     return `<button type="button" class="mt-card" data-k="${k}"><span class="ic">${icon(ic)}</span><b>${name}</b><small>${sub}</small>${pr}</button>`;
   }).join('')}</div>`).join('');
 }
-$('menu').addEventListener('click', e => { const b = e.target.closest('.mt-card'); if (b) { history.length = 0; location.hash = b.dataset.k; } });
+let pickFirst = false;
+$('menu').addEventListener('click', e => { const b = e.target.closest('.mt-card'); if (b) { history.length = 0; pickFirst = true; location.hash = b.dataset.k; } });
 function route() {
   const k = decodeURIComponent(location.hash.slice(1));
   token++;
+  document.querySelector('.pk')?.remove();
   if (!INFO[k]) { mode = 'menu'; main.dataset.mode = 'menu'; board.setMovable(null); renderMenu(); return; }
   sec = k;
   $('list').hidden = $('show').hidden = $('next').hidden = false;
@@ -192,6 +194,8 @@ function startPuzzles() {
   }
   idx = openIdx();
   loadPuzzle();
+  if (pickFirst) showPicker(true);
+  pickFirst = false;
 }
 // урок: наступний рівень, а після останнього — вікно «Урок пройдено!»
 function lessonNext() {
@@ -310,6 +314,7 @@ function solved() {
   done = true; board.setMovable(null); wrap.classList.add('solved');
   const s = solvedOf(sec), first = !s.has(DATA[sec][idx][0]);
   if (mistakes < 3) { s.add(DATA[sec][idx][0]); LG.store.set('puz:' + sec, [...s]); }
+  if (!levels) setRes(DATA[sec][idx][0], mistakes >= 3 ? 'r' : mistakes ? 'y' : 'g');
   paint();
   if (levels) {
     levels.done(idx, mistakes === 0);
@@ -330,7 +335,7 @@ function showSolution() {
   if (done || mode !== 'puzzle') return;
   done = true; mistakes = Math.max(mistakes, 3); board.setMovable(null); paint();
   const t = token;
-  if (levels) { levels.done(idx, false); $('task').classList.add('bad'); }
+  if (levels) { levels.done(idx, false); $('task').classList.add('bad'); } else setRes(DATA[sec][idx][0], 'r');
   const stepOne = () => {
     if (t !== token) return;
     if (step >= line.length) { if (levels) setTimeout(() => { if (t === token) lessonNext(); }, 1500); return; }
@@ -357,6 +362,46 @@ function nextPuzzle() {
   idx++;
   if (idx > LG.store.get('puzopen:' + sec, 0)) LG.store.set('puzopen:' + sec, idx);
   loadPuzzle();
+}
+
+// ---------- зміст розділу: превʼю задачі «продовжити», успіх і всі задачі кольоровими квадратиками ----------
+// результат задачі: g — без помилок, y — з помилками, r — показали розвʼязок
+const resOf = k => LG.store.get('puzres:' + k, {});
+function setRes(id, r) { const m = resOf(sec); m[id] = r; LG.store.set('puzres:' + sec, m); }
+const resFor = (k, id, m = resOf(k), s = solvedOf(k)) => m[id] || (s.has(id) ? 'g' : '');
+function miniBoard(fen, moves) {
+  const [placement, turn] = fen.split(' '), set = LG.store.get('pieceSet', 'cburnett') || 'cburnett';
+  const flip = (moves.split(' ').length % 2 === 1) === (turn === 'b');
+  const cells = [];
+  placement.split('/').forEach((row, r) => { let c = 0; for (const ch of row) { if (/\d/.test(ch)) { for (let i = 0; i < +ch; i++) cells.push([r, c++, '']); } else cells.push([r, c++, ch]); } });
+  if (flip) cells.reverse();
+  return '<div class="pk-mini">' + cells.map(([r, c, ch], i) => {
+    const dark = (r + c) % 2 === 1;
+    const img = ch ? `<img alt="" src="../shared/pieces/${set}/${ch === ch.toUpperCase() ? 'w' : 'b'}${ch.toUpperCase()}.svg">` : '';
+    return `<i class="${dark ? 'd' : ''}">${img}</i>`;
+  }).join('') + '</div>';
+}
+function showPicker(fromMenu) {
+  document.querySelector('.pk')?.remove();
+  const list = DATA[sec], m = resOf(sec), s = solvedOf(sec), info = INFO[sec];
+  const res = list.map(([id]) => resFor(sec, id, m, s)), tried = res.filter(Boolean);
+  const pct = tried.length ? Math.round(tried.reduce((a, r) => a + (r === 'g' ? 100 : r === 'y' ? 50 : 0), 0) / tried.length) : 0;
+  const cont = fromMenu ? openIdx() : idx, [, fen, moves] = list[cont];
+  const o = document.createElement('div'); o.className = 'pk';
+  o.innerHTML = `<div class="pk-top"><button type="button" class="pk-back" aria-label="Назад">‹</button><b>${info.title}</b></div>
+    <div class="pk-head">${miniBoard(fen, moves)}<div class="pk-info">
+      <div class="pk-solved">Розвʼязано: <b>${tried.filter(r => r !== 'r').length}</b> з ${list.length}</div>
+      <div class="pk-rate">Успіх: <span class="pk-bar"><span style="width:${pct}%"></span></span> ${pct}%</div>
+      <button type="button" class="pk-go">${fromMenu ? (tried.length ? 'Продовжити' : 'Почати') : 'Повернутися'} · №${cont + 1}</button></div></div>
+    <div class="pk-legend"><span><i class="g"></i>без помилок</span><span><i class="y"></i>з помилками</span><span><i class="r"></i>не вийшло</span></div>
+    <div class="pk-grid">${res.map((r, i) => `<button type="button" class="${r}${i === cont ? ' cur' : ''}" data-i="${i}">${i + 1}</button>`).join('')}</div>`;
+  const close = () => o.remove();
+  const open = i => { close(); if (i === idx && !fromMenu) return; token++; idx = i; if (idx > LG.store.get('puzopen:' + sec, 0)) LG.store.set('puzopen:' + sec, idx); loadPuzzle(); };
+  o.querySelector('.pk-back').onclick = () => { LG.play('tap'); if (fromMenu) { close(); location.hash = ''; } else close(); };
+  o.querySelector('.pk-go').onclick = () => { LG.play('tap'); open(cont); };
+  o.querySelector('.pk-grid').onclick = e => { const b = e.target.closest('button'); if (b) { LG.play('tap'); open(+b.dataset.i); } };
+  main.appendChild(o);
+  o.querySelector('.cur')?.scrollIntoView({ block: 'nearest' });
 }
 
 // ---------- приклад на початку розділу: пояснення й розв'язок, що програється сам ----------
@@ -682,6 +727,7 @@ $('show').addEventListener('click', () => {
 });
 $('prev').addEventListener('click', () => { if (mode === 'puzzle') prevPuzzle(); });
 $('pv').addEventListener('click', () => { if (mode === 'puzzle') { LG.play('tap'); prevPuzzle(); } });
+$('count').addEventListener('click', () => { if (mode === 'puzzle' && !levels) { LG.play('tap'); showPicker(false); } });
 $('nx').addEventListener('click', () => { if (mode === 'puzzle') { LG.play('tap'); nextPuzzle(); } });
 $('prev').hidden = true; // попередня/наступна — стрелками вгорі
 $('next').addEventListener('click', () => { if (mode === 'example') startPuzzles(); else if (mode === 'puzzle') { LG.play('tap'); loadPuzzle(); } else if (mode === 'practice') startPractice(); });
