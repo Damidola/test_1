@@ -23,7 +23,7 @@ await build({
       b.onResolve({ filter: /^lib(\/.*)?$/ }, a => ({ path: here('../lessons/src/shims/' + shim[a.path]) }));
       // дошка — та сама, що в іграх, з CDN; chessops, snabbdom і chessground/util вбудовуються з npm
       b.onResolve({ filter: /^@lichess-org\/chessground$/ }, () => ({ path: CHESSGROUND, external: true }));
-      b.onResolve({ filter: /shared\/board\.js$/ }, () => ({ path: '../shared/board.js?v=1790408921', external: true }));
+      b.onResolve({ filter: /shared\/board\.js$/ }, () => ({ path: '../shared/board.js?v=1790409298', external: true }));
     }
   }]
 });

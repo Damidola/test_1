@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790408921';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790408921';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790408921';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790409298';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790409298';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790409298';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -130,8 +130,8 @@ const PRACTICE = [
     [null, [['R', 'Турою', '', P('m1rook')], ['B', 'Слоном', '', P('m1bishop')], ['P', 'Пішаком', '', P('m1pawn')], ['Q', 'Ферзем', '', P('m1queen')], ['N', 'Конем', '', P('m1knight')], ['🎲', 'Різні', 'будь-якою фігурою', P('m1mix')]]]] },
   { id: 'mate2', ic: '🏆', t: 'Мат у 2 ходи', s: 'хід, відповідь — мат', c: '#E0567A', href: P('mate2') },
   { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, простріл та інші', c: '#FF9F1C', groups: [
-    [null, [['🍴', 'Вилка', '', P('fork')], ['📌', 'Зв’язка', '', P('pin')], ['🏹', 'Простріл', '', P('skewer')], ['💥', 'Відкритий напад', '', P('discovered')],
-      ['🎣', 'Відволікання', '', P('deflection')], ['🧲', 'Заманювання', '', P('attraction')], ['🎁', 'Незахищена фігура', '', P('hanging')], ['👑', 'Пішак у ферзі', '', P('promotion')]]]] },
+    [null, [['🎁', 'Незахищена фігура', '', P('hanging')], ['🍴', 'Вилка', '', P('fork')], ['📌', 'Зв’язка', '', P('pin')], ['🏹', 'Простріл', '', P('skewer')], ['💥', 'Відкритий напад', '', P('discovered')],
+      ['🎣', 'Відволікання', '', P('deflection')], ['🧲', 'Заманювання', '', P('attraction')], ['👑', 'Пішак у ферзі', '', P('promotion')]]]] },
   { id: 'endgame', ic: ['K', 'Q'], t: 'Постав мат роботу', s: 'скільки завгодно ходів — головне мат', c: '#2ECC9A', groups: [
     [null, [[['K', 'Q'], 'Ферзь і король', '', P('kqk')], [['K', 'R'], 'Тура і король', '', P('krk')], [['K', 'B', 'B'], 'Два слони', '', P('kbbk')], [['K', 'P'], 'Король і пішак', '', P('kpk')]]]] },
   { id: 'pvp', ic: ['Q', 'vs', 'P'], t: 'Фігури проти пішаків', s: 'не пропусти жодного пішака до краю', c: '#7C6CF0', groups: [
