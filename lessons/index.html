@@ -6,30 +6,29 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Як ходять фігури</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790414488">
-  <link rel="stylesheet" href="../shared/play.css?v=1790414488">
-  <link rel="stylesheet" href="lila-learn.css?v=1790414488">
-  <link rel="stylesheet" href="learn.css?v=1790414488">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790414933">
+  <link rel="stylesheet" href="../shared/play.css?v=1790414933">
+  <link rel="stylesheet" href="lila-learn.css?v=1790414933">
+  <link rel="stylesheet" href="learn.css?v=1790414933">
 </head>
 <body data-asset-url=".">
   <main id="main-wrap"><div id="learn-app"></div></main>
-  <script src="../shared/games.js?v=1790414488"></script>
-  <script src="../shared/kit.js?v=1790414488" data-game="learn" data-night="on"></script>
+  <script src="../shared/games.js?v=1790414933"></script>
+  <script src="../shared/kit.js?v=1790414933" data-game="learn" data-night="on"></script>
   <style>
   </style>
-  <script src="../shared/vid.js?v=1790414488"></script>
+  <script src="../shared/vid.js?v=1790414933"></script>
   <script>
     // Відео-знайомство з фігурою. Поки воно на екрані, урок ще не завантажений — дошка з'являється лише після «До вправ».
     (function () {
       const V = {
-        6: ['e015cjCtkl8', 'Знайомся з пішаком!', 'Пішак ходить лише вперед на одну клітинку (з початку — можна на дві), а б’є навскоси. Дійшов до краю — стає ферзем!'],
         12: ['1a9bI3uKS0Y', 'Що таке мат?', 'Мат — це шах, від якого нікуди подітися: не втекти, не закритися й не побити. Хто поставив мат — той виграв!'],
         13: ['goCi5upaxmk', 'Початок гри', 'Як стоять фігури на початку партії і які перші ходи роблять сильні шахісти.'],
         14: ['3xmrKrsTTtw', 'Як зробити рокіровку?', 'Король стрибає на дві клітинки до тури, а тура перескакує через нього. Можна, якщо король і тура ще не ходили, між ними порожньо і королю не шах.'],
         15: ['xwNtd8XqLME', 'Особливі пішаки', 'Пішак, який стрибнув на дві клітинки повз твого пішака, можна побити «на проході» — ніби він пішов лише на одну.']
       };
       const stage = () => (location.hash.match(/^#\/(\d+)/) || [])[1];
-      const start = () => import('./app.js?v=1790414488');
+      const start = () => import('./app.js?v=1790414933');
       const s0 = stage(), v = V[s0];
       if (!v) start();
       else document.addEventListener('DOMContentLoaded', () => {
