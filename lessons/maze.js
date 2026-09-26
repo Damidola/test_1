@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, dests, shortest } from './mazes.js?v=1790405212';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790405212';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790405212';
+import { MAZES, dests, shortest } from './mazes.js?v=1790405633';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790405633';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790405633';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -111,12 +111,13 @@ LG.onHint(() => {
   hintStep = 1;
 });
 // знайомство: відео (якщо є) + пояснення; уперше — перед вправами, потім — кнопкою «Гайд»
-const video = $('video');
+const video = $('video'); let vp = null, ytA = document.createElement('a');
 function intro(on) {
   main.dataset.step = on ? 'intro' : 'items';
   if (!M.video) return;
-  if (on) { $('title').textContent = M.videoTitle || M.title; video.hidden = false; video.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + M.video + '?playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Відео"></iframe>'; }
-  else { video.innerHTML = ''; $('title').textContent = M.title; }
+  if (vp) { vp.destroy(); vp = null; video.innerHTML = ''; ytA.remove(); }
+  if (on) { $('title').textContent = M.videoTitle || M.title; video.hidden = false; vp = LGVideo.player(M.video); video.append(vp.el); ytA = LGVideo.ytLink(M.video); $('go').after(ytA); }
+  else $('title').textContent = M.title;
 }
 LG.onExplain(() => intro(main.dataset.step !== 'intro'));
 $('go').addEventListener('click', () => intro(false));
