@@ -431,7 +431,7 @@
     const buttons = el('div', { class: 'lg-result-btns' });
     const again = opts && opts.onAgain;
     // Домик зліва, «ще раз» справа від нього
-    buttons.appendChild(el('a', { class: 'lg-btn lg-btn-big', href: homeHref(), 'aria-label': 'Назад', title: 'Назад', text: '🏠' }));
+    buttons.appendChild(el('a', { class: 'lg-btn lg-btn-big', href: homeHref(), 'aria-label': 'На головну', title: 'На головну', text: '🏠' }));
     buttons.appendChild(el('button', {
       class: 'lg-btn lg-btn-primary lg-btn-big', 'aria-label': 'Ще раз', title: 'Ще раз', text: '🔄',
       onclick: () => { closeModal(); if (again) again(); }

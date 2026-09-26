@@ -374,3 +374,8 @@ html.lg-tg body { border-top: var(--fs-top) solid #1B2133; box-sizing: border-bo
 /* у Telegram є своя кнопка «Назад» угорі — нашу стрілку ‹ не показуємо (місце лишаємо, щоб назва була по центру) */
 html.lg-tg .lg-exit { display: none !important; }
 html.lg-tg .lv-back, html.lg-tg .lg-run-menu, html.lg-tg .lv-vid-back, html.lg-tg .lg-top-back { visibility: hidden !important; }
+/* ЗАГАЛЬНЕ ПРАВИЛО: у Telegram жодних своїх стрілок «назад» — є кнопка Back самого Telegram.
+   Ховаємо все, що веде назад (за класом або підписом), на будь-якій сторінці — зокрема й майбутні кнопки. */
+html.lg-tg .lg-exit, html.lg-tg .lv-back, html.lg-tg .lg-top-back, html.lg-tg .lv-vid-back, html.lg-tg .gm-back, html.lg-tg .ed-back, html.lg-tg .g2-back,
+html.lg-tg a[aria-label^="Назад"], html.lg-tg button[aria-label^="Назад"], html.lg-tg [aria-label="Меню"], html.lg-tg [aria-label="До уроків"], html.lg-tg [aria-label="До меню"],
+html.lg-tg [data-back-arrow] { display: none !important; }

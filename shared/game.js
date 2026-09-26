@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790416388';
-import { aiMove, hintMove } from './ai.js?v=1790416388';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790416388';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790416815';
+import { aiMove, hintMove } from './ai.js?v=1790416815';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790416815';
 
 const LG = window.LG;
 
@@ -257,13 +257,23 @@ export function startGame(cfg) {
   function userMove(from, to) {
     const s = state();
     if (over || thinking || !human(rules.turn(s))) return render();
-    const move = rules.moves(s).find(m => m.from === from && m.to === to);
-    if (!move) return render();
+    const all = rules.moves(s).filter(m => m.from === from && m.to === to);
+    if (!all.length) return render();
+    // перетворення пішака з вибором фігури (Профіль → «Пішак стає ферзем сам» вимкнено)
+    if (all.length > 1 && all.every(m => m.promo)) return askPromo(all, m => { if (state() !== s) return render(); commit(m); render(false); afterMove(); });
+    const move = all[0];
     commit(move);
     render(false); // дитина вже сама пересунула фігуру
     afterMove();
   }
 
+  function askPromo(list, done) {
+    const color = rules.turn(state()) === 'w' ? 'w' : 'b', L = { queen: 'Q', rook: 'R', bishop: 'B', knight: 'N' };
+    const o = document.createElement('div'); o.className = 'lg-promo';
+    o.innerHTML = `<div class="lg-promo-card"><b>На кого перетворити пішака?</b><div>${list.map((m, i) => `<button type="button" data-i="${i}"><img alt="" src="${new URL('pieces/' + LG.pieceSet() + '/' + color + L[m.promo] + '.svg', import.meta.url).href}"></button>`).join('')}</div></div>`;
+    o.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; o.remove(); LG.play('tap'); done(list[+b.dataset.i]); });
+    document.body.appendChild(o);
+  }
   // Хід зі свого поля (не шахова дошка): гра передає готовий хід
   function userPick(id) {
     const s = state();

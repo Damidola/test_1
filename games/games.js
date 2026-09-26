@@ -4,9 +4,9 @@
    games/?fen=<позиція>   — аналіз однієї позиції (з «Своєї позиції») */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, parseUci, parseSquare, compat, fen as FEN, san as SAN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790416388';
-import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790416388';
-import { analyse } from '../shared/engine.js?v=1790416388';
+import { applyBoardLook } from '../shared/board.js?v=1790416815';
+import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790416815';
+import { analyse } from '../shared/engine.js?v=1790416815';
 
 const LG = window.LG, app = document.getElementById('app');
 const q = new URLSearchParams(location.search);
@@ -47,7 +47,7 @@ function viewer(main, { game }) {
   document.body.dataset.back = backHref;
   app.innerHTML = `<div class="gm-top">${back(backHref)}<b>${title}</b><button type="button" class="gm-more" id="more" aria-label="Налаштування аналізу">⋯</button></div>
     <div class="gm-board-row"><div class="gm-eval" id="bar" hidden><i></i></div><div class="gm-board"><div class="lg-board-el" id="board"></div></div></div>
-    <div class="gm-nav"><button type="button" id="first" aria-label="На початок">⏮</button><button type="button" id="prev" aria-label="Назад">‹</button>
+    <div class="gm-nav"><button type="button" id="first" aria-label="На початок">⏮</button><button type="button" id="prev" aria-label="Попередній хід">‹</button>
       <span class="gm-n" id="n"></span><button type="button" id="next" aria-label="Вперед">›</button><button type="button" id="last" aria-label="В кінець">⏭</button></div>
     <input type="range" class="gm-slider" id="slider" min="0" max="0" value="0" aria-label="Хід">
     <button type="button" class="gm-ret" id="ret" style="visibility:hidden"></button>
@@ -108,7 +108,7 @@ function viewer(main, { game }) {
       movable: { color: pos && !pos.isEnd() ? pos.turn : undefined, dests } });
     cg.setAutoShapes([]);
     const n = line.length - 1;
-    $('n').textContent = (branch >= 0 && i > branch ? '🔀 ' : '') + (i ? `Хід ${Math.ceil(i / 2)}${i % 2 ? '' : '…'} · ${i}/${n}` : 'Початок');
+    $('n').textContent = (branch >= 0 && i > branch ? '🔀 ' : '') + (i ? `Хід ${i} з ${n}` : 'Початок');
     $('slider').max = n; $('slider').value = i; $('slider').style.visibility = n === 0 ? 'hidden' : '';
     $('first').disabled = $('prev').disabled = i === 0; $('next').disabled = $('last').disabled = i === n;
     $('ret').style.visibility = branch < 0 ? 'hidden' : ''; $('ret').textContent = game ? '↩ Повернутися до партії' : '↩ До початкової позиції';

@@ -1,7 +1,7 @@
 /* Шахи за правилами Lichess (chessops): шах, мат, пат, рокіровка, взяття на проході.
    Пішак, що дійшов до кінця, одразу стає ферзем. */
 import { Chess, makeSquare, fen, attacks } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { bestUci } from '../shared/engine.js?v=1790416388';
+import { bestUci } from '../shared/engine.js?v=1790416815';
 const { makeFen, parseFen } = fen;
 
 const VALUE = { pawn: 100, knight: 300, bishop: 320, rook: 500, queen: 900, king: 0 };
@@ -113,15 +113,14 @@ export function createRules(opts = {}) {
     const out = [];
     for (const [from, dests] of pos.allDests()) {
       const piece = pos.board.get(from);
-      for (const to of dests) {
-        const promo = piece.role === 'pawn' && (to >> 3 === 7 || to >> 3 === 0) ? 'queen' : undefined;
+      for (const to of dests) for (const promo of piece.role === 'pawn' && (to >> 3 === 7 || to >> 3 === 0) ? (opts.promoAsk ? ['queen', 'rook', 'bishop', 'knight'] : ['queen']) : [undefined]) {
         const victim = pos.board.get(to);
         // Рокіровка: chessops ходить «король на туру», а дитина тягне короля на g1/c1
         const castle = piece.role === 'king' && victim && victim.color === piece.color;
         out.push({
           from: makeSquare(from), to: makeSquare(castle ? (to > from ? from + 2 : from - 2) : to), m: { from, to, promotion: promo },
           capture: (!!victim && victim.color !== piece.color) || (piece.role === 'pawn' && (from & 7) !== (to & 7)),
-          gain: (victim && victim.color !== piece.color ? VALUE[victim.role] : 0) - VALUE[piece.role] / 100 + (promo ? 800 : 0)
+          promo, gain: (victim && victim.color !== piece.color ? VALUE[victim.role] : 0) - VALUE[piece.role] / 100 + (promo ? VALUE[promo] - 100 : 0)
         });
       }
     }
@@ -167,7 +166,8 @@ export function createRules(opts = {}) {
       if (level < 5) return null;
       const list = moves(pos);
       const u = await bestUci(makeFen(pos.toSetup()), { skill: 2, ms: 500 });
-      return (u && list.find(m => m.from === u.slice(0, 2) && m.to === u.slice(2, 4))) || null;
+      const P = { q: 'queen', r: 'rook', b: 'bishop', n: 'knight' };
+      return (u && list.find(m => m.from === u.slice(0, 2) && m.to === u.slice(2, 4) && (!u[4] || m.promo === P[u[4]]))) || null;
     },
     aiDepth: [2, 3, 3]
   };
