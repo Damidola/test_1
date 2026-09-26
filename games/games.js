@@ -3,10 +3,10 @@
    games/?g=<час>         — партія: гортати хід за ходом, 🔍 аналіз Stockfish для кожної позиції
    games/?fen=<позиція>   — аналіз однієї позиції (з «Своєї позиції») */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
-import { Chess, parseUci, fen as FEN, san as SAN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790412596';
-import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790412596';
-import { analyse } from '../shared/engine.js?v=1790412596';
+import { Chess, parseUci, parseSquare, compat, fen as FEN, san as SAN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
+import { applyBoardLook } from '../shared/board.js?v=1790413835';
+import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790413835';
+import { analyse } from '../shared/engine.js?v=1790413835';
 
 const LG = window.LG, app = document.getElementById('app');
 const q = new URLSearchParams(location.search);
@@ -37,45 +37,72 @@ function list() {
 }
 
 // ---------- партія / позиція ----------
-function viewer(fens, { game }) {
+// Як на Lichess: на дошці можна ходити за обидві сторони. Хід як у партії — просто йдемо партією далі;
+// інший хід — свій варіант (аналіз рахує кожну позицію), «↩ До партії» повертає туди, звідки відійшли.
+function viewer(main, { game }) {
   const title = game ? `${esc(game.opp || 'Робот')} · ${(RES[game.res] || RES.d)[0]}` : 'Аналіз позиції';
   const backHref = game ? './' : '../editor/index.html';
   document.body.dataset.back = backHref;
   app.innerHTML = `<div class="gm-top">${back(backHref)}<b>${title}</b></div>
     <div class="gm-board-row"><div class="gm-eval" id="bar" hidden><i></i></div><div class="gm-board"><div class="lg-board-el" id="board"></div></div></div>
-    ${fens.length > 1 ? `<div class="gm-nav"><button type="button" id="first" aria-label="На початок">⏮</button><button type="button" id="prev" aria-label="Назад">‹</button>
+    <div class="gm-nav"><button type="button" id="first" aria-label="На початок">⏮</button><button type="button" id="prev" aria-label="Назад">‹</button>
       <span class="gm-n" id="n"></span><button type="button" id="next" aria-label="Вперед">›</button><button type="button" id="last" aria-label="В кінець">⏭</button></div>
-      <input type="range" class="gm-slider" id="slider" min="0" max="${fens.length - 1}" value="0" aria-label="Хід">` : ''}
+    <input type="range" class="gm-slider" id="slider" min="0" max="0" value="0" aria-label="Хід">
+    <button type="button" class="gm-ret" id="ret" hidden></button>
     <button type="button" class="gm-an" id="an">🔍 Аналіз</button>
     <div class="gm-info" id="info" hidden></div>
-    ${game ? '' : `<a class="gm-play" href="../chess/index.html?level=2&side=${fens[0].split(' ')[1] === 'b' ? 'b' : 'w'}&fen=${encodeURIComponent(fens[0])}">Грати з цієї позиції ▶</a>`}`;
+    ${game ? '' : `<a class="gm-play" id="play" href="#">Грати з цієї позиції ▶</a>`}`;
   applyBoardLook();
   const orient = game && game.side === 'b' ? 'black' : 'white';
-  const cg = Chessground(document.getElementById('board'), {
-    fen: fens[0], orientation: orient, viewOnly: true, coordinates: true, animation: { enabled: true, duration: 180 },
+  const $ = id => document.getElementById(id);
+  const cg = Chessground($('board'), {
+    fen: main[0], orientation: orient, coordinates: true, animation: { enabled: true, duration: 180 },
+    movable: { free: false, showDests: true, events: { after: (o, d) => userMove(o, d) } },
+    premovable: { enabled: false },
+    draggable: { enabled: true, showGhost: true, distance: 5 },
     drawable: { enabled: false, visible: true, brushes: { best: { key: 'b', color: '#15781B', opacity: 0.85, lineWidth: 11 } } }
   });
-  const $ = id => document.getElementById(id);
   if (orient === 'black') $('bar').classList.add('flip');
-  let i = game ? fens.length - 1 : 0, on = LG.store.get('an:on', false), token = 0, wait = 0;
-  const posAt = k => { try { return Chess.fromSetup(FEN.parseFen(fens[k]).unwrap()).unwrap(); } catch (e) { return null; } };
+  const mainLm = game ? game.lm : main.map(() => null);
+  let line = main.slice(), lm = mainLm.slice(), branch = -1; // branch ≥ 0 — свій варіант, відійшли з позиції branch
+  let i = game ? main.length - 1 : 0, on = LG.store.get('an:on', false), token = 0, wait = 0;
+  const posAt = k => { try { return Chess.fromSetup(FEN.parseFen(line[k]).unwrap()).unwrap(); } catch (e) { return null; } };
+  const same = (a, b) => a.split(' ').slice(0, 2).join(' ') === b.split(' ').slice(0, 2).join(' ');
 
+  function userMove(o, d) {
+    const pos = posAt(i); if (!pos) return show();
+    const from = parseSquare(o), to = parseSquare(d), piece = pos.board.get(from);
+    const mv = { from, to, promotion: piece && piece.role === 'pawn' && (to >> 3 === 7 || to >> 3 === 0) ? 'queen' : undefined };
+    // у chessground рокіровка — король на туру або на 2 клітинки; chessops розуміє обидва
+    if (!pos.isLegal(mv)) return show();
+    const next = pos.clone(); next.play(mv);
+    const f = FEN.makeFen(next.toSetup());
+    LG.play('tap');
+    if (branch < 0 && i + 1 < main.length && same(main[i + 1], f)) { i++; return show(); }
+    if (branch < 0) branch = i;
+    line = line.slice(0, i + 1).concat(f); lm = lm.slice(0, i + 1).concat([[o, d]]); i++;
+    show();
+  }
   function show() {
-    const pos = posAt(i), lm = game && game.lm[i];
-    cg.set({ fen: fens[i], lastMove: lm || undefined, check: pos && pos.isCheck() ? pos.turn : false, turnColor: pos ? pos.turn : 'white' });
+    const pos = posAt(i);
+    const dests = pos && !pos.isEnd() ? compat.chessgroundDests(pos) : new Map();
+    cg.set({ fen: line[i], lastMove: lm[i] || undefined, check: pos && pos.isCheck() ? pos.turn : false, turnColor: pos ? pos.turn : 'white',
+      movable: { color: pos && !pos.isEnd() ? pos.turn : undefined, dests } });
     cg.setAutoShapes([]);
-    if (fens.length > 1) {
-      $('n').textContent = i ? `Хід ${Math.ceil(i / 2)}${i % 2 ? '' : '…'} · ${i} / ${fens.length - 1}` : 'Початок';
-      $('slider').value = i; $('first').disabled = $('prev').disabled = i === 0; $('next').disabled = $('last').disabled = i === fens.length - 1;
-    }
+    const n = line.length - 1;
+    $('n').textContent = (branch >= 0 && i > branch ? 'Варіант · ' : '') + (i ? `Хід ${Math.ceil(i / 2)}${i % 2 ? '' : '…'} · ${i} / ${n}` : 'Початок');
+    $('slider').max = n; $('slider').value = i; $('slider').hidden = n === 0;
+    $('first').disabled = $('prev').disabled = i === 0; $('next').disabled = $('last').disabled = i === n;
+    $('ret').hidden = branch < 0; $('ret').textContent = game ? '↩ Повернутися до партії' : '↩ До початкової позиції';
     $('an').classList.toggle('on', on); $('an').textContent = on ? '🔍 Аналіз увімкнено' : '🔍 Аналіз';
     $('bar').hidden = $('info').hidden = !on;
+    if ($('play')) $('play').href = `../chess/index.html?level=2&side=${line[i].split(' ')[1] === 'b' ? 'b' : 'w'}&fen=${encodeURIComponent(line[i])}`;
     if (on) { $('info').innerHTML = 'Робот думає… 🤔'; token++; clearTimeout(wait); wait = setTimeout(() => think(pos), 250); }
   }
   const played = () => {
-    // хід, який зробили в партії з цієї позиції
-    if (!game || i >= fens.length - 1 || !game.lm[i + 1]) return '';
-    const pos = posAt(i), [f, t] = game.lm[i + 1];
+    // хід, який зробили в партії з цієї позиції (лише на лінії партії)
+    if (!game || branch >= 0 || i >= main.length - 1 || !mainLm[i + 1]) return '';
+    const pos = posAt(i), [f, t] = mainLm[i + 1];
     try { return SAN.makeSan(pos, parseUci(f + t)); } catch (e) { return ''; }
   };
   async function think(pos) {
@@ -107,12 +134,13 @@ function viewer(fens, { game }) {
     const p = played();
     info.innerHTML = `<b>${text}</b><br>Найкращий хід: <b>${esc(best)}</b>${p ? (p === best ? ' ✅ так і зіграли' : ` · у партії: ${esc(p)}`) : ''}${line ? `<small>Далі: ${esc(line)}</small>` : ''}`;
   }
-  const go = k => { i = Math.max(0, Math.min(fens.length - 1, k)); LG.play('tap'); show(); };
-  if (fens.length > 1) {
-    $('first').onclick = () => go(0); $('prev').onclick = () => go(i - 1); $('next').onclick = () => go(i + 1); $('last').onclick = () => go(fens.length - 1);
-    $('slider').oninput = e => { i = +e.target.value; show(); };
-    addEventListener('keydown', e => { if (e.key === 'ArrowLeft') go(i - 1); if (e.key === 'ArrowRight') go(i + 1); });
-  }
+  const go = k => { i = Math.max(0, Math.min(line.length - 1, k)); LG.play('tap'); show(); };
+  $('first').onclick = () => go(0); $('prev').onclick = () => go(i - 1); $('next').onclick = () => go(i + 1); $('last').onclick = () => go(line.length - 1);
+  $('slider').oninput = e => { i = +e.target.value; show(); };
+  addEventListener('keydown', e => { if (e.key === 'ArrowLeft') go(i - 1); if (e.key === 'ArrowRight') go(i + 1); });
+  $('ret').onclick = () => { i = branch; line = main.slice(); lm = mainLm.slice(); branch = -1; LG.play('tap'); show(); };
+  // «Назад» Telegram спершу повертає з варіанта до партії
+  LG.onBack && LG.onBack(() => { if (branch < 0) return false; $('ret').click(); return true; });
   $('an').onclick = () => { on = !on; LG.store.set('an:on', on); LG.play('tap'); show(); };
   if (!game) on = true;
   show();
