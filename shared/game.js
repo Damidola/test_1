@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790408144';
-import { aiMove, hintMove } from './ai.js?v=1790408144';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790408144';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790408921';
+import { aiMove, hintMove } from './ai.js?v=1790408921';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790408921';
 
 const LG = window.LG;
 
@@ -146,9 +146,16 @@ export function startGame(cfg) {
       board.setPosition(rules.pieces(s), { lastMove: s.lastMove, animate, check: rules.check ? rules.check(s) : false });
       // Хід суперника: можна зробити хід наперед (синім) — зіграється, щойно суперник походить
       const pre = !mine && cfg.premove && !over && !friend && human(player);
-      if (mine) board.setMovable(colorName(rules.turn(s)), dests(s));
+      if (mine) {
+        // твій хід: сині крапки ходу наперед, порахованi поки думав суперник, прибираємо — лишаються лише зелені
+        board.cg.state.premovable.dests = undefined; board.cg.state.premovable.customDests = undefined;
+        board.setMovable(colorName(rules.turn(s)), dests(s));
+      }
       else if (pre) { board.setMovable(colorName(player), new Map(), colorName(rules.turn(s))); if (rules.premovePos) board.cg.set({ premovable: { customDests: dests(rules.premovePos(s, player)) } }); }
       else { board.setMovable(null, new Map()); board.cg.cancelPremove(); }
+      // chessground сам не прибирає старі крапки: у твій хід — жодних синіх, у хід суперника — жодних зелених
+      const bel = board.cg.state.dom.elements.board;
+      if (mine ? bel.querySelector('square.premove-dest') : bel.querySelector('square.move-dest')) board.cg.redrawAll();
       board.clearHint();
       if (rules.marks) board.marks(rules.marks(s));
     }
