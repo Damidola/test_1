@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790411538';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790411538';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790411538';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790411935';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790411935';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790411935';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -223,6 +223,8 @@ function resetSection(cat) {
   const ks = cat.groups.flatMap(([, it]) => it.map(x => x[3])).filter(h => h.startsWith('chess-puzzles/')).map(h => h.split('#')[1]);
   for (const k of ks) for (const pre of PUZ_KEYS) try { localStorage.removeItem('chk:' + pre + k); } catch (e) { /* */ }
 }
+// «Назад» Telegram спершу закриває відкрите вікно підтвердження
+LG.onBack(() => { const a = document.querySelector('.pr-ask'); if (a) { a.remove(); return true; } return false; });
 function askSheet(title, text, yes, onYes, danger) {
   const o = document.createElement('div'); o.className = 'pr-ask';
   o.innerHTML = `<div class="pr-ask-card"><b></b><p></p><div class="pr-ask-btns"><button type="button" class="no">Скасувати</button><button type="button" class="yes${danger ? ' danger' : ''}"></button></div></div>`;

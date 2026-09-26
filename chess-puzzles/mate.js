@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790411538';
-import { createRules } from '../chess/rules.js?v=1790411538';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790411538';
-import { hintMove } from '../shared/ai.js?v=1790411538';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790411935';
+import { createRules } from '../chess/rules.js?v=1790411935';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790411935';
+import { hintMove } from '../shared/ai.js?v=1790411935';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -382,6 +382,8 @@ function miniBoard(fen, moves) {
     return `<i class="${dark ? 'd' : ''}">${img}</i>`;
   }).join('') + '</div>';
 }
+// «Назад» Telegram спершу закриває сітку задач
+LG.onBack && LG.onBack(() => { const pk = document.querySelector('.pk'); if (pk) { pk.remove(); return true; } return false; });
 function showPicker(fromMenu) {
   document.querySelector('.pk')?.remove();
   const list = DATA[sec], m = resOf(sec), s = solvedOf(sec), info = INFO[sec];

@@ -6,18 +6,18 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Побий усіх</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790411538">
-  <link rel="stylesheet" href="../shared/play.css?v=1790411538">
-  <link rel="stylesheet" href="../shared/pieces/extra.css?v=1790411538">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790411935">
+  <link rel="stylesheet" href="../shared/play.css?v=1790411935">
+  <link rel="stylesheet" href="../shared/pieces/extra.css?v=1790411935">
 </head>
 <body>
   <main></main>
-  <script src="../shared/games.js?v=1790411538"></script>
-  <script src="../shared/kit.js?v=1790411538" data-game="free" data-night="on"></script>
+  <script src="../shared/games.js?v=1790411935"></script>
+  <script src="../shared/kit.js?v=1790411935" data-game="free" data-night="on"></script>
   <script type="module">
     // Своя позиція без пари королів (editor/): мета — збити всі фігури суперника
-    import { startGame } from '../shared/game.js?v=1790411538';
-    import { createCaptureRules } from './capture.js?v=1790411538';
+    import { startGame } from '../shared/game.js?v=1790411935';
+    import { createCaptureRules } from './capture.js?v=1790411935';
     const fen = new URLSearchParams(location.search).get('fen') || '8/pppppppp/8/8/8/8/PPPPPPPP/8 w - - 0 1';
     startGame({ rules: createCaptureRules(fen), navOnly: true });
   </script>

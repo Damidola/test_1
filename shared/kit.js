@@ -68,7 +68,7 @@
   const samePage = u => u.origin === location.origin && u.pathname.replace(/index\.html$/, '') === location.pathname.replace(/index\.html$/, '');
   function fsClose(hash) {
     if (!fsFrame) return;
-    fsFrame.remove(); fsFrame = null; setFrame(null); document.documentElement.classList.remove('lg-framed');
+    fsFrame.remove(); fsFrame = null; setFrame(null); document.documentElement.classList.remove('lg-framed'); tgBack();
     if (history.state && history.state.lgFrame) history.replaceState(null, '');
     if (hash !== undefined && hash !== location.hash) location.hash = hash;
     else dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
@@ -90,9 +90,9 @@
     fsFrame.src = u.href;
     history.pushState({ lgFrame: 1 }, '');
     document.documentElement.classList.add('lg-framed');
-    document.body.appendChild(fsFrame);
+    document.body.appendChild(fsFrame); tgBack();
   }
-  addEventListener('popstate', () => { if (fsFrame && !(history.state && history.state.lgFrame)) { fsFrame.remove(); fsFrame = null; setFrame(null); document.documentElement.classList.remove('lg-framed'); dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); } });
+  addEventListener('popstate', () => { if (fsFrame && !(history.state && history.state.lgFrame)) { fsFrame.remove(); fsFrame = null; setFrame(null); document.documentElement.classList.remove('lg-framed'); tgBack(); dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); } });
   // у рамці: посилання на головну сторінку одразу закриває рамку, без завантаження головної ще раз
   const topPage = u => { try { const t = window.top; return t.LG && t.LG._fsClose && u.origin === t.location.origin && u.pathname.replace(/index\.html$/, '') === t.location.pathname.replace(/index\.html$/, '') ? t : null; } catch (e) { return null; } };
   document.addEventListener('click', e => {
@@ -605,9 +605,32 @@
     return el('div', {}, [el('div', { class: 'lg-set-title', text: 'Фігури' }), grid]);
   }
 
+  // ---------- «Назад» (кнопка Telegram зверху) ----------
+  // Спершу закриваються відкриті вікна сторінки (LG.onBack), далі: рамка на весь екран → її сторінка;
+  // головна: підекран → вкладка, вкладка → «Уроки»; інша сторінка → звідки прийшли.
+  const backFns = [];
+  const isHome = () => !game && !!document.getElementById('view-learn');
+  function canBack() {
+    if (fsFrame) return true;
+    if (!isHome()) return true;
+    const h = location.hash.slice(1);
+    return !!h && h !== 'learn';
+  }
+  function back() {
+    for (let i = backFns.length - 1; i >= 0; i--) if (backFns[i]()) return;
+    if (fsFrame) {
+      try { const w = fsFrame.contentWindow; if (w.LG && w.LG.back) return w.LG.back(); } catch (e) { /* */ }
+      return fsClose();
+    }
+    if (isHome()) { const h = location.hash.slice(1); location.hash = h.includes('/') ? h.split('/')[0] : 'learn'; return; }
+    go(document.body.dataset.back ? new URL(document.body.dataset.back, location.href).href : homeHref());
+  }
+  let tgBack = () => {};
   const LG = window.LG = {
     lang: () => lang,
-    go, _fsClose: fsClose,
+    go, _fsClose: fsClose, back, canBack,
+    onBack(fn) { backFns.push(fn); return () => { const i = backFns.indexOf(fn); if (i >= 0) backFns.splice(i, 1); }; },
+    refreshBack: () => tgBack(),
     // У рамці (гра поверх головної) повним екраном керує головне вікно
     fullscreen: (() => {
       const own = {
@@ -706,10 +729,13 @@
       ['fullscreenChanged', 'safeAreaChanged', 'contentSafeAreaChanged', 'viewportChanged'].forEach(ev => { try { tg.onEvent(ev, inset); } catch (e) { /* */ } });
       try { if (at('8.0') && !tg.isFullscreen) tg.requestFullscreen(); } catch (e) { /* */ }
       inset();
-      // системна «Назад»: у грі чи уроці — туди ж, куди стрілка ‹; на головній — ховаємо
+      // системна «Назад» — на кожній сторінці, крім головної «Уроки»; у рамці нею керує головне вікно
       try {
-        if (at('6.1')) {
-          if (game) { tg.BackButton.show(); tg.BackButton.onClick(() => go(homeHref())); } else tg.BackButton.hide();
+        if (at('6.1') && !inFrame) {
+          tg.BackButton.onClick(() => { back(); setTimeout(tgBack, 50); });
+          tgBack = () => { try { canBack() ? tg.BackButton.show() : tg.BackButton.hide(); } catch (e) { /* */ } };
+          addEventListener('hashchange', tgBack); addEventListener('pageshow', tgBack);
+          tgBack();
         }
       } catch (e) { /* */ }
     };
