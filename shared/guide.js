@@ -1,7 +1,7 @@
 /* «Гайд» уроку з картинкою, що рухається: маленька дошка сама програє приклад (стрілки, ходи, підписи) по колу.
    mountGuide(section, demos) → { play(), stop() }; demos: [{ demo: fen, steps: [{ say, arrows: 'e2e4 d5:red', move: 'e2e4', wait }] }] */
 import { Chess, parseUci, makeSquare, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from './board.js?v=1790408122';
+import { createBoard } from './board.js?v=1790408144';
 
 const shape = s => { const [u, brush = 'green'] = s.split(':'); return u.length === 2 ? { orig: u, brush } : { orig: u.slice(0, 2), dest: u.slice(2, 4), brush }; };
 const pieces = p => { const m = new Map(); for (const [sq, pc] of p.board) m.set(makeSquare(sq), { role: pc.role, color: pc.color }); return m; };

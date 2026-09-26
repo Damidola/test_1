@@ -6,16 +6,16 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахи</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790408122">
-  <link rel="stylesheet" href="../shared/play.css?v=1790408122">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790408144">
+  <link rel="stylesheet" href="../shared/play.css?v=1790408144">
 </head>
 <body>
   <main></main>
-  <script src="../shared/games.js?v=1790408122"></script>
-  <script src="../shared/kit.js?v=1790408122" data-game="chess" data-night="on"></script>
+  <script src="../shared/games.js?v=1790408144"></script>
+  <script src="../shared/kit.js?v=1790408144" data-game="chess" data-night="on"></script>
   <script type="module">
-    import { startGame } from '../shared/game.js?v=1790408122';
-    import { createRules } from './rules.js?v=1790408122';
+    import { startGame } from '../shared/game.js?v=1790408144';
+    import { createRules } from './rules.js?v=1790408144';
     startGame({ rules: createRules(), navOnly: true, premove: LG.store.get('premove', false) === true });
   </script>
 </body>

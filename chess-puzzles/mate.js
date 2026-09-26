@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790408122';
-import { createRules } from '../chess/rules.js?v=1790408122';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790408122';
-import { hintMove } from '../shared/ai.js?v=1790408122';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790408144';
+import { createRules } from '../chess/rules.js?v=1790408144';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790408144';
+import { hintMove } from '../shared/ai.js?v=1790408144';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -384,13 +384,13 @@ function showPicker(fromMenu) {
   document.querySelector('.pk')?.remove();
   const list = DATA[sec], m = resOf(sec), s = solvedOf(sec), info = INFO[sec];
   const res = list.map(([id]) => resFor(sec, id, m, s)), tried = res.filter(Boolean);
-  const pct = tried.length ? Math.round(tried.reduce((a, r) => a + (r === 'g' ? 100 : r === 'y' ? 50 : 0), 0) / tried.length) : 0;
+  const pct = Math.round(tried.reduce((a, r) => a + (r === 'g' ? 100 : r === 'y' ? 50 : 0), 0) / list.length);
   const cont = fromMenu ? openIdx() : idx, [, fen, moves] = list[cont];
   const o = document.createElement('div'); o.className = 'pk';
   o.innerHTML = `<div class="pk-top"><button type="button" class="pk-back" aria-label="Назад">‹</button><b>${info.title}</b></div>
     <div class="pk-head">${miniBoard(fen, moves)}<div class="pk-info">
       <div class="pk-solved">Розвʼязано: <b>${tried.filter(r => r !== 'r').length}</b> з ${list.length}</div>
-      <div class="pk-rate">Успіх: <span class="pk-bar"><span style="width:${pct}%"></span></span> ${pct}%</div><div class="pk-note">${tried.length ? `у ${tried.length} ${tried.length === 1 ? 'спробі' : 'спробах'}: 🟩 ${res.filter(r => r === 'g').length} · 🟧 ${res.filter(r => r === 'y').length} · 🟥 ${res.filter(r => r === 'r').length}` : 'ще не пробував'}</div>
+      <div class="pk-rate">Успіх: <span class="pk-bar"><span style="width:${pct}%"></span></span> ${pct}%</div><div class="pk-note">${tried.length ? `🟩 ${res.filter(r => r === 'g').length} · 🟧 ${res.filter(r => r === 'y').length} · 🟥 ${res.filter(r => r === 'r').length}` : 'ще не пробував'}</div>
       <button type="button" class="pk-go">${fromMenu ? (tried.length ? 'Продовжити' : 'Почати') : 'Повернутися'} · №${cont + 1}</button></div></div>
     <div class="pk-legend"><span><i class="g"></i>без помилок</span><span><i class="y"></i>з помилками</span><span><i class="r"></i>не вийшло</span></div>
     <div class="pk-grid">${res.map((r, i) => `<button type="button" class="${r}${i === cont ? ' cur' : ''}" data-i="${i}">${i + 1}</button>`).join('')}</div>`;
