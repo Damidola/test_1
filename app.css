@@ -467,3 +467,4 @@ html, body { background: #1B2133 !important; } /* усі вкладки — чо
 .g2-list > .g2-item .g2-ic:has(img ~ img, img ~ span:not(.emo)) { width: auto !important; min-width: min(64px, 100cqh - 12px); }
 .g2-list > .g2-item .g2-ic .emo { font-size: min(34px, 50cqh) !important; }
 .g2-list > .g2-item .g2-tx small { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+html.lg-tg .g2-sub .g2-back { display: none; } /* у Telegram «Назад» — його кнопка зверху */
