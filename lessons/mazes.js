@@ -61,16 +61,16 @@ export const MAZES = {
   pawn: {
     title: 'Пішак 1: лабіринт', piece: 'pawn', video: 'e015cjCtkl8', videoTitle: 'Знайомся з пішаком!',
     text: 'Пішак ходить лише вперед (з першого ряду — можна на дві клітинки), а б’є навскоси вперед. Дійшов до краю — стає ферзем!',
-    task: 'З’їж усі фігури й полуничку 🍓. Пішак б’є навскоси, а на краю дошки стає ферзем!',
+    task: 'З’їж усі фігури й полуничку 🍓. Пішак б’є навскоси, на краю стає ферзем. Червоні клітинки під боєм — туди не можна!',
     levels: [
-      { w: 5, h: 5, from: [2, 4], to: [2, 0], walls: [] },
-      { w: 5, h: 5, from: [0, 4], to: [4, 0], walls: [], enemies: [[1, 3, 'pawn'], [2, 2, 'pawn'], [3, 1, 'pawn']] },
-      { w: 5, h: 5, from: [2, 4], to: [2, 0], walls: [[2, 3]], enemies: [[1, 3, 'knight'], [2, 2, 'knight']] },
-      { w: 5, h: 5, from: [1, 4], to: [4, 4], walls: [[1, 2]], enemies: [[2, 3, 'rook']] },
-      { w: 5, h: 5, from: [0, 4], to: [0, 4], walls: [[1, 1]], enemies: [[1, 3, 'pawn'], [0, 2, 'pawn'], [4, 0, 'rook']] },
-      { w: 6, h: 6, from: [0, 5], to: [5, 5], walls: [[1, 2], [3, 2]], enemies: [[1, 4, 'pawn'], [2, 3, 'pawn'], [5, 0, 'knight'], [0, 0, 'bishop']] },
-      { w: 6, h: 6, from: [5, 5], to: [0, 5], walls: [[4, 2], [2, 3]], enemies: [[4, 4, 'bishop'], [3, 3, 'pawn'], [4, 3, 'pawn'], [1, 1, 'rook'], [5, 0, 'knight']] },
-      { w: 6, h: 6, from: [2, 5], to: [2, 5], walls: [[4, 1], [2, 3]], enemies: [[1, 4, 'pawn'], [0, 3, 'pawn'], [1, 2, 'knight'], [0, 0, 'rook'], [5, 0, 'bishop']] }
+      { w: 5, h: 5, from: [2, 4], to: [2, 0], walls: [], safe: true },
+      { w: 5, h: 5, from: [0, 4], to: [4, 0], walls: [], enemies: [[1, 3, 'pawn'], [2, 2, 'pawn'], [3, 1, 'pawn']], safe: true },
+      { w: 5, h: 5, from: [2, 4], to: [2, 0], walls: [[2, 3]], enemies: [[1, 3, 'knight'], [2, 2, 'knight']], safe: true },
+      { w: 5, h: 5, from: [1, 4], to: [4, 4], walls: [[1, 2]], enemies: [[2, 3, 'rook']], safe: true },
+      { w: 5, h: 5, from: [4, 4], to: [1, 4], walls: [[3, 1]], enemies: [[2, 2, 'knight'], [3, 3, 'pawn'], [2, 1, 'rook']], safe: true },
+      { w: 6, h: 6, from: [4, 5], to: [5, 5], walls: [[3, 0], [4, 0]], enemies: [[1, 4, 'knight'], [0, 4, 'rook'], [2, 1, 'knight'], [3, 2, 'knight']], safe: true },
+      { w: 6, h: 6, from: [1, 5], to: [0, 5], walls: [[1, 1], [0, 4]], enemies: [[0, 2, 'rook'], [4, 3, 'bishop'], [2, 4, 'rook'], [5, 1, 'rook'], [5, 0, 'pawn']], safe: true },
+      { w: 6, h: 6, from: [4, 5], to: [5, 5], walls: [[3, 0], [3, 2], [0, 4]], enemies: [[0, 0, 'bishop'], [2, 3, 'bishop'], [2, 1, 'knight'], [1, 0, 'pawn'], [5, 2, 'rook']], safe: true }
     ]
   },
   capture: {

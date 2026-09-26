@@ -373,4 +373,4 @@ html.lg-tg { --fs-top: var(--tg-top, 0px); }
 html.lg-tg body { border-top: var(--fs-top) solid #1B2133; box-sizing: border-box; }
 /* у Telegram є своя кнопка «Назад» угорі — нашу стрілку ‹ не показуємо (місце лишаємо, щоб назва була по центру) */
 html.lg-tg .lg-exit { display: none !important; }
-html.lg-tg .lv-back, html.lg-tg .lg-run-menu { visibility: hidden !important; }
+html.lg-tg .lv-back, html.lg-tg .lg-run-menu, html.lg-tg .lv-vid-back, html.lg-tg .lg-top-back { visibility: hidden !important; }

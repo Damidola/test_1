@@ -461,3 +461,9 @@ html, body { background: #1B2133 !important; } /* усі вкладки — чо
 .pr-ask-btns .yes { order: -1; background: #3FA7F5; }
 .pr-ask-btns .yes.danger { background: #E0302E; }
 .mg-row.mg-link { color: inherit; text-decoration: none; cursor: pointer; } .mg-row.mg-link em { display: flex; align-items: center; gap: 4px; font-style: normal; color: var(--mg-mute, #8e99b8); font-weight: 700; } .mg-row.mg-link svg { width: 16px; height: 16px; }
+/* значок у рядку Практики — завжди менший за сам рядок (рядків може бути багато — вони стискаються) */
+.g2-list > .g2-item { container-type: size; }
+.g2-list > .g2-item .g2-ic { width: min(64px, 100cqh - 12px) !important; height: min(64px, 100cqh - 12px) !important; flex: none; }
+.g2-list > .g2-item .g2-ic:has(img ~ img, img ~ span:not(.emo)) { width: auto !important; min-width: min(64px, 100cqh - 12px); }
+.g2-list > .g2-item .g2-ic .emo { font-size: min(34px, 50cqh) !important; }
+.g2-list > .g2-item .g2-tx small { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
