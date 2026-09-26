@@ -4,9 +4,9 @@
    games/?fen=<позиція>   — аналіз однієї позиції (з «Своєї позиції») */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, parseUci, parseSquare, compat, fen as FEN, san as SAN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790427880';
-import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790427880';
-import { analyse } from '../shared/engine.js?v=1790427880';
+import { applyBoardLook } from '../shared/board.js?v=1790430973';
+import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790430973';
+import { analyse } from '../shared/engine.js?v=1790430973';
 
 const LG = window.LG, app = document.getElementById('app');
 const q = new URLSearchParams(location.search);

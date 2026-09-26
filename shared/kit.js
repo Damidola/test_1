@@ -727,7 +727,8 @@
         document.documentElement.style.setProperty('--tg-top', (tg.isFullscreen ? a + b : 0) + 'px');
       };
       ['fullscreenChanged', 'safeAreaChanged', 'contentSafeAreaChanged', 'viewportChanged'].forEach(ev => { try { tg.onEvent(ev, inset); } catch (e) { /* */ } });
-      try { if (at('8.0') && !tg.isFullscreen) tg.requestFullscreen(); } catch (e) { /* */ }
+      // не на весь екран: тоді Telegram показує свою шапку зі стрілкою ←, а не кнопку «Back» поверх сторінки
+      try { if (at('8.0') && tg.isFullscreen) tg.exitFullscreen(); } catch (e) { /* */ }
       inset();
       // системна «Назад» — на кожній сторінці, крім головної «Уроки»; у рамці нею керує головне вікно
       try {
