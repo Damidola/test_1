@@ -2,10 +2,10 @@
    потім прості завдання: 2 — «постав шах», по 3 — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790421438';
-import { goNext, markSeen } from '../shared/path.js?v=1790421438';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790421438';
-import { mountGuide } from '../shared/guide.js?v=1790421438';
+import { createBoard } from '../shared/board.js?v=1790422147';
+import { goNext, markSeen } from '../shared/path.js?v=1790422147';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790422147';
+import { mountGuide } from '../shared/guide.js?v=1790422147';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();
@@ -17,6 +17,8 @@ const TASKS = [
   ...DATA.esc_capture.slice(0, 3).map(z => ({ fen: z[1], kind: 'capture', title: 'Побий ⚔️', text: 'Шах! Побий фігуру, що шахує.' })),
   ...DATA.esc_block.slice(0, 3).map(z => ({ fen: z[1], kind: 'block', title: 'Закрийся 🛡️', text: 'Шах! Закрийся: постав свою фігуру між королем і нападником.' }))
 ];
+// безпечний шах: після ходу жодна чорна фігура не може побити ту, що шахує
+const safe = (q, to) => { for (const [, ds] of q.allDests()) if (ds.has(to)) return false; return true; };
 const WAY = { run: 'утекти королем', capture: 'побити фігуру, що шахує', block: 'закритися' };
 const RU = { rook: 'турою', bishop: 'слоном', queen: 'ферзем', knight: 'конем', pawn: 'пішаком' };
 let idx = 0, pos, done = false, lock = false;
@@ -59,7 +61,7 @@ function onMove(from, to) {
   if (pc.role === 'pawn' && (to[1] === '8' || to[1] === '1')) m.promotion = 'queen';
   const q = pos.clone(); q.play(m);
   let ok, why;
-  if (t.kind === 'give') { ok = q.isCheck() && pc.role === t.role; why = !q.isCheck() ? 'Це ще не шах — король не під ударом.' : `Шах є, але треба ${RU[t.role]}!`; }
+  if (t.kind === 'give') { ok = q.isCheck() && pc.role === t.role && safe(q, m.to); why = !q.isCheck() ? 'Це ще не шах — король не під ударом.' : pc.role !== t.role ? `Шах є, але треба ${RU[t.role]}!` : 'Шах є, але твою фігуру одразу поб’ють! Знайди безпечний шах 🛡️'; }
   else { const k = kindOf(pos, m); ok = k === t.kind; why = `Так теж можна врятуватися, але тут треба ${WAY[t.kind]}.`; }
   LG.play(pos.board.get(m.to) ? 'capture' : 'move');
   if (ok) {
@@ -101,7 +103,7 @@ LG.onHint(() => {
     const m = { from, to }, pc = pos.board.get(from);
     if (pc.role === 'king' && pos.board.get(to)?.color === pc.color) continue;
     const q = pos.clone(); q.play(m);
-    const ok = t.kind === 'give' ? q.isCheck() && pc.role === t.role : kindOf(pos, m) === t.kind;
+    const ok = t.kind === 'give' ? q.isCheck() && pc.role === t.role && safe(q, m.to) : kindOf(pos, m) === t.kind;
     if (ok) return board.hint(makeSquare(from), makeSquare(to));
   }
 });

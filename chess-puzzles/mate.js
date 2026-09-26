@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790421438';
-import { createRules } from '../chess/rules.js?v=1790421438';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790421438';
-import { hintMove } from '../shared/ai.js?v=1790421438';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790422147';
+import { createRules } from '../chess/rules.js?v=1790422147';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790422147';
+import { hintMove } from '../shared/ai.js?v=1790422147';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -75,6 +75,8 @@ function ruleCheck(p, m, test) {
   if (CHK_ROLE[sec]) {
     if (!test.isCheck()) return [false, 'Це ще не шах: король не під ударом. Спробуй ще 🙂'];
     if (role !== CHK_ROLE[sec]) return [false, `Шах є, але треба ${RU[CHK_ROLE[sec]]}!`];
+    // безпечний шах: фігуру, що шахує, ніхто не може одразу побити (інакше шах без сенсу)
+    for (const [, ds] of test.allDests()) if (ds.has(m.to)) return [false, 'Шах є, але твою фігуру одразу поб’ють! Знайди безпечний шах 🛡️'];
     return [true];
   }
   if (sec.startsWith('esc_') && sec !== 'esc_mixed') {
