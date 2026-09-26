@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, dests, shortest } from './mazes.js?v=1790409298';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790409298';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790409298';
+import { MAZES, dests, shortest } from './mazes.js?v=1790409961';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790409961';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790409961';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -33,7 +33,7 @@ function load() {
   }
   pieceEl = document.createElement('div'); pieceEl.className = 'mz-piece'; pieceEl.innerHTML = '<img alt="" src="' + pieceImg(M.piece) + '">';
   grid.appendChild(pieceEl); place(false);
-  say(idx === 0 ? 'З’їж полуничку 🍓! Перетягни туру або натисни на неї — крапки покажуть, куди можна піти.' : 'З’їж полуничку 🍓 якнайменшою кількістю ходів.');
+  say(idx === 0 ? 'З’їж полуничку 🍓! Перетягни фігуру або натисни на неї — крапки покажуть, куди можна піти.' : 'З’їж полуничку 🍓 якнайменшою кількістю ходів.');
   select(true);
 }
 // ходи йдуть по черзі: наступний починається, коли попередній доїхав (інакше швидкі тапи зрізають по діагоналі)
@@ -98,7 +98,7 @@ function win() {
   LG.play('win');
   setTimeout(() => {
     const r = LG.store.get('lvl:maze:' + K, []), open = M.levels.findIndex((_, i) => !r[i]);
-    if (open < 0) return lessonDone({ title: M.title, text: 'Молодець! Тура пройшла всі лабіринти.', key: 'maze:' + K, n: M.levels.length, here, onAgain: () => { idx = 0; load(); } });
+    if (open < 0) return lessonDone({ title: M.title, text: 'Молодець! Усі лабіринти пройдено.', key: 'maze:' + K, n: M.levels.length, here, onAgain: () => { idx = 0; load(); } });
     idx = idx + 1 < M.levels.length && !r[idx + 1] ? idx + 1 : open; load();
   }, 1400);
 }

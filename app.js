@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790409298';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790409298';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790409298';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790409961';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790409961';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790409961';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -26,7 +26,7 @@ const KIND = { play: ['#2ECC9A', 'Гра'], task: ['#FF9F1C', 'Задачі'], l
 let curStep = 0, curSec = -1;
 // розділ, який відкривали востаннє: з уроку повертаємось саме туди, а не до першого незавершеного
 { const s = +LG.store.get('learn:sec', -1); if (s >= 0 && s < SECTIONS.length) curSec = s; }
-const SEC_SHORT = ['ФІГУРИ', 'ОСОБЛИВІ', 'ШАХ', 'МАТ', 'ТАКТИКА', 'МАЙСТЕР'];
+const SEC_SHORT = ['ФІГУРИ', 'НАПАД', 'ШАХ', 'МАТ', 'ТАКТИКА', 'МАЙСТЕР'];
 const secRange = si => [SECTIONS[si][0], (SECTIONS[si + 1] || [STEPS.length])[0]];
 const secIndexOf = i => SECTIONS.reduce((k, x, j) => (x[0] <= i ? j : k), 0);
 function renderLearn() {
@@ -110,12 +110,14 @@ function renderPlay() {
   $('view-play').classList.add('mg2');
   $('view-play').innerHTML = `<div class="g2-head">ГРА З РОБОТОМ</div>
     <div class="g2-side" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>
-    <div class="g2-rows">${ROWS.map((row, r) => `
-      <div class="g2-row" style="--lc:${LV_COLORS[r]}"><div class="g2-lvl"><b>${r + 1}</b></div>
-        <div class="g2-opps">${row.map(i => `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></a>`).join('')}</div></div>`).join('')}
+    <div class="g2-rows">${ROWS.map((row, r) => { const lock = r >= 3 && LG.store.get('chess:beat', 0) < 3; return `
+      <div class="g2-row${lock ? ' lock' : ''}" style="--lc:${LV_COLORS[r]}"><div class="g2-lvl"><b>${lock ? '🔒' : r + 1}</b></div>
+        <div class="g2-opps">${row.map(i => lock ? `<button type="button" class="ap-opp" data-lock="1" aria-label="${esc(OPPONENTS[i].name)} — закрито"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></button>` : `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></a>`).join('')}</div></div>`; }).join('')}
     </div>`;
 }
 $('view-play').addEventListener('click', e => {
+  const lk = e.target.closest('.g2-row.lock');
+  if (lk) { LG.play('error'); LG.toast('🔒 Спершу перемож робота 3-го рівня — тоді відкриються 4 і 5'); lk.classList.remove('shake'); void lk.offsetWidth; lk.classList.add('shake'); return; }
   const b = e.target.closest('#side-seg button'); if (!b) return;
   side = b.dataset.v; LG.store.set('play:side', side); LG.play('tap'); renderPlay();
 });

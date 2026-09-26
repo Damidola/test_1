@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790409298';
-import { aiMove, hintMove } from './ai.js?v=1790409298';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790409298';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790409961';
+import { aiMove, hintMove } from './ai.js?v=1790409961';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790409961';
 
 const LG = window.LG;
 
@@ -63,6 +63,10 @@ export function startGame(cfg) {
   const hero = mountOpponent($('.lg-hero-slot'), { arrows: cfg.navOnly !== true, syncLevel: !!cfg.syncLevel,
     onLevel: l => { level = l; setLimits(); renderButtons(); paintLevel(); } });
   level = qLevel >= 1 && qLevel <= 5 ? qLevel : 1; // за замовчуванням — найлегший
+  // рівні 4–5 відкриваються лише після перемоги над роботом 3-го рівня (щоб діти не програвали найсильнішим одразу)
+  const locked = l => !!cfg.levelLock && l >= 4 && LG.store.get('chess:beat', 0) < 3;
+  const lockedMsg = () => { LG.play('error'); LG.toast('🔒 Рівні 4 і 5 відкриються, коли переможеш робота 3-го рівня'); };
+  if (locked(level)) level = 3;
   hero.setLevel(level);
   // Кнопка «Рівень»: крапки показують силу робота; тап відкриває над кнопками смужку 1…5
   const dots = n => '<i></i>'.repeat(n);
@@ -78,10 +82,11 @@ export function startGame(cfg) {
     if (pop) return pop.remove();
     pop = document.createElement('div');
     pop.className = 'lg-level-pop';
-    pop.innerHTML = LEVEL_NAMES.map((n, i) => `<button type="button" data-l="${i + 1}"><span class="lg-dots">${dots(i + 1)}</span><span>${n}</span></button>`).join('');
+    pop.innerHTML = LEVEL_NAMES.map((n, i) => `<button type="button" data-l="${i + 1}" class="${locked(i + 1) ? 'locked' : ''}"><span class="lg-dots">${locked(i + 1) ? '🔒' : dots(i + 1)}</span><span>${n}</span></button>`).join('');
     pop.addEventListener('click', e => {
       e.stopPropagation();
       const b = e.target.closest('button'); if (!b) return;
+      if (locked(+b.dataset.l)) return lockedMsg();
       level = +b.dataset.l; hero.setLevel(level); setLimits(); renderButtons(); LG.play('tap'); paintLevel(); pop.remove();
     });
     ctr.appendChild(pop); paintLevel();
@@ -316,6 +321,7 @@ export function startGame(cfg) {
       return html ? { html, mood, scene: getComputedStyle(slot).getPropertyValue('--scene') } : null;
     };
     if (r.winner === 'draw') LG.draw(r.text || 'Нічия!', { ...again, hero: heroOpt('') });
+    if (r.winner === player && cfg.levelLock && level > LG.store.get('chess:beat', 0)) LG.store.set('chess:beat', level);
     else if (r.winner === player) LG.win(r.text || 'Перемога!', { ...again, reward: true }); // перемога — смішна гіфка-нагорода, а не сердитий суперник
     else LG.lose(r.text || 'Цього разу виграв суперник.', { ...again, hero: heroOpt('mood-happy') });
   }
@@ -471,7 +477,7 @@ export function startGame(cfg) {
     const sel = (id, v) => `<select id="${id}">${OPTS.map(o => `<option ${o === String(v) ? 'selected' : ''}>${o}</option>`).join('')}</select>`;
     w.innerHTML = `
       <div class="lg-set-title">Сила робота</div>
-      <div class="lg-levels">${LEVEL_NAMES.map((n, i) => `<button type="button" data-l="${i + 1}" title="${n}" class="${i + 1 === level ? 'on' : ''}">${i + 1}</button>`).join('')}</div>
+      <div class="lg-levels">${LEVEL_NAMES.map((n, i) => `<button type="button" data-l="${i + 1}" title="${n}" class="${i + 1 === level ? 'on' : ''}${locked(i + 1) ? ' locked' : ''}">${locked(i + 1) ? '🔒' : i + 1}</button>`).join('')}</div>
       <label class="lg-set-row"><span>👫 Грати з другом (на одному телефоні)</span><input type="checkbox" id="friend" ${friend ? 'checked' : ''}></label>
       <label class="lg-set-row"><span>Тваринка-суперник і фон</span><input type="checkbox" id="show-opp" ${LG.store.get('showOpponent', true) ? 'checked' : ''}></label>
       ${board ? `<label class="lg-set-row"><span>Показувати, куди можна піти</span><input type="checkbox" id="show-dests" ${LG.store.get('showDests', true) ? 'checked' : ''}></label>` : ''}
@@ -480,6 +486,7 @@ export function startGame(cfg) {
       ${board ? `<div class="lg-set-title">Колір дошки</div>
       <div class="lg-swatches">${BOARD_THEMES.map(t => `<button type="button" data-t="${t.id}" title="${t.id}" style="background-image:url('${boardUrl(t.file)}')"></button>`).join('')}</div>` : ''}`;
     w.querySelectorAll('.lg-levels button').forEach(b => b.addEventListener('click', () => {
+      if (locked(+b.dataset.l)) return lockedMsg();
       level = +b.dataset.l; hero.setLevel(level); setLimits(); renderButtons(); paintLevel();
       w.querySelectorAll('.lg-levels button').forEach(x => x.classList.toggle('on', x === b));
     }));

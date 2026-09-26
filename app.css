@@ -444,3 +444,9 @@ html, body { background: #1B2133 !important; } /* усі вкладки — чо
 .g2-ic:has(img ~ img, img ~ span:not(.emo)) img { width: 22px !important; height: 22px !important; margin: 0 !important; }
 .g2-ic:has(img ~ img, img ~ span:not(.emo)) span:not(.emo) { font-size: 9px !important; margin: 0 2px !important; }
 .pr-list:has(.g2-ic img ~ span:not(.emo)) .pr-row .g2-ic { width: 102px !important; justify-content: center; padding: 0; }
+/* Гра: рівні 4–5 закриті, доки не переможеш робота 3-го рівня */
+.g2-row.lock .ap-opp { filter: grayscale(1) brightness(.55); cursor: pointer; border: 0; padding: 0; background: none; }
+.g2-row.lock .g2-lvl b { font-size: 22px; filter: none; }
+.g2-row.lock .g2-lvl { opacity: 1; }
+.g2-row.shake { animation: g2shake .4s; }
+@keyframes g2shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
