@@ -35,15 +35,19 @@ export function analyse(fen, ms = 900) {
   const run = async () => {
     const e = engine();
     if (!e || !(await e.ready) || !sf) return null;
-    let last = null;
+    let last = null; const lines = [];
     const onInfo = t => {
-      const sc = t.match(/ score (cp|mate) (-?\d+)/), pv = t.match(/ pv (.+)$/);
-      if (sc && pv) last = { cp: sc[1] === 'cp' ? +sc[2] : null, mate: sc[1] === 'mate' ? +sc[2] : null, pv: pv[1].trim().split(' ') };
+      const sc = t.match(/ score (cp|mate) (-?\d+)/), pv = t.match(/ pv (.+)$/), mp = +((t.match(/ multipv (\d+)/) || [])[1] || 1);
+      if (!sc || !pv) return;
+      const x = { cp: sc[1] === 'cp' ? +sc[2] : null, mate: sc[1] === 'mate' ? +sc[2] : null, pv: pv[1].trim().split(' ') };
+      lines[mp - 1] = x; if (mp === 1) last = x;
     };
-    const t = await sf.ask(['setoption name Skill Level value 20', `position fen ${fen}`, `go movetime ${ms}`], 'bestmove', ms + 4000, onInfo);
+    // два варіанти (MultiPV 2): найкращий хід і ще один добрий; для гри з роботом bestUci ставить MultiPV назад 1
+    const t = await sf.ask(['setoption name Skill Level value 20', 'setoption name MultiPV value 2', `position fen ${fen}`, `go movetime ${ms}`], 'bestmove', ms + 4000, onInfo);
+    await sf.ask(['setoption name MultiPV value 1', 'isready'], 'readyok', 2000);
     const best = t.split(' ')[1];
     if (!best || best === '(none)') return last ? { ...last, best: '' } : { best: '', cp: null, mate: null, pv: [] };
-    return { cp: 0, mate: null, pv: [best], ...last, best };
+    return { cp: 0, mate: null, pv: [best], ...last, best, lines };
   };
   return (queue = queue.then(run, run));
 }

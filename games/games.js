@@ -4,9 +4,9 @@
    games/?fen=<позиція>   — аналіз однієї позиції (з «Своєї позиції») */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, parseUci, parseSquare, compat, fen as FEN, san as SAN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790414933';
-import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790414933';
-import { analyse } from '../shared/engine.js?v=1790414933';
+import { applyBoardLook } from '../shared/board.js?v=1790415265';
+import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790415265';
+import { analyse } from '../shared/engine.js?v=1790415265';
 
 const LG = window.LG, app = document.getElementById('app');
 const q = new URLSearchParams(location.search);
@@ -62,7 +62,7 @@ function viewer(main, { game }) {
     movable: { free: false, showDests: true, events: { after: (o, d) => userMove(o, d) } },
     premovable: { enabled: false },
     draggable: { enabled: true, showGhost: true, distance: 5 },
-    drawable: { enabled: false, visible: true, brushes: { best: { key: 'b', color: '#15781B', opacity: 0.85, lineWidth: 11 } } }
+    drawable: { enabled: false, visible: true, brushes: { best: { key: 'b', color: '#15781B', opacity: 0.85, lineWidth: 11 }, alt: { key: 'a', color: '#003088', opacity: 0.45, lineWidth: 8 } } }
   });
   if (orient === 'black') $('bar').classList.add('flip');
   const mainLm = game ? game.lm : main.map(() => null);
@@ -89,7 +89,9 @@ function viewer(main, { game }) {
   function fit() {
     const row = document.querySelector('.gm-board-row'), max = Math.min(520, app.clientWidth - 24);
     row.style.width = max + 'px';
-    const over = app.scrollHeight - (innerHeight - (parseFloat(getComputedStyle(document.body).borderTopWidth) || 0));
+    const kids = [...app.children].filter(c => c.offsetParent), gap = parseFloat(getComputedStyle(app).rowGap) || 0;
+    const pad = parseFloat(getComputedStyle(app).paddingTop) + parseFloat(getComputedStyle(app).paddingBottom);
+    const over = kids.reduce((h, c) => h + c.offsetHeight, 0) + gap * (kids.length - 1) + pad + 4 - app.clientHeight;
     if (over > 0) row.style.width = Math.max(200, max - over) + 'px';
     cg.redrawAll();
   }
@@ -143,9 +145,19 @@ function viewer(main, { game }) {
     try { best = SAN.makeSan(pos, mv); } catch (e) { /* */ }
     try { line = SAN.makeSanVariation(pos, r.pv.slice(0, 6).map(u => parseUci(u)).filter(Boolean)); } catch (e) { /* */ }
     cg.setAutoShapes([{ orig: r.best.slice(0, 2), dest: r.best.slice(2, 4), brush: 'best' }]);
+    let alt = '';
+    const l2 = r.lines && r.lines[1];
+    if (l2 && l2.pv[0]) {
+      try {
+        const m2 = SAN.makeSan(pos, parseUci(l2.pv[0]));
+        const sc2 = l2.mate != null ? `мат за ${Math.abs(l2.mate)}` : ((l2.cp || 0) * sign >= 0 ? '+' : '−') + (Math.abs(l2.cp || 0) / 100).toFixed(1);
+        alt = `<br>Ще добрий хід: <b>${esc(ua(m2))}</b> <small style="display:inline">(${sc2})</small>`;
+        cg.setAutoShapes([{ orig: r.best.slice(0, 2), dest: r.best.slice(2, 4), brush: 'best' }, { orig: l2.pv[0].slice(0, 2), dest: l2.pv[0].slice(2, 4), brush: 'alt' }]);
+      } catch (e) { /* */ }
+    }
     const p = played();
     requestAnimationFrame(fit);
-    info.innerHTML = `<b>${text}</b><br>Найкращий хід: <b>${esc(ua(best))}</b>${p ? (p === best ? ' ✅ так і зіграли' : ` · у партії: ${esc(ua(p))}`) : ''}${line ? `<small>Далі: ${esc(ua(line))}</small>` : ''}`;
+    info.innerHTML = `<b>${text}</b><br>Найкращий хід: <b>${esc(ua(best))}</b>${p ? (p === best ? ' ✅ так і зіграли' : ` · у партії: ${esc(ua(p))}`) : ''}${alt}${line ? `<small>Далі: ${esc(ua(line))}</small>` : ''}`;
   }
   const go = k => { i = Math.max(0, Math.min(line.length - 1, k)); LG.play('tap'); show(); };
   $('first').onclick = () => go(0); $('prev').onclick = () => go(i - 1); $('next').onclick = () => go(i + 1); $('last').onclick = () => go(line.length - 1);

@@ -3,8 +3,8 @@
    Тап по ферзю — взяти його (далі тап по клітинці — переставити), ще один тап — зняти в лоток.
    Ферзя можна й перетягнути: на іншу безпечну клітинку або за дошку — тоді він повертається в лоток. */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
-import { applyBoardLook } from '../shared/board.js?v=1790414933';
-import { markSeen } from '../shared/path.js?v=1790414933';
+import { applyBoardLook } from '../shared/board.js?v=1790415265';
+import { markSeen } from '../shared/path.js?v=1790415265';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const N = 8, FILES = 'abcdefgh';
