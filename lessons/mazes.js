@@ -17,7 +17,7 @@ export const MAZES = {
     ]
   },
   bishop: {
-    title: 'Слон 1: лабіринт', piece: 'bishop',
+    title: 'Слон 1: лабіринт', piece: 'bishop', video: 'MKLW3oh7_wE', videoTitle: 'Знайомся зі слоном!',
     text: 'Слон ходить навскоси — скільки завгодно клітинок, але крізь стіни не проходить.',
     levels: [
       { w: 5, h: 5, from: [0, 4], to: [4, 0], walls: [] },
@@ -28,7 +28,7 @@ export const MAZES = {
     ]
   },
   queen: {
-    title: 'Ферзь 1: лабіринт', piece: 'queen',
+    title: 'Ферзь 1: лабіринт', piece: 'queen', video: '4wnfdWWiv3w', videoTitle: 'Знайомся з ферзем!',
     text: 'Ферзь ходить і прямо, і навскоси — скільки завгодно клітинок, але крізь стіни не проходить.',
     levels: [
       { w: 5, h: 5, from: [0, 4], to: [4, 0], walls: [] },
@@ -38,7 +38,7 @@ export const MAZES = {
     ]
   },
   king: {
-    title: 'Король 1: лабіринт', piece: 'king',
+    title: 'Король 1: лабіринт', piece: 'king', video: 'KVeMgVMslNM', videoTitle: 'Знайомся з королем!',
     text: 'Король ходить у будь-який бік, але лише на одну клітинку.',
     levels: [
       { w: 5, h: 5, from: [2, 4], to: [2, 2], walls: [] },
@@ -48,7 +48,7 @@ export const MAZES = {
     ]
   },
   knight: {
-    title: 'Кінь 1: лабіринт', piece: 'knight',
+    title: 'Кінь 1: лабіринт', piece: 'knight', video: 'pbMAQk-5bHU', videoTitle: 'Знайомся з конем!',
     text: 'Кінь стрибає літерою «Г»: дві клітинки прямо й одна вбік. Через стіни він перестрибує!',
     levels: [
       { w: 5, h: 5, from: [0, 4], to: [1, 2], walls: [] },

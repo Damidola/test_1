@@ -5,7 +5,7 @@
    а перетягнута за дошку — зникає. */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790410199';
+import { applyBoardLook } from '../shared/board.js?v=1790410498';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const PRESETS = {

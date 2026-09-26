@@ -29,7 +29,13 @@
 .lv-vid-t { font: 800 20px Manrope, var(--lg-font), sans-serif; font-variant-numeric: tabular-nums; text-shadow: 0 1px 3px #000; }
 .lv-vid-bar input { display: block; width: 100%; margin: 8px 0 0; accent-color: #fff; height: 28px; cursor: pointer; }
 .lv-vid-box.playing.idle .lv-vid-pp, .lv-vid-box.playing.idle .lv-vid-bar { opacity: 0; }
-.lv-vid-box.started .lv-vid-poster { opacity: 0; pointer-events: none; }
+.lv-vid-box.started .lv-vid-poster { opacity: 0; }
+.lv-vid-poster { pointer-events: none; }
+/* до першого запуску тап іде прямо у плеєр YouTube (телефони не дають запустити відео з коду), далі — наше керування */
+.lv-vid-box:not(.started) .lv-vid-ui, .lv-vid-box:not(.started) .lv-vid-bar { pointer-events: none; }
+.lv-vid-box:not(.started) iframe { pointer-events: auto; }
+.lv-vid-box.native iframe { pointer-events: auto; transform: translate(-50%, -50%); }
+.lv-vid-box.native .lv-vid-ui, .lv-vid-box.native .lv-vid-poster { display: none; }
 .lv-vid p, .lv-vid-box + p { margin: 12px 18px 0; max-width: 420px; font: 700 16px/1.4 Manrope, var(--lg-font), sans-serif; text-align: center; }
 .lv-vid-go { margin-top: 14px; min-height: 48px; padding: 0 28px; border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 17px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
 .lv-vid-yt { display: inline-block;  margin-top: 14px; color: #9fb0d8; font: 700 14px Manrope, var(--lg-font), sans-serif; }
@@ -60,8 +66,15 @@ html.lg-tg .lv-vid { padding-top: calc(16px + var(--tg-top, 0px) + env(safe-area
     ui.onclick = e => { if (e.target.closest('.lv-vid-bar') || !p || !p.getPlayerState) return; wake(); p.getPlayerState() === 1 ? p.pauseVideo() : p.playVideo(); };
     seek.oninput = () => { dragging = true; draw(+seek.value); wake(); };
     seek.onchange = () => { dragging = false; if (p) p.seekTo(+seek.value, true); wake(); };
+    // YouTube API не завантажився (мережа, вебвʼю) — звичайний плеєр YouTube з його кнопками
+    const fallback = setTimeout(() => {
+      if (dead || p) return;
+      el.classList.add('native');
+      el.querySelector('.lv-vid-yt-frame').outerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Відео"></iframe>';
+    }, 6000);
     loadApi().then(Y => {
-      if (dead) return;
+      if (dead || el.classList.contains('native')) return;
+      clearTimeout(fallback);
       p = new Y.Player(el.querySelector('.lv-vid-yt-frame'), {
         videoId: id, host: 'https://www.youtube-nocookie.com',
         playerVars: { controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3, rel: 0, playsinline: 1, modestbranding: 1 },
@@ -79,7 +92,7 @@ html.lg-tg .lv-vid { padding-top: calc(16px + var(--tg-top, 0px) + env(safe-area
       });
       tick = setInterval(() => { if (p && p.getCurrentTime && el.classList.contains('playing')) draw(p.getCurrentTime()); }, 250);
     });
-    return { el, destroy() { dead = true; clearInterval(tick); clearTimeout(idle); try { p && p.destroy(); } catch (e) { /* */ } el.remove(); } };
+    return { el, destroy() { dead = true; clearTimeout(fallback); clearInterval(tick); clearTimeout(idle); try { p && p.destroy(); } catch (e) { /* */ } el.remove(); } };
   }
   const ytLink = id => { const a = document.createElement('a'); a.className = 'lv-vid-yt'; a.target = '_blank'; a.rel = 'noopener'; a.href = 'https://youtu.be/' + id; a.textContent = 'Дивитися на YouTube ↗'; return a; };
   // екран на весь застосунок: заголовок, відео, пояснення, «До вправ», посилання на YouTube

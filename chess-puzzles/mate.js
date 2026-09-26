@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790410199';
-import { createRules } from '../chess/rules.js?v=1790410199';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790410199';
-import { hintMove } from '../shared/ai.js?v=1790410199';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790410498';
+import { createRules } from '../chess/rules.js?v=1790410498';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790410498';
+import { hintMove } from '../shared/ai.js?v=1790410498';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
