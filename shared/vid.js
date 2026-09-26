@@ -1,6 +1,7 @@
 // Відео-знайомство перед уроком: екран із відео, коротким поясненням і кнопкою «До вправ».
 // Ключ — кінець адреси сторінки (як у shared/path.js). Після оновлення сторінки не показується.
 (function () {
+  const ROOT = new URL('..', document.currentScript ? document.currentScript.src : location.href).href;
   const V = {
     'lessons/check.html': ['iPBN2X9sYRE', 'Що таке шах?', 'Шах — це напад на короля. Королю треба одразу рятуватися: утекти, закритися або побити фігуру, що шахує.'],
     'lessons/lesson.html#promo': ['xwNtd8XqLME', 'Особливі пішаки', 'Пішак, що дійшов до останнього ряду, стає будь-якою фігурою — найчастіше ферзем. А ще пішак уміє бити «на проході».'],
@@ -32,7 +33,11 @@
 .lv-vid p, .lv-vid-box + p { margin: 12px 18px 0; max-width: 420px; font: 700 16px/1.4 Manrope, var(--lg-font), sans-serif; text-align: center; }
 .lv-vid-go { margin-top: 14px; min-height: 48px; padding: 0 28px; border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 17px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
 .lv-vid-yt { display: inline-block;  margin-top: 14px; color: #9fb0d8; font: 700 14px Manrope, var(--lg-font), sans-serif; }
-body:has(.lv-vid) .lg-nav { display: none !important; }`;
+body:has(.lv-vid) .lg-nav { display: none !important; }
+.lv-vid-back { position: absolute; left: 12px; top: calc(10px + var(--tg-top, 0px) + env(safe-area-inset-top)); width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.08); color: #fff; display: grid; place-items: center; font: 700 30px/1 sans-serif; text-decoration: none; z-index: 1; }
+html.lg-tg .lv-vid-back { display: none; }
+.lv-vid { padding-top: calc(60px + var(--tg-top, 0px) + env(safe-area-inset-top)); }
+html.lg-tg .lv-vid { padding-top: calc(16px + var(--tg-top, 0px) + env(safe-area-inset-top)); }`;
   const PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>', PAUSE = '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
   const mmss = t => { t = Math.max(0, Math.floor(t || 0)); return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); };
   let api = null;
@@ -78,26 +83,26 @@ body:has(.lv-vid) .lg-nav { display: none !important; }`;
   }
   const ytLink = id => { const a = document.createElement('a'); a.className = 'lv-vid-yt'; a.target = '_blank'; a.rel = 'noopener'; a.href = 'https://youtu.be/' + id; a.textContent = 'Дивитися на YouTube ↗'; return a; };
   // екран на весь застосунок: заголовок, відео, пояснення, «До вправ», посилання на YouTube
-  function overlay([id, title, text], onClose, key) {
+  function overlay([id, title, text], onClose) {
     if (document.querySelector('.lv-vid')) return;
     addCss();
     const o = document.createElement('div'); o.className = 'lv-vid';
     o.innerHTML = '<div class="lv-vid-in"><h2></h2><p></p><button type="button" class="lv-vid-go">До вправ ▶️</button></div>';
     o.querySelector('h2').textContent = title; o.querySelector('p').textContent = text;
     const pl = player(id); o.querySelector('h2').after(pl.el); o.querySelector('.lv-vid-in').appendChild(ytLink(id));
-    o.querySelector('.lv-vid-go').onclick = () => { if (key) try { sessionStorage.setItem('vid:closed', key); } catch (e) { /* */ } pl.destroy(); o.remove(); onClose && onClose(); };
+    o.querySelector('.lv-vid-go').onclick = () => { pl.destroy(); o.remove(); onClose && onClose(); };
+    const back = document.createElement('a'); back.className = 'lv-vid-back'; back.href = ROOT + 'index.html#learn'; back.setAttribute('aria-label', 'До уроків'); back.textContent = '‹';
+    back.onclick = e => { e.preventDefault(); pl.destroy(); (window.LG && LG.go ? LG.go : h => { location.href = h; })(back.href); };
+    o.prepend(back);
     document.body.appendChild(o);
   }
-  // після оновлення сторінки відео лишається, якщо його ще не закрили кнопкою «До вправ»
-  const isReload = (performance.getEntriesByType('navigation')[0] || {}).type === 'reload';
-  const dismissed = key => { if (!isReload) return false; try { return sessionStorage.getItem('vid:closed') === key; } catch (e) { return false; } };
-  window.LGVideo = { player, overlay, ytLink, dismissed };
+  window.LGVideo = { player, overlay, ytLink };
   function show(k) {
     const v = V[k]; if (!v) return;
-    overlay(v, null, k);
+    overlay(v);
   }
-  // оновлення сторінки не показує відео вдруге (але сторінки, що перезавантажуються при зміні #, — показують нове)
+  // відео показується щоразу, коли відкрили урок (і після оновлення сторінки теж)
   let cur = here();
-  if (!dismissed(cur)) (document.body ? show(cur) : document.addEventListener('DOMContentLoaded', () => show(cur)));
+  document.body ? show(cur) : document.addEventListener('DOMContentLoaded', () => show(cur));
   addEventListener('hashchange', () => { const k = here(); if (k !== cur) { cur = k; show(k); } });
 })();

@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790407327';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790407327';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790407327';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790407704';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790407704';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790407704';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -148,15 +148,35 @@ const art = ic => {
 // скільки задач розділу вже розв'язано (chess-puzzles зберігає chk:puz:<розділ>)
 const solvedOf = hrefs => hrefs.reduce((n, h) => { const k = h.startsWith('chess-puzzles/') && h.split('#')[1]; return n + (k ? (LG.store.get('puz:' + k, []) || []).length : 0); }, 0);
 const catLinks = c => c.href ? [c.href] : c.groups.flatMap(([, items]) => items.map(x => x[3]));
-// скільки всього задач у кожному розділі — з chess-puzzles/puzzles.json (вантажиться раз, коли відкрили розділ)
-let puzTotal = null, puzLoading = false;
+// задачі всіх розділів — з chess-puzzles/puzzles.json (вантажиться раз, коли відкрили розділ)
+let puzData = null, puzLoading = false;
 function loadPuzTotals(open) {
-  if (puzTotal || puzLoading) return;
+  if (puzData || puzLoading) return;
   puzLoading = true;
   fetch('chess-puzzles/puzzles.json').then(r => r.json()).then(d => {
-    puzTotal = Object.fromEntries(Object.entries(d).map(([k, v]) => [k, v.length]));
+    puzData = d;
     if (location.hash === '#practice/' + open) renderPractice(open);
   }).catch(() => { puzLoading = false; });
+}
+// результат кожної задачі (chess-puzzles/mate.js): g — без помилок, y — з помилками, r — показали розвʼязок
+function puzStats(k) {
+  const list = puzData && puzData[k]; if (!list) return null;
+  const res = LG.store.get('puzres:' + k, {}), solved = new Set(LG.store.get('puz:' + k, []));
+  let done = 0, tried = 0, sum = 0, next = -1;
+  list.forEach(([id], i) => {
+    const r = res[id] || (solved.has(id) ? 'g' : '');
+    if (r) { tried++; sum += r === 'g' ? 100 : r === 'y' ? 50 : 0; if (r !== 'r') done++; }
+    if (next < 0 && (!r || r === 'r')) next = i;
+  });
+  return { n: list.length, done, tried, sum, pct: tried ? Math.round(sum / tried) : 0, next: next < 0 ? 0 : next };
+}
+function miniBoard(fen, moves) {
+  const [placement, turn] = fen.split(' ');
+  const flip = (moves.split(' ').length % 2 === 1) === (turn === 'b');
+  const cells = [];
+  placement.split('/').forEach((row, r) => { let c = 0; for (const ch of row) { if (/\d/.test(ch)) { for (let i = 0; i < +ch; i++) cells.push([r, c++, '']); } else cells.push([r, c++, ch]); } });
+  if (flip) cells.reverse();
+  return '<div class="pr-mini">' + cells.map(([r, c, ch]) => `<i class="${(r + c) % 2 ? 'd' : ''}">${ch ? piece(ch.toUpperCase(), ch === ch.toUpperCase() ? 'w' : 'b') : ''}</i>`).join('') + '</div>';
 }
 // Вкладка «Практика» у новому дизайні: список рядків (кружечок кольору розділу з фігурами, назва, опис, лічильник, ›);
 // у розділі — картки задач із тонкою смужкою прогресу кольору розділу
@@ -173,12 +193,23 @@ function renderPractice(open) {
     }).join('')}</div>`;
     return;
   }
-  $('view-practice').innerHTML = `<div class="g2-sub"><a class="g2-back" href="#practice" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><span class="g2-ic pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>` +
-    cat.groups.map(([h, items]) => `${h ? `<h3 class="g2-h3">${esc(h)}</h3>` : ''}<div class="g2-tiles" style="flex-grow:${Math.ceil(items.length / 2)}">${items.map(([ic, t, sub, href]) => {
-      const n = solvedOf([href]), k = href.startsWith('chess-puzzles/') && href.split('#')[1], tot = k && puzTotal && puzTotal[k];
-      // задачі: «2 / 35» і смужка — скільки розв'язано з усіх
-      const prog = tot ? `<span class="g2-prog${n >= tot ? ' all' : ''}"><span>${n} / ${tot}</span><i><i style="width:${Math.max(2, Math.round(100 * n / tot))}%"></i></i></span>` : n ? `<span class="g2-cnt">✓ ${n}</span>` : '';
-      return `<a class="g2-tile" href="${href}" style="--c:${cat.c}"><span class="g2-ic pcs">${art(ic)}</span><span class="g2-tx"><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${prog}</a>`;
+  const sub = `<div class="g2-sub"><a class="g2-back" href="#practice" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><span class="g2-ic pcs" style="--c:${cat.c}">${art(cat.ic)}</span><h2>${esc(cat.t)}</h2></div>`;
+  const keyOf = href => href.startsWith('chess-puzzles/') && href.split('#')[1];
+  const items = cat.groups.flatMap(([, it]) => it), puz = items.map(x => keyOf(x[3])).filter(k => k && puzData && puzData[k]);
+  // «Зміст» (як у ChessKid): угорі — задача, з якої продовжити, скільки розвʼязано й успіх; нижче — підрозділи рядками
+  let head = '';
+  if (puz.length) {
+    const st = puz.map(k => [k, puzStats(k)]), all = st.reduce((a, [, x]) => ({ n: a.n + x.n, done: a.done + x.done, tried: a.tried + x.tried, sum: a.sum + x.sum }), { n: 0, done: 0, tried: 0, sum: 0 });
+    const [ck, cs] = st.find(([, x]) => x.done < x.n) || st[0], [, fen, moves] = puzData[ck][cs.next], pct = all.tried ? Math.round(all.sum / all.tried) : 0;
+    head = `<div class="pr-head" style="--c:${cat.c}">${miniBoard(fen, moves)}<div class="pr-info"><b class="pr-t">${esc(cat.t)}</b>
+      <span>Розвʼязано: <b>${all.done}</b> з ${all.n}</span><span class="pr-rate">Успіх: <i class="pr-bar"><i style="width:${pct}%"></i></i> ${pct}%</span>
+      <a class="pr-go" href="chess-puzzles/index.html#${ck}">${all.tried ? 'Продовжити' : 'Почати'}</a></div></div>`;
+  }
+  const PLAY = '<svg class="pr-play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z"/></svg>';
+  $('view-practice').innerHTML = sub + head + cat.groups.map(([h, list]) => `${h ? `<h3 class="g2-h3">${esc(h)}</h3>` : ''}<div class="pr-list">${list.map(([ic, t, subt, href]) => {
+      const k = keyOf(href), x = k && puzStats(k), n = solvedOf([href]);
+      const line = x ? `<small class="${x.done >= x.n ? 'all' : ''}">${x.done ? '✓ ' : ''}<b>${x.done}</b> / ${x.n}${x.tried ? ` · Успіх: ${x.pct}%` : ''}</small>` : subt ? `<small>${esc(subt)}</small>` : n ? `<small>✓ ${n}</small>` : '';
+      return `<a class="pr-row" href="${href}" style="--c:${cat.c}"><span class="g2-ic pcs">${art(ic)}</span><span class="pr-tx"><b>${esc(t)}</b>${line}</span>${PLAY}</a>`;
     }).join('')}</div>`).join('');
   markTall();
 }
