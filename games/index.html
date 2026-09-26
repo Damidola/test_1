@@ -6,19 +6,27 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Мої партії</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790416027">
-  <link rel="stylesheet" href="../shared/play.css?v=1790416027">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790416388">
+  <link rel="stylesheet" href="../shared/play.css?v=1790416388">
   <style>
     body { margin: 0; font-family: Manrope, var(--lg-font), sans-serif; }
-    .gm { box-sizing: border-box; padding: calc(6px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; height: calc(100svh - var(--fs-top, 0px)); overflow: hidden; }
+    .gm { box-sizing: border-box; padding: calc(6px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 8px; height: calc(100svh - var(--fs-top, 0px)); overflow: hidden; }
     .gm > * { width: min(100%, 520px); flex: none; }
     /* дошка — стільки, скільки лишається від висоти екрана: усі кнопки видно без прокрутки */
     .gm-nav button, .gm-an, .gm-ret, .gm-play { min-height: 40px !important; }
     .gm-info { font-size: 14px; padding: 8px 12px; }
     .gm-top { display: flex; align-items: center; gap: 10px; min-height: 44px; }
     .gm-top b { text-align: center; font-size: 20px; font-weight: 800; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .gm-top::after { content: ''; flex: none; width: 40px; }
-    html.lg-tg .gm-top::after { display: none; }
+    .gm-more { flex: none; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255,255,255,.08); color: #fff; font: 800 22px/1 sans-serif; cursor: pointer; }
+    html.lg-tg .gm-top::before { content: ''; width: 40px; flex: none; }
+    .gm-sheet { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: end center; background: rgba(0,0,0,.55); padding: 0 12px calc(16px + env(safe-area-inset-bottom)); }
+    .gm-sheet-card { width: min(100%, 460px); box-sizing: border-box; padding: 18px 16px 14px; border-radius: 20px; background: #262d45; display: flex; flex-direction: column; gap: 12px; }
+    .gm-sheet-card b { font-size: 18px; }
+    .gm-sheet-card small { color: #9fb0d8; font-weight: 600; font-size: 14px; }
+    .gm-lines { display: flex; gap: 8px; }
+    .gm-lines button { flex: 1; min-height: 48px; border: 0; border-radius: 14px; background: rgba(255,255,255,.08); color: #fff; font: 800 20px Manrope, sans-serif; }
+    .gm-lines button.on { background: #2ee6b8; color: #04241d; }
+    .gm-close { min-height: 46px; border: 0; border-radius: 14px; background: #7C6CF0; color: #fff; font: 800 16px Manrope, sans-serif; }
     .gm-back { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; font: 700 28px/1 sans-serif; text-decoration: none; }
     html.lg-tg .gm-back { display: none; }
     html.lg-tg .gm-top b { text-align: center; }
@@ -56,8 +64,8 @@
 </head>
 <body data-back="../index.html#profile">
   <main class="gm" id="app"></main>
-  <script src="../shared/games.js?v=1790416027"></script>
-  <script src="../shared/kit.js?v=1790416027" data-night="on"></script>
-  <script type="module" src="games.js?v=1790416027"></script>
+  <script src="../shared/games.js?v=1790416388"></script>
+  <script src="../shared/kit.js?v=1790416388" data-night="on"></script>
+  <script type="module" src="games.js?v=1790416388"></script>
 </body>
 </html>

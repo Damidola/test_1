@@ -31,7 +31,7 @@ export function bestUci(fen, { skill = 3, ms = 500 } = {}) {
 
 /* Аналіз позиції повною силою: analyse(fen, ms) → { best: 'e2e4', cp, mate, pv: ['e2e4', …] } з боку того, хто ходить.
    cp — у сотих пішака; mate — за скільки ходів мат (мінус — мат тобі). Рушій не запустився — null. */
-export function analyse(fen, ms = 900) {
+export function analyse(fen, ms = 900, multi = 1) {
   const run = async () => {
     const e = engine();
     if (!e || !(await e.ready) || !sf) return null;
@@ -43,7 +43,7 @@ export function analyse(fen, ms = 900) {
       lines[mp - 1] = x; if (mp === 1) last = x;
     };
     // два варіанти (MultiPV 2): найкращий хід і ще один добрий; для гри з роботом bestUci ставить MultiPV назад 1
-    const t = await sf.ask(['setoption name Skill Level value 20', 'setoption name MultiPV value 2', `position fen ${fen}`, `go movetime ${ms}`], 'bestmove', ms + 4000, onInfo);
+    const t = await sf.ask(['setoption name Skill Level value 20', `setoption name MultiPV value ${multi}`, `position fen ${fen}`, `go movetime ${ms}`], 'bestmove', ms + 4000, onInfo);
     await sf.ask(['setoption name MultiPV value 1', 'isready'], 'readyok', 2000);
     const best = t.split(' ')[1];
     if (!best || best === '(none)') return last ? { ...last, best: '' } : { best: '', cp: null, mate: null, pv: [] };
