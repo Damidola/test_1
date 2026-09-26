@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, dests, shortest } from './mazes.js?v=1790410810';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790410810';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790410810';
+import { MAZES, dests, shortest } from './mazes.js?v=1790411074';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790411074';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790411074';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -97,9 +97,11 @@ function win() {
   say(perfect ? 'Ням! Ідеально! 🌟' : 'Ням! Можна й швидше — за ' + best + ' ' + (best === 1 ? 'хід' : 'ходи') + ' 👍', 'ok');
   LG.play('win');
   setTimeout(() => {
+    // вікно «Урок пройдено» — лише після останнього рівня; до того — просто наступний рівень
     const r = LG.store.get('lvl:maze:' + K, []), open = M.levels.findIndex((_, i) => !r[i]);
+    if (idx + 1 < M.levels.length) { idx++; return load(); }
     if (open < 0) return lessonDone({ title: M.title, text: 'Молодець! Усі лабіринти пройдено.', key: 'maze:' + K, n: M.levels.length, here, onAgain: () => { idx = 0; load(); } });
-    idx = idx + 1 < M.levels.length && !r[idx + 1] ? idx + 1 : open; load();
+    idx = open; load();
   }, 1400);
 }
 // 💡 1-й раз — куди йти першим ходом, 2-й — увесь шлях

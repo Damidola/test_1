@@ -4,10 +4,10 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790410810';
-import { createRules } from '../chess/rules.js?v=1790410810';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790410810';
-import { hintMove } from '../shared/ai.js?v=1790410810';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790411074';
+import { createRules } from '../chess/rules.js?v=1790411074';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790411074';
+import { hintMove } from '../shared/ai.js?v=1790411074';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -200,9 +200,11 @@ function startPuzzles() {
 function lessonNext() {
   const n = DATA[sec].length, r = LG.store.get('lvl:puz-' + sec, []);
   const open = [...Array(n).keys()].find(i => !r[i]);
+  // вікно «Урок пройдено» — лише після останньої задачі; до того — просто наступна
+  if (idx + 1 < n) { idx++; return loadPuzzle(); }
   if (open === undefined) return lessonDone({ title: INFO[sec].title, text: 'Молодець! Усі задачі розв’язано.', key: 'puz-' + sec, n,
     here: 'chess-puzzles/index.html?lesson=1#' + sec, onAgain: () => { idx = 0; loadPuzzle(); } });
-  idx = idx + 1 < n && !r[idx + 1] ? idx + 1 : open; loadPuzzle();
+  idx = open; loadPuzzle();
 }
 // Задачі по черзі: відкрита лише наступна після розв'язаної (або тієї, де вже показали розв'язок)
 function openIdx() {
