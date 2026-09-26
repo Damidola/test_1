@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790411935';
-import { aiMove, hintMove } from './ai.js?v=1790411935';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790411935';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790412596';
+import { aiMove, hintMove } from './ai.js?v=1790412596';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790412596';
 
 const LG = window.LG;
 
@@ -306,8 +306,23 @@ export function startGame(cfg) {
     }, again ? 400 : thinkMs()); // «думає» — скільки задано в Профілі (типово ~1,6 с), трохи випадково
   }
 
+  // Мої партії (профіль): зберігаємо кожну завершену партію з роботом — позиції (FEN) і ходи; останні 30
+  function saveGame(r) {
+    if (!cfg.record || friend || !board) return;
+    try {
+      const line = history.slice(0, pos + 1);
+      if (line.length < 2) return;
+      const name = ($('.lg-hero-name b') || {}).textContent || '';
+      const list = LG.store.get('games', []);
+      list.unshift({ t: Date.now(), opp: name, lvl: level, side: player, res: r.winner === 'draw' ? 'd' : r.winner === player ? 'w' : 'l',
+        fens: line.map(s => rules.key(s)), lm: line.map(s => s.lastMove || null) });
+      LG.store.set('games', list.slice(0, 30));
+    } catch (e) { /* партію не збережено — гра від цього не ламається */ }
+  }
+
   function finish(r) {
     over = true; render();
+    saveGame(r);
     const again = { onAgain: newGame };
     const autoClose = typeof cfg.autoClose === 'function' ? cfg.autoClose() : cfg.autoClose;
     if (autoClose) again.autoClose = autoClose; // швидкі ігри: вікно саме зникає

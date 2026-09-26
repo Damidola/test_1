@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790411935';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790411935';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790411935';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790412596';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790412596';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790412596';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -272,6 +272,7 @@ function renderProfile() {
     <div class="mg-me"><span class="mg-av">${kingSvg}</span><div class="mg-who"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length} · ${sec ? sec[1] : ''}</small><div class="mg-bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
     <div class="mg-stats"><div><b>${d}</b><span>КРОКИ</span></div><div><b>${solvedPuzzles()}</b><span>ЗАДАЧІ</span></div><div><b>${wins}</b><span>ПЕРЕМОГИ</span></div></div>
     <div class="mg-list">
+      <a class="mg-row mg-link" href="games/index.html"><span>📜 Мої партії</span><em>${(LG.store.get('games', []) || []).length}${chev}</em></a>
       <div class="mg-row"><span>Мова</span><div class="mg-pill" id="p-lang">${[['uk', 'UA'], ['en', 'EN']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
       <div class="mg-row"><span>Звук</span><div class="mg-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
       <div class="mg-row mg-col"><span>Дошка</span><div class="ap-boards" id="p-boards"></div></div>

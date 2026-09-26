@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Мої партії</title>
+  <link rel="stylesheet" href="../shared/kit.css?v=1790412596">
+  <link rel="stylesheet" href="../shared/play.css?v=1790412596">
+  <style>
+    body { margin: 0; font-family: Manrope, var(--lg-font), sans-serif; }
+    .gm { box-sizing: border-box; min-height: 100svh; padding: calc(10px + var(--tg-top, 0px) + env(safe-area-inset-top)) 12px calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .gm > * { width: min(100%, 520px); }
+    .gm-top { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+    .gm-top b { font-size: 20px; font-weight: 800; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gm-back { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; font: 700 28px/1 sans-serif; text-decoration: none; }
+    html.lg-tg .gm-back { visibility: hidden; width: 0; margin-right: -10px; }
+    .gm-list { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: rgba(255,255,255,.04); }
+    .gm-row { display: flex; align-items: center; gap: 12px; padding: 11px 14px; color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .gm-row:last-child { border-bottom: 0; }
+    .gm-row img { flex: none; width: 46px; height: 46px; border-radius: 50%; object-fit: cover; background: #2a3150; }
+    .gm-row span { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .gm-row b { font-size: 16px; font-weight: 800; }
+    .gm-row small { font-size: 13px; font-weight: 700; color: #8e99b8; }
+    .gm-res { flex: none; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
+    .gm-res.w { background: #1f7a3a; } .gm-res.d { background: #54607f; } .gm-res.l { background: #a8322a; }
+    .gm-empty { text-align: center; color: #9fb0d8; font-weight: 700; padding: 40px 10px; line-height: 1.5; }
+    .gm-board-row { display: flex; gap: 6px; align-items: stretch; }
+    .gm-eval { flex: none; width: 14px; border-radius: 7px; overflow: hidden; background: #2b2b2b; display: flex; flex-direction: column; justify-content: flex-end; }
+    .gm-eval i { display: block; background: #f2f2f2; transition: height .4s; height: 50%; }
+    .gm-eval.flip { transform: rotate(180deg); }
+    .gm-eval[hidden] { display: none; }
+    .gm-board { flex: 1; min-width: 0; }
+    .gm-board .lg-board-el { width: 100%; aspect-ratio: 1; }
+    .gm-nav { display: flex; align-items: center; gap: 6px; }
+    .gm-nav button { flex: 1; min-height: 46px; border: 0; border-radius: 14px; background: rgba(255,255,255,.08); color: #fff; font: 800 20px Manrope, sans-serif; cursor: pointer; }
+    .gm-nav button:disabled { opacity: .35; }
+    .gm-nav .gm-n { flex: 1.4; text-align: center; font-weight: 800; font-size: 15px; color: #c9d2ea; }
+    .gm-slider { width: 100%; accent-color: #2ee6b8; }
+    .gm-an { min-height: 46px; border: 0; border-radius: 14px; background: #7C6CF0; color: #fff; font: 800 16px Manrope, sans-serif; cursor: pointer; }
+    .gm-an.on { background: #2ee6b8; color: #04241d; }
+    .gm-info { min-height: 44px; padding: 10px 14px; box-sizing: border-box; border-radius: 14px; background: rgba(255,255,255,.05); font-weight: 700; font-size: 15px; color: #dfe5f5; line-height: 1.4; }
+    .gm-info[hidden] { display: none; }
+    .gm-info small { display: block; color: #8e99b8; font-size: 13px; }
+    .gm-play { display: grid; place-items: center; min-height: 46px; border-radius: 14px; background: #2ee6b8; color: #04241d; font: 800 16px Manrope, sans-serif; text-decoration: none; }
+  </style>
+</head>
+<body data-back="../index.html#profile">
+  <main class="gm" id="app"></main>
+  <script src="../shared/games.js?v=1790412596"></script>
+  <script src="../shared/kit.js?v=1790412596" data-night="on"></script>
+  <script type="module" src="games.js?v=1790412596"></script>
+</body>
+</html>

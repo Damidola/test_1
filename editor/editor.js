@@ -5,7 +5,7 @@
    а перетягнута за дошку — зникає. */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790411935';
+import { applyBoardLook } from '../shared/board.js?v=1790412596';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const PRESETS = {
@@ -45,10 +45,43 @@ const cg = Chessground($('board'), {
 
 // палітра: чорні над дошкою, білі під нею; 🧽 — гумка
 function palette(el, c) {
-  el.innerHTML = 'KQRBNP'.split('').map(r => `<button type="button" data-c="${c}" data-r="${r}" aria-label="${ROLE[r]}"><img src="${pieceImg(c, r)}" alt=""></button>`).join('') +
+  el.innerHTML = 'KQRBNP'.split('').map(r => `<button type="button" data-c="${c}" data-r="${r}" aria-label="${ROLE[r]}"><img src="${pieceImg(c, r)}" alt="" draggable="false"></button>`).join('') +
     (c === 'w' ? '<button type="button" class="ed-er" data-er="1" aria-label="Гумка">🧽</button>' : '');
 }
 palette($('pal-b'), 'b'); palette($('pal-w'), 'w');
+// браузер не має тягнути саму картинку (інакше він «забирає» дотик і фігура не перетягується)
+document.querySelectorAll('.ed-pal').forEach(p => p.addEventListener('dragstart', e => e.preventDefault()));
+// як на Lichess: фігуру з палітри можна одразу перетягнути на дошку
+// (тягнути — лише коли палець зрушив, щоб простий тап і далі вибирав фігуру-«пензлик»)
+let press = null, ghost = null;
+const endDrag = () => { if (ghost) { ghost.el.remove(); ghost = null; } press = null; };
+document.querySelectorAll('.ed-pal').forEach(p => p.addEventListener('pointerdown', e => {
+  const b = e.target.closest('button[data-r]'); if (!b || e.button > 0) return;
+  press = { b, x: e.clientX, y: e.clientY };
+}));
+addEventListener('pointermove', e => {
+  if (ghost) { ghost.el.style.transform = `translate(${e.clientX - ghost.s / 2}px, ${e.clientY - ghost.s / 2}px)`; return; }
+  if (!press || Math.hypot(e.clientX - press.x, e.clientY - press.y) < 8) return;
+  const s = document.querySelector('cg-board').getBoundingClientRect().width / 8, el = document.createElement('img');
+  el.src = press.b.querySelector('img').src; el.alt = '';
+  el.style.cssText = `position:fixed;left:0;top:0;width:${s}px;height:${s}px;pointer-events:none;z-index:50;transform:translate(${e.clientX - s / 2}px,${e.clientY - s / 2}px) scale(1.15)`;
+  document.body.appendChild(el);
+  ghost = { el, s, piece: { color: press.b.dataset.c === 'w' ? 'white' : 'black', role: ROLE[press.b.dataset.r] } };
+});
+addEventListener('pointerup', e => {
+  if (ghost) {
+    const key = cg.getKeyAtDomPos([e.clientX, e.clientY]);
+    if (key) { cg.setPieces(new Map([[key, ghost.piece]])); LG.play('move'); changed(); }
+    ghost.el.remove(); ghost = null; press = null;
+    // тап після перетягування не має вмикати «пензлик»
+    const eat = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    addEventListener('click', eat, { capture: true, once: true });
+    setTimeout(() => removeEventListener('click', eat, { capture: true }), 300);
+    return;
+  }
+  press = null;
+});
+addEventListener('pointercancel', endDrag);
 document.querySelectorAll('.ed-pal').forEach(p => p.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const next = b.dataset.er ? 'erase' : { color: b.dataset.c === 'w' ? 'white' : 'black', role: ROLE[b.dataset.r] };
@@ -63,6 +96,11 @@ $('presets').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   cg.set({ fen: PRESETS[b.dataset.p] }); LG.play('tap'); changed();
 });
+let turn = LG.store.get('editor:turn', 'w');
+const paintTurn = () => { $('turn').textContent = turn === 'w' ? 'Першими ходять білі ⇄' : 'Першими ходять чорні ⇄'; };
+$('turn').addEventListener('click', () => { turn = turn === 'w' ? 'b' : 'w'; LG.store.set('editor:turn', turn); LG.play('tap'); paintTurn(); });
+paintTurn();
+$('flip').addEventListener('click', () => { cg.toggleOrientation(); LG.play('tap'); });
 let side = LG.store.get('editor:side', 'w');
 const paintSide = () => document.querySelectorAll('#side button').forEach(b => b.classList.toggle('on', b.dataset.s === side));
 $('side').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; side = b.dataset.s; LG.store.set('editor:side', side); LG.play('tap'); paintSide(); });
@@ -84,22 +122,30 @@ function changed() {
 }
 changed();
 
-$('go').addEventListener('click', () => {
-  const board = cg.getFen(), n = count(), full = board + ' w - - 0 1';
-  const bad = msg => { LG.play('error'); LG.toast(msg); };
+// перевірка позиції; повертає { full, mate } або null (і показує, що не так)
+function check() {
+  const board = cg.getFen(), n = count(), full = board + ' ' + turn + ' - - 0 1';
+  const bad = msg => { LG.play('error'); LG.toast(msg); return null; };
   if (!n.white.all || !n.black.all) return bad('Постав фігури і білим, і чорним.');
   if (/^[^/]*[pP]|[pP][^/]*$/.test(board)) return bad('Пішак не може стояти на першому чи останньому ряду.');
-  if (mateMode(n)) {
-    const pos = Chess.fromSetup(FEN.parseFen(full).unwrap());
-    if (pos.isErr) {
-      const e = String(pos.error && pos.error.message || '');
-      return bad(e.includes('OPPOSITE_CHECK') ? 'Чорному королю вже шах, а ходять білі — так не можна.'
-        : e.includes('IMPOSSIBLE_CHECK') ? 'Такого шаху не буває — переставте фігури.'
-        : 'Така позиція неможлива — переставте фігури.');
-    }
-    const p = pos.unwrap();
-    if (p.isEnd()) return bad('У цій позиції гра вже закінчена — переставте фігури.');
-    return LG.go('../chess/index.html?level=2&side=' + side + '&fen=' + encodeURIComponent(full));
+  if (!mateMode(n)) return { full, mate: false };
+  const pos = Chess.fromSetup(FEN.parseFen(full).unwrap());
+  if (pos.isErr) {
+    const e = String(pos.error && pos.error.message || '');
+    const other = turn === 'w' ? 'Чорному' : 'Білому', mover = turn === 'w' ? 'білі' : 'чорні';
+    return bad(e.includes('OPPOSITE_CHECK') ? `${other} королю вже шах, а ходять ${mover} — так не можна.`
+      : e.includes('IMPOSSIBLE_CHECK') ? 'Такого шаху не буває — переставте фігури.'
+      : 'Така позиція неможлива — переставте фігури.');
   }
-  LG.go('../pieces-vs-pawns/free.html?side=' + side + '&fen=' + encodeURIComponent(full));
+  if (pos.unwrap().isEnd()) return bad('У цій позиції гра вже закінчена — переставте фігури.');
+  return { full, mate: true };
+}
+$('go').addEventListener('click', () => {
+  const c = check(); if (!c) return;
+  LG.go((c.mate ? '../chess/index.html?level=2&side=' : '../pieces-vs-pawns/free.html?side=') + side + '&fen=' + encodeURIComponent(c.full));
+});
+$('an').addEventListener('click', () => {
+  const c = check(); if (!c) return;
+  if (!c.mate) { LG.play('error'); return LG.toast('Аналіз робота — лише для позицій з обома королями.'); }
+  LG.go('../games/index.html?fen=' + encodeURIComponent(c.full));
 });
