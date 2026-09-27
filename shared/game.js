@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790430973';
-import { aiMove, hintMove } from './ai.js?v=1790430973';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790430973';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790504486';
+import { aiMove, hintMove } from './ai.js?v=1790504486';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790504486';
 
 const LG = window.LG;
 
@@ -448,11 +448,11 @@ export function startGame(cfg) {
     if (home) {
       home.hidden = true;
       const top = document.createElement('div'); top.className = 'lg-topbtns';
-      top.innerHTML = `<a class="lg-top-btn lg-top-back" href="${home.getAttribute('href')}" aria-label="Меню">${LG.navIcon('⬅️')}</a>
+      top.innerHTML = `<span class="lg-top-l"><a class="lg-top-btn lg-top-back" href="${home.getAttribute('href')}" aria-label="Меню">${LG.navIcon('⬅️')}</a></span>
         <span class="lg-top-r"><button type="button" class="lg-top-btn lg-top-sound" aria-label="Звук"></button></span>`;
       root.appendChild(top);
-      // повний екран: кнопка поруч зі звуком (вийшли жестом «назад» — тут можна одразу ввімкнути знову)
-      const fsb = LG.fsButton(); if (fsb) top.querySelector('.lg-top-r').prepend(fsb);
+      // повний екран: ліворуч під стрілкою (вийшли жестом «назад» — тут можна одразу ввімкнути знову)
+      const fsb = LG.fsButton(); if (fsb) top.querySelector('.lg-top-l').append(fsb);
       const snd = top.querySelector('.lg-top-sound');
       const paintSnd = () => { snd.innerHTML = LG.navIcon(LG.muted || LG.volume <= 0 ? '🔇' : '🔊'); snd.classList.toggle('off', LG.muted || LG.volume <= 0); };
       paintSnd();

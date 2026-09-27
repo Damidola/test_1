@@ -236,7 +236,8 @@ cg-board square.mark-blue { background: rgba(77, 163, 255, .32); }
 cg-board square.current-premove { background-color: rgba(52, 120, 246, .62) !important; }
 cg-board square.premove-dest { background: radial-gradient(rgba(52, 120, 246, .7) 19%, rgba(0, 0, 0, 0) 20%); }
 cg-board square.oc.premove-dest { background: radial-gradient(transparent 0%, transparent 79%, rgba(52, 120, 246, .55) 80%); }
-.lg-top-r { display: flex; flex-direction: column-reverse; gap: 6px; } /* звук угорі, повний екран під ним — не на тваринці */
+.lg-top-l { display: flex; flex-direction: column; gap: 6px; } /* ← угорі, повний екран під нею */
+.lg-top-r { display: flex; margin-left: auto; } /* звук завжди праворуч, навіть коли зліва все сховано (Telegram) */
 /* кнопки в кутах гри — менші й прозоріші, щоб не заважали */
 .lg-topbtns .lg-top-btn { width: 36px; height: 36px; background: rgba(20, 19, 43, .28); opacity: .8; }
 .lg-topbtns .lg-top-btn svg { width: 20px; height: 20px; }
