@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790504486';
-import { aiMove, hintMove } from './ai.js?v=1790504486';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790504486';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1790605844';
+import { aiMove, hintMove } from './ai.js?v=1790605844';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1790605844';
 
 const LG = window.LG;
 
@@ -66,7 +66,7 @@ export function startGame(cfg) {
     onLevel: l => { level = l; setLimits(); renderButtons(); paintLevel(); } });
   level = qLevel >= 1 && qLevel <= 5 ? qLevel : 1; // за замовчуванням — найлегший
   // рівні 4–5 відкриваються лише після перемоги над роботом 3-го рівня (щоб діти не програвали найсильнішим одразу)
-  const locked = l => !!cfg.levelLock && l >= 4 && LG.store.get('chess:beat', 0) < 3;
+  const locked = l => !!cfg.levelLock && l >= 4 && LG.store.get('chess:beat', 0) < 3 && !LG.store.get('lvlOpen', false);
   const lockedMsg = () => { LG.play('error'); LG.toast('🔒 Рівні 4 і 5 відкриються, коли переможеш робота 3-го рівня'); };
   if (locked(level)) level = 3;
   hero.setLevel(level);

@@ -6,11 +6,14 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Своя позиція</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790504486">
-  <link rel="stylesheet" href="../shared/play.css?v=1790504486">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790605844">
+  <link rel="stylesheet" href="../shared/play.css?v=1790605844">
   <style>
-    .ed { justify-content: center; gap: 7px; }
-    .ed .lg-board-wrap { width: min(100vw - 16px, 520px, calc(100svh - var(--fs-top, 0px) - 440px)); }
+    body { margin: 0; }
+    .ed > * { flex: none; }
+    .ed { justify-content: flex-start; gap: 6px; padding: 4px 0 calc(6px + env(safe-area-inset-bottom)); box-sizing: border-box; }
+    /* дошка — від краю до краю екрана */
+    .ed .lg-board-wrap { width: min(100vw, 520px); }
     .ed-pal { touch-action: none; user-select: none; -webkit-user-select: none; display: flex; justify-content: center; gap: 4px; width: min(100vw - 16px, 520px); padding: 4px; box-sizing: border-box; border-radius: 14px; background: rgba(255,255,255,.05); }
     .ed-pal button { flex: 1; max-width: 58px; aspect-ratio: 1; padding: 3px; border: 2px solid transparent; border-radius: 12px; background: none; cursor: pointer; }
     .ed-pal button img { width: 100%; height: 100%; display: block; -webkit-user-drag: none; pointer-events: none; }
@@ -28,9 +31,18 @@
     .ed-top::after { content: ''; width: 40px; flex: none; }
     html.lg-tg .ed-top::after { display: none; }
     #presets { flex-wrap: nowrap; } #presets button { padding: 2px 4px; font-size: 12.5px !important; line-height: 1.15; min-width: 0; white-space: normal; }
-    .ed-row .ed-go { background: #2ee6b8; color: #04241d; font-size: 18px; box-shadow: 0 4px 0 #1a9c7c; }
-    .ed-row .ed-an { flex: .7; min-height: 48px; background: #7C6CF0; font-size: 16px; font-weight: 800; }
-    .ed-go { flex: 1.3; min-height: 48px; border: 0; border-radius: 16px; background: #2ee6b8; color: #04241d; font: 800 18px Manrope, var(--lg-font), sans-serif; box-shadow: 0 4px 0 #1a9c7c; cursor: pointer; }
+    /* «Аналіз» і «Грати» — такі самі пласкі кнопки, як решта, лише кольорові */
+    .ed-row .ed-an, .ed-row .ed-go { min-height: 42px; font-size: 16px; font-weight: 800; }
+    .ed-row .ed-an { flex: .7; background: #7C6CF0; }
+    .ed-row .ed-go { flex: 1.3; background: #2ee6b8; color: #04241d; }
+    /* мало місця — спершу менші кнопки, а вже потім менша дошка */
+    .ed.tight { gap: 4px; }
+    .ed.tight .ed-row button { min-height: 32px; }
+    .ed.tight .ed-row .ed-an, .ed.tight .ed-row .ed-go { min-height: 38px; }
+    .ed.tight .ed-goal { font-size: 13px; min-height: 0; }
+    .ed.tight .ed-top { min-height: 36px; }
+    .ed.tight .ed-back { width: 34px; height: 34px; }
+    .ed.tight .ed-pal button { max-width: 44px; padding: 2px; }
   </style>
 </head>
 <body data-back="../index.html#practice">
@@ -50,8 +62,8 @@
     <p class="ed-goal" id="goal"></p>
     <div class="ed-row"><button type="button" class="ed-an" id="an">🔍 Аналіз</button><button type="button" class="ed-go" id="go">Грати ▶</button></div>
   </main>
-  <script src="../shared/games.js?v=1790504486"></script>
-  <script src="../shared/kit.js?v=1790504486" data-night="on"></script>
-  <script type="module" src="editor.js?v=1790504486"></script>
+  <script src="../shared/games.js?v=1790605844"></script>
+  <script src="../shared/kit.js?v=1790605844" data-night="on"></script>
+  <script type="module" src="editor.js?v=1790605844"></script>
 </body>
 </html>

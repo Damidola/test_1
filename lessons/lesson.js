@@ -1,18 +1,18 @@
 /* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, parseUci, makeUci, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790504486';
-import { LESSONS } from './lessons.js?v=1790504486';
-import { goNext, markSeen } from '../shared/path.js?v=1790504486';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790504486';
-import { mountGuide } from '../shared/guide.js?v=1790504486';
+import { createBoard } from '../shared/board.js?v=1790605844';
+import { LESSONS } from './lessons.js?v=1790605844';
+import { goNext, markSeen } from '../shared/path.js?v=1790605844';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790605844';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1790605844';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
 const items = lesson.items.filter(it => !it.demo); // одразу завдання — без анімацій-прикладів на початку (приклад — у «Гайд»)
-// «Гайд»: приклади уроку програються самі на маленькій дошці, поки відкрите пояснення
-const guide = mountGuide(document.querySelector('.cl-intro'), lesson.items.filter(it => it.demo));
-new MutationObserver(() => (main.dataset.step === 'intro' ? guide.play() : guide.stop())).observe(main, { attributes: true, attributeFilter: ['data-step'] });
+// «Гайд» на весь екран: приклади уроку програються самі (приклад за прикладом), під дошкою — правило уроку
+const GUIDE = { icon: lesson.icon || '📖', title: lesson.title, intro: lesson.intro,
+  slides: lesson.items.filter(it => it.demo).map(it => ({ fen: it.demo, title: it.title, steps: it.steps })) };
 let idx = 0, pos, token = 0, done = false, lock = false, errs = 0;
 // кружечки рівнів угорі (приклади й завдання по черзі); після прикладу — одразу далі, без кнопки
 const lv = createLevels($('levels'), 'mini:' + location.hash.slice(1), items.length, i => { idx = i; load(); });
@@ -150,9 +150,10 @@ $('go').addEventListener('click', startTasks);
 $('go').textContent = 'Зрозуміло 👍';
 setTimeout(startTasks, 0);
 $('again').addEventListener('click', () => load());
-$('rules').addEventListener('click', () => { token++; main.dataset.step = 'intro'; });
+$('rules').addEventListener('click', () => toggleGuide(GUIDE));
+introGuide(GUIDE);
 // Нижня панель: 📖 — правило уроку, 💡 — яка фігура ходить (вдруге — куди)
-LG.onExplain(() => { token++; if (main.dataset.step === 'intro') startTasks(); else main.dataset.step = 'intro'; });
+LG.onExplain(() => toggleGuide(GUIDE));
 let hintStage = 0, hintFor = -1;
 LG.onHint(() => {
   const it = items[idx]; if (main.dataset.step === 'intro' || !it || !it.task || done) return;

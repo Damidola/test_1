@@ -4,9 +4,9 @@
    games/?fen=<позиція>   — аналіз однієї позиції (з «Своєї позиції») */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, parseUci, parseSquare, compat, fen as FEN, san as SAN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790504486';
-import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790504486';
-import { analyse } from '../shared/engine.js?v=1790504486';
+import { applyBoardLook } from '../shared/board.js?v=1790605844';
+import { OPPONENTS, LEVEL_NAMES } from '../shared/opponent.js?v=1790605844';
+import { analyse } from '../shared/engine.js?v=1790605844';
 
 const LG = window.LG, app = document.getElementById('app');
 const q = new URLSearchParams(location.search);
@@ -46,14 +46,12 @@ function viewer(main, { game }) {
   const backHref = game ? './' : '../editor/index.html';
   document.body.dataset.back = backHref;
   app.innerHTML = `<div class="gm-top">${back(backHref)}<b>${title}</b><button type="button" class="gm-more" id="more" aria-label="Налаштування аналізу">⋯</button></div>
-    <div class="gm-board-row"><div class="gm-eval" id="bar" hidden><i></i></div><div class="gm-board"><div class="lg-board-el" id="board"></div></div></div>
+    <div class="gm-board-row"><div class="gm-board"><div class="lg-board-el" id="board"></div></div><div class="gm-eval" id="bar" hidden><i></i></div></div>
     <div class="gm-nav"><button type="button" id="first" aria-label="На початок">⏮</button><button type="button" id="prev" aria-label="Попередній хід">‹</button>
-      <span class="gm-n" id="n"></span><button type="button" id="next" aria-label="Вперед">›</button><button type="button" id="last" aria-label="В кінець">⏭</button></div>
-    <input type="range" class="gm-slider" id="slider" min="0" max="0" value="0" aria-label="Хід">
-    <button type="button" class="gm-ret" id="ret" style="visibility:hidden"></button>
-    <button type="button" class="gm-an" id="an">🔍 Аналіз</button>
-    <div class="gm-info" id="info" hidden></div>
-    ${game ? '' : `<a class="gm-play" id="play" href="#">Грати з цієї позиції ▶</a>`}`;
+      <span class="gm-n" id="n"></span><button type="button" class="gm-ret" id="ret" hidden></button><button type="button" id="next" aria-label="Вперед">›</button><button type="button" id="last" aria-label="В кінець">⏭</button></div>
+    ${game ? '<input type="range" class="gm-slider" id="slider" min="0" max="0" value="0" aria-label="Хід">' : ''}
+    <div class="gm-acts"><button type="button" class="gm-an" id="an">🔍 Аналіз</button>${game ? '' : '<a class="gm-play" id="play" href="#">Грати ▶</a>'}</div>
+    <div class="gm-info" id="info" hidden></div>`;
   applyBoardLook();
   const orient = game && game.side === 'b' ? 'black' : 'white';
   const $ = id => document.getElementById(id);
@@ -69,6 +67,7 @@ function viewer(main, { game }) {
   let line = main.slice(), lm = mainLm.slice(), branch = -1; // branch ≥ 0 — свій варіант, відійшли з позиції branch
   let nLines = Math.min(3, Math.max(1, +LG.store.get('an:lines', 1) || 1));
   let i = game ? main.length - 1 : 0, on = LG.store.get('an:on', false), token = 0, wait = 0;
+  let evalBar = LG.store.get('an:bar', false); // шкала оцінки — за замовчуванням схована
   const posAt = k => { try { return Chess.fromSetup(FEN.parseFen(line[k]).unwrap()).unwrap(); } catch (e) { return null; } };
   const same = (a, b) => a.split(' ').slice(0, 2).join(' ') === b.split(' ').slice(0, 2).join(' ');
 
@@ -90,14 +89,19 @@ function viewer(main, { game }) {
   // місце під текст аналізу — наперед (під найдовший текст), щоб дошка не стрибала, коли текст з’являється
   const reserve = () => { $('info').style.minHeight = (74 + 22 * (nLines - 1)) + 'px'; };
   function fit() {
-    const infoWas = $('info').hidden; $('info').hidden = false; reserve();
-    const row = document.querySelector('.gm-board-row'), max = Math.min(520, app.clientWidth - 24);
-    row.style.width = max + 'px';
-    const kids = [...app.children].filter(c => c.offsetParent), gap = parseFloat(getComputedStyle(app).rowGap) || 0;
-    const pad = parseFloat(getComputedStyle(app).paddingTop) + parseFloat(getComputedStyle(app).paddingBottom);
-    const over = kids.reduce((h, c) => h + c.offsetHeight, 0) + gap * (kids.length - 1) + pad + 4 - app.clientHeight;
-    if (over > 0) row.style.width = Math.max(200, max - over) + 'px';
-    $('info').hidden = infoWas;
+    const infoWas = $('info').hidden, barWas = $('bar').hidden;
+    $('info').hidden = false; $('bar').hidden = !evalBar; reserve();
+    const row = document.querySelector('.gm-board-row'), max = Math.min(520, innerWidth);
+    const over = () => {
+      const kids = [...app.children].filter(c => c.offsetParent), gap = parseFloat(getComputedStyle(app).rowGap) || 0;
+      const pad = parseFloat(getComputedStyle(app).paddingTop) + parseFloat(getComputedStyle(app).paddingBottom);
+      return kids.reduce((h, c) => h + c.offsetHeight, 0) + gap * (kids.length - 1) + pad + 2 - app.clientHeight;
+    };
+    row.style.width = max + 'px'; app.classList.remove('tight');
+    if (over() > 0) app.classList.add('tight');
+    const o = over();
+    if (o > 0) row.style.width = Math.max(200, max - o) + 'px';
+    $('info').hidden = infoWas; $('bar').hidden = barWas;
     cg.redrawAll();
   }
   addEventListener('resize', () => fit());
@@ -109,11 +113,12 @@ function viewer(main, { game }) {
     cg.setAutoShapes([]);
     const n = line.length - 1;
     $('n').textContent = (branch >= 0 && i > branch ? '🔀 ' : '') + (i ? `Хід ${i} з ${n}` : 'Початок');
-    $('slider').max = n; $('slider').value = i; $('slider').style.visibility = n === 0 ? 'hidden' : '';
+    if ($('slider')) { $('slider').max = n; $('slider').value = i; }
     $('first').disabled = $('prev').disabled = i === 0; $('next').disabled = $('last').disabled = i === n;
-    $('ret').style.visibility = branch < 0 ? 'hidden' : ''; $('ret').textContent = game ? '↩ Повернутися до партії' : '↩ До початкової позиції';
-    $('an').classList.toggle('on', on); $('an').textContent = on ? '🔍 Аналіз увімкнено' : '🔍 Аналіз';
-    $('bar').hidden = $('info').hidden = !on;
+    // свій варіант: замість номера ходу — кнопка «назад до партії» (без окремого рядка під неї)
+    $('ret').hidden = branch < 0; $('n').hidden = branch >= 0; $('ret').textContent = game ? '↩ До партії' : '↩ На початок';
+    $('an').classList.toggle('on', on); $('an').textContent = on ? '🔍 Аналіз ✓' : '🔍 Аналіз';
+    $('info').hidden = !on; $('bar').hidden = !on || !evalBar;
     if ($('play')) $('play').href = `../chess/index.html?level=2&side=${line[i].split(' ')[1] === 'b' ? 'b' : 'w'}&fen=${encodeURIComponent(line[i])}`;
     if (on) { $('info').innerHTML = 'Робот думає… 🤔'; token++; clearTimeout(wait); wait = setTimeout(() => think(pos), 250); }
   }
@@ -126,8 +131,8 @@ function viewer(main, { game }) {
   async function think(pos) {
     const my = ++token, info = $('info'), bar = $('bar').firstElementChild;
     if (!pos) { info.textContent = 'Цю позицію не вийде проаналізувати.'; return; }
-    if (pos.isCheckmate()) { info.innerHTML = `<b>Мат!</b> ${pos.turn === 'white' ? 'Чорні' : 'Білі'} перемогли.`; bar.style.height = pos.turn === 'white' ? '0%' : '100%'; return; }
-    if (pos.isEnd()) { info.innerHTML = '<b>Нічия.</b> Ходів немає або фігур замало для мату.'; bar.style.height = '50%'; return; }
+    if (pos.isCheckmate()) { info.innerHTML = `<b>Мат!</b> ${pos.turn === 'white' ? 'Чорні' : 'Білі'} перемогли.`; bar.style.width = pos.turn === 'white' ? '0%' : '100%'; return; }
+    if (pos.isEnd()) { info.innerHTML = '<b>Нічия.</b> Ходів немає або фігур замало для мату.'; bar.style.width = '50%'; return; }
     info.innerHTML = 'Робот думає… 🤔';
     const r = await analyse(FEN.makeFen(pos.toSetup()), 900, nLines);
     if (my !== token) return;
@@ -143,7 +148,7 @@ function viewer(main, { game }) {
       white = Math.round(100 / (1 + Math.exp(-cp / 250)));
       text = abs < 0.3 ? `Рівно (${cp >= 0 ? '+' : '−'}${abs.toFixed(1)})` : `${cp > 0 ? 'Краще білим' : 'Краще чорним'}: ${cp > 0 ? '+' : '−'}${abs.toFixed(1)}`;
     }
-    bar.style.height = white + '%';
+    bar.style.width = white + '%';
     const mv = parseUci(r.best);
     let best = r.best, line = '';
     try { best = SAN.makeSan(pos, mv); } catch (e) { /* */ }
@@ -167,7 +172,7 @@ function viewer(main, { game }) {
   }
   const go = k => { i = Math.max(0, Math.min(line.length - 1, k)); LG.play('tap'); show(); };
   $('first').onclick = () => go(0); $('prev').onclick = () => go(i - 1); $('next').onclick = () => go(i + 1); $('last').onclick = () => go(line.length - 1);
-  $('slider').oninput = e => { i = +e.target.value; show(); };
+  if ($('slider')) $('slider').oninput = e => { i = +e.target.value; show(); };
   addEventListener('keydown', e => { if (e.key === 'ArrowLeft') go(i - 1); if (e.key === 'ArrowRight') go(i + 1); });
   $('ret').onclick = () => { i = branch; line = main.slice(); lm = mainLm.slice(); branch = -1; LG.play('tap'); show(); };
   // «Назад» Telegram спершу повертає з варіанта до партії
@@ -175,10 +180,11 @@ function viewer(main, { game }) {
   $('more').onclick = () => {
     LG.play('tap');
     const o = document.createElement('div'); o.className = 'gm-sheet';
-    o.innerHTML = `<div class="gm-sheet-card"><b>Скільки ходів підказувати</b><div class="gm-lines">${[1, 2, 3].map(n => `<button type="button" data-n="${n}" class="${n === nLines ? 'on' : ''}">${n}</button>`).join('')}</div><small>1 — лише найкращий хід (одна стрілка); 2–3 — ще добрі ходи блідішими стрілками</small><button type="button" class="gm-close">Готово</button></div>`;
+    o.innerHTML = `<div class="gm-sheet-card"><b>Скільки ходів підказувати</b><div class="gm-lines">${[1, 2, 3].map(n => `<button type="button" data-n="${n}" class="${n === nLines ? 'on' : ''}">${n}</button>`).join('')}</div><small>1 — лише найкращий хід (одна стрілка); 2–3 — ще добрі ходи блідішими стрілками</small><button type="button" class="gm-sw${evalBar ? ' on' : ''}" id="sw-bar">Шкала оцінки під дошкою<i></i></button><button type="button" class="gm-close">Готово</button></div>`;
     o.onclick = e => {
       const b = e.target.closest('[data-n]');
       if (b) { nLines = +b.dataset.n; LG.store.set('an:lines', nLines); o.querySelectorAll('[data-n]').forEach(x => x.classList.toggle('on', x === b)); LG.play('tap'); fit(); show(); }
+      if (e.target.closest('#sw-bar')) { evalBar = !evalBar; LG.store.set('an:bar', evalBar); e.target.closest('#sw-bar').classList.toggle('on', evalBar); LG.play('tap'); fit(); show(); }
       if (e.target === o || e.target.closest('.gm-close')) o.remove();
     };
     document.body.appendChild(o);

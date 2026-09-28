@@ -4,10 +4,11 @@
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1790504486';
-import { createRules } from '../chess/rules.js?v=1790504486';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790504486';
-import { hintMove } from '../shared/ai.js?v=1790504486';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1790605844';
+import { createRules } from '../chess/rules.js?v=1790605844';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790605844';
+import { hintMove } from '../shared/ai.js?v=1790605844';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1790605844';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -16,6 +17,7 @@ const main = document.querySelector('main.mt'), wrap = $('wrap');
 const DATA = await (await fetch(new URL('puzzles.json', import.meta.url))).json();
 // Відкрито з уроків (?lesson): звичайний урок — не більше 8 задач, угорі кружечки рівнів і Пан Сова (shared/levels.js)
 const LESSON = new URLSearchParams(location.search).has('lesson'), LESSON_N = 8;
+const ALL = { ...DATA }; // «Гайд» бере приклади з усього розділу — не з тих 8 задач, що в уроці
 if (LESSON) for (const k in DATA) DATA[k] = DATA[k].slice(0, LESSON_N);
 let levels = null;
 
@@ -180,7 +182,7 @@ function route() {
   sec = k;
   $('list').hidden = $('show').hidden = $('next').hidden = false;
   if (PRACTICE.includes(k)) { mode = 'practice'; main.dataset.mode = 'practice'; setButtons([['🎓', 'Уроки'], ['💡', 'Підказка'], ['↩️', 'Назад'], ['🔄', 'Заново']]); startPractice(); }
-  else startPuzzles(); // одразу перша задача; пояснення — кнопкою «Пояснення» внизу
+  else { startPuzzles(); if (LESSON) introGuide(guideCfg()); } // урок без відео — спершу «Гайд» з прикладами
 }
 function startPuzzles() {
   // задачі гортають стрілки вгорі, вихід — стрілка ‹
@@ -441,36 +443,69 @@ const CAP = {
   mate: ['Шукаємо хід, після якого королю нікуди подітися 👇', 'Мат! Королю нікуди подітися 🎉'],
   mate2: ['Спершу — хід, після якого суперник не врятується 👇', 'Сильний хід!', 'Суперник відповідає…', 'І мат! 🎉']
 };
-// «Пояснення»: картинка (дошка з прикладу й стрілка першого ходу) і текст — без анімації, закривається
-function showExplain() {
-  const [, fen, moves] = DATA[sec][exampleIndex(sec)], ln = moves.split(' ');
-  let p = Chess.fromSetup(FEN.parseFen(fen).unwrap()).unwrap();
-  const userFirst = ln.length % 2 === 1;
-  const me = userFirst ? p.turn : p.turn === 'white' ? 'black' : 'white';
-  if (!userFirst) p.play(parseUci(ln[0]));
-  const mv = parseUci(ln[userFirst ? 0 : 1]);
-  const flip = me === 'black';
-  const xy = sq => { const f = sq & 7, r = sq >> 3; return [flip ? 7 - f : f, flip ? r : 7 - r]; };
-  let pcs = '';
-  for (const [sq, pc] of p.board) { const [x, y] = xy(sq); pcs += `<mpiece class="${pc.role} ${pc.color}" style="left:${x * 12.5}%;top:${y * 12.5}%"></mpiece>`; }
-  const [x1, y1] = xy(mv.from), [x2, y2] = xy(mv.to);
-  const arrow = `<svg viewBox="0 0 8 8" class="mt-exp-arrow"><defs><marker id="mtah" markerWidth="4" markerHeight="4" refX="2.2" refY="2" orient="auto"><path d="M0,0 L4,2 L0,4 z" fill="#FF9F1C"/></marker></defs>
-    <line x1="${x1 + .5}" y1="${y1 + .5}" x2="${x2 + .5 - Math.sign(x2 - x1) * .25}" y2="${y2 + .5 - Math.sign(y2 - y1) * .25}" stroke="#FF9F1C" stroke-width=".22" stroke-linecap="round" marker-end="url(#mtah)" opacity=".92"/></svg>`;
-  const key = exKey(sec), text = key === 'chk' ? EXPLAIN.chk(RU[CHK_ROLE[sec]]) : EXPLAIN[key];
-  const box = document.createElement('div'); box.className = 'mt-exp';
-  box.innerHTML = `<h2></h2><div class="mt-exp-board">${pcs}${arrow}</div><p class="mt-exp-text"></p><p class="mt-exp-task"></p>
-    <button type="button" class="lg-btn lg-btn-primary lg-btn-wide">Зрозуміло 👍</button>`;
-  const grp = GROUPS.find(([, l]) => l.some(x => x[0] === sec));
-  box.querySelector('h2').textContent = '📖 ' + (grp && grp[1].length > 1 ? grp[0] + ' · ' : '') + INFO[sec].title;
-  box.querySelector('.mt-exp-text').textContent = text || '';
-  box.querySelector('.mt-exp-task').textContent = '🎯 ' + (TASK[sec] || '');
-  box.querySelector('button').addEventListener('click', () => LG.closeModal());
-  LG.openModal(box, { cls: 'lg-modal-rules' });
+// «Гайд» розділу на весь екран: 3 справжні задачі з розділу програються самі — хід за ходом, зі стрілками й підписами.
+// Мат — у кінці червоні хрестики на клітинках довкола короля: туди йому не можна.
+const PIECE_IC = { rook: '♜', bishop: '♝', queen: '♛', knight: '♞', pawn: '♟' };
+const NAME = { rook: 'Тура', bishop: 'Слон', queen: 'Ферзь', knight: 'Кінь', pawn: 'Пішак' };
+function puzzleSlide(k, [, fen, moves]) {
+  const ln = moves.split(' '), key = exKey(k), c = CAP[key] || [], role = CHK_ROLE[k], steps = [];
+  const p = Chess.fromSetup(FEN.parseFen(fen).unwrap()).unwrap();
+  const user = ln.length % 2 === 1 ? p.turn : p.turn === 'white' ? 'black' : 'white';
+  let n = 0;
+  for (let i = 0; i < ln.length; i++) {
+    const m = parseUci(ln[i]), ft = makeSquare(m.from) + makeSquare(m.to), last = i === ln.length - 1;
+    if (p.turn !== user) {
+      steps.push({ say: !n ? 'Суперник походив…' : p.isCheck() ? 'Король мусить тікати від шаху…' : c[2] || 'Суперник відповідає…', move: ln[i], wait: 1700 });
+      p.play(m); continue;
+    }
+    if (role) {
+      const all = checksBy(p, role);
+      steps.push({ say: all.length > 1 ? `Шах ${RU[role]} можна поставити ${all.length === 2 ? 'двома' : all.length === 3 ? 'трьома' : all.length} способами 👇` : `Ось хід ${RU[role]}, що нападає на короля 👇`, arrows: all.map(([a, b]) => a + b).join(' '), wait: 3000 });
+      p.play(m);
+      steps.push({ move: ln[i], say: 'Шах! Король під ударом — і нашу фігуру ніхто не може побити.', wait: 2800 });
+    } else if (k.startsWith('esc_')) {
+      const kg = makeSquare([...p.board.pieces(user, 'king')][0]), chk = [...p.ctx().checkers];
+      const ya = chk.map(x => makeSquare(x) + kg + ':yellow').join(' ');
+      steps.push({ say: `Шах! ${NAME[p.board.get(chk[0]).role] || 'Фігура'} нападає на короля (жовта стрілка).`, arrows: ya, wait: 2600 });
+      const pc = p.board.get(m.from), kind = pc.role === 'king' && !chk.includes(m.to) ? 'run' : chk.includes(m.to) ? 'capture' : 'block';
+      steps.push({ say: { run: 'Утікаємо: лише тут короля ніхто не б’є 👇', capture: 'Б’ємо фігуру, що шахує 👇', block: 'Закриваємося: ставимо фігуру на лінію удару 👇' }[kind], arrows: ya + ' ' + ft + ':' + (kind === 'run' ? 'green' : kind === 'capture' ? 'red' : 'blue'), wait: 2800 });
+      p.play(m);
+      steps.push({ move: ln[i], say: kind === 'capture' ? 'Король урятований — і ще виграли фігуру! 🎉' : 'Король урятований! 🎉', wait: 2400 });
+    } else {
+      steps.push({ say: n === 0 ? c[0] || 'Ось хід 👇' : last ? (key === 'mate2' ? 'А тепер — мат 👇' : key === 'promotion' ? 'Пішак — у ферзі 👇' : key === 'fork' ? 'А другу фігуру — забираємо 👇' : 'Забираємо 👇') : 'Далі — ось так 👇', arrows: ft, wait: 2600 });
+      p.play(m);
+      if (last && p.isCheckmate()) {
+        const kq = [...p.board.pieces(p.turn, 'king')][0], around = [];
+        let own = false;
+        for (let df = -1; df <= 1; df++) for (let dr = -1; dr <= 1; dr++) {
+          const f = (kq & 7) + df, r = (kq >> 3) + dr;
+          if ((df || dr) && f >= 0 && f < 8 && r >= 0 && r < 8) { const pc = p.board.get(r * 8 + f); if (!pc || pc.color !== p.turn) around.push(makeSquare(r * 8 + f)); else own = true; }
+        }
+        steps.push({ move: ln[i], say: 'Мат! 🎉', wait: 1400 });
+        steps.push({ say: 'Червоні хрестики — туди королю не можна: ці клітинки б’ють наші фігури.' + (own ? ' А решту клітинок займають його ж фігури.' : ' Втекти нікуди!'), cross: around.join(' '), wait: 4200 });
+      } else {
+        const after = last ? c[3] || c[1] || 'Готово! 🎉' : n === 0 ? (key === 'fork' && p.isCheck() ? 'Вилка з шахом! Під ударом король і ще одна фігура.' : c[1] || '') : '';
+        steps.push({ move: ln[i], say: after || undefined, wait: last ? 2600 : 2000 });
+      }
+    }
+    n++;
+  }
+  return { fen, steps, orientation: user };
 }
+function guideCfg() {
+  const key = exKey(sec), text = key === 'chk' ? EXPLAIN.chk(RU[CHK_ROLE[sec]]) : EXPLAIN[key];
+  const grp = GROUPS.find(([, l]) => l.some(x => x[0] === sec)), ic = INFO[sec].ic;
+  const list = ALL[sec] || DATA[sec];
+  return { icon: PIECE_IC[ic] || ic, title: (grp && grp[1].length > 1 ? grp[0] + ' · ' : '') + INFO[sec].title,
+    intro: `<p>${text || ''}</p><p>🎯 ${TASK[sec] || ''}</p>`,
+    slides: exampleIndices(sec, 3, list).map((i, j) => ({ ...puzzleSlide(sec, list[i]), title: `Приклад ${j + 1}` })) };
+}
+function showExplain() { toggleGuide(guideCfg()); }
 const exKey = k => k.startsWith('chk_') ? 'chk' : k.startsWith('m1') ? 'mate' : k;
-function exampleIndex(k) {
-  const list = DATA[k], from = Math.min(k.startsWith('chk_') ? 15 : k.startsWith('esc_') ? 10 : 8, list.length - 1);
-  let best = from, bs = 1e9;
+// n найзрозуміліших прикладів розділу (за зростанням складності)
+function exampleIndices(k, n = 1, list = DATA[k]) {
+  const from = Math.min(k.startsWith('chk_') ? 15 : k.startsWith('esc_') ? 10 : 8, list.length - 1);
+  const scored = [];
   for (let i = from; i < Math.min(list.length, from + 15); i++) {
     const [, fen, moves] = list[i], ln = moves.split(' ');
     let s = ln.length;
@@ -484,10 +519,12 @@ function exampleIndex(k) {
       const p = Chess.fromSetup(FEN.parseFen(fen).unwrap()).unwrap();
       s -= checksBy(p, CHK_ROLE[k]).length;
     }
-    if (s < bs) { bs = s; best = i; }
+    scored.push([s, i]);
   }
-  return best;
+  scored.sort((a, b) => a[0] - b[0]);
+  return scored.length ? scored.slice(0, n).map(x => x[1]) : [from];
 }
+function exampleIndex(k) { return exampleIndices(k)[0]; }
 // Усі ходи фігурою role, що дають шах
 function checksBy(p, role) {
   const res = [];

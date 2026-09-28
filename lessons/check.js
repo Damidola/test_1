@@ -2,10 +2,10 @@
    потім прості завдання: 2 — «постав шах», по 3 — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1790504486';
-import { goNext, markSeen } from '../shared/path.js?v=1790504486';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790504486';
-import { mountGuide } from '../shared/guide.js?v=1790504486';
+import { createBoard } from '../shared/board.js?v=1790605844';
+import { goNext, markSeen } from '../shared/path.js?v=1790605844';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1790605844';
+import { toggleGuide } from '../shared/guide.js?v=1790605844';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json', import.meta.url))).json();
@@ -84,18 +84,29 @@ const startTasks = () => { main.dataset.step = 'tasks'; board.redraw(); if (star
 $('go').addEventListener('click', startTasks);
 $('go').textContent = 'Зрозуміло 👍';
 setTimeout(startTasks, 0);
-$('intro').addEventListener('click', () => { main.dataset.step = 'intro'; });
-// «Гайд»: приклад — чорна тура шахує; стрілки: куди втекти, як закритися, кого побити — і слон б'є туру
-const guide = mountGuide(document.querySelector('.vl-intro'), [{ demo: '4r2k/8/8/1B6/R7/8/8/4K3 w - - 0 1', steps: [
-  { say: 'Чорна тура шахує білого короля!', arrows: 'e8e1:red', wait: 2200 },
-  { say: 'Утекти: король відходить (зелені стрілки).', arrows: 'e1d2 e1f2 e1d1 e1f1', wait: 2400 },
-  { say: 'Закритися: тура стає між королем і нападником.', arrows: 'a4e4:blue', wait: 2400 },
-  { say: 'Побити: слон з’їдає туру — найкраще!', arrows: 'b5e8:red', wait: 2000 }, { move: 'b5e8', wait: 2200 }] }]);
-new MutationObserver(() => (main.dataset.step === 'intro' ? guide.play() : guide.stop())).observe(main, { attributes: true, attributeFilter: ['data-step'] });
+// «Гайд» на весь екран: що таке шах і три способи врятуватися — кожен окремою анімацією
+const introBox = document.querySelector('.vl-intro').cloneNode(true);
+introBox.querySelectorAll('h2, button').forEach(e => e.remove());
+const GUIDE = { icon: '⚠️', title: 'Що таке шах?', intro: introBox.innerHTML, slides: [
+  { fen: '4k3/8/8/8/8/8/8/R5K1 w - - 0 1', title: '⚠️ Шах', steps: [
+    { say: 'Тура стає на одну лінію з королем…', arrows: 'a1e1', wait: 1800 }, { move: 'a1e1' },
+    { say: 'Шах! Тура нападає на короля — він мусить рятуватися.', arrows: 'e1e8:red', wait: 3000 }] },
+  { fen: '4r2k/8/8/8/8/8/8/4K3 w - - 0 1', title: '🏃 Утекти', steps: [
+    { say: 'Чорна тура шахує білого короля!', arrows: 'e8e1:red', wait: 2400 },
+    { say: 'Утікаємо: король відходить з лінії тури.', arrows: 'e1d2', wait: 1800 }, { move: 'e1d2' },
+    { say: 'Урятувався! Тура його більше не б’є.', wait: 2400 }] },
+  { fen: '4r2k/8/8/8/R7/8/8/4K3 w - - 0 1', title: '🛡️ Закритися', steps: [
+    { say: 'Знову шах турою по лінії e.', arrows: 'e8e1:red', wait: 2200 },
+    { say: 'Закриваємося: наша тура стає між королем і нападником.', arrows: 'a4e4:blue', wait: 1800 }, { move: 'a4e4' },
+    { say: 'Лінію закрито — шаху немає.', wait: 2400 }] },
+  { fen: '4r2k/8/8/1B6/8/8/8/4K3 w - - 0 1', title: '⚔️ Побити', steps: [
+    { say: 'Шах! Але туру можна побити слоном.', arrows: 'e8e1:red b5e8', wait: 2400 }, { move: 'b5e8' },
+    { say: 'Побили — і ще й виграли туру. Це часто найкращий спосіб!', wait: 2800 }] }] };
+$('intro').addEventListener('click', () => toggleGuide(GUIDE));
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });
 // Нижня панель: 💡 — хід-підказка, 📖 — що таке шах
-LG.onExplain(() => { if (main.dataset.step === 'intro') startTasks(); else main.dataset.step = 'intro'; });
+LG.onExplain(() => toggleGuide(GUIDE));
 LG.onHint(() => {
   if (main.dataset.step === 'intro' || done) return;
   const t = TASKS[idx];

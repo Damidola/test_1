@@ -9,6 +9,7 @@ import { stageStart, stageEnd } from '../sound';
 import { type Stage, type Level, byId as stageById } from '../stage/list';
 import { clearTimeouts } from '../timeouts';
 import { DEMOS, playDemo } from '../demo';
+import { guideSlides, GUIDE_ICON } from '../guides';
 import { markSeen } from '../../../../shared/path.js';
 
 export class RunCtrl {
@@ -39,7 +40,20 @@ export class RunCtrl {
     // Урок одразу починається із завдання — без обов'язкового прикладу.
     const LG = (window as any).LG;
     LG?.onHint?.(() => this.levelCtrl?.manualHint());
+    // «Гайд» на весь екран (shared/guide.js): анімації етапу й пояснення; та сама кнопка закриває
+    const guide = () => ({
+      icon: GUIDE_ICON[this.stage.key] || '📖', title: this.stage.title,
+      intro: `<p>${this.stage.intro.replace(/\n/g, '<br>')}</p>`, slides: guideSlides(this.stage.key),
+    });
+    const withGuide = (fn: (G: any) => void, tries = 40) => {
+      const G = (window as any).LGGuide;
+      if (G) fn(G); else if (tries > 0) setTimeout(() => withGuide(fn, tries - 1), 100);
+    };
+    // перед першим рівнем етапу — одразу пояснення (якщо немає відео)
+    if (Number(this.opts.levelId) === 1) withGuide(G => G.intro(guide()));
     LG?.onExplain?.(() => {
+      const G = (window as any).LGGuide;
+      if (G) return G.toggle(guide());
       const box = document.createElement('div');
       box.className = 'lg-rules lg-explain';
       box.innerHTML = `<h2>${this.stage.title}</h2>` + explainDiagrams(this.stage.key) +

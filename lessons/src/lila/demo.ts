@@ -14,8 +14,11 @@ export interface DemoStep {
   promo?: Role;
   check?: Color | false;
   wait?: number;
+  dots?: string; // «Гайд»: клітинки, куди фігура може піти
+  cross?: string; // «Гайд»: клітинки, куди не можна
 }
 export interface Demo {
+  title?: string;
   fen: string;
   apples?: string;
   steps: DemoStep[];

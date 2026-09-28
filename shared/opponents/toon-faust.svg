@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 28 352 352" class="pf">
+<!-- Кіт Фауст — учитель в уроках: чорний, жовто-зелені очі, жовтий нашийник з круглим жетоном, біла плямка на грудях.
+     Настрій — класом на батьківському елементі: .talking, .mood-happy, .thinking, .poked. Без класів — кліпає, озирається, ворушить вухами й хвостом. -->
+<defs>
+  <radialGradient id="fBg" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#fbf6e6"/><stop offset=".6" stop-color="#ece3f6"/><stop offset="1" stop-color="#c9c0e6"/></radialGradient>
+  <radialGradient id="fEye" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#f4fb9c"/><stop offset=".55" stop-color="#d6e45a"/><stop offset="1" stop-color="#9fb132"/></radialGradient>
+  <linearGradient id="fFur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a35"/><stop offset="1" stop-color="#121218"/></linearGradient>
+  <linearGradient id="fColl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe14a"/><stop offset="1" stop-color="#f2b705"/></linearGradient>
+</defs>
+<style>
+.pf-body{transform-origin:200px 400px;animation:fSway 5s ease-in-out infinite}
+@keyframes fSway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+.pf-head{transform-origin:200px 250px;animation:fTilt 7s ease-in-out infinite}
+@keyframes fTilt{0%,55%,100%{transform:rotate(0)}62%,74%{transform:rotate(-5deg)}}
+.pf-eyes{transform-origin:200px 182px;animation:fBlink 4.2s infinite}
+@keyframes fBlink{0%,90%,100%{transform:scaleY(1)}93%{transform:scaleY(.06)}}
+.pf-pup{animation:fLook 7.5s ease-in-out infinite;transition:transform .3s}
+@keyframes fLook{0%,38%,100%{transform:translate(0,0)}46%,60%{transform:translate(7px,-2px)}68%,80%{transform:translate(-7px,1px)}}
+.pf-earl{transform-origin:148px 118px;animation:fEar 3.8s ease-in-out infinite}
+.pf-earr{transform-origin:252px 118px;animation:fEarR 5.3s ease-in-out infinite}
+@keyframes fEar{0%,82%,100%{transform:rotate(0)}87%{transform:rotate(-10deg)}92%{transform:rotate(2deg)}}
+@keyframes fEarR{0%,70%,100%{transform:rotate(0)}76%{transform:rotate(10deg)}81%{transform:rotate(-2deg)}}
+.pf-tail{transform-origin:318px 392px;animation:fTail 3.2s ease-in-out infinite}
+@keyframes fTail{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+.pf-whl{transform-origin:176px 226px;animation:fWh 4s ease-in-out infinite}
+.pf-whr{transform-origin:224px 226px;animation:fWh 4s ease-in-out infinite reverse}
+@keyframes fWh{0%,85%,100%{transform:rotate(0)}90%{transform:rotate(4deg)}95%{transform:rotate(-3deg)}}
+.pf-tag{transform-origin:200px 268px;animation:fTag 5s ease-in-out infinite}
+@keyframes fTag{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-4deg)}}
+.pf-happy,.pf-talk,.pf-spark,.pf-blush,.pf-think{opacity:0}
+.pf-norm,.pf-happy,.pf-talk,.pf-eyes,.pf-think{transition:opacity .2s}
+/* говорить */
+.talking:not(.mood-happy) .pf-norm{opacity:0}
+.talking:not(.mood-happy) .pf-talk{opacity:1}
+.pf-talkin{transform-origin:200px 238px;animation:fTalk .22s ease-in-out infinite alternate}
+@keyframes fTalk{from{transform:scaleY(.4)}to{transform:scaleY(1)}}
+/* радіє: мружиться, підстрибує, іскорки */
+.mood-happy .pf-eyes,.mood-happy .pf-norm{opacity:0}
+.mood-happy .pf-happy,.mood-happy .pf-spark{opacity:1}
+.mood-happy .pf-blush{opacity:.75}
+.mood-happy .pf-body{animation:fJump .55s ease-in-out infinite}
+@keyframes fJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.mood-happy .pf-tail{animation:fTail .5s ease-in-out infinite}
+.pf-spark{transform-box:fill-box;transform-origin:center;animation:fSpark 1.1s ease-in-out infinite}
+@keyframes fSpark{0%,100%{transform:scale(.6)}50%{transform:scale(1.15)}}
+/* думає: дивиться вгору, над головою «?» */
+.thinking .pf-pup{animation:none;transform:translate(6px,-9px)}
+.thinking .pf-think{opacity:1}
+.thinking .pf-head{animation:none;transform:rotate(-6deg)}
+.pf-think{transform-box:fill-box;transform-origin:center bottom;animation:fQ 1.4s ease-in-out infinite}
+@keyframes fQ{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+/* тицьнули: присідає, очі круглі, вуха притиснуті */
+.poked .pf-body{animation:fPoke .7s cubic-bezier(.3,1.8,.5,1)}
+@keyframes fPoke{0%{transform:scale(1,1)}20%{transform:scale(1.08,.9) translateY(10px)}100%{transform:scale(1,1)}}
+.poked .pf-pup{animation:none;transform:none}
+.poked .pf-pup ellipse{transform:scale(1.9,.72);transform-box:fill-box;transform-origin:center}
+.poked .pf-earl{animation:none;transform:rotate(-16deg)}
+.poked .pf-earr{animation:none;transform:rotate(16deg)}
+.poked .pf-norm{opacity:0}
+.poked .pf-talk{opacity:1}
+.poked .pf-talkin{animation:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<rect width="400" height="400" fill="url(#fBg)"/>
+<g class="pf-body">
+  <!-- хвіст -->
+  <g class="pf-tail"><path d="M318 392 C360 380 372 330 352 290 C340 266 350 240 372 232" fill="none" stroke="#17171e" stroke-width="26" stroke-linecap="round"/>
+    <path d="M356 288 C346 266 352 246 366 238" fill="none" stroke="#3a3a4a" stroke-width="5" stroke-linecap="round" opacity=".7"/></g>
+  <!-- тулуб -->
+  <path d="M112 400 C104 330 128 268 200 262 C272 268 296 330 288 400 Z" fill="url(#fFur)"/>
+  <path d="M128 400 C124 346 142 300 172 284" fill="none" stroke="#3b3b4c" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+  <!-- біла плямка на грудях -->
+  <path d="M186 300 C194 292 206 292 214 300 C210 312 204 318 200 322 C196 318 190 312 186 300 Z" fill="#f4f1ea"/>
+  <!-- лапки -->
+  <ellipse cx="164" cy="392" rx="30" ry="18" fill="#1b1b23"/><ellipse cx="236" cy="392" rx="30" ry="18" fill="#1b1b23"/>
+  <path d="M154 386v10M164 384v12M174 386v10M226 386v10M236 384v12M246 386v10" stroke="#34343f" stroke-width="3" stroke-linecap="round"/>
+  <g class="pf-head">
+    <!-- вуха -->
+    <g class="pf-earl"><path d="M112 150 L118 42 L190 104 Z" fill="#1c1c24"/><path d="M126 132 L130 68 L172 106 Z" fill="#6e5360"/></g>
+    <g class="pf-earr"><path d="M288 150 L282 42 L210 104 Z" fill="#1c1c24"/><path d="M274 132 L270 68 L228 106 Z" fill="#6e5360"/></g>
+    <!-- голова -->
+    <path d="M200 92 C268 92 306 132 306 186 C306 238 262 266 200 266 C138 266 94 238 94 186 C94 132 132 92 200 92 Z" fill="url(#fFur)"/>
+    <path d="M140 116 C160 102 184 98 206 98" fill="none" stroke="#4a4a5e" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+    <!-- очі -->
+    <g class="pf-eyes">
+      <ellipse cx="160" cy="182" rx="28" ry="30" fill="url(#fEye)"/><ellipse cx="240" cy="182" rx="28" ry="30" fill="url(#fEye)"/>
+      <g class="pf-pup"><ellipse cx="160" cy="184" rx="7" ry="21" fill="#0b0b0f"/><ellipse cx="240" cy="184" rx="7" ry="21" fill="#0b0b0f"/></g>
+      <circle cx="170" cy="170" r="6" fill="#fff"/><circle cx="250" cy="170" r="6" fill="#fff"/>
+      <circle cx="152" cy="196" r="3" fill="#fff" opacity=".7"/><circle cx="232" cy="196" r="3" fill="#fff" opacity=".7"/>
+    </g>
+    <!-- щасливі очі (мружиться) -->
+    <g class="pf-happy" fill="none" stroke="#e3ee6c" stroke-width="7" stroke-linecap="round"><path d="M136 188 Q160 162 184 188"/><path d="M216 188 Q240 162 264 188"/></g>
+    <ellipse class="pf-blush" cx="130" cy="222" rx="16" ry="9" fill="#ff8fb0"/><ellipse class="pf-blush" cx="270" cy="222" rx="16" ry="9" fill="#ff8fb0"/>
+    <!-- ніс і рот -->
+    <path d="M190 214 H210 C210 222 204 227 200 228 C196 227 190 222 190 214 Z" fill="#7a5a66"/>
+    <path class="pf-norm" d="M200 228 V234 M200 234 C194 242 184 242 180 236 M200 234 C206 242 216 242 220 236" fill="none" stroke="#6a6a7c" stroke-width="3.5" stroke-linecap="round"/>
+    <g class="pf-talk"><path d="M200 228 V232" stroke="#6a6a7c" stroke-width="3.5" stroke-linecap="round"/>
+      <path class="pf-talkin" d="M184 234 C188 252 212 252 216 234 Z" fill="#3a1e28" stroke="#6a6a7c" stroke-width="3"/></g>
+    <!-- вуса -->
+    <g class="pf-whl" stroke="#f2f0ff" stroke-width="2.4" stroke-linecap="round" opacity=".85"><path d="M176 224 L110 214"/><path d="M176 230 L108 234"/><path d="M178 236 L116 252"/></g>
+    <g class="pf-whr" stroke="#f2f0ff" stroke-width="2.4" stroke-linecap="round" opacity=".85"><path d="M224 224 L290 214"/><path d="M224 230 L292 234"/><path d="M222 236 L284 252"/></g>
+  </g>
+  <!-- жовтий нашийник з круглим жетоном -->
+  <path d="M138 252 C170 272 230 272 262 252 L266 266 C232 290 168 290 134 266 Z" fill="url(#fColl)"/>
+  <path d="M146 262 C176 278 224 278 254 262" fill="none" stroke="#fff6b0" stroke-width="3" opacity=".7" stroke-linecap="round"/>
+  <g class="pf-tag">
+    <circle cx="200" cy="278" r="5" fill="none" stroke="#c9ced8" stroke-width="3"/>
+    <ellipse cx="200" cy="300" rx="16" ry="19" fill="#f7f7fb" stroke="#c9ced8" stroke-width="2.5"/>
+    <path d="M192 292h5v5h-5zM203 292h5v5h-5zM192 303h5v5h-5zM199 298h3v3h-3zM204 304h4v4h-4z" fill="#556"/>
+    <rect x="197" y="297" width="6" height="6" rx="1" fill="#e2574c"/>
+  </g>
+  <!-- іскорки (радіє) -->
+  <g class="pf-spark" fill="#ffd23f"><path d="M70 110 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z"/></g>
+  <g class="pf-spark" fill="#ffd23f" style="animation-delay:.4s"><path d="M330 90 l5 11 11 5 -11 5 -5 11 -5 -11 -11 -5 11 -5z"/></g>
+  <!-- «?» (думає) -->
+  <g class="pf-think"><circle cx="318" cy="92" r="26" fill="#7C6CF0"/><text x="318" y="103" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#fff">?</text></g>
+</g>
+</svg>

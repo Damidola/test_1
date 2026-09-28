@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Мої партії</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790504486">
-  <link rel="stylesheet" href="../shared/play.css?v=1790504486">
+  <link rel="stylesheet" href="../shared/kit.css?v=1790605844">
+  <link rel="stylesheet" href="../shared/play.css?v=1790605844">
   <style>
     body { margin: 0; font-family: Manrope, var(--lg-font), sans-serif; }
     .gm { box-sizing: border-box; padding: calc(6px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 8px; height: calc(100svh - var(--fs-top, 0px)); overflow: hidden; }
@@ -40,12 +40,25 @@
     .gm-res { flex: none; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
     .gm-res.w { background: #1f7a3a; } .gm-res.d { background: #54607f; } .gm-res.l { background: #a8322a; }
     .gm-empty { text-align: center; color: #9fb0d8; font-weight: 700; padding: 40px 10px; line-height: 1.5; }
-    .gm-board-row { display: flex; gap: 6px; align-items: stretch; }
-    .gm-eval { flex: none; width: 14px; border-radius: 7px; overflow: hidden; background: #2b2b2b; display: flex; flex-direction: column; justify-content: flex-end; }
-    .gm-eval i { display: block; background: #f2f2f2; transition: height .4s; height: 50%; }
-    .gm-eval.flip { transform: rotate(180deg); }
+    /* дошка — від краю до краю екрана (виходить за бічні відступи сторінки) */
+    .gm > .gm-board-row { width: min(100vw, 520px); display: flex; flex-direction: column; gap: 4px; }
+    /* шкала оцінки — тонка смужка під дошкою (вмикається в ⋯): білим — перевага білих */
+    .gm-eval { height: 8px; margin: 0 8px; border-radius: 4px; overflow: hidden; background: #2b2b2b; display: flex; }
+    .gm-eval i { display: block; background: #f2f2f2; transition: width .4s; width: 50%; }
+    .gm-eval.flip { transform: scaleX(-1); }
     .gm-eval[hidden] { display: none; }
-    .gm-board { flex: 1; min-width: 0; }
+    .gm-board { width: 100%; }
+    .gm-sw { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; padding: 0 14px; border: 0; border-radius: 14px; background: rgba(255,255,255,.08); color: #fff; font: 800 16px Manrope, sans-serif; text-align: left; }
+    .gm-sw i { flex: none; width: 44px; height: 26px; border-radius: 13px; background: #54607f; position: relative; transition: background .2s; }
+    .gm-sw i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s; }
+    .gm-sw.on i { background: #2ee6b8; } .gm-sw.on i::after { transform: translateX(18px); }
+    .gm-acts { display: flex; gap: 8px; }
+    .gm-acts > * { flex: 1; min-width: 0; }
+    /* мало місця — спершу менші кнопки, а вже потім менша дошка */
+    .gm.tight { gap: 5px; }
+    .gm.tight .gm-nav button, .gm.tight .gm-an, .gm.tight .gm-play, .gm.tight .gm-ret { min-height: 36px !important; font-size: 15px; }
+    .gm.tight .gm-top { min-height: 36px; }
+    .gm.tight .gm-back, .gm.tight .gm-more { width: 34px; height: 34px; }
     .gm-board .lg-board-el { width: 100%; aspect-ratio: 1; }
     .gm-nav { display: flex; align-items: center; gap: 6px; }
     .gm-nav button { flex: 1; min-height: 46px; border: 0; border-radius: 14px; background: rgba(255,255,255,.08); color: #fff; font: 800 20px Manrope, sans-serif; cursor: pointer; }
@@ -58,14 +71,15 @@
     .gm-info[hidden] { display: none; }
     .gm-info small { display: block; color: #8e99b8; font-size: 13px; }
     .gm-ret { min-height: 44px; border: 0; border-radius: 14px; background: #FF9F1C; color: #1b1300; font: 800 16px Manrope, sans-serif; cursor: pointer; }
-    .gm-ret[hidden], .gm-slider[hidden] { display: none; }
+    .gm-ret[hidden], .gm-slider[hidden], .gm-n[hidden] { display: none; }
+    .gm-nav .gm-ret { flex: 1.6; min-height: 46px; background: #FF9F1C; color: #1b1300; padding: 0 6px; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .gm-play { display: grid; place-items: center; min-height: 46px; border-radius: 14px; background: #2ee6b8; color: #04241d; font: 800 16px Manrope, sans-serif; text-decoration: none; }
   </style>
 </head>
 <body data-back="../index.html#profile">
   <main class="gm" id="app"></main>
-  <script src="../shared/games.js?v=1790504486"></script>
-  <script src="../shared/kit.js?v=1790504486" data-night="on"></script>
-  <script type="module" src="games.js?v=1790504486"></script>
+  <script src="../shared/games.js?v=1790605844"></script>
+  <script src="../shared/kit.js?v=1790605844" data-night="on"></script>
+  <script type="module" src="games.js?v=1790605844"></script>
 </body>
 </html>

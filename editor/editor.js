@@ -5,7 +5,7 @@
    а перетягнута за дошку — зникає. */
 import { Chessground } from 'https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/dist/chessground.min.js';
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { applyBoardLook } from '../shared/board.js?v=1790504486';
+import { applyBoardLook } from '../shared/board.js?v=1790605844';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const PRESETS = {
@@ -153,13 +153,17 @@ $('an').addEventListener('click', () => {
 // дошка — такого розміру, щоб усі кнопки вмістились на екрані без прокрутки
 function fit() {
   const wrap = document.querySelector('.ed .lg-board-wrap'), main = document.querySelector('main.ed');
-  const max = Math.min(520, innerWidth - 16);
+  const max = Math.min(520, innerWidth);
+  // на скільки пікселів останні кнопки вилазять за низ екрана
+  const over = () => {
+    const kids = [...main.children].filter(c => c.offsetParent);
+    return kids[kids.length - 1].getBoundingClientRect().bottom + parseFloat(getComputedStyle(main).paddingBottom) - innerHeight;
+  };
   wrap.style.width = max + 'px';
-  const kids = [...main.children].filter(c => c.offsetParent), gap = parseFloat(getComputedStyle(main).rowGap) || 0;
-  // скільки місця справді видно: від верху сторінки (під шапкою Telegram) до низу екрана
-  const room = innerHeight - (parseFloat(getComputedStyle(document.body).borderTopWidth) || 0) - 26;
-  const over = kids.reduce((h, c) => h + c.offsetHeight, 0) + gap * (kids.length - 1) - room;
-  if (over > 0) wrap.style.width = Math.max(200, max - over - 4) + 'px';
+  main.classList.remove('tight');
+  if (over() > 0) main.classList.add('tight');
+  const o = over();
+  if (o > 0) wrap.style.width = Math.max(200, max - o - 4) + 'px';
   cg.redrawAll();
 }
 addEventListener('resize', fit); fit(); setTimeout(fit, 300);

@@ -4,9 +4,9 @@
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790504486';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790504486';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790504486';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790605844';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790605844';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790605844';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -110,14 +110,14 @@ function renderPlay() {
   $('view-play').classList.add('mg2');
   $('view-play').innerHTML = `<div class="g2-head">ГРА З РОБОТОМ</div>
     <div class="g2-side" id="side-seg">${sides.map(([v, inner]) => `<button type="button" data-v="${v}" class="${side === v ? 'on' : ''}" aria-label="${{ w: 'Білими', b: 'Чорними', r: 'Будь-якими' }[v]}">${inner}</button>`).join('')}</div>
-    <div class="g2-rows">${ROWS.map((row, r) => { const lock = r >= 3 && LG.store.get('chess:beat', 0) < 3; return `
+    <div class="g2-rows">${ROWS.map((row, r) => { const lock = r >= 3 && LG.store.get('chess:beat', 0) < 3 && !LG.store.get('lvlOpen', false); return `
       <div class="g2-row${lock ? ' lock' : ''}" style="--lc:${LV_COLORS[r]}"><div class="g2-lvl"><b>${lock ? '🔒' : r + 1}</b></div>
         <div class="g2-opps">${row.map(i => lock ? `<button type="button" class="ap-opp" data-lock="1" aria-label="${esc(OPPONENTS[i].name)} — закрито"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></button>` : `<a class="ap-opp" href="chess/index.html?opp=${i}&side=${side}&level=${r + 1}" aria-label="${esc(OPPONENTS[i].name)}"><img src="${OPPONENTS[i].thumb}" alt="" decoding="sync"></a>`).join('')}</div></div>`; }).join('')}
     </div>`;
 }
 $('view-play').addEventListener('click', e => {
   const lk = e.target.closest('.g2-row.lock');
-  if (lk) { LG.play('error'); LG.toast('🔒 Спершу перемож робота 3-го рівня — тоді відкриються 4 і 5'); lk.classList.remove('shake'); void lk.offsetWidth; lk.classList.add('shake'); return; }
+  if (lk) { LG.play('error'); LG.toast('🔒 Спершу перемож робота 3-го рівня — тоді відкриються 4 і 5 (або відкрий їх у Профілі → Гра з роботом)'); lk.classList.remove('shake'); void lk.offsetWidth; lk.classList.add('shake'); return; }
   const b = e.target.closest('#side-seg button'); if (!b) return;
   side = b.dataset.v; LG.store.set('play:side', side); LG.play('tap'); renderPlay();
 });
@@ -300,6 +300,7 @@ function renderProfile() {
           <div class="mg-row"><span>Пішак стає ферзем сам</span><button type="button" class="pf-sw" id="p-promo" aria-label="Пішак стає ферзем сам"></button></div>
           <div class="mg-row"><span>Хід наперед</span><button type="button" class="pf-sw" id="p-pre" aria-label="Хід наперед"></button></div>
           <div class="mg-row"><span>Репліки суперника</span><button type="button" class="pf-sw" id="p-say" aria-label="Репліки суперника"></button></div>
+          <div class="mg-row"><span>Рівні 4 і 5 відкриті</span><button type="button" class="pf-sw" id="p-lvl" aria-label="Рівні 4 і 5 відкриті"></button></div>
           <button type="button" class="mg-done">Готово</button>
         </div>
       </details>
@@ -349,13 +350,14 @@ function renderProfile() {
     document.addEventListener('fullscreenchange', paintFs);
   }
   sw('p-dots', 'showDests', true); sw('p-coords', 'coords', true);
-  $('p-coords').addEventListener('click', () => document.documentElement.classList.toggle('lg-nocoords', !LG.store.get('coords', true))); sw('p-say', 'oppSay', true); sw('p-pre', 'premove', false); sw('p-promo', 'promoAuto', true); // репліки суперника типово ввімкнені
+  $('p-coords').addEventListener('click', () => document.documentElement.classList.toggle('lg-nocoords', !LG.store.get('coords', true))); sw('p-say', 'oppSay', true); sw('p-pre', 'premove', false); sw('p-promo', 'promoAuto', true); sw('p-lvl', 'lvlOpen', false); // репліки суперника типово ввімкнені
+  $('p-lvl').addEventListener('click', () => renderPlay());
   const paintLim = () => document.querySelectorAll('[data-lim]').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(LG.store.get(g.dataset.lim, '3')) === b.dataset.v)));
   paintLim();
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); const em = $('view-profile').querySelector('.mg-more em'); if (em) em.firstChild.textContent = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`; }));
   $('p-reset').addEventListener('click', () => {
     if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
-    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay|botThink|fullscreen)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
+    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay|botThink|fullscreen|lvlOpen)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
     seen.clear(); renderAll(); renderProfile();
   });
 }

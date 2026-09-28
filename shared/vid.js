@@ -108,7 +108,7 @@ html.lg-tg .lv-vid { padding-top: calc(16px + var(--tg-top, 0px) + env(safe-area
     o.prepend(back);
     document.body.appendChild(o);
   }
-  window.LGVideo = { player, overlay, ytLink };
+  window.LGVideo = { player, overlay, ytLink, hasVideo: () => !!here() };
   function show(k) {
     const v = V[k]; if (!v) return;
     overlay(v);

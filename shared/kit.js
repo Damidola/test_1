@@ -293,8 +293,17 @@
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+  // «Гайд» гри — на весь екран (shared/guide.js): анімації з games.js (guide) і правила текстом під дошкою; тією ж кнопкою закривається
   function showRules() {
     if (!game) return;
+    const r = game.rules, esc = t => String(t).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const intro = `<p><b>🎯 Мета:</b> ${esc(r.goal)}</p><p><b>🕹️ Як грати</b></p>${r.how.map(t => `<p>• ${esc(t)}</p>`).join('')}<p><b>💡 Порада</b></p>${r.tips.map(t => `<p>• ${esc(t)}</p>`).join('')}`;
+    const v = ((script && script.getAttribute('src') || '').match(/\?v=\d+/) || [''])[0];
+    import(new URL('guide.js' + v, script.src).href)
+      .then(m => m.toggleGuide({ icon: game.emoji, title: game.title, intro, slides: game.guide || [], button: 'Зрозуміло, граємо! 🚀' }))
+      .catch(() => showRulesText());
+  }
+  function showRulesText() {
     const r = game.rules;
     const body = el('div', { class: 'lg-rules' }, [
       el('div', { class: 'lg-rules-head' }, [
