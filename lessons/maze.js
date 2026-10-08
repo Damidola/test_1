@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, movesFrom, solve, startState, attacked, solved } from './mazes.js?v=1791468545';
+import { MAZES, movesFrom, solve, startState, attacked, solved } from './mazes.js?v=1791469100';
 import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790605844';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791468545';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791469100';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -11,7 +11,7 @@ $('title').textContent = M.title; document.title = M.title;
 $('intro-text').textContent = M.text;
 const lv = createLevels($('levels'), 'maze:' + K, M.levels.length, i => { idx = i; load(); });
 const grid = $('grid'), wrap = $('wrap');
-let idx = lv.open(), L, at, st, moves = 0, sel = false, done = false, hintStep = 0, pieceEl;
+let idx = (() => { const saved = LG.store.get(currentKey, null); return Number.isInteger(saved) && saved >= 0 && saved < M.levels.length ? saved : lv.open(); })(), L, at, st, moves = 0, sel = false, done = false, hintStep = 0, pieceEl;
 // картинка фігури — з набору, вибраного в Профілі
 const pieceImg = (role, c = 'w') => new URL('../shared/pieces/' + (LG.store.get('pieceSet', 'cburnett') || 'cburnett') + '/' + c + { rook: 'R', bishop: 'B', queen: 'Q', knight: 'N', king: 'K', pawn: 'P' }[role] + '.svg', import.meta.url).href;
 document.querySelector('.mz-arrows mpiece')?.replaceWith(Object.assign(document.createElement('img'), { className: 'mz-arrows-pc', src: pieceImg(M.piece), alt: '' }));
@@ -19,6 +19,7 @@ const same = (a, b) => a[0] === b[0] && a[1] === b[1];
 const cell = ([c, r]) => grid.children[r * L.w + c];
 
 function load() {
+  LG.store.set(currentKey, idx);
   L = M.levels[idx]; st = startState(M, L); at = st.at; moves = 0; sel = false; done = false; hintStep = 0; lv.set(idx);
   wrap.classList.remove('solved');
   wrap.style.setProperty('--w', L.w); wrap.style.setProperty('--h', L.h);
@@ -138,9 +139,11 @@ function intro(on) {
   if (on) { $('title').textContent = M.videoTitle || M.title; video.hidden = false; vp = LGVideo.player(M.video); video.append(vp.el); ytA = LGVideo.ytLink(M.video); $('go').after(ytA); }
   else $('title').textContent = M.title;
 }
-LG.onExplain(() => intro(main.dataset.step !== 'intro'));
-$('go').addEventListener('click', () => intro(false));
-if (M.video) intro(true);
+function skipIntro() { LG.store.set(introKey, true); intro(false); }
+LG.onExplain(() => { if (main.dataset.step === 'intro') skipIntro(); else intro(true); });
+$('go').addEventListener('click', skipIntro);
+if (M.video) intro(!LG.store.get(introKey, false));
+else intro(false);
 $('again').addEventListener('click', () => load());
 fitBoard(wrap);
 load();
