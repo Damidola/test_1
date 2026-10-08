@@ -1,9 +1,5 @@
 /* Шахи для дітей — застосунок: 4 вкладки внизу, дорога уроків на весь екран, вибір суперника, профіль */
-:root {
-  --ap-bg: #14132B; --ap-bg2: #1C1B3A; --ap-card: #25244A; --ap-card2: #2E2D57; --ap-line: #3A3968;
-  --ap-ink: #FFFFFF; --ap-muted: #A9A7D6; --ap-violet: #7C6CF0; --ap-green: #2ECC9A; --ap-orange: #FF9F1C; --ap-red: #FF5C6C; --ap-blue: #3FA7F5;
-  --ap-r: 20px;
-}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: var(--lg-font); color: var(--ap-ink); -webkit-tap-highlight-color: transparent;
   background: radial-gradient(120% 60% at 50% 0%, #22205A 0%, var(--ap-bg) 60%) fixed, var(--ap-bg); }
@@ -159,9 +155,9 @@ html:has(#view-practice:not([hidden])) body, html:has(#view-play:not([hidden])) 
 #view-practice > .ap-h { flex: none; }#view-practice .ap-cat { min-height: 0; height: auto; overflow: hidden; }#view-practice .ap-cat .pcs img { width: auto; height: min(34px, 100%); }#view-practice .ap-cat small { display: block; -webkit-line-clamp: unset; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }/* без «vs» у рядку — назва влазить */
 
 /* ---------- Профіль у новому дизайні (як Magnus Trainer): чорне тло, бірюзові акценти, тонкі лінії ---------- */
-#view-profile.mg { --mg-acc: #2ee6b8; --mg-muted: #8c8c8c; --mg-line: #262D42;
-  background: #1B2133; font-family: Manrope, var(--lg-font), sans-serif; color: #fff; padding-left: 0; padding-right: 0; }
-body:has(#view-profile.mg:not([hidden])) { background: #1B2133; }.mg-me { display: flex; align-items: center; gap: 14px; padding: 0 18px; }
+#view-profile.mg { --mg-acc: #2ee6b8; --mg-muted: var(--app-muted); --mg-line: var(--app-panel);
+  background: var(--app-bg); font-family: Manrope, var(--lg-font), sans-serif; color: #fff; padding-left: 0; padding-right: 0; }
+body:has(#view-profile.mg:not([hidden])) { background: var(--app-bg); }.mg-me { display: flex; align-items: center; gap: 14px; padding: 0 18px; }
 .mg-av { flex: none; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #3fd0c0, #1a9bb5); display: grid; place-items: center; }
 .mg-av svg { width: 28px; height: 28px; }
 .mg-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -215,8 +211,8 @@ body:has(#view-profile.mg:not([hidden])) { background: #1B2133; }.mg-me { displa
 }
 
 /* ---------- нижнє меню в новому дизайні (як Magnus): темна смуга, контурні іконки, активна — біла ---------- */
-.ap-tabs { gap: 0; padding: 4px 4px calc(7px + env(safe-area-inset-bottom)); background: #262D42; backdrop-filter: none; -webkit-backdrop-filter: none; border-top: 0; }
-.ap-tabs a { gap: 3px; padding: 4px 0 3px; border-radius: 0; background: none !important; color: #8c8c8c; font: 600 11px Manrope, var(--lg-font), sans-serif; }
+.ap-tabs { gap: 0; padding: 4px 4px calc(7px + env(safe-area-inset-bottom)); background: var(--app-panel); backdrop-filter: none; -webkit-backdrop-filter: none; border-top: 0; }
+.ap-tabs a { gap: 3px; padding: 4px 0 3px; border-radius: 0; background: none !important; color: var(--app-muted); font: 600 11px Manrope, var(--lg-font), sans-serif; }
 .ap-tabs .ti { width: 22px; height: 22px; filter: none; opacity: 1; font-size: 0; transform: none !important; }
 .ap-tabs a.on { color: #fff; font-weight: 800; }
 .ap-tabs a:active { color: #fff; }
@@ -257,11 +253,11 @@ body:has(#view-profile.mg:not([hidden])) { background: #1B2133; }.mg-me { displa
 .mg-think b { flex: none; min-width: 44px; text-align: right; font: 800 13px Manrope, sans-serif; color: #fff; }
 
 /* ---------- Уроки в новому дизайні: чорне тло, вкладки розділів угорі, зигзаг тонкими лініями — один екран без прокрутки ---------- */
-body:has(#view-learn:not([hidden])) { background: #1B2133; }
-#view-learn:not([hidden]) { display: flex; flex-direction: column; height: calc(100svh - var(--fs-top, 0px)); overflow: hidden; background: #1B2133;
+body:has(#view-learn:not([hidden])) { background: var(--app-bg); }
+#view-learn:not([hidden]) { display: flex; flex-direction: column; height: calc(100svh - var(--fs-top, 0px)); overflow: hidden; background: var(--app-bg);
   padding: env(safe-area-inset-top) 0 calc(74px + env(safe-area-inset-bottom)); font-family: Manrope, var(--lg-font), sans-serif; }
 #view-learn .ap-secbar { flex: none; display: flex; gap: 0; margin: 0; padding: 0; overflow: hidden; border-bottom: 1px solid #2A3148; }
-#view-learn .ap-secbar button { flex: 1 1 0; min-width: 0; height: 46px; padding: 0 2px; border-radius: 0; background: none; color: #8c8c8c;
+#view-learn .ap-secbar button { flex: 1 1 0; min-width: 0; height: 46px; padding: 0 2px; border-radius: 0; background: none; color: var(--app-muted);
   font: 800 clamp(9.5px, 2.7vw, 12.5px)/1.1 Manrope, var(--lg-font), sans-serif; letter-spacing: .4px; white-space: normal; text-align: center;
   justify-content: center; border-bottom: 3px solid transparent; transition: color .15s, border-color .15s; }
 #view-learn .ap-secbar button.on { color: #fff; border-bottom-color: var(--c); }
@@ -281,7 +277,7 @@ body:has(#view-learn:not([hidden])) { background: #1B2133; }
 #view-learn .ap-node.cur .ap-dot { outline: 3px solid var(--c); outline-offset: 4px; box-shadow: 0 0 26px color-mix(in srgb, var(--c) 55%, transparent); animation: mgpulse 1.8s ease-in-out infinite; }
 @keyframes mgpulse { 50% { outline-offset: 7px; outline-color: color-mix(in srgb, var(--c) 35%, transparent); } }
 #view-learn .ap-nextsec { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 1; display: flex; align-items: center; gap: 8px;
-  height: 34px; padding: 0 16px; border: 1.5px solid #333; border-radius: 17px; background: #1B2133; color: #bdbdbd; font: 700 13px Manrope, var(--lg-font), sans-serif; white-space: nowrap; cursor: pointer; }
+  height: 34px; padding: 0 16px; border: 1.5px solid #333; border-radius: 17px; background: var(--app-bg); color: #bdbdbd; font: 700 13px Manrope, var(--lg-font), sans-serif; white-space: nowrap; cursor: pointer; }
 #view-learn .ap-nextsec i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
 
 /* ---------- без блимання: вкладка показується, коли всі її картинки завантажені ---------- */
@@ -291,25 +287,25 @@ body:has(#view-learn:not([hidden])) { background: #1B2133; }
 .ap-boards button img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* ---------- «Гра» і «Практика» в новому дизайні: чорне тло, Manrope, тонкі лінії — але кольори й фігурки старого ---------- */
-body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden])) { background: #1B2133; }
-#view-play.mg2, #view-practice.mg2 { background: #1B2133; font-family: Manrope, var(--lg-font), sans-serif; color: #fff; padding-left: 0; padding-right: 0; }
+body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden])) { background: var(--app-bg); }
+#view-play.mg2, #view-practice.mg2 { background: var(--app-bg); font-family: Manrope, var(--lg-font), sans-serif; color: #fff; padding-left: 0; padding-right: 0; }
 .mg2 .g2-head { flex: none; margin: 6px 0 10px; text-align: center; font: 700 15px Manrope, sans-serif; letter-spacing: 3px; color: #fff; }
 
 /* Гра: яким кольором граю — «пігулка» як у Профілі */
 #view-play.mg2:not([hidden]) { display: flex; flex-direction: column; padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: calc(76px + env(safe-area-inset-bottom)); box-sizing: border-box; }
-.g2-side { flex: none; display: grid; grid-template-columns: 1fr 1fr 64px; gap: 4px; margin: 0 16px 10px; padding: 4px; border-radius: 22px; background: #262D42; }
-.g2-side button { display: flex; align-items: center; justify-content: center; gap: 6px; height: 40px; border: 0; border-radius: 18px; background: transparent; color: #8c8c8c;
+.g2-side { flex: none; display: grid; grid-template-columns: 1fr 1fr 64px; gap: 4px; margin: 0 16px 10px; padding: 4px; border-radius: 22px; background: var(--app-panel); }
+.g2-side button { display: flex; align-items: center; justify-content: center; gap: 6px; height: 40px; border: 0; border-radius: 18px; background: transparent; color: var(--app-muted);
   font: 800 14px Manrope, sans-serif; cursor: pointer; }
 .g2-side button img { width: 26px; height: 26px; }
 .g2-side button .big { font-size: 20px; }
 .g2-side button.on { background: #2ee6b8; color: #04241d; }
 /* рівні — рядки з тонкими лініями: номер і назва кольором рівня, 4 суперники в кружечках з обідком того ж кольору */
 .g2-rows { flex: 1 1 auto; min-height: 0; display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); }
-.g2-row { min-height: 0; display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 6px; padding: 4px 14px 4px 16px; border-top: 1px solid #20263A; container-type: size; }
-.g2-row:last-child { border-bottom: 1px solid #20263A; }
+.g2-row { min-height: 0; display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 6px; padding: 4px 14px 4px 16px; border-top: 1px solid var(--app-border); container-type: size; }
+.g2-row:last-child { border-bottom: 1px solid var(--app-border); }
 .g2-lvl { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .g2-lvl b { font: 800 22px/1 Manrope, sans-serif; color: var(--lc); }
-.g2-lvl span { font: 700 9px/1.15 Manrope, sans-serif; letter-spacing: .3px; text-transform: uppercase; color: #8c8c8c; white-space: nowrap; }
+.g2-lvl span { font: 700 9px/1.15 Manrope, sans-serif; letter-spacing: .3px; text-transform: uppercase; color: var(--app-muted); white-space: nowrap; }
 .g2-opps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); justify-items: center; align-items: center; height: 100%; }
 .g2-opps .ap-opp { --s: min(calc(100cqh - 8px), calc((100cqw - 124px) / 4)); flex: none; width: var(--s); height: var(--s); padding: 0; border-radius: 50%; overflow: hidden;
   border: 0; box-shadow: 0 0 0 2.5px var(--lc); background: #111; }
@@ -319,8 +315,8 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 /* Практика: список рядків як у новому дизайні */
 #view-practice.mg2:not([hidden]) { display: flex; flex-direction: column; padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: calc(76px + env(safe-area-inset-bottom)); box-sizing: border-box; overflow: hidden; }
 .g2-list { flex: 1 1 auto; min-height: 0; display: grid; grid-auto-rows: minmax(0, 1fr); max-height: calc(7 * 78px); }
-.g2-item { display: flex; align-items: center; gap: 14px; min-height: 0; padding: 0 14px 0 16px; border-top: 1px solid #20263A; text-decoration: none; color: #fff; }
-.g2-item:last-child { border-bottom: 1px solid #20263A; }
+.g2-item { display: flex; align-items: center; gap: 14px; min-height: 0; padding: 0 14px 0 16px; border-top: 1px solid var(--app-border); text-decoration: none; color: #fff; }
+.g2-item:last-child { border-bottom: 1px solid var(--app-border); }
 .g2-item:active { background: #0d0d0d; }
 .g2-ic { flex: none; display: flex; align-items: center; justify-content: center; width: clamp(40px, 7svh, 52px); height: clamp(40px, 7svh, 52px); border-radius: 50%;
   background: linear-gradient(135deg, color-mix(in srgb, var(--c) 85%, #fff), color-mix(in srgb, var(--c) 75%, #000)); overflow: hidden; }
@@ -330,16 +326,16 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 .g2-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .g2-t { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .g2-t b, .g2-tx > b { font: 700 clamp(14px, 2.3svh, 16.5px)/1.2 Manrope, sans-serif; }
-.g2-t em { flex: none; font: 700 12.5px Manrope, sans-serif; font-style: normal; color: #8c8c8c; }
-.g2-tx small { font: 500 clamp(11px, 1.7svh, 13px)/1.25 Manrope, sans-serif; color: #8c8c8c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g2-t em { flex: none; font: 700 12.5px Manrope, sans-serif; font-style: normal; color: var(--app-muted); }
+.g2-tx small { font: 500 clamp(11px, 1.7svh, 13px)/1.25 Manrope, sans-serif; color: var(--app-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .g2-chev { flex: none; width: 16px; height: 16px; fill: none; stroke: #555; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 /* розділ практики */
 .g2-sub { flex: none; display: flex; align-items: center; gap: 12px; padding: 0 16px 10px; }
 .g2-sub h2 { margin: 0; font: 800 19px Manrope, sans-serif; }
 .g2-sub .g2-ic { width: 40px; height: 40px; }
-.g2-back { flex: none; width: 40px; height: 40px; border-radius: 50%; background: #262D42; display: grid; place-items: center; }
+.g2-back { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--app-panel); display: grid; place-items: center; }
 .g2-back svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.g2-h3 { margin: 10px 16px 6px; font: 700 11.5px Manrope, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #8c8c8c; }
+.g2-h3 { margin: 10px 16px 6px; font: 700 11.5px Manrope, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--app-muted); }
 .g2-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 12px; }
 .g2-tile { position: relative; display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 8px 10px; border-radius: 14px; background: #111; text-decoration: none; color: #fff; overflow: hidden; }
 .g2-tile:active { background: #1a1a1a; }
@@ -347,12 +343,12 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 .g2-tile .g2-tx b { font-size: 14px; }
 .g2-tile .g2-tx small { font-size: 11px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .g2-prog { position: absolute; left: 10px; right: 10px; bottom: 5px; display: flex; align-items: center; gap: 6px; }
-.g2-prog span { font: 700 9.5px Manrope, sans-serif; color: #8c8c8c; }
+.g2-prog span { font: 700 9.5px Manrope, sans-serif; color: var(--app-muted); }
 .g2-prog > i { flex: 1; height: 3px; border-radius: 2px; background: #222; overflow: hidden; }
 .g2-prog > i > i { display: block; height: 100%; background: var(--c); border-radius: 2px; }
 .g2-prog.all span { color: #2ee6b8; }
 .g2-tile:has(.g2-prog) { padding-bottom: 18px; }
-.g2-cnt { position: absolute; top: 6px; right: 8px; font: 700 11px Manrope, sans-serif; color: #8c8c8c; }
+.g2-cnt { position: absolute; top: 6px; right: 8px; font: 700 11px Manrope, sans-serif; color: var(--app-muted); }
 /* практика: якщо все ж не вміщається (великий шрифт у телефоні) — гортається пальцем; картки компактніші */
 #view-practice.mg2:not([hidden]) { overflow-y: auto !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
 .g2-tiles { gap: 6px; }
@@ -370,10 +366,10 @@ body:has(#view-play.mg2:not([hidden])), body:has(#view-practice.mg2:not([hidden]
 .g2-row { grid-template-columns: 26px minmax(0, 1fr); padding-left: 12px; padding-right: 10px; gap: 4px; }
 .g2-lvl b { font-size: 24px; }
 .g2-opps .ap-opp { --s: min(calc(100cqh - 6px), calc((100cqw - 26px - 4px - 24px) / 4)); }
-html, body { background: #1B2133 !important; } /* усі вкладки — чорні: без фіолетових спалахів між сторінками */
+html, body { background: var(--app-bg) !important; } /* усі вкладки — чорні: без фіолетових спалахів між сторінками */
 /* Практика: пункти — великі картки на всю висоту екрана (без прокручування), а не вузькі рядки з порожнечею знизу */
 .g2-list { max-height: none; gap: 8px; padding: 2px 12px 12px; }
-.g2-item { gap: clamp(12px, 3vw, 18px); padding: 0 14px; border: 0 !important; border-radius: 18px; background: #262D42; box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+.g2-item { gap: clamp(12px, 3vw, 18px); padding: 0 14px; border: 0 !important; border-radius: 18px; background: var(--app-panel); box-shadow: 0 3px 0 rgba(0,0,0,.18); }
 .g2-item:active { background: #30384F; transform: translateY(2px); }
 .g2-list > .g2-item .g2-ic { width: clamp(44px, 8.5svh, 72px); height: clamp(44px, 8.5svh, 72px); }
 .g2-list > .g2-item .g2-ic .emo { font-size: clamp(22px, 4.4svh, 36px); }
@@ -386,7 +382,7 @@ html, body { background: #1B2133 !important; } /* усі вкладки — чо
 .g2-list > .g2-item .g2-ic:has(img + span, img + img) img + img { margin-left: -12%; }
 /* Практика (як референс Lichess): картки з тонкою рамкою, вміщаються по ширині, текст переноситься — без «…» */
 .g2-list { grid-template-columns: minmax(0, 1fr); }
-.g2-item { min-width: 0; box-sizing: border-box; border: 1.5px solid #3A4466 !important; background: linear-gradient(135deg, #262D42, #2E3652); box-shadow: none; }
+.g2-item { min-width: 0; box-sizing: border-box; border: 1.5px solid #3A4466 !important; background: linear-gradient(135deg, var(--app-panel), #2E3652); box-shadow: none; }
 .g2-list > .g2-item .g2-tx { min-width: 0; }
 .g2-list > .g2-item .g2-t { flex-wrap: wrap; }
 .g2-list > .g2-item .g2-t b { white-space: normal; line-height: 1.1; }
@@ -394,7 +390,7 @@ html, body { background: #1B2133 !important; } /* усі вкладки — чо
 .g2-list > .g2-item .g2-chev { display: none; }
 /* розділ практики: плитки розтягуються на всю висоту екрана (без порожнечі внизу), великі іконки й текст */
 #view-practice.mg2 > .g2-tiles { flex: 1 1 0; min-height: 0; grid-auto-rows: minmax(0, 1fr); gap: 10px; margin: 0 12px 10px; max-height: calc(3 * 150px); }
-#view-practice.mg2 > .g2-tiles .g2-tile { min-height: 0; gap: 10px; border-radius: 18px; background: #262D42; border: 1.5px solid #3A4466; padding: 6px 10px; }
+#view-practice.mg2 > .g2-tiles .g2-tile { min-height: 0; gap: 10px; border-radius: 18px; background: var(--app-panel); border: 1.5px solid #3A4466; padding: 6px 10px; }
 #view-practice.mg2 > .g2-tiles .g2-ic { width: clamp(34px, 6.5svh, 58px); height: clamp(34px, 6.5svh, 58px); }
 #view-practice.mg2 > .g2-tiles .g2-ic .emo { font-size: clamp(18px, 3.4svh, 30px); }
 #view-practice.mg2 > .g2-tiles .g2-tx b { font-size: clamp(14px, 2.4svh, 19px); }
@@ -485,3 +481,4 @@ html.lg-tg .g2-sub .g2-back { display: none; } /* у Telegram «Назад» —
 .pr-row .g2-ic .emo, .g2-sub .g2-ic .emo { font-size: 23px !important; }
 .pr-row { padding-top: 8px !important; padding-bottom: 8px !important; }
 .pr-row .g2-ic:has(img ~ span:not(.emo)) img { width: 15px !important; height: 15px !important; }
+

@@ -901,3 +901,25 @@ window.LG_EN = {
   "🧩 Завдання": "🧩 Task",
   "🧩 Задачі": "🧩 Puzzles"
 };
+Object.assign(window.LG_EN, {
+  'Постав шах турою: напади на чорного короля — так, щоб цю фігуру не могли одразу побити.': 'Give check with the rook without allowing it to be captured immediately.',
+  'Постав шах слоном: напади на короля навскоси — так, щоб цю фігуру не могли одразу побити.': 'Give check with the bishop along a diagonal without allowing it to be captured immediately.',
+  'Постав шах ферзем — так, щоб цю фігуру не могли одразу побити.': 'Give check with the queen without allowing it to be captured immediately.',
+  'Постав шах конем — стрибком літерою «Г» — так, щоб цю фігуру не могли одразу побити.': 'Give check with an L-shaped knight jump without allowing it to be captured immediately.',
+  'Постав шах пішаком: пішак б’є навскоси вперед — так, щоб цю фігуру не могли одразу побити.': 'Give check with a pawn: it attacks diagonally forward. Keep it safe from immediate capture.',
+  'Шукай відкриту вертикаль або горизонталь до короля. Пішаки перекривають деякі лінії.': 'Look for an open file or rank leading to the king. Pawns block some lines.',
+  'Тура атакує короля по прямій. Між нею і королем немає фігур.': 'The rook attacks the king along a straight line, with no pieces between them.',
+  'Знайди діагональ до короля. Слон залишається на клітинках свого кольору.': 'Find a diagonal leading to the king. The bishop stays on its own square colour.',
+  'Слон атакує короля по вільній діагоналі.': 'The bishop attacks the king along an open diagonal.',
+  'Ферзь ходить і прямо, і навскоси. Знайди відкриту лінію до короля.': 'The queen moves straight and diagonally. Find an open line to the king.',
+  'Ферзь вийшов на відкриту лінію і атакує короля.': 'The queen moved onto an open line and attacks the king.',
+  'Знайди клітинку, з якої кінь дістане короля стрибком «Г». Він перестрибує фігури.': 'Find a square from which an L-shaped knight jump attacks the king. The knight jumps over pieces.',
+  'Кінь атакує короля стрибком «Г». Закрити цей шах іншою фігурою не можна.': 'The knight attacks the king with an L-shaped jump. Another piece cannot block this check.',
+  'Пішак іде вперед, а б’є навскоси. Його нову клітинку має захищати інша фігура.': 'A pawn moves forward and captures diagonally. Another piece should defend its new square.',
+  'Пішак атакує клітинку короля навскоси, а сам залишається під захистом.': 'The pawn attacks the king diagonally while staying protected.',
+  'Цей хід не дозволений правилами.': 'This move is illegal.',
+  'Це ще не шах: король не під ударом.': 'This is not check yet: the king is not attacked.',
+  'Шах є, але цю фігуру можна побити. Знайди шах без втрати фігури.': 'This is check, but your piece can be captured. Find a check that keeps it safe.',
+  'Спробуй виконати завдання вказаною фігурою.': 'Try using the piece named in the task.',
+  'Вертикаль a відкрита. Тура виходить на останній ряд…': 'The a-file is open. The rook moves onto the back rank…'
+});

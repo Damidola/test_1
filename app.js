@@ -1,12 +1,14 @@
+import { menuGroups } from './shared/puzzle-catalog.js?v=1791477054';
+import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1791477054';
 /* Шахи для дітей: застосунок із чотирма вкладками.
    🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
    🤖 Гра — вибір суперника, кольору, сили й режиму → партія з роботом;
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1790605844';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1790605844';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1790605844';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1791477054';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1791477054';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1791477054';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -125,15 +127,9 @@ $('view-play').addEventListener('click', e => {
 // ---------- 🎯 практика ----------
 // Практика: спершу короткий список розділів (без прокрутки), тап — розділ відкривається з вибором усередині
 const PRACTICE = [
-  { id: 'check', ic: 'K', t: 'Шах', s: 'постав шах і врятуйся від шаху', c: '#3FA7F5', groups: [
-    ['Постав шах', [['R', 'Турою', '', P('chk_rook')], ['B', 'Слоном', '', P('chk_bishop')], ['Q', 'Ферзем', '', P('chk_queen')], ['N', 'Конем', '', P('chk_knight')], ['P', 'Пішаком', '', P('chk_pawn')]]],
-    ['Урятуйся від шаху', [['🏃', 'Утечи королем', '', P('esc_run')], ['⚔️', 'Побий', 'того, хто шахує', P('esc_capture')], ['🛡️', 'Закрийся', 'іншою фігурою', P('esc_block')], ['🎲', 'Різні', 'здогадайся сам', P('esc_mixed')]]]] },
-  { id: 'mate1', ic: 'Q', t: 'Мат', s: 'в 1 хід кожною фігурою і в 2 ходи', c: '#FF5C6C', groups: [
-    ['Мат в 1 хід', [['R', 'Турою', '', P('m1rook')], ['B', 'Слоном', '', P('m1bishop')], ['P', 'Пішаком', '', P('m1pawn')], ['Q', 'Ферзем', '', P('m1queen')], ['N', 'Конем', '', P('m1knight')], ['🎲', 'Різні', 'будь-якою фігурою', P('m1mix')]]],
-    ['Мат у 2 ходи', [['🏆', 'Мат у 2 ходи', 'хід, відповідь — мат', P('mate2')]]]] },
-  { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, простріл та інші', c: '#FF9F1C', groups: [
-    [null, [['🎁', 'Незахищена фігура', '', P('hanging')], ['🍴', 'Вилка', '', P('fork')], ['📌', 'Зв’язка', '', P('pin')], ['🏹', 'Простріл', '', P('skewer')], ['💥', 'Відкритий напад', '', P('discovered')],
-      ['🎣', 'Відволікання', '', P('deflection')], ['🧲', 'Заманювання', '', P('attraction')], ['👑', 'Пішак у ферзі', '', P('promotion')]]]] },
+  { id: 'check', ic: 'K', t: 'Шах', s: 'постав шах і врятуйся від шаху', c: '#3FA7F5', groups: menuGroups(['Постав шах', 'Урятуйся від шаху']) },
+  { id: 'mate1', ic: 'Q', t: 'Мат', s: 'в 1 хід кожною фігурою і в 2 ходи', c: '#FF5C6C', groups: menuGroups(['Мат в 1 хід', 'Мат в 2 ходи']) },
+  { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, простріл та інші', c: '#FF9F1C', groups: menuGroups(['Тактичні прийоми']) },
   { id: 'analysis', ic: '🔍', t: 'Аналіз', s: 'розстав позицію — робот підкаже ходи', c: '#3FA7F5', href: 'editor/index.html' },
   { id: 'endgame', ic: ['K', 'Q'], t: 'Постав мат роботу', s: 'скільки завгодно ходів — головне мат', c: '#2ECC9A', groups: [
     [null, [[['K', 'Q'], 'Ферзь і король', '', P('kqk')], [['K', 'R'], 'Тура і король', '', P('krk')], [['K', 'B', 'B'], 'Два слони', '', P('kbbk')], [['K', 'P'], 'Король і пішак', '', P('kpk')]]]] },
@@ -169,23 +165,13 @@ let puzData = null, puzLoading = false;
 function loadPuzTotals(open) {
   if (puzData || puzLoading) return;
   puzLoading = true;
-  fetch('chess-puzzles/puzzles.json').then(r => r.json()).then(d => {
-    puzData = d;
+  fetch('chess-puzzles/puzzles.json' + new URL(import.meta.url).search).then(r => r.json()).then(d => {
+    syncPuzzleProgress(LG.store, d); puzData = d;
     if (location.hash === '#practice/' + open) renderPractice(open);
   }).catch(() => { puzLoading = false; });
 }
 // результат кожної задачі (chess-puzzles/mate.js): g — без помилок, y — з помилками, r — показали розвʼязок
-function puzStats(k) {
-  const list = puzData && puzData[k]; if (!list) return null;
-  const res = LG.store.get('puzres:' + k, {}), solved = new Set(LG.store.get('puz:' + k, []));
-  let done = 0, tried = 0, sum = 0, next = -1;
-  list.forEach(([id], i) => {
-    const r = res[id] || (solved.has(id) ? 'g' : '');
-    if (r) { tried++; sum += r === 'g' ? 100 : r === 'y' ? 50 : 0; if (r !== 'r') done++; }
-    if (next < 0 && (!r || r === 'r')) next = i;
-  });
-  return { n: list.length, done, tried, sum, pct: Math.round(sum / list.length), next: next < 0 ? 0 : next };
-}
+function puzStats(k) { return puzData?.[k] ? puzzleStats(LG.store, k, puzData[k]) : null; }
 function miniBoard(fen, moves) {
   const [placement, turn] = fen.split(' ');
   const flip = (moves.split(' ').length % 2 === 1) === (turn === 'b');
@@ -230,7 +216,7 @@ function renderPractice(open) {
   markTall();
 }
 // ⋯ у розділі практики: поки одна дія — скинути прогрес розділу (для нового учня). Два підтвердження — щоб не випадково.
-const PUZ_KEYS = ['puz:', 'puzres:', 'puzopen:', 'prac:', 'lvl:puz-'];
+const PUZ_KEYS = ['puz:', 'puzres:', 'puzopen:', 'puzbank:', 'prac:', 'lvl:puz-', 'lvlid:puz-'];
 function resetSection(cat) {
   const ks = cat.groups.flatMap(([, it]) => it.map(x => x[3])).filter(h => h.startsWith('chess-puzzles/')).map(h => h.split('#')[1]);
   for (const k of ks) for (const pre of PUZ_KEYS) try { localStorage.removeItem('chk:' + pre + k); } catch (e) { /* */ }
@@ -411,3 +397,4 @@ renderProfile();
 show(location.hash.slice(1) || 'learn');
 addEventListener('load', () => setTimeout(preloadRest, 200));
 window.addEventListener('pageshow', e => { if (e.persisted) { renderAll(); show(location.hash.slice(1) || 'learn'); } });
+

@@ -4,7 +4,7 @@
 
 ## Вкладки
 
-- 🎓 **Уроки**. Змійка з 22 кроків знизу вгору: фігури, напад і захист, шах і мат, особливі ходи й дебют, тактика. У кожному кроці є урок, задачі й гра з роботом.
+- 🎓 **Уроки**. Шлях знизу вгору: фігури, напад і захист, шах і мат, особливі ходи й дебют, тактика. Кроки й порядок переходів задані в `shared/path.js`.
 - 🎯 **Практика**. Задачі (шах, мат в 1 і 2 ходи, тактика), шахи з роботом, фігури проти пішаків, мат роботу, головоломки (хід конем, 8 ферзів).
 - 👤 **Профіль**. Прогрес, звук, гучність, набір фігур, скидання прогресу.
 
@@ -15,6 +15,11 @@
 | `index.html`, `app.js`, `app.css` | застосунок із вкладками |
 | `lessons/` | усі уроки: «Як ходять фігури» (рівні Lichess Learn, збірка `npm install && npm run build`), міні-уроки (`lessons.js`, перевірка `node tools/check-lessons.mjs`), «Шах», «Цінність фігур» |
 | `shared/path.js` | шлях уроків: кроки вкладки «Уроки» й кнопка «Далі» в кінці кожного уроку |
+| `shared/puzzle-catalog.js` | назви, групи, посилання й цілі задач: меню, практика й уроки використовують один каталог |
+| `shared/puzzle-rules.js` | спільна перевірка ходів для гри, підказок, генератора й тестів |
+| `shared/puzzle-progress.js` | статистика й оновлення прогресу після заміни банку задач |
+| `shared/tokens.css` | спільні кольори, шрифти й розміри інтерфейсу |
+| `content/check-puzzles.js` | авторські позиції на шах: фігури, навчальний мотив і приклад розв’язку |
 | `chess-puzzles/` | задачі й практика мату проти робота (`puzzles.json`) |
 | `chess/` | шахи з роботом |
 | `pawns/`, `pieces-vs-pawns/`, `knights-tour/`, `eight-queens/` | ігри й головоломки |
@@ -24,6 +29,22 @@
 
 Публікація: Settings → Pages → Deploy from branch → `master` / root.
 
+## Задачі на шах і перевірки
+
+У банку 150 задач на шах: по 30 для тури, слона, ферзя, коня й пішака. Це 75 авторських позицій та їхні дзеркальні варіанти. У кожній є пішаки біля чорного короля, підказка й пояснення. Завдання приймає будь-який легальний шах указаною фігурою, якщо суперник не може відразу її побити. Перетворення пішака не вважається шахом пішаком.
+
+Щоб змінити позиції, редагуй `content/check-puzzles.js`, потім запусти `npm run build:checks`. Генератор перевірить схеми й замінить лише розділи `chk_*` у `puzzles.json`. Решта задач зберігається. ID задач мають бути стабільними; для нового навчального змісту використовуй новий ID.
+
+Для розробки потрібні Node.js 24 та npm:
+
+```sh
+npm ci
+npx playwright install chromium
+npm run check
+```
+
+Перевірки охоплюють законність і розв’язність задач, міні-уроки та екрани на двох телефонних розмірах. Браузерний тест також натискає підказку й розв’язує першу задачу на шах. GitHub Actions запускає ці перевірки й зберігає скриншоти. Після змін `lessons/src` або `shared/path.js` потрібно виконати `npm run build`.
+
 ## Ліцензії
 
 - [chessground](https://github.com/lichess-org/chessground) і [chessops](https://github.com/niklasf/chessops) — GPL-3.0, з CDN jsDelivr; chessops і [snabbdom](https://github.com/snabbdom/snabbdom) (MIT) вбудовані в `lessons/app.js`.
@@ -31,7 +52,7 @@
 - У «Як ходять фігури» з lila також шрифти (`lessons/assets/font`: Noto Sans і Roboto — SIL OFL / Apache 2.0, шрифт іконок lichess — AGPLv3+) і звуки уроків (`lessons/assets/sound`, lila `public/sound`).
 - Дошки в `shared/boards/` і стилі дошки `shared/vendor/lichess-board.css` — з Lichess (lila authors, pirouetti), AGPLv3+.
 - Набори фігур у `shared/pieces/*` — з Lichess; ліцензії кожного набору перелічені в [COPYING.md](https://github.com/lichess-org/lila/blob/master/COPYING.md) (cburnett, merida — GPLv2+; fantasy — MIT; california, cardinal, anarcandy, horsey — CC BY-NC-SA 4.0; pixel — AGPLv3+; xkcd — CC BY-NC 2.5; alpha — лише некомерційне використання).
-- Шахові задачі (`chess-puzzles/puzzles.json`) — з [відкритої бази задач Lichess](https://database.lichess.org/#puzzles), CC0; вибірку взято з [mcognetta/lichess-combined-puzzle-game-db](https://github.com/mcognetta/lichess-combined-puzzle-game-db) (CC0), спрощення й відбір — `tools/build-mates.mjs` (мати) і `tools/build-tactics.mjs` (тактика, перевірка Stockfish), збирання — `tools/merge-puzzles.py`.
+- Мат і тактичні задачі (`chess-puzzles/puzzles.json`) — з [відкритої бази задач Lichess](https://database.lichess.org/#puzzles), CC0; вибірку взято з [mcognetta/lichess-combined-puzzle-game-db](https://github.com/mcognetta/lichess-combined-puzzle-game-db) (CC0). Задачі на шах `chk_*` — авторські навчальні схеми з `content/check-puzzles.js`, які збирає `tools/build-checks.mjs`.
 - Рушій для практики закінчень — [Stockfish.js 10](https://github.com/nmrugg/stockfish.js) (`shared/vendor/stockfish/`), GPL-3.0.
 - Персонажі-роботи — RoboHash ([e1ven/Robohash](https://github.com/e1ven/Robohash)); 90 роликів-нагород — з публічних колекцій гіфок на GitHub (public/moarcats, tlberglund/animated-gifs, Carol42/random-cat-gifs, onprema/catgifs), перекодовані в короткі MP4/WebM без звуку.
 

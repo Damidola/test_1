@@ -1,27 +1,8 @@
 /* Спільний стиль: кольори, шрифт, верхня панель, вікна, кнопки. */
+@import url('tokens.css?v=1791477054');
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
 
-:root {
-  --lg-bg: #FFF7EC;
-  --lg-bg-2: #FDEBD3;
-  --lg-surface: #FFFFFF;
-  --lg-surface-2: #F6F1FF;
-  --lg-ink: #2D2A4A;
-  --lg-muted: #6E6A8E;
-  --lg-line: #ECE4F7;
-  --lg-primary: #6C5CE7;
-  --lg-primary-ink: #FFFFFF;
-  --lg-primary-soft: #EAE6FF;
-  --lg-sun: #FFB300;
-  --lg-mint: #2ECC9A;
-  --lg-coral: #FF6B6B;
-  --lg-sky: #4DA3FF;
-  --lg-radius: 18px;
-  --lg-shadow: 0 6px 0 rgba(45, 42, 74, .08), 0 12px 28px rgba(45, 42, 74, .10);
-  --lg-btn-shadow: 0 2px 6px rgba(45, 42, 74, .14);
-  --lg-font: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --lg-bar-h: 64px;
-}
+
 
 /* ---------- фон і базова типографіка для сторінок ігор ---------- */
 html.lg body.lg-game {
@@ -310,15 +291,15 @@ html.lg-wait body { opacity: .001 !important; transition: none; }
 html body { transition: opacity .15s ease-out; }
 
 /* повний екран: угорі чорна смуга (як у шахових застосунках) — вміст починається під нею */
-html.lg-fs { --fs-top: 28px; background: #1B2133; }
-html.lg-fs body { border-top: var(--fs-top) solid #1B2133; box-sizing: border-box; }
+html.lg-fs { --fs-top: 28px; background: var(--app-bg); }
+html.lg-fs body { border-top: var(--fs-top) solid var(--app-bg); box-sizing: border-box; }
 
 /* ================= Новий дизайн ігрових екранів (урок, задача, гра з роботом) =================
    Чорне тло й Manrope, як у Профілі; нижня панель — темні «плитки» як у Magnus, підказка з бірюзовою лампочкою. */
-html.lg.lg-night { --lg-bg: #1B2133; --lg-surface: #262D42; --lg-surface-2: #30384F; --lg-line: #343C55; --lg-muted: #8c8c8c; --mg-acc: #2ee6b8;
-  --lg-font: Manrope, 'Nunito', system-ui, sans-serif; background: #1B2133; }
-html.lg.lg-night body.lg-game { background: #1B2133; font-family: var(--lg-font); }
-html.lg .lg-nav { background: #262D42; padding: 7px 10px calc(8px + env(safe-area-inset-bottom)); gap: 10px; }
+html.lg.lg-night { --lg-bg: var(--app-bg); --lg-surface: var(--app-panel); --lg-surface-2: #30384F; --lg-line: #343C55; --lg-muted: var(--app-muted); --mg-acc: #2ee6b8;
+  --lg-font: Manrope, 'Nunito', system-ui, sans-serif; background: var(--app-bg); }
+html.lg.lg-night body.lg-game { background: var(--app-bg); font-family: var(--lg-font); }
+html.lg .lg-nav { background: var(--app-panel); padding: 7px 10px calc(8px + env(safe-area-inset-bottom)); gap: 10px; }
 html.lg .lg-nav-btn { background: #30384F; color: #fff; box-shadow: none; border-radius: 14px; font: 700 12px Manrope, var(--lg-font), sans-serif; }
 html.lg .lg-nav-btn:active { background: #3A4360; transform: scale(.97); box-shadow: none; }
 html.lg .lg-nav-btn .ico svg { width: 23px; height: 23px; }
@@ -343,7 +324,7 @@ html.lg.lg-night .lg-btn-primary { background: #2ee6b8; color: #04241d; border-c
 .lg-result-app { text-align: center; }
 .lg-result-app .lg-result-hero { width: 104px; height: 104px; margin-bottom: 8px; }
 .lg-result-app h2 { font-size: 30px !important; margin: 0 !important; }
-.lg-result-sub { margin: 4px 0 16px !important; font: 700 15px/1.3 Manrope, var(--lg-font), sans-serif !important; color: #8c8c8c; }
+.lg-result-sub { margin: 4px 0 16px !important; font: 700 15px/1.3 Manrope, var(--lg-font), sans-serif !important; color: var(--app-muted); }
 .lg-result-wide { display: flex; flex-direction: column; gap: 10px; }
 .lg-wide-btn { display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; border-radius: 16px !important; font: 800 18px Manrope, var(--lg-font), sans-serif !important; text-decoration: none; box-sizing: border-box; }
 .lg-wide-btn:focus, .lg-wide-btn:focus-visible { outline: none; }
@@ -355,7 +336,7 @@ html.lg .lg-nav .lg-nav-btn.on { color: #fff; background: #3A4360; }
 html.lg .lg-nav .lg-nav-btn:disabled { opacity: .35; }
 html.lg .lg-nav .lg-ctl-copy .ico { font-size: 18px; line-height: 1; }
 html.lg .lg-nav .lg-nav-btn .lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.lg-top-btn.lg-exit { position: fixed; top: calc(8px + env(safe-area-inset-top) + var(--fs-top, 0px)); left: 8px; z-index: 50; width: 38px; height: 38px; background: #262D42; text-decoration: none; }
+.lg-top-btn.lg-exit { position: fixed; top: calc(8px + env(safe-area-inset-top) + var(--fs-top, 0px)); left: 8px; z-index: 50; width: 38px; height: 38px; background: var(--app-panel); text-decoration: none; }
 .lg-top-btn.lg-exit svg { width: 21px; height: 21px; }
 /* де вже є своя стрілка «назад» (уроки) — друга не потрібна */
 body:has(.lv-back, .lg-run-menu) .lg-exit { display: none !important; }
@@ -370,7 +351,7 @@ html.lg .lg-nav-btn .lbl { opacity: .85; }
 /* Telegram Mini App: повним екраном керує Telegram (наша ⛶ не потрібна); зверху — місце під кнопки Telegram */
 html.lg-tg .lg-top-fs, html.lg-tg .lv-fs, html.lg-tg #p-fs { display: none !important; }
 html.lg-tg { --fs-top: var(--tg-top, 0px); }
-html.lg-tg body { border-top: var(--fs-top) solid #1B2133; box-sizing: border-box; }
+html.lg-tg body { border-top: var(--fs-top) solid var(--app-bg); box-sizing: border-box; }
 /* у Telegram є своя кнопка «Назад» угорі — нашу стрілку ‹ не показуємо (місце лишаємо, щоб назва була по центру) */
 html.lg-tg .lg-exit { display: none !important; }
 html.lg-tg .lv-back, html.lg-tg .lg-run-menu, html.lg-tg .lv-vid-back, html.lg-tg .lg-top-back { visibility: hidden !important; }
@@ -385,7 +366,7 @@ html, body, * { -webkit-tap-highlight-color: transparent; }
 
 /* ---------- «Гайд» на весь екран (shared/guide.js) ---------- */
 .gd { position: fixed; inset: 0; top: var(--fs-top, 0px); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 10px;
-  padding: calc(8px + env(safe-area-inset-top)) 12px 10px; box-sizing: border-box; background: #1B2133; color: #fff;
+  padding: calc(8px + env(safe-area-inset-top)) 12px 10px; box-sizing: border-box; background: var(--app-bg); color: #fff;
   font-family: Manrope, var(--lg-font), sans-serif; animation: gdIn .2s ease-out; overflow: hidden; }
 .gd.out { animation: gdOut .18s ease-in forwards; }
 @keyframes gdIn { from { opacity: 0; transform: translateY(12px); } }
@@ -421,3 +402,4 @@ cg-board square.gd-dot { background: radial-gradient(rgba(20, 85, 30, .6) 19%, t
 cg-board square.gd-cross { background: linear-gradient(45deg, transparent 44%, rgba(230, 40, 40, .85) 44%, rgba(230, 40, 40, .85) 56%, transparent 56%),
   linear-gradient(-45deg, transparent 44%, rgba(230, 40, 40, .85) 44%, rgba(230, 40, 40, .85) 56%, transparent 56%); }
 cg-board square.gd-apple { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z' fill='%23FFC93C' stroke='%23C98A00' stroke-width='1.2'/%3E%3C/svg%3E") center / 62% no-repeat; }
+

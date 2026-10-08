@@ -1,0 +1,36 @@
+/* Кольори, шрифти і розміри всього застосунку змінюються тут. */
+:root {
+  --lg-bg: #FFF7EC;
+  --lg-bg-2: #FDEBD3;
+  --lg-surface: #FFFFFF;
+  --lg-surface-2: #F6F1FF;
+  --lg-ink: #2D2A4A;
+  --lg-muted: #6E6A8E;
+  --lg-line: #ECE4F7;
+  --lg-primary: #6C5CE7;
+  --lg-primary-ink: #FFFFFF;
+  --lg-primary-soft: #EAE6FF;
+  --lg-sun: #FFB300;
+  --lg-mint: #2ECC9A;
+  --lg-coral: #FF6B6B;
+  --lg-sky: #4DA3FF;
+  --lg-radius: 18px;
+  --lg-shadow: 0 6px 0 rgba(45, 42, 74, .08), 0 12px 28px rgba(45, 42, 74, .10);
+  --lg-btn-shadow: 0 2px 6px rgba(45, 42, 74, .14);
+  --lg-font: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --lg-bar-h: 64px;
+}
+:root {
+  --ap-bg: #14132B; --ap-bg2: #1C1B3A; --ap-card: #25244A; --ap-card2: #2E2D57; --ap-line: #3A3968;
+  --ap-ink: #FFFFFF; --ap-muted: #A9A7D6; --ap-violet: #7C6CF0; --ap-green: #2ECC9A; --ap-orange: #FF9F1C; --ap-red: #FF5C6C; --ap-blue: #3FA7F5;
+  --ap-r: 20px;
+}
+:root {
+  --app-bg: #1B2133;
+  --app-panel: #262D42;
+  --app-border: #20263A;
+  --app-muted: #8C8C8C;
+  --app-accent: #2ECC9A;
+  --app-font: Manrope, var(--lg-font), sans-serif;
+  --app-control-size: 44px;
+}

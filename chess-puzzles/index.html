@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="color-scheme" content="dark">
-  <style id="no-flash">html, body { background: #1B2133; color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
+  <style id="no-flash">html, body { background: var(--app-bg, #1B2133); color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1790605844">
-  <link rel="stylesheet" href="../shared/play.css?v=1790605844">
+  <link rel="stylesheet" href="../shared/kit.css?v=1791477054">
+  <link rel="stylesheet" href="../shared/play.css?v=1791477054">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
     .mt-count:empty { display: none; }
     .mt[data-mode="puzzle"]:not([data-lesson]) .mt-navrow .mt-count { cursor: pointer; border-bottom: 2px dotted rgba(255,255,255,.5); border-radius: 0; }
-    .pk { position: fixed; left: 0; right: 0; bottom: 0; top: var(--fs-top, 0px); z-index: 2500; background: #1B2133; color: #fff; overflow-y: auto; padding: calc(8px + var(--tg-top, 0px) + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); box-sizing: border-box; font-family: Manrope, var(--lg-font), sans-serif; }
+    .pk { position: fixed; left: 0; right: 0; bottom: 0; top: var(--fs-top, 0px); z-index: 2500; background: var(--app-bg, #1B2133); color: #fff; overflow-y: auto; padding: calc(8px + var(--tg-top, 0px) + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); box-sizing: border-box; font-family: Manrope, var(--lg-font), sans-serif; }
     .pk > * { max-width: 560px; margin-left: auto; margin-right: auto; }
     .pk-top { display: flex; align-items: center; gap: 8px; min-height: 52px; }
     .pk-top b { font: 800 22px Manrope, sans-serif; }
@@ -106,29 +106,29 @@
     .mt .mt-top { position: fixed; z-index: 30; top: calc(8px + env(safe-area-inset-top) + var(--fs-top, 0px)); left: 0; right: 0; display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; width: auto; margin: 0; padding: 0 10px; }
     .mt { padding-top: 50px; box-sizing: border-box; }
     .mt[data-mode="menu"] > .mt-top { display: grid !important; }
-    .mt-back { width: 40px; height: 40px; border-radius: 50%; background: #262D42; color: #fff; display: grid; place-items: center; text-decoration: none; font: 400 30px/1 Manrope, sans-serif; padding-bottom: 4px; box-sizing: border-box; }
+    .mt-back { width: 40px; height: 40px; border-radius: 50%; background: var(--app-panel); color: #fff; display: grid; place-items: center; text-decoration: none; font: 400 30px/1 Manrope, sans-serif; padding-bottom: 4px; box-sizing: border-box; }
     .mt-top .mt-goal { justify-self: center; min-width: 0; }
     .mt-navrow { display: flex; justify-content: center; }
     .mt-navrow .mt-nav { gap: 4px; }
     .mt-navrow .mt-count { padding: 0 10px; border: 0; background: none; font: 700 15px Manrope, sans-serif; letter-spacing: 1px; color: #fff; }
-    .mt-navrow .mt-arr { width: 40px; height: 40px; border-radius: 50%; background: #262D42; font: 400 26px/1 Manrope, sans-serif; opacity: 1 !important; }
+    .mt-navrow .mt-arr { width: 40px; height: 40px; border-radius: 50%; background: var(--app-panel); font: 400 26px/1 Manrope, sans-serif; opacity: 1 !important; }
     .mt:not([data-mode="puzzle"]) .mt-navrow .mt-count { display: none; }
     .mt-fsslot { display: flex; justify-content: flex-end; }
-    .mt-fsslot .lg-top-fs { position: static !important; width: 40px !important; height: 40px !important; border-radius: 50% !important; background: #262D42 !important; }
+    .mt-fsslot .lg-top-fs { position: static !important; width: 40px !important; height: 40px !important; border-radius: 50% !important; background: var(--app-panel) !important; }
     .mt-fsslot .lg-top-fs svg { width: 20px !important; height: 20px !important; }
     .mt-goal { flex-direction: column; gap: 2px; font: 700 16px Manrope, var(--lg-font), sans-serif; }
-    .mt-goal .mt-sec { display: block; font: 700 11.5px Manrope, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #8c8c8c; }
+    .mt-goal .mt-sec { display: block; font: 700 11.5px Manrope, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--app-muted); }
     .mt-goal .mt-who { display: flex; align-items: center; gap: 7px; }
     .mt-goal.ok { color: #2ee6b8; } .mt-goal.bad { color: #F5C542; }
-    .mt-task { font: 600 14px/1.35 Manrope, var(--lg-font), sans-serif; color: #8c8c8c; }
+    .mt-task { font: 600 14px/1.35 Manrope, var(--lg-font), sans-serif; color: var(--app-muted); }
     .mt-side { border-color: #555; }
     /* меню розділів — як «Практика»: рядки на чорному з кружечками кольору розділу */
-    .mt-menu h2 { font: 700 11.5px Manrope, sans-serif !important; letter-spacing: 1.5px; text-transform: uppercase; color: #8c8c8c !important; margin: 14px 6px 6px !important; }
+    .mt-menu h2 { font: 700 11.5px Manrope, sans-serif !important; letter-spacing: 1.5px; text-transform: uppercase; color: var(--app-muted) !important; margin: 14px 6px 6px !important; }
     .mt-list { gap: 0 !important; }
-    .mt-card { background: none !important; border: 0 !important; border-top: 1px solid #20263A !important; border-radius: 0 !important; box-shadow: none !important; color: #fff !important; }
+    .mt-card { background: none !important; border: 0 !important; border-top: 1px solid var(--app-border) !important; border-radius: 0 !important; box-shadow: none !important; color: #fff !important; }
     .mt-card .ic { border-radius: 50% !important; background: #1d1d1d !important; }
     .mt-card b { font-family: Manrope, sans-serif !important; font-weight: 700 !important; }
-    .mt-card small { font-family: Manrope, sans-serif !important; color: #8c8c8c !important; opacity: 1 !important; }
+    .mt-card small { font-family: Manrope, sans-serif !important; color: var(--app-muted) !important; opacity: 1 !important; }
     /* задачі як урок (?lesson): угорі ‹ НАЗВА ⛶ і кружечки, Пан Сова з бульбашкою; стрілок задач і верхнього рядка задач немає */
     .mt[data-lesson] > .mt-top, .mt[data-lesson] > .mt-navrow { display: none !important; }
     .mt[data-lesson] .lv-say .mt-goal { display: none; }
@@ -149,7 +149,7 @@
     <section class="mt-menu" id="menu" aria-label="Розділи задач"></section>
     <div class="mt-navrow"><span class="mt-nav"><button type="button" class="mt-arr" id="pv" aria-label="Попередня задача">‹</button><span class="mt-count" id="count"></span><button type="button" class="mt-arr" id="nx" aria-label="Наступна задача">›</button></span></div>
     <div class="lg-board-wrap" id="wrap"><div class="lg-board-el" id="board"></div></div>
-    <div class="mt-task" id="task"></div>
+    <div class="mt-task" id="task" role="status" aria-live="polite" aria-atomic="true"></div>
     <div class="lg-controls">
       <button type="button" id="list"><span class="ico">📋</span><span class="lbl">Розділи</span></button>
       <button type="button" id="hint"><span class="ico">💡</span><span class="lbl">Підказка</span></button>
@@ -158,9 +158,10 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1790605844"></script>
-  <script src="../shared/kit.js?v=1790605844" data-game="mate" data-night="on"></script>
-  <script src="../shared/vid.js?v=1790605844"></script>
-  <script type="module" src="mate.js?v=1790605844"></script>
+  <script src="../shared/games.js?v=1791477054"></script>
+  <script src="../shared/kit.js?v=1791477054" data-game="mate" data-night="on"></script>
+  <script src="../shared/vid.js?v=1791477054"></script>
+  <script type="module" src="mate.js?v=1791477054"></script>
 </body>
 </html>
+

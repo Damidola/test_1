@@ -1,7 +1,10 @@
 /* Кружечки рівнів угорі уроку (як в уроках фігур): зелений ✓ — без помилок, жовтий ✓ — з помилками,
    поточний — з обводкою, далі — закриті, доки не пройдено попередній. Результати — LG.store 'lvl:<ключ>'. */
-export function createLevels(el, key, n, onPick) {
-  const LG = window.LG, get = () => LG.store.get('lvl:' + key, []);
+export function createLevels(el, key, n, onPick, ids) {
+  const LG = window.LG;
+  const get = () => ids ? ids.map(id => LG.store.get('lvlid:' + key, {})[id] || null) : LG.store.get('lvl:' + key, []);
+  // Індексний запис лишається для спільного екрана завершення; джерело прогресу — ID.
+  if (ids) LG.store.set('lvl:' + key, get());
   let cur = 0;
   const open = () => { const r = get(); let i = 0; while (i < n - 1 && r[i]) i++; return r[n - 1] ? 0 : i; };
   function render() {
@@ -31,7 +34,7 @@ export function createLevels(el, key, n, onPick) {
     open,
     set(i) { cur = i; render(); },
     // рівень пройдено: perfect — без помилок (жовтий не «перефарбовує» зелений)
-    done(i, perfect) { const r = get(); if (r[i] !== 'perfect') r[i] = perfect ? 'perfect' : 'passed'; LG.store.set('lvl:' + key, r); render(); },
+    done(i, perfect) { const r = get(); if (r[i] !== 'perfect') r[i] = perfect ? 'perfect' : 'passed'; if (ids) { const byId = LG.store.get('lvlid:' + key, {}); byId[ids[i]] = r[i]; LG.store.set('lvlid:' + key, byId); } LG.store.set('lvl:' + key, r); render(); },
     render
   };
 }
@@ -69,7 +72,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1790605844').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1791477054').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';
@@ -136,3 +139,4 @@ function mountTeacher(main) {
   main.addEventListener('pointerdown', () => { hint.hidden = true; arm(); }, true);
   arm();
 }
+
