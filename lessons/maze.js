@@ -6,6 +6,7 @@ import { createLevels, lessonDone } from '../shared/levels.js?v=1791469100';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
+const currentKey = 'maze:current:' + K, introKey = 'maze:intro:' + K;
 applyBoardLook();
 $('title').textContent = M.title; document.title = M.title;
 $('intro-text').textContent = M.text;
@@ -79,7 +80,6 @@ function go(to) {
   danger();
   if (solved(L, st)) return win();
   if (same(at, L.to) && st.left.length) say('Спершу зʼїж усі фігури суперника!', 'bad');
-
 }
 const cellAt = (x, y) => { const d = document.elementFromPoint(x, y); const c = d && d.closest('.mz-grid > div:not(.mz-piece)'); return c ? [+c.dataset.c, +c.dataset.r] : null; };
 // перетягування фігури пальцем (як на звичайній дошці); короткий дотик — вибір / хід тапом
