@@ -8,7 +8,7 @@ export function syncPuzzleProgress(store, data) {
     const kept = Object.fromEntries(Object.entries(results).filter(([id]) => valid.has(id)));
     if (solved.length !== old.length) store.set('puz:' + section, solved);
     if (Object.keys(kept).length !== Object.keys(results).length) store.set('puzres:' + section, kept);
-    if ((prior && prior !== signature) || (!prior && rows[0]?.[5]?.version === 2)) {
+    if ((prior && prior !== signature) || (!prior && rows[0]?.[5]?.version >= 2)) {
       store.set('puzopen:' + section, 0); store.set('lvl:puz-' + section, []);
     }
     if (prior !== signature) store.set('puzbank:' + section, signature);

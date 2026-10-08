@@ -1,18 +1,18 @@
-import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791478208';
-import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791478208';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791478208';
-import { bestUci, warmUp } from '../shared/engine.js?v=1791478208';
+import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791480500';
+import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791480500';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791480500';
+import { bestUci, warmUp } from '../shared/engine.js?v=1791480500';
 /* Шахові задачі: список розділів → задача або практика.
    Мат і тактика — задачі Lichess; шах — авторські навчальні позиції (chess-puzzles/puzzles.json). Спершу сам робиться хід
    суперника, далі дитина знаходить хід (або кілька ходів), суперник відповідає за рішенням Lichess.
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1791478208';
-import { createRules } from '../chess/rules.js?v=1791478208';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791478208';
-import { hintMove } from '../shared/ai.js?v=1791478208';
-import { toggleGuide, introGuide } from '../shared/guide.js?v=1791478208';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1791480500';
+import { createRules } from '../chess/rules.js?v=1791480500';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791480500';
+import { hintMove } from '../shared/ai.js?v=1791480500';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1791480500';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -34,7 +34,7 @@ const MATE_SEC = k => k.startsWith('m1') || k === 'mate2';
 const CHK_ROLE = Object.fromEntries(Object.entries(PUZZLE_SECTIONS).filter(([, s]) => s.role).map(([id, s]) => [id, s.role]));
 const RU = { rook: 'турою', bishop: 'слоном', queen: 'ферзем', knight: 'конем', pawn: 'пішаком' };
 function ruleCheck(p, m) {
-  const goal = PUZZLE_SECTIONS[sec];
+  const goal = { ...PUZZLE_SECTIONS[sec], ...DATA[sec]?.[idx]?.[5] };
   if (!goal?.objective) return null;
   const result = judgePuzzleMove(p, m, goal);
   return [result.ok, result.message];
@@ -64,9 +64,6 @@ const sound = (p, m) => LG.play(p.board.get(m.to) ? 'capture' : 'move');
 function playUci(p, uci) { const m = parseUci(uci), q = p.clone(); sound(p, m); q.play(m); return { q, lm: [makeSquare(m.from), makeSquare(m.to)] }; }
 const promoFor = (p, from, to) => p.board.get(parseSquare(from))?.role === 'pawn' && (to[1] === '8' || to[1] === '1');
 const allowMoves = () => board.setMovable(userColor, compat.chessgroundDests(pos));
-let goodT = 0;
-const good = () => { clearTimeout(goodT); wrap.classList.remove('good'); void wrap.offsetWidth; wrap.classList.add('good'); goodT = setTimeout(() => wrap.classList.remove('good'), 900); };
-const shake = () => { wrap.classList.remove('wrong'); void wrap.offsetWidth; wrap.classList.add('wrong'); };
 
 // Тимчасовий напис під дошкою
 let flash = 0;
@@ -193,7 +190,8 @@ function opponent() { // хід суперника з рішення Lichess
 }
 function paint() {
   const info = INFO[sec];
-  if (!flash && !(levels && done)) $('task').textContent = done && DATA[sec]?.[idx]?.[5]?.explanation ? DATA[sec][idx][5].explanation : TASK[sec] || '';
+  const meta = DATA[sec]?.[idx]?.[5];
+  if (!flash && !(levels && done)) $('task').textContent = done && meta?.explanation ? meta.explanation : meta?.capture ? `Побий чорну фігуру ${RU[meta.role]} з шахом. Збережи свою фігуру.` : TASK[sec] || '';
   if (mode === 'practice') {
     $('goal').innerHTML = `${icon(info.ic)} ${info.title}`;
     $('lives').textContent = ''; $('count').textContent = '🏆 ' + LG.store.get('prac:' + sec, 0);
@@ -250,13 +248,11 @@ async function puzzleMove(from, to) {
       }, 1500);
       return;
     }
-    shake();
     if (!rule) say(MATE_SEC(sec) ? 'Це не мат — спробуй ще 🙂' : 'Не той хід — спробуй ще 🙂');
     setTimeout(back, 450);
     return;
   }
   const { q, lm } = playUci(pos, from + to + promo);
-  good();
   pos = q; step++; hintStage = 0; board.clearHint();
   show(pos, lm);
   if (step >= line.length || pos.isCheckmate()) return solved();
@@ -411,7 +407,7 @@ function puzzleSlide(k, [, fen, moves, , , meta]) {
       p.play(m); continue;
     }
     if (role) {
-      const all = checksBy(p, role);
+      const all = checksBy(p, role, meta);
       steps.push({ say: all.length > 1 ? `Шах ${RU[role]} можна поставити ${all.length === 2 ? 'двома' : all.length === 3 ? 'трьома' : all.length} способами 👇` : `Ось хід ${RU[role]}, що нападає на короля 👇`, arrows: all.map(([a, b]) => a + b).join(' '), wait: 3000 });
       p.play(m);
       steps.push({ move: ln[i], say: meta?.explanation || 'Шах! Король під ударом — і нашу фігуру ніхто не може побити.', wait: 2800 });
@@ -478,7 +474,7 @@ function exampleIndices(k, n = 1, list = DATA[k]) {
 }
 function exampleIndex(k) { return exampleIndices(k)[0]; }
 // Усі ходи фігурою role, що дають шах
-function checksBy(p, role) { return puzzleMoves(p, { objective: 'safe-check', role }).map(m => [makeSquare(m.from), makeSquare(m.to)]); }
+function checksBy(p, role, meta = {}) { return puzzleMoves(p, { objective: 'safe-check', role, ...meta }).map(m => [makeSquare(m.from), makeSquare(m.to)]); }
 function cap(text) { clearTimeout(flash); flash = 0; $('task').classList.remove('say'); $('task').textContent = text; }
 const wait = (ms, t) => new Promise((ok, stop) => setTimeout(() => (t === token ? ok() : stop('stop')), ms));
 function startExample() {

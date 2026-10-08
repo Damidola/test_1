@@ -23,7 +23,7 @@ export function canCapture(pos, square) {
     return after.board.get(square)?.color !== target.color;
   });
 }
-export function judgePuzzleMove(pos, move, { objective = 'check', role } = {}) {
+export function judgePuzzleMove(pos, move, { objective = 'check', role, capture = false } = {}) {
   if (!move || !pos.isLegal(move)) return { ok: false, message: 'Цей хід не дозволений правилами.' };
   const piece = pos.board.get(move.from), after = pos.clone(); after.play(move);
   const fail = message => ({ ok: false, message });
@@ -35,6 +35,7 @@ export function judgePuzzleMove(pos, move, { objective = 'check', role } = {}) {
     return !want || want === kind ? { ok: true, kind } : fail(`Король урятований, але тут треба ${ways[want]}.`);
   }
   if (!after.isCheck()) return fail('Це ще не шах: король не під ударом.');
+  if (capture && !pos.board.get(move.to) && !(piece.role === 'pawn' && move.to === pos.epSquare)) return fail('Тут потрібно побити чорну фігуру з шахом.');
   if (role && (piece.role !== role || !after.ctx().checkers.has(move.to) || after.board.get(move.to)?.role !== role)) return fail(`Постав шах саме ${INSTRUMENT[role]}.`);
   if (objective === 'safe-check' && canCapture(after, move.to)) return fail('Шах є, але цю фігуру можна побити. Знайди шах без втрати фігури.');
   return { ok: true };

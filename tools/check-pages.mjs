@@ -11,6 +11,7 @@ const pw = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
 const ROOT = new URL('..', import.meta.url).pathname, SHOTS = process.argv[2] || process.env.CHECK_SCREENSHOTS;
 if (SHOTS) (await import('node:fs')).mkdirSync(SHOTS, { recursive: true });
 const base = 'http://chess.local/';
+const checkBank = JSON.parse(await readFile(join(ROOT, 'chess-puzzles/puzzles.json'), 'utf8'));
 const resultRoot = join(ROOT, 'node_modules/@badrap/result');
 const resultPackage = JSON.parse(await readFile(join(resultRoot, 'package.json'), 'utf8'));
 const resultEntry = resultPackage.module ? join(resultRoot, resultPackage.module) : fileURLToPath(import.meta.resolve('@badrap/result'));
@@ -51,8 +52,8 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto(base + url); await page.waitForTimeout(900);
   const vidBtn = await page.$('.lv-vid-go'); if (vidBtn) { await vidBtn.click(); await page.waitForTimeout(300); }
-  const guideBtn = await page.$('.gd-go'); if (guideBtn) { await guideBtn.click(); await page.waitForTimeout(100); }
-  const lessonBtn = await page.$('main[data-step="intro"] #go'); if (lessonBtn) { await lessonBtn.click(); await page.waitForTimeout(100); }
+  const guideBtn = await page.$('.gd-go'); if (guideBtn) { await guideBtn.click(); await page.waitForTimeout(250); }
+  const lessonBtn = await page.$('main[data-step="intro"] #go'); if (lessonBtn) { await lessonBtn.click(); await page.waitForTimeout(250); }
   const bad = await page.evaluate(() => {
     const out = [], vw = innerWidth;
     const board = [...document.querySelectorAll('cg-container')].map(e => e.getBoundingClientRect()).find(r => r.width > 50);
@@ -71,17 +72,41 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
   bad.push(...errors.map(e => 'JS: ' + e));
   if (errors.length) { await browser.close(); throw Error(`${url}: ${errors.join('; ')}`); }
   if (bad.length) { problems += bad.length; console.log(`✗ ${W}x${H} ${url}\n   ` + bad.join('\n   ')); } else console.log(`✓ ${W}x${H} ${url}`);
-  if (url === 'chess-puzzles/index.html#chk_rook') {
-    try {
-      await page.locator('.lg-nav .lg-hintbtn:visible').click();
-      if (!(await page.locator('#task').textContent()).includes('Шукай')) throw Error('Немає змістовної першої підказки');
-      const box = await page.locator('cg-board').boundingBox();
-      await page.touchscreen.tap(box.x + box.width / 16, box.y + box.height * 15 / 16);
-      await page.touchscreen.tap(box.x + box.width / 16, box.y + box.height / 16);
-      await page.waitForFunction(() => document.getElementById('wrap').classList.contains('solved'), undefined, { timeout: 2500 });
-      if (!(await page.locator('#task').textContent()).includes('Тура атакує')) throw Error('Немає пояснення після розв’язання');
-      console.log('✓ мобільний хід a1–a8, підказка і пояснення');
-    } catch (error) { problems++; console.log('✗ взаємодія з шахом: ' + error.message); }
+  if (/^chess-puzzles\/index.html#chk_/.test(url)) {
+    const section = url.split('#')[1], rows = checkBank[section];
+    for (const [i, row] of rows.entries()) {
+      try {
+        if (i) { await page.locator('#nx').click(); await page.waitForTimeout(100); }
+        const before = await page.locator('cg-board').boundingBox();
+        await page.evaluate(() => {
+          const board = document.querySelector('cg-board');
+          window.boardFrames = []; window.recordBoard = true;
+          const frame = () => {
+            const current = document.querySelector('cg-board'), r = current.getBoundingClientRect();
+            window.boardFrames.push({ x: r.x, y: r.y, width: r.width, height: r.height, sameNode: current === board, shadow: getComputedStyle(current).boxShadow });
+            if (window.recordBoard) requestAnimationFrame(frame);
+          }; frame();
+        });
+        await page.locator('.lg-nav .lg-hintbtn:visible').click();
+        if ((await page.locator('#task').textContent()) !== row[5].hint) throw Error('Немає підказки цієї позиції');
+        const tap = async square => page.touchscreen.tap(before.x + (square.charCodeAt(0) - 97 + .5) * before.width / 8, before.y + (8 - Number(square[1]) + .5) * before.height / 8);
+        await tap(row[2].slice(0, 2)); await tap(row[2].slice(2, 4));
+        await page.waitForFunction(() => document.getElementById('wrap').classList.contains('solved'), undefined, { timeout: 1500 });
+        await page.waitForTimeout(350); // дочекайся руху фігури, а не лише зміни моделі
+        if ((await page.locator('#task').textContent()) !== row[5].explanation) throw Error('Немає пояснення після ходу');
+        const frames = await page.evaluate(() => { window.recordBoard = false; return window.boardFrames; });
+        for (const r of frames) {
+          if (['x', 'y', 'width', 'height'].some(k => Math.abs(r[k] - before[k]) > 1)) throw Error('Дошка змістилася або змінила розмір після підказки/ходу');
+          if (!r.sameNode) throw Error('Дошка створюється заново під час ходу');
+          if (r.shadow !== 'none') throw Error('Рамка дошки спалахує після ходу');
+        }
+        const to = row[2].slice(2, 4), target = { x: before.x + (to.charCodeAt(0) - 97 + .5) * before.width / 8, y: before.y + (8 - Number(to[1]) + .5) * before.height / 8 };
+        const visiblePiece = await page.locator('cg-board piece.white.' + row[5].role).evaluateAll((pieces, target) => pieces.some(p => { const r = p.getBoundingClientRect(); return Math.abs(r.x + r.width / 2 - target.x) < 2 && Math.abs(r.y + r.height / 2 - target.y) < 2; }), target);
+        if (!visiblePiece) throw Error('Фігура не відображається на клітинці зробленого ходу');
+        console.log(`✓ ${W} ${section} ${i + 1}: хід, підказка, пояснення, нерухома дошка`);
+        if (SHOTS && [0, 6, 10].includes(i)) await page.screenshot({ path: join(SHOTS, `${W}_${section}_${i + 1}_solved.png`) });
+      } catch (error) { problems++; console.log(`✗ ${W} ${section} ${i + 1}: ${error.message}`); await page.evaluate(() => { window.recordBoard = false; }); break; }
+    }
   }
   if (SHOTS) await page.screenshot({ path: join(SHOTS, `${W}_${url.replace(/[^a-z0-9]+/gi, '_')}.png`) });
   await page.close();

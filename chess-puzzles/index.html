@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: var(--app-bg, #1B2133); color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1791478208">
-  <link rel="stylesheet" href="../shared/play.css?v=1791478208">
+  <link rel="stylesheet" href="../shared/kit.css?v=1791480500">
+  <link rel="stylesheet" href="../shared/play.css?v=1791480500">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
@@ -41,10 +41,6 @@
     .mt-side { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid #1d1b30; background: #fff; vertical-align: -2px; box-sizing: border-box; }
     .mt-side.b { background: #1d1b30; border-color: #fff; }
     .mt .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 16px - 40px - 60px - 30px - 30px)); }
-    .mt .lg-board-wrap.solved cg-board { box-shadow: 0 0 0 5px #2ECC9A; }
-    .mt .lg-board-wrap.good cg-board { box-shadow: 0 0 0 5px #40E0D0; transition: box-shadow .15s; }
-    .mt .lg-board-wrap.wrong cg-board { animation: mtshake .35s ease; }
-    @keyframes mtshake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
     .mt-task { min-height: 22px; max-width: min(100%, 520px); padding: 0 12px; box-sizing: border-box; text-align: center; font: 800 15px/1.3 var(--lg-font); color: var(--lg-ink); }
     .mt-task.say { color: #FF9F1C; }
     .mt-promo { position: absolute; inset: 0; z-index: 50; background: rgba(0, 0, 0, .45); }
@@ -121,6 +117,10 @@
     .mt-goal .mt-who { display: flex; align-items: center; gap: 7px; }
     .mt-goal.ok { color: #2ee6b8; } .mt-goal.bad { color: #F5C542; }
     .mt-task { font: 600 14px/1.35 Manrope, var(--lg-font), sans-serif; color: var(--app-muted); }
+    /* Текст змінюється, геометрія задачі — ні. Одна розкладка для всіх фігур. */
+    .mt:not([data-lesson])[data-mode="puzzle"] > .mt-task { flex: 0 0 96px; height: 96px; min-height: 96px; overflow-y: auto; padding-top: 8px; }
+    .mt:not([data-lesson])[data-mode="puzzle"] > .mt-navrow { flex: 0 0 40px; height: 40px; }
+    .mt .mt-top .mt-goal { height: 40px; justify-content: center; }
     .mt-side { border-color: #555; }
     /* меню розділів — як «Практика»: рядки на чорному з кружечками кольору розділу */
     .mt-menu h2 { font: 700 11.5px Manrope, sans-serif !important; letter-spacing: 1.5px; text-transform: uppercase; color: var(--app-muted) !important; margin: 14px 6px 6px !important; }
@@ -158,10 +158,10 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1791478208"></script>
-  <script src="../shared/kit.js?v=1791478208" data-game="mate" data-night="on"></script>
-  <script src="../shared/vid.js?v=1791478208"></script>
-  <script type="module" src="mate.js?v=1791478208"></script>
+  <script src="../shared/games.js?v=1791480500"></script>
+  <script src="../shared/kit.js?v=1791480500" data-game="mate" data-night="on"></script>
+  <script src="../shared/vid.js?v=1791480500"></script>
+  <script type="module" src="mate.js?v=1791480500"></script>
 </body>
 </html>
 

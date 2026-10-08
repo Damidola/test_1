@@ -1,28 +1,36 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { Chess, fen as FEN, parseUci, makeUci } from 'chessops';
+import { Chess, fen as FEN, parseUci, makeUci, makeSquare } from 'chessops';
 import { judgePuzzleMove, puzzleMoves, judgeLessonMove } from '../../shared/puzzle-rules.js';
 import { syncPuzzleProgress, puzzleStats } from '../../shared/puzzle-progress.js';
 import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../../shared/puzzle-catalog.js';
 const data = JSON.parse(readFileSync(new URL('../../chess-puzzles/puzzles.json', import.meta.url), 'utf8'));
 const position = fen => Chess.fromSetup(FEN.parseFen(fen).unwrap()).unwrap();
-test('авторські шахи: легальні, безпечні, з укриттям і навчальною ідеєю', () => {
+test('авторські шахи: різні королі, поступове ускладнення й обов’язкові взяття', () => {
   const ids = new Set(), positions = new Set();
   for (const role of ['rook', 'bishop', 'queen', 'knight', 'pawn']) {
-    const list = data['chk_' + role]; assert.equal(list.length, 30, role);
+    const list = data['chk_' + role]; assert.equal(list.length, 12, role);
+    const kings = new Set(), origins = new Set(); let priorCount = 0, captures = 0;
     for (const [id, fen, uci, , , meta] of list) {
       assert.ok(!ids.has(id) && !positions.has(fen), id + ': дубль'); ids.add(id); positions.add(fen);
       const pos = position(fen), move = parseUci(uci);
       assert.ok(!pos.isCheck() && !pos.isEnd(), id);
-      assert.ok(pos.board.pieces('black', 'pawn').size() >= 2, id + ': укриття');
-      assert.ok(pos.board.occupied.size() >= 7, id + ': осмислений контекст');
+      const count = pos.board.occupied.size();
+      kings.add(makeSquare(pos.board.kingOf('black'))); origins.add(uci.slice(0, 2));
+      assert.ok(count >= priorCount, id + ': поступове ускладнення'); priorCount = count;
+      if (meta.capture) { captures++; assert.equal(pos.board.get(move.to)?.color, 'black', id + ': взяття'); }
       assert.ok(judgePuzzleMove(pos, move, meta).ok, id + ': розв’язок');
       assert.equal(meta.role, role); assert.equal(meta.objective, 'safe-check');
-      assert.ok(meta.motif && meta.hint && meta.explanation && meta.version === 2, id + ': пояснення');
+      assert.ok(meta.motif && meta.hint && meta.explanation && meta.version === 3, id + ': пояснення');
       assert.deepEqual(meta.answers, puzzleMoves(pos, meta).map(makeUci), id + ': усі відповіді');
       if (['rook', 'bishop', 'queen'].includes(role)) assert.ok(Math.max(Math.abs(uci.charCodeAt(0) - uci.charCodeAt(2)), Math.abs(+uci[1] - +uci[3])) >= 2, id + ': навчальна лінія');
     }
+    assert.ok(kings.size >= 8, role + ': король у різних місцях');
+    assert.ok(origins.size >= 9, role + ': різні початкові клітинки');
+    assert.ok(captures >= 3, role + ': різні взяття');
+    assert.ok(list.slice(0, 3).every(r => r[4] <= 4), role + ': простий початок');
+    assert.ok(list.slice(-3).every(r => r[4] >= 10), role + ': складніші фінальні задачі');
   }
 });
 test('шах і безпечний шах — різні цілі; нелегальний хід не зараховується', () => {
@@ -60,4 +68,11 @@ test('каталог містить кожен розділ банку один 
   const ids = PUZZLE_GROUPS.flatMap(g => g.ids);
   assert.equal(new Set(ids).size, ids.length); assert.deepEqual([...ids].sort(), Object.keys(data).sort());
   for (const id of ids) assert.ok(PUZZLE_SECTIONS[id].task && PUZZLE_SECTIONS[id].title);
+});
+
+test('коли завдання вимагає взяття, звичайний шах не зараховується', () => {
+  const row = data.chk_rook[0], pos = position(row[1]);
+  const quiet = puzzleMoves(pos, { objective: 'safe-check', role: 'rook' }).find(m => !pos.board.get(m.to));
+  assert.ok(quiet);
+  assert.ok(!judgePuzzleMove(pos, quiet, { ...row[5], capture: true }).ok);
 });
