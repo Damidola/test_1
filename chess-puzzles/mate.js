@@ -1,18 +1,18 @@
-import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791477547';
-import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791477547';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791477547';
-import { bestUci, warmUp } from '../shared/engine.js?v=1791477547';
+import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791477816';
+import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791477816';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791477816';
+import { bestUci, warmUp } from '../shared/engine.js?v=1791477816';
 /* Шахові задачі: список розділів → задача або практика.
    Мат і тактика — задачі Lichess; шах — авторські навчальні позиції (chess-puzzles/puzzles.json). Спершу сам робиться хід
    суперника, далі дитина знаходить хід (або кілька ходів), суперник відповідає за рішенням Lichess.
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1791477547';
-import { createRules } from '../chess/rules.js?v=1791477547';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791477547';
-import { hintMove } from '../shared/ai.js?v=1791477547';
-import { toggleGuide, introGuide } from '../shared/guide.js?v=1791477547';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1791477816';
+import { createRules } from '../chess/rules.js?v=1791477816';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791477816';
+import { hintMove } from '../shared/ai.js?v=1791477816';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1791477816';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -169,6 +169,7 @@ $('list').addEventListener('click', () => { if (mode === 'practice') location.hr
 
 // ---------- задачі Lichess ----------
 function loadPuzzle() {
+  clearTimeout(flash); flash = 0; $('task').classList.remove('say');
   const [, fen, moves] = DATA[sec][idx];
   pos = Chess.fromSetup(FEN.parseFen(fen).unwrap()).unwrap();
   line = moves.split(' '); step = 0; mistakes = 0; done = false; hintStage = 0;
@@ -264,6 +265,7 @@ async function puzzleMove(from, to) {
   setTimeout(() => { if (t === token) opponent(); }, 500);
 }
 function solved() {
+  clearTimeout(flash); flash = 0; $('task').classList.remove('say');
   const meta = DATA[sec][idx][5];
   if (meta) { const king = makeSquare(pos.board.kingOf(pos.turn)); board.shapes([...pos.ctx().checkers].map(sq => ({ orig: makeSquare(sq), dest: king, brush: 'red' }))); }
   done = true; board.setMovable(null); wrap.classList.add('solved');

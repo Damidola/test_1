@@ -51,6 +51,8 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto(base + url); await page.waitForTimeout(900);
   const vidBtn = await page.$('.lv-vid-go'); if (vidBtn) { await vidBtn.click(); await page.waitForTimeout(300); }
+  const guideBtn = await page.$('.gd-go'); if (guideBtn) { await guideBtn.click(); await page.waitForTimeout(100); }
+  const lessonBtn = await page.$('main[data-step="intro"] #go'); if (lessonBtn) { await lessonBtn.click(); await page.waitForTimeout(100); }
   const bad = await page.evaluate(() => {
     const out = [], vw = innerWidth;
     const board = [...document.querySelectorAll('cg-container')].map(e => e.getBoundingClientRect()).find(r => r.width > 50);
@@ -67,6 +69,7 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
     return out;
   });
   bad.push(...errors.map(e => 'JS: ' + e));
+  if (errors.length) { await browser.close(); throw Error(`${url}: ${errors.join('; ')}`); }
   if (bad.length) { problems += bad.length; console.log(`✗ ${W}x${H} ${url}\n   ` + bad.join('\n   ')); } else console.log(`✓ ${W}x${H} ${url}`);
   if (url === 'chess-puzzles/index.html#chk_rook') {
     try {
