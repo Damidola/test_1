@@ -6,7 +6,7 @@
    move: кілька переміщень через пробіл; 5-та літера — перетворення (d7d8q); рокіровка — король на 2 клітинки або на свою туру;
    пішак навскоси на порожню клітинку — взяття на проході. */
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from './board.js?v=1791477816';
+import { createBoard } from './board.js?v=1791478208';
 
 const ROLE = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTER = { pawn: 'p', knight: 'n', bishop: 'b', rook: 'r', queen: 'q', king: 'k' };
@@ -82,8 +82,6 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
     <button type="button" class="gd-go">${button}</button>`;
   o.querySelector('.gd-title').textContent = title;
   // над сторінкою, але під нижньою панеллю: «Гайд» у панелі лишається видимим і закриває пояснення
-  const nav = document.querySelector('html.lg .lg-nav');
-  if (nav && nav.getClientRects().length && getComputedStyle(nav).display !== 'none') o.style.bottom = nav.offsetHeight + 'px';
   document.body.appendChild(o);
   document.documentElement.classList.add('gd-on');
   const $ = s => o.querySelector(s), say = $('.gd-say'), st = $('.gd-st');
@@ -91,6 +89,8 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
   const wait = (ms, t) => new Promise((ok, stop) => setTimeout(() => (t === token ? ok() : stop('stop')), ms));
 
   function fit() {
+    const nav = document.querySelector('html.lg .lg-nav');
+    o.style.bottom = nav && nav.getClientRects().length && getComputedStyle(nav).display !== 'none' ? nav.offsetHeight + 'px' : '0px';
     if (!board) return;
     const b = $('.gd-board'), room = o.clientHeight - [...o.children].filter(c => c !== $('.gd-stage') && c !== $('.gd-text')).reduce((h, c) => h + c.offsetHeight, 0) - 120 - 12 * o.children.length;
     b.style.width = Math.max(180, Math.min(o.clientWidth - 16, 520, room)) + 'px';
@@ -133,7 +133,7 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
   let offBack = null;
   const close = () => {
     token++; current = null; offBack && offBack();
-    removeEventListener('resize', fit); removeEventListener('keydown', key);
+    removeEventListener('resize', fit); removeEventListener('DOMContentLoaded', fit); removeEventListener('keydown', key);
     document.documentElement.classList.remove('gd-on');
     o.classList.add('out'); setTimeout(() => { if (board) board.destroy(); o.remove(); }, 180);
     onClose && onClose();
@@ -149,12 +149,14 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
     else if (e.target.closest('.gd-dots i')) goTo(+e.target.closest('.gd-dots i').dataset.i);
   });
   addEventListener('keydown', key);
+  addEventListener('DOMContentLoaded', fit, { once: true });
   if (slides.length) {
     board = createBoard($('.lg-board-el'));
     board.setMovable(null);
     addEventListener('resize', fit); fit(); setTimeout(fit, 60);
     play();
   }
+  if (!slides.length) fit();
   return close;
 }
 
