@@ -1,4 +1,3 @@
-import { noPieceOn, whitePawnOnAnyOf } from '../assert';
 import { arrow, assetUrl, pieceImg, toLevel } from '../util';
 import type { StageNoID } from './list';
 
@@ -10,61 +9,14 @@ const stage: StageNoID = {
   intro: i18n.learn.pawnIntro,
   illustration: pieceImg('pawn'),
   levels: [
-    {
-      goal: i18n.learn.pawnsMoveOneSquareOnly,
-      fen: '8/8/8/P7/8/8/8/8 w - -',
-      apples: 'f3',
-      nbMoves: 4,
-      shapes: [arrow('a5a6'), arrow('a6a7'), arrow('a7a8'), arrow('a8f3')],
-      explainPromotion: true,
-    },
-    {
-      goal: i18n.learn.mostOfTheTimePromotingToAQueenIsBest,
-      fen: '8/8/8/5P2/8/8/8/8 w - -',
-      apples: 'b6 c4 d7 e5 a8',
-      nbMoves: 8,
-    },
-    {
-      goal: i18n.learn.pawnsMoveForward,
-      fen: '8/8/8/8/8/4P3/8/8 w - -',
-      apples: 'c6 d5 d7',
-      nbMoves: 4,
-      shapes: [arrow('e3e4'), arrow('e4d5'), arrow('d5c6'), arrow('c6d7')],
-      failure: noPieceOn('e3 e4 c6 d5 d7'),
-    },
-    {
-      goal: i18n.learn.captureThenPromote,
-      fen: '8/8/8/8/8/1P6/8/8 w - -',
-      apples: 'b4 b6 c4 c6 c7 d6',
-      nbMoves: 8,
-    },
-    {
-      goal: i18n.learn.captureThenPromote,
-      fen: '8/8/8/8/8/3P4/8/8 w - -',
-      apples: 'c4 b5 b6 d5 d7 e6 c8',
-      failure: whitePawnOnAnyOf('b5 d4 d6 c7'),
-      nbMoves: 8,
-    },
-    {
-      goal: i18n.learn.useAllThePawns,
-      fen: '8/8/8/8/8/P1PP3P/8/8 w - -',
-      apples: 'b5 c5 d4 e5 g4',
-      nbMoves: 7,
-    },
-    {
-      goal: i18n.learn.aPawnOnTheSecondRank,
-      fen: '8/8/8/8/8/8/4P3/8 w - -',
-      apples: 'd6',
-      nbMoves: 3,
-      shapes: [arrow('e2e4')], // logic-games-kids: без «помилки» за хід на e3 — просто менше зірочок
-      cssClass: 'highlight-2nd-rank',
-    },
-    {
-      goal: i18n.learn.grabAllTheStarsNoNeedToPromote,
-      fen: '8/8/8/8/8/8/2PPPP2/8 w - -',
-      apples: 'c5 d5 e5 f5 d3 e4',
-      nbMoves: 9,
-    },
+    { goal: 'Пішак іде вперед. Збери полуницю!', fen: '8/8/8/8/8/4P3/8/8 w - -', apples: 'e4', nbMoves: 1, emptyApples: true },
+    { goal: 'З другого ряду можна піти на дві клітинки.', fen: '8/8/8/8/8/8/4P3/8 w - -', apples: 'e4', nbMoves: 1, emptyApples: true },
+    { goal: 'Пішак б’є навскіс. Побий обох пішаків!', fen: '8/8/8/8/8/4P3/8/8 w - -', apples: 'd4 c5', nbMoves: 2 },
+    { goal: 'Іди вперед, а потім бий навскіс.', fen: '8/8/8/8/8/4P3/8/8 w - -', apples: 'd5 c6', nbMoves: 3 },
+    { goal: 'Побий пішаків і перетворися на ферзя!', fen: '8/8/3P4/8/8/8/8/8 w - -', apples: 'e7 f8', nbMoves: 2, explainPromotion: true },
+    { goal: 'Перетвори пішака на ферзя та збери полуницю.', fen: '8/4P3/8/8/8/8/8/8 w - -', apples: 'b8 b4', nbMoves: 3, explainPromotion: true },
+    { goal: 'Використай обох пішаків — кожен б’є навскіс.', fen: '8/8/8/8/8/2P2P2/8/8 w - -', apples: 'b4 g4', nbMoves: 2 },
+    { goal: 'Збери всі ягоди обома пішаками.', fen: '8/8/8/8/8/2P2P2/8/8 w - -', apples: 'c4 f4', nbMoves: 2, emptyApples: true },
     // logic-games-kids: останній рівень — гра (пішаки піддаються); програш теж зараховується жовтим
     { goal: 'Пішакова битва! Доведи свого пішака до фінішу 🏁 (верхній ряд) — або побий усіх чорних.', fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w - -', nbMoves: 30, game: 'race', cssClass: 'lg-finish-top' },
   ].map(toLevel),

@@ -81,7 +81,7 @@ const secColor = (stageId: number): string => {
 // ---------- logic-games-kids: вчитель (Пан Сова) — угорі ліворуч, праворуч його слова ----------
 let teacherSvg: Promise<string> | undefined;
 const loadTeacher = () =>
-  (teacherSvg ||= fetch(new URL('../shared/opponents/toon-faust.svg', location.href).href + (document.querySelector('script[src*="app.js"]')?.getAttribute('src')?.match(/\?v=\d+/)?.[0] || ''))
+  (teacherSvg ||= fetch(new URL('../shared/opponents/toon-teacher.svg', location.href).href + (document.querySelector('script[src*="app.js"]')?.getAttribute('src')?.match(/\?v=\d+/)?.[0] || ''))
     .then(r => r.text())
     .catch(() => ''));
 // коли слова міняються — вчитель трохи «говорить» (рот рухається)
@@ -95,7 +95,7 @@ const teacherView = (ctrl: RunCtrl, key: string, mood: string): VNode => {
   }
   return div('.lg-teacher', {
     class: { talking: now < talkUntil && !mood, 'mood-happy': mood === 'happy', thinking: mood === 'thinking' },
-    attrs: { 'aria-label': 'Кіт Фауст' },
+    attrs: { 'aria-label': 'Пан Сова' },
     hook: { insert: (v: VNode) => void loadTeacher().then(t => ((v.elm as HTMLElement).innerHTML = t)) },
   });
 };

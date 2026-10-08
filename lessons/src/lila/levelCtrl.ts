@@ -80,6 +80,9 @@ export class LevelCtrl {
     withGround(this.initializeWithGround);
   }
 
+  singlePieceExercise = () => !this.blueprint.game && this.isAppleLevel() && this.chess.instance.board[this.blueprint.color].size() === 1;
+  lastSelected?: SquareName;
+
   makeChessDests = () => this.chess.dests(this.chess.instance, { illegal: this.blueprint.offerIllegalMove });
 
   initializeWithGround = (ground: CgApi) => {
@@ -99,8 +102,15 @@ export class LevelCtrl {
         color: chess.getColor(),
         dests: this.makeChessDests(),
         rookCastle: false,
+        ...(this.singlePieceExercise() ? { showDests: false } : {}),
       },
       events: {
+        select: (key: SquareName) => {
+          if (!this.singlePieceExercise()) return;
+          const own = chess.get(key)?.color === blueprint.color;
+          ground.set({ movable: { showDests: own && this.lastSelected === key } });
+          this.lastSelected = own ? key : undefined;
+        },
         move: (orig: SquareName, dest: SquareName) => {
           const piece = ground.state.pieces.get(dest);
           if (!piece || piece.color !== blueprint.color) return;
@@ -151,6 +161,8 @@ export class LevelCtrl {
     return (orig: SquareName, dest: SquareName, prom?: PromotionRole) => {
       this.armHint();
       if (blueprint.game) return this.gameMove(orig, dest, prom);
+      this.lastSelected = undefined;
+      if (this.singlePieceExercise()) ground.set({ selected: undefined, movable: { showDests: false } });
       vm.nbMoves++;
       const enemyRoleCaptured = enemyRoleToBeCaptured(orig, dest);
       const move = chess.move(orig, dest, prom);
@@ -201,7 +213,7 @@ export class LevelCtrl {
             ]);
           }, 600);
       } else {
-        ground.selectSquare(dest);
+        if (!this.singlePieceExercise()) ground.selectSquare(dest);
         if (!inScenario) {
           if (blueprint.color !== chess.getColor()) chess.instance.epSquare = undefined;
           chess.setColor(blueprint.color);
