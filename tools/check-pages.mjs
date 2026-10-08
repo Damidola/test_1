@@ -11,7 +11,9 @@ const pw = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
 const ROOT = new URL('..', import.meta.url).pathname, SHOTS = process.argv[2] || process.env.CHECK_SCREENSHOTS;
 if (SHOTS) (await import('node:fs')).mkdirSync(SHOTS, { recursive: true });
 const base = 'http://chess.local/';
-const resultEntry = fileURLToPath(import.meta.resolve('@badrap/result'));
+const resultRoot = join(ROOT, 'node_modules/@badrap/result');
+const resultPackage = JSON.parse(await readFile(join(resultRoot, 'package.json'), 'utf8'));
+const resultEntry = resultPackage.module ? join(resultRoot, resultPackage.module) : fileURLToPath(import.meta.resolve('@badrap/result'));
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.webmanifest': 'application/json' };
 // CDN-модулі читаються з установлених npm-пакетів; перевірка не потребує мережі або збірки.
 const chessops = join(ROOT, 'node_modules/chessops/dist/esm/index.js');
