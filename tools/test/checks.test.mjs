@@ -35,6 +35,14 @@ test('шах новою фігурою після перетворення не 
   const pos = position('6k1/4P1pp/8/8/8/8/8/K7 w - - 0 1');
   assert.ok(!judgePuzzleMove(pos, parseUci('e7e8q'), { objective: 'safe-check', role: 'pawn' }).ok);
 });
+test('взяття на проході може зняти шах і забрати пішака, що шахує', () => {
+  const pos = position('8/8/8/3k4/3p4/8/4P3/4R1K1 w - - 0 1');
+  const move = parseUci('e2e4');
+  assert.ok(judgePuzzleMove(pos, move, { objective: 'check', role: 'pawn' }).ok);
+  assert.ok(!judgePuzzleMove(pos, move, { objective: 'safe-check', role: 'pawn' }).ok);
+  pos.play(move);
+  assert.ok(judgePuzzleMove(pos, parseUci('d4e3'), { objective: 'escape:capture' }).ok);
+});
 test('рокіровка в міні-уроці приймає навчальний запис короля на g1', () => {
   const pos = position('4k3/8/8/8/8/8/8/4K2R w K - 0 1');
   assert.ok(judgeLessonMove(pos, parseUci('e1h1'), { ok: ['e1g1'] })[0]);

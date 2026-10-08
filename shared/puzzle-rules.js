@@ -11,11 +11,17 @@ export function legalMoves(pos) {
   return moves;
 }
 export function escapeKind(pos, move) {
-  if (pos.ctx().checkers.has(move.to)) return 'capture';
+  const after = pos.clone(); after.play(move);
+  if ([...pos.ctx().checkers].some(square => after.board.get(square)?.color !== pos.board.get(square).color)) return 'capture';
   return pos.board.get(move.from)?.role === 'king' ? 'run' : 'block';
 }
 export function canCapture(pos, square) {
-  return legalMoves(pos).some(move => move.to === square);
+  const target = pos.board.get(square);
+  if (!target) return false;
+  return legalMoves(pos).some(move => {
+    const after = pos.clone(); after.play(move);
+    return after.board.get(square)?.color !== target.color;
+  });
 }
 export function judgePuzzleMove(pos, move, { objective = 'check', role } = {}) {
   if (!move || !pos.isLegal(move)) return { ok: false, message: 'Цей хід не дозволений правилами.' };
