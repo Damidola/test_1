@@ -100,9 +100,9 @@ function mountTeacher(main) {
   if (!task) return;
   const LG = window.LG, ROOT = new URL('..', import.meta.url).href, VER = new URL(import.meta.url).search;
   const box = document.createElement('div'); box.className = 'lv-teach';
-  box.innerHTML = '<div class="lg-teacher" aria-label="Кіт Фауст"></div><div class="lv-say"><span class="lv-hint" hidden>💡 Підказка — дивись на дошку!</span></div>';
+  box.innerHTML = '<div class="lg-teacher" aria-label="Пан Сова"></div><div class="lv-say"><span class="lv-hint" hidden>💡 Підказка — дивись на дошку!</span></div>';
   const pic = box.firstChild, say = box.querySelector('.lv-say'), hint = box.querySelector('.lv-hint');
-  fetch(ROOT + 'shared/opponents/toon-faust.svg' + VER).then(r => r.text()).then(t => { pic.innerHTML = t; }).catch(() => {});
+  fetch(ROOT + 'shared/opponents/toon-teacher.svg' + VER).then(r => r.text()).then(t => { pic.innerHTML = t; }).catch(() => {});
   const goalWrap = goal && goal.parentElement !== main ? goal.parentElement : goal;
   if (goalWrap) say.prepend(goalWrap);
   say.insertBefore(task, hint);

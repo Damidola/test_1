@@ -4,7 +4,7 @@
 import { Chess, parseUci, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 import { createBoard } from '../shared/board.js?v=1790605844';
 import { goNext, markSeen } from '../shared/path.js?v=1790605844';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790605844';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791468545';
 import { toggleGuide } from '../shared/guide.js?v=1790605844';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');

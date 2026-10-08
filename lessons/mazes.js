@@ -61,16 +61,16 @@ export const MAZES = {
   pawn: {
     title: 'Пішак 1: лабіринт', piece: 'pawn', video: 'e015cjCtkl8', videoTitle: 'Знайомся з пішаком!',
     text: 'Пішак ходить лише вперед (з першого ряду — можна на дві клітинки), а б’є навскоси вперед. Дійшов до краю — стає ферзем!',
-    task: 'З’їж усі фігури й полуничку 🍓. Пішак б’є навскоси, на краю стає ферзем. Червоні клітинки під боєм — туди не можна!',
+    task: 'Спершу побий усіх чорних пішаків навскоси. На верхньому краю стань ферзем і з’їж полуничку 🍓!',
     levels: [
-      { w: 5, h: 5, from: [2, 4], to: [2, 0], walls: [], safe: true },
-      { w: 5, h: 5, from: [0, 4], to: [4, 0], walls: [], enemies: [[1, 3, 'pawn'], [2, 2, 'pawn'], [3, 1, 'pawn']], safe: true },
-      { w: 5, h: 5, from: [2, 4], to: [2, 0], walls: [[2, 3]], enemies: [[1, 3, 'knight'], [2, 2, 'knight']], safe: true },
-      { w: 5, h: 5, from: [1, 4], to: [4, 4], walls: [[1, 2]], enemies: [[2, 3, 'rook']], safe: true },
-      { w: 5, h: 5, from: [4, 4], to: [1, 4], walls: [[3, 1]], enemies: [[2, 2, 'knight'], [3, 3, 'pawn'], [2, 1, 'rook']], safe: true },
-      { w: 6, h: 6, from: [4, 5], to: [5, 5], walls: [[3, 0], [4, 0]], enemies: [[1, 4, 'knight'], [0, 4, 'rook'], [2, 1, 'knight'], [3, 2, 'knight']], safe: true },
-      { w: 6, h: 6, from: [1, 5], to: [0, 5], walls: [[1, 1], [0, 4]], enemies: [[0, 2, 'rook'], [4, 3, 'bishop'], [2, 4, 'rook'], [5, 1, 'rook'], [5, 0, 'pawn']], safe: true },
-      { w: 6, h: 6, from: [4, 5], to: [5, 5], walls: [[3, 0], [3, 2], [0, 4]], enemies: [[0, 0, 'bishop'], [2, 3, 'bishop'], [2, 1, 'knight'], [1, 0, 'pawn'], [5, 2, 'rook']], safe: true }
+      {"w": 5, "h": 5, "from": [2, 4], "to": [2, 0], "walls": []},
+      {"w": 5, "h": 5, "from": [0, 4], "to": [1, 0], "walls": [[0, 3]], "enemies": [[1, 3, "pawn"]]},
+      {"w": 5, "h": 5, "from": [2, 4], "to": [2, 0], "walls": [[2, 3], [1, 2]], "enemies": [[1, 3, "pawn"], [2, 2, "pawn"]]},
+      {"w": 5, "h": 5, "from": [0, 4], "to": [4, 0], "walls": [[0, 3], [1, 2], [2, 1]], "enemies": [[1, 3, "pawn"], [2, 2, "pawn"], [3, 1, "pawn"]]},
+      {"w": 5, "h": 5, "from": [4, 4], "to": [1, 4], "walls": [[4, 3], [3, 2]], "enemies": [[3, 3, "pawn"], [2, 2, "pawn"]]},
+      {"w": 6, "h": 6, "from": [1, 5], "to": [5, 5], "walls": [[1, 4], [2, 3], [3, 2]], "enemies": [[2, 4, "pawn"], [3, 3, "pawn"], [4, 2, "pawn"]]},
+      {"w": 6, "h": 6, "from": [4, 5], "to": [0, 5], "walls": [[4, 4], [3, 3], [2, 2]], "enemies": [[3, 4, "pawn"], [2, 3, "pawn"], [1, 2, "pawn"]]},
+      {"w": 6, "h": 6, "from": [0, 5], "to": [5, 5], "walls": [[0, 4], [1, 3], [2, 2], [3, 1]], "enemies": [[1, 4, "pawn"], [2, 3, "pawn"], [3, 2, "pawn"], [4, 1, "pawn"]]}
     ]
   },
   capture: {
@@ -141,6 +141,7 @@ export function movesFrom(lv, st) {
   for (const to of raw) {
     const hit = en.get(key(to));
     const next = { at: to, piece: st.piece === 'pawn' && to[1] === 0 ? 'queen' : st.piece, left: hit === undefined ? st.left : st.left.filter((_, i) => i !== hit) };
+    if (next.left.length && key(to) === key(lv.to)) continue; // полуничка доступна після всіх взяттів
     if (lv.safe && attacked(lv, next).has(key(to))) continue; // під бій ставати не можна
     out.push({ to, st: next });
   }

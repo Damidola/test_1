@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, movesFrom, solve, startState, attacked, solved } from './mazes.js?v=1790605844';
+import { MAZES, movesFrom, solve, startState, attacked, solved } from './mazes.js?v=1791468545';
 import { applyBoardLook, fitBoard } from '../shared/board.js?v=1790605844';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1790605844';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791468545';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -35,8 +35,8 @@ function load() {
   for (const [c, r, role] of st.left) cell([c, r]).innerHTML = '<img class="mz-en" alt="" src="' + pieceImg(role, 'b') + '">';
   pieceEl = document.createElement('div'); pieceEl.className = 'mz-piece'; pieceEl.innerHTML = '<img alt="" src="' + pieceImg(st.piece) + '">';
   grid.appendChild(pieceEl); place(false);
-  say(M.task || (idx === 0 ? 'З’їж полуничку 🍓! Перетягни фігуру або натисни на неї — крапки покажуть, куди можна піти.' : 'З’їж полуничку 🍓 якнайменшою кількістю ходів.'));
-  danger(); select(true);
+  say(M.task || (idx === 0 ? 'З’їж полуничку 🍓! Перетягни фігуру або натисни на неї, щоб побачити можливі ходи.' : 'З’їж полуничку 🍓 якнайменшою кількістю ходів.'));
+  danger(); select(false);
 }
 // ходи йдуть по черзі: наступний починається, коли попередній доїхав (інакше швидкі тапи зрізають по діагоналі)
 let queue = [], qT = 0, moving = false;
@@ -78,7 +78,7 @@ function go(to) {
   danger();
   if (solved(L, st)) return win();
   if (same(at, L.to) && st.left.length) say('Спершу зʼїж усі фігури суперника!', 'bad');
-  setTimeout(() => select(true), 280);
+
 }
 const cellAt = (x, y) => { const d = document.elementFromPoint(x, y); const c = d && d.closest('.mz-grid > div:not(.mz-piece)'); return c ? [+c.dataset.c, +c.dataset.r] : null; };
 // перетягування фігури пальцем (як на звичайній дошці); короткий дотик — вибір / хід тапом
@@ -93,7 +93,7 @@ grid.addEventListener('pointermove', e => {
   if (!drag || e.pointerId !== drag.id) return;
   const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (!drag.moved && Math.hypot(dx, dy) < 6) return;
-  if (!drag.moved) { drag.moved = true; stopQueue(); select(true); pieceEl.classList.add('drag'); }
+  if (!drag.moved) { drag.moved = true; stopQueue(); select(false); pieceEl.classList.add('drag'); }
   pieceEl.style.transition = 'none';
   const w = pieceEl.offsetWidth, h = pieceEl.offsetHeight;
   pieceEl.style.transform = 'translate(' + (at[0] * w + dx) + 'px,' + (at[1] * h + dy) + 'px) scale(1.15)';
