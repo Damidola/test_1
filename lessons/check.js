@@ -1,13 +1,13 @@
-import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791626671';
-import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791626671';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791626671';
+import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791627703';
+import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791627703';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791627703';
 /* Урок «Шах»: що таке шах, три способи врятуватися (утекти, побити, закритися) — приклад зі стрілками,
    потім прості завдання: 5 — «постав шах», по одному — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791626671';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791626671';
-import { toggleGuide } from '../shared/guide.js?v=1791626671';
+import { createBoard } from '../shared/board.js?v=1791627703';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791627703';
+import { toggleGuide } from '../shared/guide.js?v=1791627703';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json' + new URL(import.meta.url).search, import.meta.url))).json();
@@ -90,10 +90,10 @@ const GUIDE = { icon: '⚠️', title: 'Що таке шах?', intro: introBox.
     { say: 'Чорна тура шахує білого короля!', arrows: 'e8e1:red', wait: 2400 },
     { say: 'Утікаємо: король відходить з лінії тури.', arrows: 'e1d2', wait: 1800 }, { move: 'e1d2' },
     { say: 'Урятувався! Тура його більше не б’є.', wait: 2400 }] },
-  { fen: '4r2k/8/8/8/R7/8/8/4K3 w - - 0 1', title: '🛡️ Закритися', steps: [
-    { say: 'Знову шах турою по лінії e.', arrows: 'e8e1:red', wait: 2200 },
-    { say: 'Закриваємося: наша тура стає між королем і нападником.', arrows: 'a4e4:blue', wait: 1800 }, { move: 'a4e4' },
-    { say: 'Лінію закрито — шаху немає.', wait: 2400 }] },
+  { fen: '8/8/8/1k6/8/K2r4/PP6/8 w - - 0 1', title: '🛡️ Закритися', steps: [
+    { say: 'Тура шахує по третьому ряду.', arrows: 'd3a3:red', wait: 2200 },
+    { say: 'Закриваємося пішаком, якого захищатиме король.', arrows: 'b2b3:blue', wait: 1800 }, { move: 'b2b3' },
+    { say: 'Шаху немає. Король захищає пішака: тура не може вигідно його побити.', arrows: 'a3b3:green', wait: 2400 }] },
   { fen: '4r2k/8/8/1B6/8/8/8/4K3 w - - 0 1', title: '⚔️ Побити', steps: [
     { say: 'Шах! Але туру можна побити слоном.', arrows: 'e8e1:red b5e8', wait: 2400 }, { move: 'b5e8' },
     { say: 'Побили — і ще й виграли туру. Це часто найкращий спосіб!', wait: 2800 }] }] };

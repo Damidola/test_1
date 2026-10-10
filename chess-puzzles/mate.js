@@ -1,18 +1,18 @@
-import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791626671';
-import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791626671';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791626671';
-import { bestUci, warmUp } from '../shared/engine.js?v=1791626671';
+import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791627703';
+import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791627703';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791627703';
+import { bestUci, warmUp } from '../shared/engine.js?v=1791627703';
 /* Шахові задачі: список розділів → задача або практика.
    Мат і тактика — навчальні позиції та відредаговані задачі Lichess; шах — авторські позиції (chess-puzzles/puzzles.json). Спершу сам робиться хід
    суперника, далі дитина знаходить хід (або кілька ходів), суперник відповідає за рішенням Lichess.
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1791626671';
-import { createRules } from '../chess/rules.js?v=1791626671';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791626671';
-import { hintMove } from '../shared/ai.js?v=1791626671';
-import { toggleGuide, introGuide } from '../shared/guide.js?v=1791626671';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1791627703';
+import { createRules } from '../chess/rules.js?v=1791627703';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791627703';
+import { hintMove } from '../shared/ai.js?v=1791627703';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1791627703';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -369,7 +369,7 @@ const EXPLAIN = {
   chk: r => `Шах — це напад на короля. Поставити шах ${r} часто можна по-різному.`,
   esc_run: 'Королю шах! Утекти можна лише туди, де короля ніхто не б’є.',
   esc_capture: 'Королю шах! Найкраще — побити фігуру, що шахує: і врятувався, і виграв фігуру.',
-  esc_block: 'Королю шах! Можна закритися: поставити свою фігуру між королем і нападником.',
+  esc_block: 'Королю шах! Закрийся захищеною фігурою: врятуй короля без невигідної втрати матеріалу.',
   esc_mixed: 'Від шаху рятують три способи: утекти, побити або закритися. Тут підходить лише один.',
   mate: 'Мат — це шах, від якого нікуди подітися: ні втекти, ні побити, ні закритися.',
   mate2: 'Мат за 2 ходи: спершу хід, після якого суперник не врятується, а потім — мат.',
@@ -422,7 +422,7 @@ function puzzleSlide(k, [, fen, moves, , , meta]) {
       const pc = p.board.get(m.from), kind = pc.role === 'king' && !chk.includes(m.to) ? 'run' : chk.includes(m.to) ? 'capture' : 'block';
       steps.push({ say: { run: 'Утікаємо: лише тут короля ніхто не б’є 👇', capture: 'Б’ємо фігуру, що шахує 👇', block: 'Закриваємося: ставимо фігуру на лінію удару 👇' }[kind], arrows: ya + ' ' + ft + ':' + (kind === 'run' ? 'green' : kind === 'capture' ? 'red' : 'blue'), wait: 2800 });
       p.play(m);
-      steps.push({ move: ln[i], say: kind === 'capture' ? 'Король урятований — і ще виграли фігуру! 🎉' : 'Король урятований! 🎉', wait: 2400 });
+      steps.push({ move: ln[i], say: meta?.explanation || (kind === 'capture' ? 'Король урятований — і ще виграли фігуру! 🎉' : 'Король урятований! 🎉'), wait: 2400 });
     } else {
       steps.push({ say: n === 0 ? c[0] || 'Ось хід 👇' : last ? (key === 'mate2' ? 'А тепер — мат 👇' : key === 'promotion' ? 'Пішак — у ферзі 👇' : key === 'fork' ? 'А другу фігуру — забираємо 👇' : 'Забираємо 👇') : 'Далі — ось так 👇', arrows: ft, wait: 2600 });
       p.play(m);

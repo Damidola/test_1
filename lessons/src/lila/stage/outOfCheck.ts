@@ -1,4 +1,4 @@
-import { arrow, assetUrl, roundSvg, toLevel } from '../util';
+import { assetUrl, roundSvg, toLevel } from '../util';
 import type { StageNoID } from './list';
 
 const imgUrl = assetUrl + 'images/learn/guards.svg';
@@ -19,32 +19,35 @@ const stage: StageNoID = {
   levels: [
     {
       goal: i18n.learn.escapeWithTheKing,
-      fen: '8/8/8/4q3/8/8/8/4K3 w - -',
-      shapes: [arrow('e5e1', 'red'), arrow('e1f1')],
+      fen: '2k5/8/8/8/8/8/2P5/q1K5 w - - 0 1',
     },
     {
       goal: i18n.learn.escapeWithTheKing,
-      fen: '8/2n5/5b2/8/2K5/8/2q5/8 w - -',
-    },
-    {
-      goal: i18n.learn.theKingCannotEscapeButBlock,
-      fen: '8/7r/6r1/8/R7/7K/8/8 w - -',
+      fen: '1k6/8/8/8/8/8/3PP3/4K1r1 w - - 0 1',
     },
     {
       goal: i18n.learn.youCanGetOutOfCheckByTaking,
-      fen: '8/8/8/3b4/8/4N3/KBn5/1R6 w - -',
+      fen: '8/8/b7/8/8/8/5b2/2k1K3 w - - 0 1',
     },
     {
-      goal: i18n.learn.thisKnightIsCheckingThroughYourDefenses,
-      fen: '4q3/8/8/8/8/5nb1/3PPP2/3QKBNr w - -',
+      goal: i18n.learn.youCanGetOutOfCheckByTaking,
+      fen: '8/8/8/8/8/1k6/6NP/4q1K1 w - - 0 1',
     },
     {
-      goal: i18n.learn.escapeOrBlock,
-      fen: '8/8/7p/2q5/5n2/1N1KP2r/3R4/8 w - -',
+      goal: i18n.learn.youCanGetOutOfCheckByTaking,
+      fen: '2k5/8/8/8/8/8/1PNP4/r1K5 w - - 0 1',
     },
     {
-      goal: i18n.learn.escapeOrBlock,
-      fen: '8/6b1/8/8/q4P2/2KN4/3P4/8 w - -',
+      goal: i18n.learn.theKingCannotEscapeButBlock,
+      fen: '8/8/8/1k6/8/K2r4/PP6/8 w - - 0 1',
+    },
+    {
+      goal: i18n.learn.theKingCannotEscapeButBlock,
+      fen: '4k3/8/8/8/8/8/4BP2/1q2Kn2 w - - 0 1',
+    },
+    {
+      goal: i18n.learn.theKingCannotEscapeButBlock,
+      fen: '3R4/8/6k1/8/8/8/4P3/2q1K1b1 w - - 0 1',
     },
   ].map((l, i) => toLevel({ ...common, ...l }, i)),
   complete: i18n.learn.outOfCheckComplete,
