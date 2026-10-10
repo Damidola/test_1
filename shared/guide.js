@@ -6,7 +6,7 @@
    move: кілька переміщень через пробіл; 5-та літера — перетворення (d7d8q); рокіровка — король на 2 клітинки або на свою туру;
    пішак навскоси на порожню клітинку — взяття на проході. */
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from './board.js?v=1791627703';
+import { createBoard } from './board.js?v=1791640401';
 
 const ROLE = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTER = { pawn: 'p', knight: 'n', bishop: 'b', rook: 'r', queen: 'q', king: 'k' };
@@ -78,7 +78,7 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
     <div class="gd-ctl"><button type="button" class="gd-prev" aria-label="Попередній приклад"${many ? '' : ' hidden'}>‹</button>
       <button type="button" class="gd-pause" aria-label="Пауза">❚❚</button><button type="button" class="gd-next" aria-label="Наступний приклад"${many ? '' : ' hidden'}>›</button></div>
     ${many ? `<div class="gd-dots">${slides.map((_, i) => `<i data-i="${i}"></i>`).join('')}</div>` : ''}` : ''}
-    <div class="gd-text"><h3 class="gd-st"></h3><p class="gd-say"></p><div class="gd-intro">${intro}</div></div></div>
+    <div class="gd-text"><h3 class="gd-st"></h3><p class="gd-say" aria-live="off"></p><div class="gd-intro">${intro}</div><div class="gd-detail"></div></div></div>
     <button type="button" class="gd-go">${button}</button>`;
   o.querySelector('.gd-title').textContent = title;
   // над сторінкою, але під нижньою панеллю: «Гайд» у панелі лишається видимим і закриває пояснення
@@ -103,7 +103,14 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
         let apples = (s.apples || '').split(' ').filter(Boolean); // зірочки, які фігура збирає
         o.querySelectorAll('.gd-dots i').forEach((d, i) => d.classList.toggle('on', i === idx));
         st.textContent = s.title || ''; st.hidden = !s.title; say.textContent = '';
-        const marks = extra => { const mk = new Map(apples.map(k => [k, 'gd-apple'])); for (const [k, v] of extra || []) mk.set(k, v); board.marks(mk); };
+        const detail = $('.gd-detail'); detail.replaceChildren();
+        if (s.explanation?.length) {
+          const heading = document.createElement('h4'); heading.textContent = 'Розбір прикладу';
+          const list = document.createElement('ol');
+          for (const text of s.explanation) { const item = document.createElement('li'); item.textContent = text; list.append(item); }
+          detail.append(heading, list);
+        }
+        const marks = extra => { const mk = new Map((s.walls || '').split(' ').filter(Boolean).map(k => [k, 'gd-wall'])); for (const k of apples) mk.set(k, s.strawberry ? 'gd-strawberry' : 'gd-apple'); for (const [k, v] of extra || []) mk.set(k, v); board.marks(mk); };
         board.clearHint(); marks(); board.setOrientation(s.orientation || 'white'); board.setPosition(m, { animate: false });
         await wait(600, t);
         for (const step of s.steps || []) {
@@ -124,7 +131,7 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
           await wait(step.wait ?? (step.move ? 1200 : 2400), t);
         }
         await wait(1600, t);
-        if (many) idx = (idx + 1) % slides.length; // по колу: приклад за прикладом
+        // Repeat the selected example. Reading below the board must not silently switch its explanation.
       }
     } catch (e) { if (e !== 'stop') throw e; }
   }

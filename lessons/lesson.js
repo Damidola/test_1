@@ -1,19 +1,19 @@
-import { judgeLessonMove } from '../shared/puzzle-rules.js?v=1791627703';
+import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791640401';
+import { judgeLessonMove } from '../shared/puzzle-rules.js?v=1791640401';
 /* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791627703';
-import { LESSONS } from './lessons.js?v=1791627703';
-import { markSeen } from '../shared/path.js?v=1791627703';
-import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1791627703';
-import { toggleGuide, introGuide } from '../shared/guide.js?v=1791627703';
+import { createBoard } from '../shared/board.js?v=1791640401';
+import { LESSONS } from './lessons.js?v=1791640401';
+import { markSeen } from '../shared/path.js?v=1791640401';
+import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1791640401';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1791640401';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
 const items = lesson.items.filter(it => !it.demo).slice(0, MAX_LESSON_LEVELS); // приклади — у «Гайд», до 8 вправ
 // «Гайд» на весь екран: приклади уроку програються самі (приклад за прикладом), під дошкою — правило уроку
-const GUIDE = { icon: lesson.icon || '📖', title: lesson.title, intro: lesson.intro,
-  slides: lesson.items.filter(it => it.demo).map(it => ({ fen: it.demo, title: it.title, steps: it.steps })) };
+const GUIDE = { icon: lesson.icon || '📖', title: lesson.title, ...GUIDE_CONTENT.mini[location.hash.slice(1) || 'attack'] };
 let idx = 0, pos, token = 0, done = false, lock = false, errs = 0;
 // кружечки рівнів угорі (приклади й завдання по черзі); після прикладу — одразу далі, без кнопки
 const lv = createLevels($('levels'), 'mini:' + location.hash.slice(1), items.length, i => { idx = i; load(); });

@@ -1,10 +1,11 @@
+import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791640401';
 /* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 8 коротких завдань «побий найдорожчу».
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791627703';
-import { goNext, markSeen } from '../shared/path.js?v=1791627703';
-import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1791627703';
-import { toggleGuide } from '../shared/guide.js?v=1791627703';
+import { createBoard } from '../shared/board.js?v=1791640401';
+import { goNext, markSeen } from '../shared/path.js?v=1791640401';
+import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1791640401';
+import { toggleGuide } from '../shared/guide.js?v=1791640401';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
@@ -96,21 +97,7 @@ setTimeout(startTasks, 0);
 // «Гайд» на весь екран: ціни фігур, «бий найдорожчу», вигідний обмін
 const introBox = document.querySelector('.vl-intro').cloneNode(true);
 introBox.querySelectorAll('h2, button').forEach(e => e.remove());
-const GUIDE = { icon: '💰', title: 'Цінність фігур', intro: introBox.innerHTML, slides: [
-  { fen: '8/8/8/8/8/8/PNBRQK2/8 w - - 0 1', title: '💰 Ціни фігур', steps: [
-    { say: 'Пішак — 1 очко', arrows: 'a2', wait: 1500 }, { say: 'Кінь — 3', arrows: 'b2', wait: 1500 }, { say: 'Слон — 3', arrows: 'c2', wait: 1500 },
-    { say: 'Тура — 5', arrows: 'd2', wait: 1500 }, { say: 'Ферзь — 9, найдорожчий!', arrows: 'e2', wait: 1800 },
-    { say: 'Король — безцінний: без нього гра закінчується.', arrows: 'f2:red', wait: 2400 }] },
-  { fen: '8/8/2b5/1p3r2/3N4/8/8/8 w - - 0 1', title: '🎯 Бий найдорожчу', steps: [
-    { say: 'Кінь може побити пішака (1), слона (3) або туру (5).', arrows: 'd4b5:yellow d4c6:yellow d4f5:yellow', wait: 3000 },
-    { say: 'Тура коштує найбільше — беремо її!', arrows: 'd4f5', wait: 1600 }, { move: 'd4f5' },
-    { say: '+5 очок!', wait: 2200 }] },
-  { fen: '8/8/2p5/3n4/4P3/8/8/3R4 w - - 0 1', title: '⚖️ Вигідний обмін', steps: [
-    { say: 'Коня d5 захищає пішак c6.', arrows: 'c6d5:blue', wait: 2400 },
-    { say: 'Поб’є тура — пішак поб’є туру: віддамо 5 за 3. Невигідно!', arrows: 'd1d5:red', wait: 3000 },
-    { say: 'А поб’є пішак — віддамо лише 1 за 3.', arrows: 'e4d5', wait: 1800 }, { move: 'e4d5' },
-    { say: 'Чорні відбирають пішака…', move: 'c6d5' },
-    { say: 'Віддали 1, забрали 3 — виграли 2 очки!', wait: 2800 }] }] };
+const GUIDE = { icon: '💰', title: 'Цінність фігур', ...GUIDE_CONTENT.stage.value };
 $('intro').addEventListener('click', () => toggleGuide(GUIDE));
 $('skip').addEventListener('click', () => { if (idx < TASKS.length - 1) { idx++; load(); } });
 $('back').addEventListener('click', () => { location.href = 'index.html'; });

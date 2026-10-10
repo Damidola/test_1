@@ -1,3 +1,4 @@
+import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791640401';
 /* Міні-уроки «Шляху новачка»: приклад (програється сам, зі стрілками й підписами) і короткі завдання.
    Позиції й ходи — справжні шахові (перевіряються chessops; tools/check-lessons.mjs).
    demo: { fen, steps: [{ say, arrows: 'e2e4 d4:red', move: 'e2e4', wait }] }
@@ -194,3 +195,10 @@ export const LESSONS = {
     ]
   }
 };
+
+// Keep the lesson's embedded examples identical to its guide; tasks retain their own progression.
+for (const [key, lesson] of Object.entries(LESSONS)) {
+  const guide = GUIDE_CONTENT.mini[key];
+  lesson.intro = guide.intro;
+  lesson.items = [...guide.slides.map(s => ({ demo: s.fen, title: s.title, steps: s.steps })), ...lesson.items.filter(it => it.task)];
+}

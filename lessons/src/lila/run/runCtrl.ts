@@ -9,7 +9,7 @@ import { stageStart, stageEnd } from '../sound';
 import { type Stage, type Level, byId as stageById } from '../stage/list';
 import { clearTimeouts } from '../timeouts';
 import { DEMOS, playDemo } from '../demo';
-import { guideSlides, GUIDE_ICON } from '../guides';
+import { guideSlides, guideIntro, GUIDE_ICON } from '../guides';
 import { markSeen } from '../../../../shared/path.js';
 
 export class RunCtrl {
@@ -43,7 +43,7 @@ export class RunCtrl {
     // «Гайд» на весь екран (shared/guide.js): анімації етапу й пояснення; та сама кнопка закриває
     const guide = () => ({
       icon: GUIDE_ICON[this.stage.key] || '📖', title: this.stage.title,
-      intro: `<p>${this.stage.intro.replace(/\n/g, '<br>')}</p>`, slides: guideSlides(this.stage.key),
+      intro: guideIntro(this.stage.key), slides: guideSlides(this.stage.key),
     });
     const withGuide = (fn: (G: any) => void, tries = 40) => {
       const G = (window as any).LGGuide;

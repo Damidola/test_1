@@ -1,8 +1,10 @@
+import { toggleGuide } from '../shared/guide.js?v=1791640401';
+import { mazeGuide } from '../shared/maze-guide.js?v=1791640401';
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, movesFrom, solve, startState, attackingEnemies, solved } from './mazes.js?v=1791627703';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1791627703';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791627703';
+import { MAZES, movesFrom, solve, startState, attackingEnemies, solved } from './mazes.js?v=1791640401';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1791640401';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791640401';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -169,7 +171,7 @@ function intro(on) {
   else $('title').textContent = M.title;
 }
 function skipIntro() { LG.store.set(introKey, true); intro(false); }
-LG.onExplain(() => { if (main.dataset.step === 'intro') skipIntro(); else intro(true); });
+LG.onExplain(() => toggleGuide(mazeGuide(M, K)));
 $('go').addEventListener('click', skipIntro);
 if (M.video) intro(!LG.store.get(introKey, false));
 else intro(false);
