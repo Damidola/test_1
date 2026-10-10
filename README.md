@@ -27,6 +27,12 @@
 
 Запуск локально: `python3 -m http.server`, потім відкрий http://localhost:8000.
 
+Відеоуроки відтворює `shared/vid.js` зі звичайних MP4 у `shared/videos/`,
+без завантаження плеєра YouTube. Файли — 480p, H.264/AAC; відео
+завантажується лише після натискання ▶. Перед запуском показується локальна
+обкладинка. Перелік уроків і джерела наведені в `shared/videos/manifest.json`.
+Посилання на YouTube під відео лишається як посилання на оригінал.
+
 Публікація: Settings → Pages → Deploy from branch → `master` / root.
 
 ## Задачі на шах і перевірки
@@ -57,5 +63,6 @@ npm run check
 - Мат і тактичні задачі (`chess-puzzles/puzzles.json`) — з [відкритої бази задач Lichess](https://database.lichess.org/#puzzles), CC0; вибірку взято з [mcognetta/lichess-combined-puzzle-game-db](https://github.com/mcognetta/lichess-combined-puzzle-game-db) (CC0). Задачі на шах `chk_*` — авторські навчальні схеми з `content/check-puzzles.js`, які збирає `tools/build-checks.mjs`.
 - Рушій для практики закінчень — [Stockfish.js 10](https://github.com/nmrugg/stockfish.js) (`shared/vendor/stockfish/`), GPL-3.0.
 - Персонажі-роботи — RoboHash ([e1ven/Robohash](https://github.com/e1ven/Robohash)); 90 роликів-нагород — з публічних колекцій гіфок на GitHub (public/moarcats, tlberglund/animated-gifs, Carol42/random-cat-gifs, onprema/catgifs), перекодовані в короткі MP4/WebM без звуку.
+- Відеоуроки українською — ChessKid, МФ FunMasterMike; завантажені з публічних плеєрів ChessKid і стиснуті для перегляду на телефоні. Джерела кожного ролика наведені в `shared/videos/manifest.json`; ліцензія коду проєкту не змінює прав авторів відео.
 
 Оскільки сюди входить код під GPL-3.0 і AGPLv3+, увесь проєкт поширюється на умовах AGPLv3+.
