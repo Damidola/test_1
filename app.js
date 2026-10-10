@@ -1,14 +1,14 @@
-import { menuGroups } from './shared/puzzle-catalog.js?v=1791640401';
-import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1791640401';
+import { menuGroups } from './shared/puzzle-catalog.js?v=1791640501';
+import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1791640501';
 /* Шахи для дітей: застосунок із чотирма вкладками.
    🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
    🤖 Гра — вибір суперника, кольору, сили й режиму → партія з роботом;
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1791640401';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1791640401';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1791640401';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1791640501';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1791640501';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1791640501';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
