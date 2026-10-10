@@ -84,4 +84,8 @@ for role,(name,total) in ROLES.items():
   selected.append({'id':f'mate1-generated-{len(selected)+1:02}', 'source':'generator','fen':position,'moves':[m.uci()],'san':[san],'pieces':count,'category':'mateIn1','title':'Мат в 1 хід','matingRole':name})
   found+=1;print(name,found,'attempt',attempts,count,position,san,flush=True)
  if found<total:raise RuntimeError((role,found,attempts))
-json.dump({'version':2,'sources':{'generator':{'name':'Генератор матів у 1 хід','description':'Легальні компактні позиції. Перебрано всі легальні ходи: рівно один ставить мат. Відкинуто дзеркальні та зсунуті копії.'}},'puzzles':selected},open(Path(__file__).resolve().parents[1] / 'puzzle-lab/puzzles.json','w'),ensure_ascii=False,indent=2)
+bank_path = Path(__file__).resolve().parents[1] / 'puzzle-lab/puzzles.json'
+previous = json.loads(bank_path.read_text()) if bank_path.exists() else {}
+lichess_puzzles = [p for p in previous.get('puzzles', []) if p.get('source') == 'lichess']
+sources = {**previous.get('sources', {}), 'generator': {'name': 'Генератор матів у 1 хід', 'description': 'Легальні компактні позиції. Перебрано всі легальні ходи: рівно один ставить мат. Відкинуто дзеркальні та зсунуті копії.'}}
+json.dump({'version': 3 if lichess_puzzles else 2, 'sources': sources, 'puzzles': selected + lichess_puzzles}, open(bank_path, 'w'), ensure_ascii=False, indent=2)

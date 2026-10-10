@@ -1,4 +1,4 @@
-import { createBoard } from '../shared/board.js?v=1791644070';
+import { createBoard } from '../shared/board.js?v=1791646040';
 import { Chess, fen, parseSquare, makeSquare, compat } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 
 const $ = id => document.getElementById(id);
@@ -30,7 +30,7 @@ function picker() {
   $('picker').replaceChildren(...puzzles.map((p, i) => {
     const b = document.createElement('button'); b.textContent = i + 1;
     b.className = [p.id === current?.id ? 'current' : '', results[p.id] ? 'solved' : ''].join(' ');
-    b.setAttribute('aria-label', `Задача ${i + 1}${results[p.id] ? ', розв’язана' : ''}`);
+    b.setAttribute('aria-label', `Задача ${i + 1}, ${p.source === 'lichess' ? 'Lichess' : 'генератор'}${results[p.id] ? ', розв’язана' : ''}`);
     b.onclick = () => { $('tasks').close(); load(p); }; return b;
   }));
 }
@@ -41,7 +41,7 @@ function load(p) {
   board.setOrientation(pos.turn); show(null, false); enable();
   $('pieces').textContent = `${p.pieces} ${p.pieces <= 4 ? 'фігури' : 'фігур'}`;
   $('count').textContent = `${puzzles.indexOf(p) + 1} / ${puzzles.length}`;
-  $('goal').textContent = pos.turn === 'white' ? 'Ходять білі. Постав мат.' : 'Ходять чорні. Постав мат.';
+  $('goal').textContent = `${p.source === 'lichess' ? 'Lichess' : 'Генератор'} · ${pos.turn === 'white' ? 'Ходять білі. Постав мат.' : 'Ходять чорні. Постав мат.'}`;
   $('prev').disabled = puzzles.indexOf(p) === 0; $('next').disabled = puzzles.indexOf(p) === puzzles.length - 1;
   say('Знайди мат в один хід.'); picker(); save();
 }
@@ -92,6 +92,6 @@ try {
   const response = await fetch(new URL('puzzles.json' + new URL(import.meta.url).search, import.meta.url));
   if (!response.ok) throw new Error('Не вдалося завантажити задачі.');
   puzzles = (await response.json()).puzzles;
-  if (puzzles.length !== 20 || !puzzles.every(p => p.category === 'mateIn1' && p.moves.length === 1 && p.pieces >= 3 && p.pieces <= 10 && [...p.fen.split(' ')[0]].filter(c => /[a-z]/i.test(c)).length === p.pieces)) throw new Error('Помилка добірки.');
+  if (puzzles.length !== 40 || !puzzles.every(p => p.category === 'mateIn1' && p.moves.length === 1 && p.pieces >= 3 && p.pieces <= 5 && [...p.fen.split(' ')[0]].filter(c => /[a-z]/i.test(c)).length === p.pieces)) throw new Error('Помилка добірки.');
   load(puzzles.find(p => p.id === saved.current) || puzzles[0]); fit();
 } catch (e) { say(e.message, 'bad'); }

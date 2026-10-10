@@ -1,4 +1,4 @@
-import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791644070';
+import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791646040';
 /* Міні-уроки «Шляху новачка»: приклад (програється сам, зі стрілками й підписами) і короткі завдання.
    Позиції й ходи — справжні шахові (перевіряються chessops; tools/check-lessons.mjs).
    demo: { fen, steps: [{ say, arrows: 'e2e4 d4:red', move: 'e2e4', wait }] }

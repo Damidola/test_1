@@ -1,9 +1,15 @@
 {
-  "version": 2,
+  "version": 3,
   "sources": {
     "generator": {
       "name": "Генератор матів у 1 хід",
       "description": "Легальні компактні позиції. Перебрано всі легальні ходи: рівно один ставить мат. Відкинуто дзеркальні та зсунуті копії."
+    },
+    "lichess": {
+      "name": "Lichess",
+      "url": "https://database.lichess.org/#puzzles",
+      "license": "CC0",
+      "description": "Незмінені позиції з реальних партій; після початкового ходу суперника. 3–5 фігур, рівно один мат в один хід."
     }
   },
   "puzzles": [
@@ -306,6 +312,346 @@
       "category": "mateIn1",
       "title": "Мат в 1 хід",
       "matingRole": "Перетворення"
+    },
+    {
+      "id": "mate1-lichess-1uUQc",
+      "source": "lichess",
+      "fen": "6Q1/8/8/8/8/3pk3/4p3/4K3 b - - 0 61",
+      "moves": [
+        "d3d2"
+      ],
+      "san": [
+        "d2#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 400,
+      "origin": "https://lichess.org/training/1uUQc",
+      "game": "https://lichess.org/YW295NtZ#121"
+    },
+    {
+      "id": "mate1-lichess-2lk5l",
+      "source": "lichess",
+      "fen": "5k1K/8/8/4r2P/8/8/1R6/8 b - - 5 68",
+      "moves": [
+        "e5h5"
+      ],
+      "san": [
+        "Rxh5#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 400,
+      "origin": "https://lichess.org/training/2lk5l",
+      "game": "https://lichess.org/3tgg64W4#135"
+    },
+    {
+      "id": "mate1-lichess-063On",
+      "source": "lichess",
+      "fen": "7K/5qQ1/5k2/8/8/8/8/8 b - - 2 65",
+      "moves": [
+        "f7g7"
+      ],
+      "san": [
+        "Qxg7#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 436,
+      "origin": "https://lichess.org/training/063On",
+      "game": "https://lichess.org/mwPq7Ykv#129"
+    },
+    {
+      "id": "mate1-lichess-2qvPZ",
+      "source": "lichess",
+      "fen": "8/8/8/K1k5/8/4r3/8/1R6 b - - 7 71",
+      "moves": [
+        "e3a3"
+      ],
+      "san": [
+        "Ra3#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 450,
+      "origin": "https://lichess.org/training/2qvPZ",
+      "game": "https://lichess.org/JAZ36YoE#141"
+    },
+    {
+      "id": "mate1-lichess-3jmW6",
+      "source": "lichess",
+      "fen": "5KQ1/8/5k2/8/8/8/r7/8 b - - 0 63",
+      "moves": [
+        "a2a8"
+      ],
+      "san": [
+        "Ra8#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 452,
+      "origin": "https://lichess.org/training/3jmW6",
+      "game": "https://lichess.org/auAOCyQV#125"
+    },
+    {
+      "id": "mate1-lichess-0qJti",
+      "source": "lichess",
+      "fen": "7k/7r/6K1/8/8/8/R7/8 w - - 0 69",
+      "moves": [
+        "a2a8"
+      ],
+      "san": [
+        "Ra8#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 460,
+      "origin": "https://lichess.org/training/0qJti",
+      "game": "https://lichess.org/nOGDfClb/black#136"
+    },
+    {
+      "id": "mate1-lichess-0iMlo",
+      "source": "lichess",
+      "fen": "6QK/5k2/8/8/8/8/6q1/8 b - - 0 70",
+      "moves": [
+        "g2g8"
+      ],
+      "san": [
+        "Qxg8#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 470,
+      "origin": "https://lichess.org/training/0iMlo",
+      "game": "https://lichess.org/6QBT863s#139"
+    },
+    {
+      "id": "mate1-lichess-34c69",
+      "source": "lichess",
+      "fen": "8/8/8/8/8/8/p1K5/k3q1R1 w - - 0 84",
+      "moves": [
+        "g1e1"
+      ],
+      "san": [
+        "Rxe1#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 488,
+      "origin": "https://lichess.org/training/34c69",
+      "game": "https://lichess.org/h9Pd4KV6/black#166"
+    },
+    {
+      "id": "mate1-lichess-1XUlx",
+      "source": "lichess",
+      "fen": "8/8/8/8/8/6pk/7p/5R1K b - - 0 60",
+      "moves": [
+        "g3g2"
+      ],
+      "san": [
+        "g2#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 579,
+      "origin": "https://lichess.org/training/1XUlx",
+      "game": "https://lichess.org/j1pKZ4jZ#119"
+    },
+    {
+      "id": "mate1-lichess-1N1SD",
+      "source": "lichess",
+      "fen": "8/8/8/8/8/p7/k1K5/1q4Q1 w - - 0 63",
+      "moves": [
+        "g1b1"
+      ],
+      "san": [
+        "Qxb1#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 586,
+      "origin": "https://lichess.org/training/1N1SD",
+      "game": "https://lichess.org/LnRZ6UL1/black#124"
+    },
+    {
+      "id": "mate1-lichess-1iBSv",
+      "source": "lichess",
+      "fen": "1Q6/8/1b6/8/8/6pk/8/7K b - - 0 58",
+      "moves": [
+        "g3g2"
+      ],
+      "san": [
+        "g2#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 612,
+      "origin": "https://lichess.org/training/1iBSv",
+      "game": "https://lichess.org/wu15jnes#115"
+    },
+    {
+      "id": "mate1-lichess-2yQWu",
+      "source": "lichess",
+      "fen": "1Q6/8/8/8/8/4k3/4pn2/4K3 b - - 0 53",
+      "moves": [
+        "f2d3"
+      ],
+      "san": [
+        "Nd3#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 615,
+      "origin": "https://lichess.org/training/2yQWu",
+      "game": "https://lichess.org/N0qh0INr#105"
+    },
+    {
+      "id": "mate1-lichess-2xFmT",
+      "source": "lichess",
+      "fen": "7k/5P2/1r6/5BK1/8/8/8/8 w - - 0 77",
+      "moves": [
+        "f7f8q"
+      ],
+      "san": [
+        "f8=Q#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 673,
+      "origin": "https://lichess.org/training/2xFmT",
+      "game": "https://lichess.org/Ut6adk87/black#152"
+    },
+    {
+      "id": "mate1-lichess-1bJcc",
+      "source": "lichess",
+      "fen": "7k/8/1q3NK1/4N3/8/8/8/8 w - - 8 61",
+      "moves": [
+        "e5f7"
+      ],
+      "san": [
+        "Nf7#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 750,
+      "origin": "https://lichess.org/training/1bJcc",
+      "game": "https://lichess.org/vUSwYXjq/black#120"
+    },
+    {
+      "id": "mate1-lichess-44bz7",
+      "source": "lichess",
+      "fen": "6Q1/8/8/8/5k1K/8/8/1q6 b - - 0 44",
+      "moves": [
+        "b1h1"
+      ],
+      "san": [
+        "Qh1#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 803,
+      "origin": "https://lichess.org/training/44bz7",
+      "game": "https://lichess.org/BUVqw3SV#87"
+    },
+    {
+      "id": "mate1-lichess-0h7Xf",
+      "source": "lichess",
+      "fen": "5k1K/8/6rR/8/8/8/8/8 b - - 3 69",
+      "moves": [
+        "g6h6"
+      ],
+      "san": [
+        "Rxh6#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 805,
+      "origin": "https://lichess.org/training/0h7Xf",
+      "game": "https://lichess.org/8ceFA5Wy#137"
+    },
+    {
+      "id": "mate1-lichess-39yOd",
+      "source": "lichess",
+      "fen": "1Q6/K7/2q5/k7/8/8/8/8 b - - 0 60",
+      "moves": [
+        "c6a6"
+      ],
+      "san": [
+        "Qa6#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 955,
+      "origin": "https://lichess.org/training/39yOd",
+      "game": "https://lichess.org/WRIeCB4K#119"
+    },
+    {
+      "id": "mate1-lichess-1wuYb",
+      "source": "lichess",
+      "fen": "1Q6/K7/5q2/k7/8/8/8/8 b - - 0 58",
+      "moves": [
+        "f6a6"
+      ],
+      "san": [
+        "Qa6#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 965,
+      "origin": "https://lichess.org/training/1wuYb",
+      "game": "https://lichess.org/i014jOsr#115"
+    },
+    {
+      "id": "mate1-lichess-0YMqu",
+      "source": "lichess",
+      "fen": "4k3/4P3/4K3/3N4/8/8/8/2q5 w - - 0 64",
+      "moves": [
+        "d5f6"
+      ],
+      "san": [
+        "Nf6#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 1031,
+      "origin": "https://lichess.org/training/0YMqu",
+      "game": "https://lichess.org/eAg8BKXJ/black#126"
+    },
+    {
+      "id": "mate1-lichess-1g2TF",
+      "source": "lichess",
+      "fen": "8/8/8/8/8/kR6/p2n4/K7 b - - 0 71",
+      "moves": [
+        "d2b3"
+      ],
+      "san": [
+        "Nxb3#"
+      ],
+      "pieces": 5,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 1174,
+      "origin": "https://lichess.org/training/1g2TF",
+      "game": "https://lichess.org/G55oBKCo#141"
     }
   ]
 }
