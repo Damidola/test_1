@@ -1,13 +1,13 @@
-import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791624117';
-import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791624117';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791624117';
+import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791624894';
+import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791624894';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791624894';
 /* Урок «Шах»: що таке шах, три способи врятуватися (утекти, побити, закритися) — приклад зі стрілками,
-   потім прості завдання: 5 — «постав шах», по 3 — на кожен спосіб. Задачі — перші (найпростіші)
+   потім прості завдання: 5 — «постав шах», по одному — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791624117';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791624117';
-import { toggleGuide } from '../shared/guide.js?v=1791624117';
+import { createBoard } from '../shared/board.js?v=1791624894';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791624894';
+import { toggleGuide } from '../shared/guide.js?v=1791624894';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json' + new URL(import.meta.url).search, import.meta.url))).json();
@@ -18,9 +18,9 @@ const TASKS = [
     const row = DATA['chk_' + role][0], goal = PUZZLE_SECTIONS['chk_' + role];
     return { id: row[0], fen: row[1], kind: 'give', role, title: 'Постав шах', text: goal.task, meta: row[5] };
   }),
-  ...DATA.esc_run.slice(0, 3).map(z => ({ id: z[0], fen: z[1], kind: 'run', title: 'Утечи 🏃', text: 'Твоєму королю шах! Відведи короля туди, де його не б’ють.' })),
-  ...DATA.esc_capture.slice(0, 3).map(z => ({ id: z[0], fen: z[1], kind: 'capture', title: 'Побий ⚔️', text: 'Шах! Побий фігуру, що шахує.' })),
-  ...DATA.esc_block.slice(0, 3).map(z => ({ id: z[0], fen: z[1], kind: 'block', title: 'Закрийся 🛡️', text: 'Шах! Закрийся: постав свою фігуру між королем і нападником.' }))
+  ...DATA.esc_run.slice(0, 1).map(z => ({ id: z[0], fen: z[1], kind: 'run', title: 'Утечи 🏃', text: 'Твоєму королю шах! Відведи короля туди, де його не б’ють.' })),
+  ...DATA.esc_capture.slice(0, 1).map(z => ({ id: z[0], fen: z[1], kind: 'capture', title: 'Побий ⚔️', text: 'Шах! Побий фігуру, що шахує.' })),
+  ...DATA.esc_block.slice(0, 1).map(z => ({ id: z[0], fen: z[1], kind: 'block', title: 'Закрийся 🛡️', text: 'Шах! Закрийся: постав свою фігуру між королем і нападником.' }))
 ];
 const goalOf = t => ({ objective: t.kind === 'give' ? 'safe-check' : 'escape:' + t.kind, role: t.role });
 let idx = 0, pos, done = false, lock = false, token = 0, hintStage = 0;

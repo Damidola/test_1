@@ -6,7 +6,7 @@
    move: кілька переміщень через пробіл; 5-та літера — перетворення (d7d8q); рокіровка — король на 2 клітинки або на свою туру;
    пішак навскоси на порожню клітинку — взяття на проході. */
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from './board.js?v=1791624117';
+import { createBoard } from './board.js?v=1791624894';
 
 const ROLE = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTER = { pawn: 'p', knight: 'n', bishop: 'b', rook: 'r', queen: 'q', king: 'k' };
@@ -73,12 +73,12 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
   const o = document.createElement('div'); o.className = 'gd'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', title);
   const many = slides.length > 1;
   o.innerHTML = `<div class="gd-top"><span class="gd-ic">${icon}</span><b class="gd-title"></b><button type="button" class="gd-x" aria-label="Закрити">✕</button></div>
-    ${slides.length ? `<div class="gd-stage"><div class="gd-board"><div class="lg-board-el"></div></div>
+    <div class="gd-scroll">${slides.length ? `<div class="gd-stage"><div class="gd-board"><div class="lg-board-el"></div></div>
       ${many ? '<button type="button" class="gd-side gd-prev" aria-label="Попередній приклад">‹</button><button type="button" class="gd-side gd-next" aria-label="Наступний приклад">›</button>' : ''}</div>
     <div class="gd-ctl"><button type="button" class="gd-prev" aria-label="Попередній приклад"${many ? '' : ' hidden'}>‹</button>
       <button type="button" class="gd-pause" aria-label="Пауза">❚❚</button><button type="button" class="gd-next" aria-label="Наступний приклад"${many ? '' : ' hidden'}>›</button></div>
     ${many ? `<div class="gd-dots">${slides.map((_, i) => `<i data-i="${i}"></i>`).join('')}</div>` : ''}` : ''}
-    <div class="gd-text"><h3 class="gd-st"></h3><p class="gd-say"></p><div class="gd-intro">${intro}</div></div>
+    <div class="gd-text"><h3 class="gd-st"></h3><p class="gd-say"></p><div class="gd-intro">${intro}</div></div></div>
     <button type="button" class="gd-go">${button}</button>`;
   o.querySelector('.gd-title').textContent = title;
   // над сторінкою, але під нижньою панеллю: «Гайд» у панелі лишається видимим і закриває пояснення
@@ -92,8 +92,8 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
     const nav = document.querySelector('html.lg .lg-nav');
     o.style.bottom = nav && nav.getClientRects().length && getComputedStyle(nav).display !== 'none' ? nav.offsetHeight + 'px' : '0px';
     if (!board) return;
-    const b = $('.gd-board'), room = o.clientHeight - [...o.children].filter(c => c !== $('.gd-stage') && c !== $('.gd-text')).reduce((h, c) => h + c.offsetHeight, 0) - 120 - 12 * o.children.length;
-    b.style.width = Math.max(180, Math.min(o.clientWidth - 16, 520, room)) + 'px';
+    // Дошка і весь текст — один прокручуваний блок. Висота тексту не звужує дошку.
+    $('.gd-board').style.width = $('.gd-scroll').clientWidth + 'px';
     board.redraw();
   }
   async function run(t) {

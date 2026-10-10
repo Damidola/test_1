@@ -115,9 +115,15 @@ const rawCategs: RawCateg[] = [
 ];
 
 let stageId = 1;
+// До восьми вправ; завершальна гра проти пішаків лишається останньою.
+const lessonLevels = (levels: Level[]): Level[] => {
+  const last = levels[levels.length - 1];
+  const selected = levels.length > 8 && last.game ? [...levels.slice(0, 7), last] : levels.slice(0, 8);
+  return selected.map((level, i) => ({ ...level, id: i + 1 }));
+};
 export const categs: Categ[] = rawCategs.map(c => ({
   ...c,
-  stages: c.stages.map(s => ({ ...s, id: stageId++ })),
+  stages: c.stages.map(s => ({ ...s, levels: lessonLevels(s.levels), id: stageId++ })),
 }));
 
 const stages: Stage[] = categs.reduce<Stage[]>((prev, c) => prev.concat(c.stages), []);

@@ -1,5 +1,7 @@
 /* Кружечки рівнів угорі уроку (як в уроках фігур): зелений ✓ — без помилок, жовтий ✓ — з помилками,
    поточний — з обводкою, далі — закриті, доки не пройдено попередній. Результати — LG.store 'lvl:<ключ>'. */
+export const MAX_LESSON_LEVELS = 8;
+
 export function createLevels(el, key, n, onPick, ids) {
   const LG = window.LG;
   const get = () => ids ? ids.map(id => LG.store.get('lvlid:' + key, {})[id] || null) : LG.store.get('lvl:' + key, []);
@@ -72,7 +74,7 @@ export function lessonDone({ title, text, key, n, here, onAgain }) {
 .lg-done button.empty { background: transparent; color: rgb(54,146,231); box-shadow: none; }`;
     document.head.appendChild(st);
   }
-  import('./path.js?v=1791624117').then(({ nextAfter, goNext, markSeen }) => {
+  import('./path.js?v=1791624894').then(({ nextAfter, goNext, markSeen }) => {
     markSeen(here);
     const next = nextAfter(here);
     const o = document.createElement('div'); o.className = 'lg-done';

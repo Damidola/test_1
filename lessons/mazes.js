@@ -1,5 +1,6 @@
 /* Уроки-лабіринти на маленьких дошках (lessons/maze.html#ключ): фігура має з’їсти полуничку, обходячи стіни.
    Клітинки — [стовпчик, рядок], рядок 0 — угорі. w×h — розмір дошки. Перевірка: npm test (усі рівні проходимі). */
+import { MAX_LESSON_LEVELS } from '../shared/levels.js?v=1791624894';
 export const MAZES = {
   rook: {
     title: 'Тура 1: лабіринт', piece: 'rook', video: 'D0eQPdJxtcs', videoTitle: 'Знайомся з турою!',
@@ -103,6 +104,7 @@ export const MAZES = {
     ]
   }
 };
+for (const maze of Object.values(MAZES)) maze.levels = maze.levels.slice(0, MAX_LESSON_LEVELS);
 const STEPS = { rook: [[1,0],[-1,0],[0,1],[0,-1]], bishop: [[1,1],[1,-1],[-1,1],[-1,-1]], queen: [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]] };
 const JUMPS = { knight: [[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]], king: [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]] };
 const key = ([c, r]) => c + ',' + r;

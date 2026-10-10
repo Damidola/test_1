@@ -121,15 +121,20 @@ export function fitBoard(box) {
   if (!box || box.closest('.kt-crop') || box.dataset.fit) return;
   box.dataset.fit = '1';
   const host = box.closest('main, .learn--run') || box.parentElement;
-  const limit = () => { const nav = document.querySelector('.lg-nav'); return (nav && nav.offsetParent !== null ? nav.getBoundingClientRect().top : innerHeight) - 4; };
-  const contentBottom = () => {
-    let b = 0;
+  const limit = () => {
+    const nav = document.querySelector('.lg-nav'), r = nav?.getBoundingClientRect();
+    // У fixed-панелі offsetParent завжди null, навіть коли вона видима.
+    return (r?.height ? r.top : innerHeight) - 4;
+  };
+  const contentBounds = () => {
+    let top = Infinity, bottom = 0;
     for (const c of host.querySelectorAll(':scope > *, :scope > * > .lg-controls')) {
       const cs = getComputedStyle(c);
       if (cs.position === 'fixed' || cs.position === 'absolute' || cs.display === 'none' || !c.offsetHeight) continue;
-      b = Math.max(b, c.getBoundingClientRect().bottom);
+      const r = c.getBoundingClientRect();
+      top = Math.min(top, r.top); bottom = Math.max(bottom, r.bottom);
     }
-    return b;
+    return { top, bottom };
   };
   let busy = false;
   const fit = () => {
@@ -140,17 +145,38 @@ export function fitBoard(box) {
     busy = true;
     const vw = document.documentElement.clientWidth, full = Math.min(vw, 560);
     let s = full;
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       box.style.width = s + 'px';
-      const over = contentBottom() - limit();
+      const { top, bottom } = contentBounds();
+      // flex-centering може обрізати і верх, і низ: міряємо весь блок, а не тільки його нижній край.
+      const start = Math.max(host.getBoundingClientRect().top, parseFloat(getComputedStyle(document.body).paddingTop) || 0);
+      const over = Math.max(bottom - limit(), bottom - top - (limit() - start));
       if (over <= 0.5) break;
-      s = Math.max(200, Math.floor(s - over));
+      const next = Math.max(120, Math.floor(s - over));
+      if (next === s) break;
+      s = next;
     }
+    box.style.width = s + 'px';
     busy = false;
   };
   const again = () => requestAnimationFrame(fit);
   addEventListener('resize', again);
-  if (window.ResizeObserver) { const ro = new ResizeObserver(again); for (const c of host.children) if (c !== box) ro.observe(c); ro.observe(host); }
+  document.addEventListener('DOMContentLoaded', again, { once: true });
+  // Вступ і вправи міняються без зміни висоти main; нові рядки рівнів теж з'являються після створення дошки.
+  new MutationObserver(again).observe(host, { childList: true, attributes: true, attributeFilter: ['data-step', 'class'] });
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(again);
+    for (const c of host.children) if (c !== box) ro.observe(c);
+    ro.observe(host);
+    let watchedNav;
+    const watchNav = () => {
+      const nav = document.querySelector('.lg-nav');
+      if (nav && nav !== watchedNav) { ro.observe(nav); watchedNav = nav; again(); }
+    };
+    // Панель додається kit.js після ініціалізації дошки.
+    new MutationObserver(watchNav).observe(document.body, { childList: true });
+    watchNav();
+  }
   if (document.fonts) document.fonts.ready.then(again);
   again(); setTimeout(fit, 300);
 }

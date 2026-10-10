@@ -1,5 +1,5 @@
 /* Спільний стиль: кольори, шрифт, верхня панель, вікна, кнопки. */
-@import url('tokens.css?v=1791624117');
+@import url('tokens.css?v=1791624894');
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
 
 
@@ -365,35 +365,38 @@ html.lg-tg [data-back-arrow] { display: none !important; }
 html, body, * { -webkit-tap-highlight-color: transparent; }
 
 /* ---------- «Гайд» на весь екран (shared/guide.js) ---------- */
-.gd { position: fixed; inset: 0; top: var(--fs-top, 0px); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 10px;
-  padding: calc(8px + env(safe-area-inset-top)) 12px 10px; box-sizing: border-box; background: var(--app-bg); color: #fff;
+.gd { position: fixed; inset: 0; top: var(--fs-top, 0px); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: calc(6px + env(safe-area-inset-top)) 0 8px; box-sizing: border-box; background: var(--app-bg); color: #fff;
   font-family: Manrope, var(--lg-font), sans-serif; animation: gdIn .2s ease-out; overflow: hidden; }
 .gd.out { animation: gdOut .18s ease-in forwards; }
 @keyframes gdIn { from { opacity: 0; transform: translateY(12px); } }
 @keyframes gdOut { to { opacity: 0; transform: translateY(12px); } }
-.gd > * { flex: none; width: min(100%, 520px); }
-.gd-top { display: flex; align-items: center; gap: 10px; min-height: 44px; }
-.gd-ic { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: rgba(255,255,255,.08); font-size: 22px; }
-.gd-title { flex: 1; min-width: 0; font-size: 20px; font-weight: 800; line-height: 1.2; }
-.gd-x { flex: none; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255,255,255,.08); color: #fff; font: 800 18px/1 sans-serif; cursor: pointer; }
+.gd > * { flex: none; width: min(calc(100% - 16px), 560px); }
+.gd-top { display: flex; align-items: center; gap: 8px; min-height: 36px; }
+.gd-ic { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: rgba(255,255,255,.08); font-size: 19px; }
+.gd-title { flex: 1; min-width: 0; font-size: 16px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+.gd-x { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(255,255,255,.08); color: #fff; font: 800 18px/1 sans-serif; cursor: pointer; }
+.gd > .gd-scroll { flex: 1 1 0; width: min(100%, 560px); min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+.gd-scroll > * { margin-bottom: 8px; }
 .gd-stage { position: relative; display: flex; justify-content: center; }
-.gd-board { max-width: 100%; }
+.gd-board { max-width: 100%; pointer-events: none; }
 .gd-board .lg-board-el { width: 100%; aspect-ratio: 1; }
 .gd-board cg-board { pointer-events: none; }
-.gd-side { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 34px; height: 56px; border: 0; padding: 0; background: rgba(20, 24, 40, .55);
-  color: #fff; font: 800 28px/1 sans-serif; cursor: pointer; }
+.gd-board .cg-wrap { touch-action: pan-y; }
+.gd-side { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 24px; height: 40px; border: 0; padding: 0; background: rgba(20, 24, 40, .55);
+  color: #fff; font: 800 22px/1 sans-serif; cursor: pointer; }
 .gd-stage .gd-prev { left: 0; border-radius: 0 12px 12px 0; }
 .gd-stage .gd-next { right: 0; border-radius: 12px 0 0 12px; }
-.gd-ctl { display: flex; justify-content: center; gap: 10px; }
-.gd-ctl button { width: 64px; height: 40px; border: 0; border-radius: 12px; background: rgba(255,255,255,.08); color: #fff; font: 800 20px/1 sans-serif; cursor: pointer; }
+.gd-ctl { display: flex; justify-content: center; gap: 8px; }
+.gd-ctl button { width: 44px; height: 36px; border: 0; border-radius: 10px; background: rgba(255,255,255,.08); color: #fff; font: 800 18px/1 sans-serif; cursor: pointer; }
 .gd-ctl button[hidden] { display: none; }
 .gd-dots { display: flex; justify-content: center; gap: 8px; margin-top: -4px; }
 .gd-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.22); cursor: pointer; transition: background .2s, transform .2s; }
 .gd-dots i.on { background: #2ee6b8; transform: scale(1.25); }
-.gd-text { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; text-align: left; }
-.gd-st { margin: 0 0 4px; font-size: 16px; font-weight: 800; color: #9fb0d8; }
+.gd-text { padding: 4px 12px 12px; text-align: left; }
+.gd-st { margin: 0 0 4px; font-size: 14px; font-weight: 800; color: #9fb0d8; }
 .gd-st[hidden] { display: none; }
-.gd-say { margin: 0 0 8px; min-height: 2.6em; font-size: 18px; font-weight: 800; line-height: 1.35; color: #fff; }
+.gd-say { margin: 0 0 8px; min-height: 2.6em; font-size: 16px; font-weight: 800; line-height: 1.35; color: #fff; }
 .gd-intro { font-size: 15px; font-weight: 600; line-height: 1.45; color: #c9d2ea; }
 .gd-intro p { margin: 0 0 8px; }
 .gd-go { min-height: 48px; border: 0; border-radius: 14px; background: #2ee6b8; color: #04241d; font: 800 17px Manrope, var(--lg-font), sans-serif; cursor: pointer; }

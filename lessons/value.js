@@ -1,10 +1,10 @@
-/* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 10 коротких завдань «побий найдорожчу».
+/* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 8 коротких завдань «побий найдорожчу».
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791624117';
-import { goNext, markSeen } from '../shared/path.js?v=1791624117';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791624117';
-import { toggleGuide } from '../shared/guide.js?v=1791624117';
+import { createBoard } from '../shared/board.js?v=1791624894';
+import { goNext, markSeen } from '../shared/path.js?v=1791624894';
+import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1791624894';
+import { toggleGuide } from '../shared/guide.js?v=1791624894';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
@@ -22,7 +22,7 @@ const TASKS = [
   ['Bb2', 'Rh8 Na3', 'Далеко — не значить погано!'],
   ['Nc3', 'Rb5 Qe4 Pa2', 'Кінь бачить три фігури.'],
   ['Nf3 Bc4', 'Pe5 Qd4 Rf7', 'Тут у тебе дві фігури. Знайди найдорожчу здобич!']
-];
+].slice(0, MAX_LESSON_LEVELS);
 const parse = str => new Map(str.split(' ').map(t => [t.slice(1), ROLE[t[0]]]));
 let idx = 0, done = false, lock = false;
 
@@ -96,7 +96,7 @@ setTimeout(startTasks, 0);
 // «Гайд» на весь екран: ціни фігур, «бий найдорожчу», вигідний обмін
 const introBox = document.querySelector('.vl-intro').cloneNode(true);
 introBox.querySelectorAll('h2, button').forEach(e => e.remove());
-const GUIDE = { icon: '💰', title: 'Скільки коштують фігури?', intro: introBox.innerHTML, slides: [
+const GUIDE = { icon: '💰', title: 'Цінність фігур', intro: introBox.innerHTML, slides: [
   { fen: '8/8/8/8/8/8/PNBRQK2/8 w - - 0 1', title: '💰 Ціни фігур', steps: [
     { say: 'Пішак — 1 очко', arrows: 'a2', wait: 1500 }, { say: 'Кінь — 3', arrows: 'b2', wait: 1500 }, { say: 'Слон — 3', arrows: 'c2', wait: 1500 },
     { say: 'Тура — 5', arrows: 'd2', wait: 1500 }, { say: 'Ферзь — 9, найдорожчий!', arrows: 'e2', wait: 1800 },
