@@ -1,13 +1,13 @@
-import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791626399';
-import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791626399';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791626399';
+import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791626671';
+import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791626671';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791626671';
 /* Урок «Шах»: що таке шах, три способи врятуватися (утекти, побити, закритися) — приклад зі стрілками,
    потім прості завдання: 5 — «постав шах», по одному — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791626399';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791626399';
-import { toggleGuide } from '../shared/guide.js?v=1791626399';
+import { createBoard } from '../shared/board.js?v=1791626671';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791626671';
+import { toggleGuide } from '../shared/guide.js?v=1791626671';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json' + new URL(import.meta.url).search, import.meta.url))).json();
@@ -56,7 +56,10 @@ function onMove(from, to) {
   LG.play(pos.board.get(m.to) ? 'capture' : 'move');
   if (ok) {
     done = true; pos = q; show(pos, [from, to]); board.setMovable(null); board.clearHint(); $('wrap').classList.add('solved');
-    if (t.kind === 'give') { const king = makeSquare(pos.board.kingOf(pos.turn)); board.shapes([{ orig: to, dest: king, brush: 'red' }]); }
+    if (t.kind === 'give') {
+      const king = makeSquare(pos.board.kingOf(pos.turn));
+      board.afterAnimation(() => { if (active === token && done) board.shapes([{ orig: to, dest: king, brush: 'red' }]); });
+    }
     task(t.kind === 'give' ? t.meta.explanation : t.kind === 'capture' ? 'Побив — і ще й виграв фігуру! 🎉' : 'Король урятований! 🎉', 'ok');
     lv.done(idx, !errs);
     setTimeout(() => {

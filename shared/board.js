@@ -204,7 +204,9 @@ export function createBoard(el, opts = {}) {
   });
   lichessTouch(cg);
 
+  let positionVersion = 0;
   function setPosition(pieces, o = {}) {
+    positionVersion++;
     // pieces: Map(key → {role, color}); chessground сам анімує різницю
     const diff = new Map();
     for (const k of cg.state.pieces.keys()) if (!pieces.has(k)) diff.set(k, undefined);
@@ -217,6 +219,15 @@ export function createBoard(el, opts = {}) {
     if (o.animate === false) cg.set({ animation: { enabled: true } });
     cg.set({ lastMove: o.lastMove || undefined, check: o.check || false });
   }
+  function afterAnimation(callback) {
+    const version = positionVersion;
+    const ready = () => {
+      if (cg.state.dom.destroyed || version !== positionVersion) return;
+      if (cg.state.animation.current) requestAnimationFrame(ready);
+      else callback();
+    };
+    requestAnimationFrame(ready);
+  }
   // turn — чий зараз хід (для ходу наперед: фігури свої, а ходить суперник)
   function setMovable(color, dests, turn) {
     cg.set({ turnColor: turn || color || cg.state.turnColor, movable: { color: color || undefined, dests: dests || new Map() } });
@@ -224,6 +235,7 @@ export function createBoard(el, opts = {}) {
   return {
     cg,
     setPosition,
+    afterAnimation,
     setMovable,
     setOrientation: o => cg.set({ orientation: o }),
     hint: (orig, dest) => cg.setAutoShapes([{ orig, dest, brush: 'hint' }]),

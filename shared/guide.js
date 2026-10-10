@@ -6,7 +6,7 @@
    move: кілька переміщень через пробіл; 5-та літера — перетворення (d7d8q); рокіровка — король на 2 клітинки або на свою туру;
    пішак навскоси на порожню клітинку — взяття на проході. */
 import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from './board.js?v=1791626399';
+import { createBoard } from './board.js?v=1791626671';
 
 const ROLE = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTER = { pawn: 'p', knight: 'n', bishop: 'b', rook: 'r', queen: 'q', king: 'k' };
@@ -108,7 +108,8 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
         await wait(600, t);
         for (const step of s.steps || []) {
           if (step.say) say.textContent = step.say;
-          if (step.arrows) board.shapes(step.arrows.split(' ').filter(Boolean).map(shape)); else if (step.move) board.clearHint();
+          if (step.move) board.clearHint();
+          else if (step.arrows) board.shapes(step.arrows.split(' ').filter(Boolean).map(shape));
           const mk = new Map();
           (step.dots || '').split(' ').filter(Boolean).forEach(k => mk.set(k, 'gd-dot'));
           (step.cross || '').split(' ').filter(Boolean).forEach(k => mk.set(k, 'gd-cross'));
@@ -116,6 +117,7 @@ export function openGuide({ icon = '📖', title = '', intro = '', slides = [], 
             const r = applyMove(m, step.move);
             apples = apples.filter(k => !m.has(k));
             board.setPosition(m, { lastMove: r.lm, check: step.check !== undefined ? step.check : r.check });
+            if (step.arrows) board.afterAnimation(() => { if (t === token) board.shapes(step.arrows.split(' ').filter(Boolean).map(shape)); });
             LG && LG.play && LG.play('move');
           }
           if (step.dots || step.cross || step.move) marks(mk);
