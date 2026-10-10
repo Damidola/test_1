@@ -1,13 +1,13 @@
-import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791624894';
-import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791624894';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791624894';
+import { PUZZLE_SECTIONS } from '../shared/puzzle-catalog.js?v=1791625678';
+import { judgePuzzleMove, puzzleMoves, escapeKind } from '../shared/puzzle-rules.js?v=1791625678';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791625678';
 /* Урок «Шах»: що таке шах, три способи врятуватися (утекти, побити, закритися) — приклад зі стрілками,
    потім прості завдання: 5 — «постав шах», по одному — на кожен спосіб. Задачі — перші (найпростіші)
    з «Шахових задач» (chess-puzzles/puzzles.json, розділи chk_* та esc_*). Ходи перевіряються правилами chessops. */
 import { Chess, parseSquare, makeSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791624894';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791624894';
-import { toggleGuide } from '../shared/guide.js?v=1791624894';
+import { createBoard } from '../shared/board.js?v=1791625678';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791625678';
+import { toggleGuide } from '../shared/guide.js?v=1791625678';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const DATA = await (await fetch(new URL('../chess-puzzles/puzzles.json' + new URL(import.meta.url).search, import.meta.url))).json();
