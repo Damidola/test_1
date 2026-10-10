@@ -23,12 +23,23 @@ test('пішаки: жоден дозволений хід не заводить
   }
 });
 
-test('полуничка доступна лише після взяття всіх фігур', async () => {
-  const { startState, movesFrom, solve, solved } = await import('../../lessons/mazes.js');
-  for (const [key, maze] of Object.entries(MAZES)) for (const [i, lv] of maze.levels.entries()) {
-    const path = solve(lv, startState(maze, lv));
-    assert.ok(path && solved(lv, path.at(-1)), `${key}#${i + 1}`);
-    for (const st of path) for (const m of movesFrom(lv, st))
-      if (String(m.to) === String(lv.to)) assert.equal(m.st.left.length, 0);
-  }
+test('безпечну полуничку можна з’їсти, поки ще залишилися суперники', async () => {
+  const { startState, movesFrom, solved } = await import('../../lessons/mazes.js');
+  const lv = MAZES.capture.levels[0], st = startState(MAZES.capture, lv);
+  const capture = movesFrom(lv, st).find(m => String(m.to) === '0,1');
+  const along = movesFrom(lv, capture.st).find(m => String(m.to) === '0,0');
+  const berry = movesFrom(lv, along.st).find(m => String(m.to) === String(lv.to));
+  assert.ok(berry && solved(lv, berry.st));
+  assert.equal(berry.st.left.length, 1);
+});
+
+test('небезпечну спробу можна зробити, але вона не завершує рівень чи змінює вихідний стан', async () => {
+  const { startState, movesFrom, attackingEnemies, solved } = await import('../../lessons/mazes.js');
+  const lv = { piece: 'rook', w: 5, h: 5, from: [0, 4], to: [1, 4], walls: [], enemies: [[1, 0, 'rook'], [1, 4, 'pawn']], safe: true };
+  const st = startState(MAZES.capture, lv), before = JSON.stringify(st);
+  assert.ok(!movesFrom(lv, st).some(m => String(m.to) === String(lv.to)));
+  const attempt = movesFrom(lv, st, { allowUnsafe: true }).find(m => String(m.to) === String(lv.to));
+  assert.deepEqual(attackingEnemies(lv, attempt.st), [[1, 0, 'rook']]);
+  assert.equal(solved(lv, attempt.st), false);
+  assert.equal(JSON.stringify(st), before);
 });

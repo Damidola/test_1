@@ -61,7 +61,7 @@ export const MAZES = {
   pawn: {
     title: 'Пішак 1: лабіринт', piece: 'pawn', video: 'e015cjCtkl8', videoTitle: 'Знайомся з пішаком!',
     text: 'Пішак ходить лише вперед (з першого ряду — можна на дві клітинки), а б’є навскоси вперед. Дійшов до краю — стає ферзем!',
-    task: 'Спершу побий усіх чорних пішаків навскоси. На верхньому краю стань ферзем і з’їж полуничку 🍓!',
+    task: 'З’їж полуничку 🍓! Пішака можна побити навскоси, а на верхньому краю твій пішак стане ферзем.',
     levels: [
       {"w": 5, "h": 5, "from": [2, 4], "to": [2, 0], "walls": []},
       {"w": 5, "h": 5, "from": [0, 4], "to": [1, 0], "walls": [[0, 3]], "enemies": [[1, 3, "pawn"]]},
@@ -75,8 +75,8 @@ export const MAZES = {
   },
   capture: {
     title: 'Взяття 1: лабіринт', piece: 'rook', video: '71051OelIo4', videoTitle: 'Незахищені фігури',
-    text: 'З’їж усі фігури суперника, а потім — полуничку. Обережно: вони теж б’ють! Ставати туди, де тебе з’їдять, не можна.',
-    task: 'З’їж усі фігури й полуничку 🍓. Червоні клітинки під боєм — туди не можна!',
+    text: 'З’їж полуничку на безпечній клітинці. Фігури суперника можна бити, але не обов’язково всі. Якщо тебе поб’ють — фігура повернеться назад, і ти зможеш спробувати інший хід.',
+    task: 'З’їж полуничку 🍓 і бережи свою фігуру. Помилився? Спробуй інший хід!',
     levels: [
       { piece: 'rook', w: 5, h: 5, from: [0, 4], to: [4, 0], walls: [], enemies: [[0, 1, 'pawn'], [4, 1, 'pawn']], safe: true },
       { piece: 'bishop', w: 5, h: 5, from: [0, 4], to: [4, 0], walls: [[2, 2]], enemies: [[1, 3, 'knight'], [3, 1, 'pawn']], safe: true },
@@ -108,22 +108,23 @@ const JUMPS = { knight: [[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]
 const key = ([c, r]) => c + ',' + r;
 // ---------- рушій ----------
 // Стан: { at: [c, r], piece, left: [[c, r, роль], …] } — де фігура, яка вона зараз (пішак стає ферзем), які фігури суперника ще стоять.
-// Рівень може мати enemies (їх треба з’їсти до полунички), piece (своя фігура рівня) і safe: true — фігури суперника б’ють,
-// ставати на клітинку під боєм не можна.
+// Рівень може мати enemies, piece і safe: true — небезпечний хід показує взяття та повертається назад.
 const inside = (lv, c, r) => c >= 0 && r >= 0 && c < lv.w && r < lv.h;
 export const startState = (M, lv) => ({ at: lv.from.slice(), piece: lv.piece || M.piece, left: (lv.enemies || []).map(e => e.slice()) });
 // клітинки, які б’ють фігури суперника (їхні промені зупиняють стіни, інші фігури й моя фігура)
-export function attacked(lv, st) {
+function attackTargets(lv, st, enemies = st.left) {
   const wall = new Set(lv.walls.map(key)), occ = new Set(st.left.map(e => e[0] + ',' + e[1]).concat(key(st.at))), out = new Set();
-  for (const [ec, er, role] of st.left) {
+  for (const [ec, er, role] of enemies) {
     if (role === 'pawn') { for (const dc of [-1, 1]) if (inside(lv, ec + dc, er + 1)) out.add((ec + dc) + ',' + (er + 1)); continue; }
     for (const [dc, dr] of STEPS[role] || []) for (let c = ec + dc, r = er + dr; inside(lv, c, r) && !wall.has(c + ',' + r); c += dc, r += dr) { out.add(c + ',' + r); if (occ.has(c + ',' + r)) break; }
     for (const [dc, dr] of JUMPS[role] || []) if (inside(lv, ec + dc, er + dr)) out.add((ec + dc) + ',' + (er + dr));
   }
   return out;
 }
-// усі ходи зі стану: [{ to, st }]
-export function movesFrom(lv, st) {
+export const attacked = (lv, st) => attackTargets(lv, st);
+export const attackingEnemies = (lv, st) => st.left.filter(enemy => attackTargets(lv, st, [enemy]).has(key(st.at)));
+// Для спроб дитини включаємо небезпечні ходи; підказки шукають лише безпечний шлях.
+export function movesFrom(lv, st, { allowUnsafe = false } = {}) {
   const wall = new Set(lv.walls.map(key)), en = new Map(st.left.map((e, i) => [e[0] + ',' + e[1], i])), raw = [];
   const free = (c, r) => inside(lv, c, r) && !wall.has(c + ',' + r);
   const [c0, r0] = st.at;
@@ -141,14 +142,13 @@ export function movesFrom(lv, st) {
   for (const to of raw) {
     const hit = en.get(key(to));
     const next = { at: to, piece: st.piece === 'pawn' && to[1] === 0 ? 'queen' : st.piece, left: hit === undefined ? st.left : st.left.filter((_, i) => i !== hit) };
-    if (next.left.length && key(to) === key(lv.to)) continue; // полуничка доступна після всіх взяттів
-    if (lv.safe && attacked(lv, next).has(key(to))) continue; // під бій ставати не можна
+    if (!allowUnsafe && lv.safe && attacked(lv, next).has(key(to))) continue; // під бій ставати не можна
     out.push({ to, st: next });
   }
   return out;
 }
-export const solved = (lv, st) => !st.left.length && st.at[0] === lv.to[0] && st.at[1] === lv.to[1];
-// найкоротший шлях до перемоги (усі фігури з’їдено й полуничка) → масив станів або null
+export const solved = (lv, st) => (!lv.safe || !attacked(lv, st).has(key(st.at))) && st.at[0] === lv.to[0] && st.at[1] === lv.to[1];
+// найкоротший шлях до перемоги (полуничка на безпечній клітинці) → масив станів або null
 export function solve(lv, st0) {
   const sk = st => key(st.at) + st.piece + '|' + st.left.map(key).join(';');
   const prev = new Map([[sk(st0), null]]); let layer = [st0];

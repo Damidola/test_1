@@ -1,8 +1,8 @@
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, movesFrom, solve, startState, attacked, solved } from './mazes.js?v=1791621585';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1791621585';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791621585';
+import { MAZES, movesFrom, solve, startState, attackingEnemies, solved } from './mazes.js?v=1791622395';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1791622395';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791622395';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');
@@ -12,7 +12,7 @@ $('title').textContent = M.title; document.title = M.title;
 $('intro-text').textContent = M.text;
 const lv = createLevels($('levels'), 'maze:' + K, M.levels.length, i => { idx = i; load(); });
 const grid = $('grid'), wrap = $('wrap');
-let idx = (() => { const saved = LG.store.get(currentKey, null); return Number.isInteger(saved) && saved >= 0 && saved < M.levels.length ? saved : lv.open(); })(), L, at, st, moves = 0, sel = false, done = false, hintStep = 0, pieceEl;
+let idx = (() => { const saved = LG.store.get(currentKey, null); return Number.isInteger(saved) && saved >= 0 && saved < M.levels.length ? saved : lv.open(); })(), L, at, st, moves = 0, sel = false, done = false, hintStep = 0, pieceEl, recovering = false, recoveryTimers = [];
 // картинка фігури — з набору, вибраного в Профілі
 const pieceImg = (role, c = 'w') => new URL('../shared/pieces/' + (LG.store.get('pieceSet', 'cburnett') || 'cburnett') + '/' + c + { rook: 'R', bishop: 'B', queen: 'Q', knight: 'N', king: 'K', pawn: 'P' }[role] + '.svg', import.meta.url).href;
 document.querySelector('.mz-arrows mpiece')?.replaceWith(Object.assign(document.createElement('img'), { className: 'mz-arrows-pc', src: pieceImg(M.piece), alt: '' }));
@@ -20,6 +20,7 @@ const same = (a, b) => a[0] === b[0] && a[1] === b[1];
 const cell = ([c, r]) => grid.children[r * L.w + c];
 
 function load() {
+  recoveryTimers.forEach(clearTimeout); recoveryTimers = []; recovering = false;
   LG.store.set(currentKey, idx);
   L = M.levels[idx]; st = startState(M, L); at = st.at; moves = 0; sel = false; done = false; hintStep = 0; lv.set(idx);
   wrap.classList.remove('solved');
@@ -38,7 +39,7 @@ function load() {
   pieceEl = document.createElement('div'); pieceEl.className = 'mz-piece'; pieceEl.innerHTML = '<img alt="" src="' + pieceImg(st.piece) + '">';
   grid.appendChild(pieceEl); place(false);
   say(M.task || (idx === 0 ? 'З’їж полуничку 🍓! Перетягни фігуру або натисни на неї, щоб побачити можливі ходи.' : 'З’їж полуничку 🍓 якнайменшою кількістю ходів.'));
-  danger(); select(false);
+  select(false);
 }
 // ходи йдуть по черзі: наступний починається, коли попередній доїхав (інакше швидкі тапи зрізають по діагоналі)
 let queue = [], qT = 0, moving = false;
@@ -53,39 +54,67 @@ function step() {
   qT = setTimeout(step, 280);
 }
 function stopQueue() { queue = []; clearTimeout(qT); moving = false; }
-// клітинки під боєм фігур суперника (лише в рівнях, де вони б’ють)
-function danger() {
-  grid.querySelectorAll('.danger').forEach(d => d.classList.remove('danger'));
-  if (L.safe) for (const k of attacked(L, st)) { const [c, r] = k.split(',').map(Number); const d = cell([c, r]); if (d && !d.querySelector('.mz-en')) d.classList.add('danger'); }
-}
 function say(t, cls) { const el = $('task'); el.textContent = t; el.classList.remove('ok', 'bad'); if (cls) el.classList.add(cls); }
 function select(on) {
   sel = on && !done; pieceEl.classList.toggle('sel', sel);
   grid.querySelectorAll('.dest').forEach(d => d.classList.remove('dest'));
-  if (sel) for (const m of movesFrom(L, st)) cell(m.to).classList.add('dest');
+  if (sel) for (const m of movesFrom(L, st, { allowUnsafe: true })) cell(m.to).classList.add('dest');
 }
 function go(to) {
+  if (done || recovering || moving) return;
   // тап або перетягування на клітинку, куди можна піти, — хід (фігура одна); інакше фігура повертається
-  const m = movesFrom(L, st).find(x => same(x.to, to));
+  const m = movesFrom(L, st, { allowUnsafe: true }).find(x => same(x.to, to));
   if (!m) {
     place(true);
-    if (!cell(to).classList.contains('wall') && !same(to, at)) { LG.play('illegal'); if (cell(to).classList.contains('danger')) say('Туди не можна — там тебе з’їдять! 🙈', 'bad'); }
+    if (!cell(to).classList.contains('wall') && !same(to, at)) LG.play('illegal');
     return;
   }
   grid.querySelectorAll('.hint').forEach(x => x.classList.remove('hint'));
+  const attackers = L.safe ? attackingEnemies(L, m.st) : [];
+  if (attackers.length) return recover(m, attackers[0]);
   const ate = m.st.left.length < st.left.length, promo = m.st.piece !== st.piece;
   st = m.st; at = st.at; moves++; hintStep = 0; LG.play(ate ? 'capture' : 'move'); place(true); select(false);
   if (ate) { const en = cell(at).querySelector('.mz-en'); if (en) setTimeout(() => en.remove(), 200); }
   if (promo) { setTimeout(() => { pieceEl.querySelector('img').src = pieceImg(st.piece); }, 280); say('Пішак дійшов до краю — тепер він ферзь! 👑', 'ok'); }
-  danger();
   if (solved(L, st)) return win();
-  if (same(at, L.to) && st.left.length) say('Спершу зʼїж усі фігури суперника!', 'bad');
+}
+// Невдала спроба не змінює стан, кількість ходів чи вже зібрані фігури.
+function recover(move, enemy) {
+  recovering = true; select(false); stopQueue();
+  const later = (fn, ms) => recoveryTimers.push(setTimeout(fn, ms));
+  const target = move.to, origin = at.slice();
+  const victim = cell(target).querySelector('.mz-en');
+  pieceEl.style.transition = ''; pieceEl.style.transform = 'translate(' + target[0] * 100 + '%,' + target[1] * 100 + '%)';
+  LG.play('move');
+  later(() => {
+    if (victim) victim.style.visibility = 'hidden';
+    const striker = document.createElement('div'); striker.className = 'mz-piece mz-striker';
+    striker.innerHTML = '<img alt="" src="' + pieceImg(enemy[2], 'b') + '">';
+    striker.style.transition = 'none'; striker.style.transform = 'translate(' + enemy[0] * 100 + '%,' + enemy[1] * 100 + '%)';
+    grid.appendChild(striker); striker.getBoundingClientRect();
+    striker.style.transition = ''; striker.style.transform = 'translate(' + target[0] * 100 + '%,' + target[1] * 100 + '%)';
+    const attackerImg = cell(enemy).querySelector('.mz-en');
+    if (attackerImg) attackerImg.style.visibility = 'hidden';
+    later(() => {
+      LG.play('error'); pieceEl.classList.add('hit');
+      say('Ой! Тут твою фігуру побили. Вона повертається — спробуй інший хід 🙌', 'bad');
+    }, 280);
+    later(() => {
+      striker.style.transform = 'translate(' + enemy[0] * 100 + '%,' + enemy[1] * 100 + '%)';
+      pieceEl.classList.remove('hit');
+      pieceEl.style.transform = 'translate(' + origin[0] * 100 + '%,' + origin[1] * 100 + '%)';
+    }, 650);
+    later(() => {
+      striker.remove(); if (attackerImg) attackerImg.style.visibility = ''; if (victim) victim.style.visibility = '';
+      recovering = false; recoveryTimers = [];
+    }, 950);
+  }, 280);
 }
 const cellAt = (x, y) => { const d = document.elementFromPoint(x, y); const c = d && d.closest('.mz-grid > div:not(.mz-piece)'); return c ? [+c.dataset.c, +c.dataset.r] : null; };
 // перетягування фігури пальцем (як на звичайній дошці); короткий дотик — вибір / хід тапом
 let drag = null;
 grid.addEventListener('pointerdown', e => {
-  const to = cellAt(e.clientX, e.clientY); if (!to || done) return;
+  const to = cellAt(e.clientX, e.clientY); if (!to || done || recovering || moving) return;
   if (!same(to, at)) return go(to);
   drag = { x: e.clientX, y: e.clientY, moved: false, id: e.pointerId };
   grid.setPointerCapture(e.pointerId);
@@ -124,8 +153,8 @@ function win() {
 }
 // 💡 1-й раз — куди йти першим ходом, 2-й — увесь шлях
 LG.onHint(() => {
-  if (done) return;
-  const sol = solve(L, st); if (!sol) return; const path = sol.map(x => x.at);
+  if (done || recovering || moving) return;
+  const sol = solve(L, st); if (!sol || sol.length < 2) return; const path = sol.map(x => x.at);
   grid.querySelectorAll('.hint').forEach(x => x.classList.remove('hint'));
   (hintStep ? path.slice(1) : [path[1]]).forEach(p => cell(p).classList.add('hint'));
   hintStep = 1;
