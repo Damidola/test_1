@@ -6,8 +6,8 @@
   <style id="no-flash">html, body { background: var(--app-bg, #1B2133); color: #fff; } body { animation: lgfade .25s ease-out; } @keyframes lgfade { from { opacity: 0; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Шахові задачі</title>
-  <link rel="stylesheet" href="../shared/kit.css?v=1791625678">
-  <link rel="stylesheet" href="../shared/play.css?v=1791625678">
+  <link rel="stylesheet" href="../shared/kit.css?v=1791626227">
+  <link rel="stylesheet" href="../shared/play.css?v=1791626227">
   <style>
     .mt { justify-content: center; gap: 8px; }
     .mt-goal { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 10px; font: 900 16px var(--lg-font); color: var(--lg-ink); min-height: 30px; text-align: center; }
@@ -42,14 +42,6 @@
     .mt-side.b { background: #1d1b30; border-color: #fff; }
     .mt .lg-board-wrap { width: min(100vw, 560px, calc(100svh - var(--lg-bar-h) - 16px - 40px - 60px - 30px - 30px)); }
     .mt-task { min-height: 22px; max-width: min(100%, 520px); padding: 0 12px; box-sizing: border-box; text-align: center; font: 800 15px/1.3 var(--lg-font); color: var(--lg-ink); }
-    .mt[data-mode="puzzle"] #wrap.solved::after { content: ""; position: absolute; z-index: 20; inset: 0; border-radius: 8px; pointer-events: none;
-      background: linear-gradient(to bottom, rgba(46, 230, 184, .08), rgba(46, 230, 184, .48));
-      animation: mt-solved-sweep .55s ease-out both; }
-    @keyframes mt-solved-sweep {
-      0% { clip-path: inset(0 0 100%); opacity: .95; }
-      72% { clip-path: inset(0); opacity: .7; }
-      100% { clip-path: inset(0); opacity: 0; }
-    }
     .mt-task.say { color: #FF9F1C; }
     .mt-promo { position: absolute; inset: 0; z-index: 50; background: rgba(0, 0, 0, .45); }
     .mt-promo button { position: absolute; width: 12.5%; height: 12.5%; padding: 0; border: 0; border-radius: 50%; background: #b0b0b0; box-shadow: inset 0 0 12px rgba(0,0,0,.4); cursor: pointer; }
@@ -166,10 +158,10 @@
       <button type="button" id="next"><span class="ico">▶️</span><span class="lbl">Далі</span></button>
     </div>
   </main>
-  <script src="../shared/games.js?v=1791625678"></script>
-  <script src="../shared/kit.js?v=1791625678" data-game="mate" data-night="on"></script>
-  <script src="../shared/vid.js?v=1791625678"></script>
-  <script type="module" src="mate.js?v=1791625678"></script>
+  <script src="../shared/games.js?v=1791626227"></script>
+  <script src="../shared/kit.js?v=1791626227" data-game="mate" data-night="on"></script>
+  <script src="../shared/vid.js?v=1791626227"></script>
+  <script type="module" src="mate.js?v=1791626227"></script>
 </body>
 </html>
 
