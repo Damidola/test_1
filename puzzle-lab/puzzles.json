@@ -1,0 +1,328 @@
+{
+  "version": 1,
+  "sources": {
+    "lichess": {
+      "name": "Lichess",
+      "url": "https://database.lichess.org/#puzzles",
+      "license": "CC0"
+    },
+    "generator": {
+      "name": "chess-puzzle-maker + Stockfish",
+      "url": "https://github.com/linrock/chess-puzzle-maker",
+      "description": "Генератор заново аналізує незмінені позиції з інших реальних партій Lichess. Рейтинг генератора не обчислюється.",
+      "revision": "75a4e8e838fd067ea00e67ea3348cda8f552fd0f",
+      "engine": "Stockfish 19",
+      "searchDepth": 18,
+      "verificationDepth": 20
+    }
+  },
+  "puzzles": [
+    {
+      "id": "lichess-07rDL",
+      "source": "lichess",
+      "seedId": "07rDL",
+      "fen": "2KQ4/r7/2k5/8/8/8/8/8 b - - 0 79",
+      "moves": [
+        "a7a8"
+      ],
+      "san": [
+        "Ra8#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 963,
+      "origin": "https://lichess.org/training/07rDL",
+      "game": "https://lichess.org/bd8kcoqI#157",
+      "explanation": "Білий король на c8 стоїть біля краю, а його ферзь на d8 перекриває вихід праворуч. Хід чорної тури Ra8# атакує короля по восьмому ряду. Король не може взяти туру на a8, а ферзь не встигає закритися між a8 і c8: клітинка b8 недосяжна. Це мат."
+    },
+    {
+      "id": "lichess-00T85",
+      "source": "lichess",
+      "seedId": "00T85",
+      "fen": "8/8/8/8/8/4K3/5Q2/1qk5 w - - 6 54",
+      "moves": [
+        "f2d2"
+      ],
+      "san": [
+        "Qd2#"
+      ],
+      "pieces": 4,
+      "category": "mateIn1",
+      "title": "Мат в 1 хід",
+      "rating": 1039,
+      "origin": "https://lichess.org/training/00T85",
+      "game": "https://lichess.org/j3dOR5SJ/black#106",
+      "explanation": "Qd2# ставить шах чорному королю на c1 по діагоналі. Білий король на e3 захищає ферзя на d2, тому чорний король не може його взяти. Ферзь одночасно забирає вільні виходи. Перекрити цей шах не можна: між ферзем і королем немає клітинки."
+    },
+    {
+      "id": "lichess-07BVD",
+      "source": "lichess",
+      "seedId": "07BVD",
+      "fen": "8/5K1k/8/6r1/8/8/5R2/8 w - - 2 78",
+      "moves": [
+        "f2h2",
+        "g5h5",
+        "h2h5"
+      ],
+      "san": [
+        "Rh2+",
+        "Rh5",
+        "Rxh5#"
+      ],
+      "pieces": 4,
+      "category": "mateIn2",
+      "title": "Мат у 2 ходи",
+      "rating": 664,
+      "origin": "https://lichess.org/training/07BVD",
+      "game": "https://lichess.org/MdGayTFL/black#154",
+      "explanation": "Rh2+ притискає чорного короля h7 по вертикалі h. Білий король f7 контролює клітинки g6, g7 і g8, тож утекти не можна. Чорні змушені закритися турою Rh5. Білі беруть цю туру Rxh5# і ставлять мат."
+    },
+    {
+      "id": "lichess-09duo",
+      "source": "lichess",
+      "seedId": "09duo",
+      "fen": "4K3/8/4k3/8/1Q6/8/P7/5q2 b - - 4 57",
+      "moves": [
+        "f1f7",
+        "e8d8",
+        "f7d7"
+      ],
+      "san": [
+        "Qf7+",
+        "Kd8",
+        "Qd7#"
+      ],
+      "pieces": 5,
+      "category": "mateIn2",
+      "title": "Мат у 2 ходи",
+      "rating": 929,
+      "origin": "https://lichess.org/training/09duo",
+      "game": "https://lichess.org/9NY3vr1l#113",
+      "explanation": "Чорний ферзь ходить Qf7+: це шах по діагоналі f7–e8. Король білих вимушено тікає на d8. Після Qd7# чорний король e6 захищає ферзя d7, а ферзь перекриває всі виходи білого короля. Мат за два ходи чорних."
+    },
+    {
+      "id": "lichess-03xjV",
+      "source": "lichess",
+      "seedId": "03xjV",
+      "fen": "4N3/7k/4Kp2/7r/5P2/8/8/8 w - - 0 72",
+      "moves": [
+        "e8f6",
+        "h7g6",
+        "f6h5"
+      ],
+      "san": [
+        "Nxf6+",
+        "Kg6",
+        "Nxh5"
+      ],
+      "pieces": 6,
+      "category": "fork",
+      "title": "Вилка",
+      "rating": 820,
+      "origin": "https://lichess.org/training/03xjV",
+      "game": "https://lichess.org/mlcZ0EiF/black#142",
+      "explanation": "Nxf6+ бере пішака та одночасно атакує короля h7 і туру h5. Чорні мусять спочатку відповісти на шах; у показаному рішенні вони грають Kg6. Тоді Nxh5 забирає туру. Вилка приносить пішака й туру, а не просто створює дві стрілки."
+    },
+    {
+      "id": "lichess-085E0",
+      "source": "lichess",
+      "seedId": "085E0",
+      "fen": "2r5/8/8/2k5/8/1R6/1K6/8 w - - 7 78",
+      "moves": [
+        "b3c3",
+        "c5d6",
+        "c3c8"
+      ],
+      "san": [
+        "Rc3+",
+        "Kd6",
+        "Rxc8"
+      ],
+      "pieces": 4,
+      "category": "skewer",
+      "title": "Наскрізний напад",
+      "rating": 773,
+      "origin": "https://lichess.org/training/085E0",
+      "game": "https://lichess.org/ktajzT6r/black#154",
+      "explanation": "Rc3+ ставить шах королю c5 по вертикалі c. За королем на c8 стоїть чорна тура. Король відходить, у рішенні — Kd6, і відкриває лінію c3–c8. Після Rxc8 біла тура виграє чорну; король d6 її одразу взяти не може."
+    },
+    {
+      "id": "lichess-03o0i",
+      "source": "lichess",
+      "seedId": "03o0i",
+      "fen": "8/8/4K3/Pp6/3k4/8/8/8 w - - 0 68",
+      "moves": [
+        "a5a6",
+        "b5b4",
+        "a6a7",
+        "b4b3",
+        "a7a8q"
+      ],
+      "san": [
+        "a6",
+        "b4",
+        "a7",
+        "b3",
+        "a8=Q"
+      ],
+      "pieces": 4,
+      "category": "promotion",
+      "title": "Перетворення пішака",
+      "rating": 1293,
+      "origin": "https://lichess.org/training/03o0i",
+      "game": "https://lichess.org/T7f6izM6/black#134",
+      "explanation": "Пішак a5 уже попереду чорного пішака b5. Хід a6 створює прохідного пішака: чорний пішак ходить у протилежний бік і більше не може його взяти. Поки чорні просувають b-пішака, білі грають a7 та a8=Q. Білий король e6 заважає чорному королю d4 наздогнати пішака."
+    },
+    {
+      "id": "lichess-0c5hl",
+      "source": "lichess",
+      "seedId": "0c5hl",
+      "fen": "8/8/8/2b2k1p/1R4p1/8/4K3/8 w - - 2 53",
+      "moves": [
+        "b4b5",
+        "f5f4",
+        "b5c5"
+      ],
+      "san": [
+        "Rb5",
+        "Kf4",
+        "Rxc5"
+      ],
+      "pieces": 6,
+      "category": "pin",
+      "title": "Зв’язка",
+      "rating": 969,
+      "origin": "https://lichess.org/training/0c5hl",
+      "game": "https://lichess.org/9W2586xh/black#104",
+      "explanation": "Rb5 зв’язує чорного слона c5 із королем f5 по п’ятому ряду. Слон не може взяти туру на b5: тоді лінія до короля відкриється, і це був би незаконний хід. У рішенні король відходить Kf4, після чого Rxc5 виграє слона. Чорні не можуть забрати білу туру у відповідь."
+    },
+    {
+      "id": "generator-04xSr",
+      "source": "generator",
+      "seedId": "04xSr",
+      "fen": "8/4k3/4r3/3K4/8/8/8/7R w - - 21 65",
+      "moves": [
+        "h1h7",
+        "e7f6",
+        "h7h6",
+        "f6g5",
+        "h6e6"
+      ],
+      "san": [
+        "Rh7+",
+        "Kf6",
+        "Rh6+",
+        "Kg5",
+        "Rxe6"
+      ],
+      "pieces": 4,
+      "category": "skewer",
+      "title": "Наскрізний напад",
+      "rating": null,
+      "origin": "https://lichess.org/training/04xSr",
+      "game": "https://lichess.org/wxWVQA0E/black#128",
+      "explanation": "Після Rh7+ чорний король виходить на f6. Хід Rh6+ ставить другий шах і водночас відкриває турі шлях до чорної тури e6. У показаному рішенні король відходить Kg5, після чого Rxe6 виграє туру. Навіть якби король залишався поруч з e6, забрати білу туру він не міг би: клітинку e6 захищає білий король d5. Два шахи готують конкретний безпечний виграш."
+    },
+    {
+      "id": "generator-06IQw",
+      "source": "generator",
+      "seedId": "06IQw",
+      "fen": "8/8/p3k2p/5R2/5K2/8/4b3/8 w - - 1 47",
+      "moves": [
+        "f5e5",
+        "e6d6",
+        "e5e2"
+      ],
+      "san": [
+        "Re5+",
+        "Kd6",
+        "Rxe2"
+      ],
+      "pieces": 6,
+      "category": "fork",
+      "title": "Вилка",
+      "rating": null,
+      "origin": "https://lichess.org/training/06IQw",
+      "game": "https://lichess.org/obwBu5QY/black#92",
+      "explanation": "Re5+ переводить туру на п’ятий ряд і ставить шах королю e6. З e5 тура одночасно атакує слона e2 по вертикалі e. Чорний король відповідає на шах ходом Kd6, після чого Rxe2 забирає слона. У початковій позиції тура f5 ще не могла його взяти."
+    },
+    {
+      "id": "generator-04f0R",
+      "source": "generator",
+      "seedId": "04f0R",
+      "fen": "1R6/8/8/8/5np1/8/5k1K/8 b - - 5 66",
+      "moves": [
+        "g4g3",
+        "h2h1",
+        "g3g2",
+        "h1h2",
+        "g2g1q"
+      ],
+      "san": [
+        "g3+",
+        "Kh1",
+        "g2+",
+        "Kh2",
+        "g1=Q#"
+      ],
+      "pieces": 5,
+      "category": "promotion",
+      "title": "Перетворення пішака",
+      "rating": null,
+      "origin": "https://lichess.org/training/04f0R",
+      "game": "https://lichess.org/iC0URnJx#131",
+      "explanation": "Пішак g4 наближається до перетворення з темпом: g3+ змушує білого короля піти на h1. Після g2+ він повертається на h2. Пішака g2 захищає кінь f4, а чорний король f2 перекриває наближення білого короля. Хід g1=Q# перетворює пішака із матом: ферзь атакує h2, кінь контролює h3, а чорний король захищає g1 та g3."
+    },
+    {
+      "id": "generator-0J4KQ",
+      "source": "generator",
+      "seedId": "0J4KQ",
+      "fen": "8/2n5/2K5/1p2k3/1P6/8/8/8 w - - 3 52",
+      "moves": [
+        "c6c7",
+        "e5d4",
+        "c7b6",
+        "d4c4",
+        "b6a5"
+      ],
+      "san": [
+        "Kxc7",
+        "Kd4",
+        "Kb6",
+        "Kc4",
+        "Ka5"
+      ],
+      "pieces": 5,
+      "category": "hangingPiece",
+      "title": "Виграш фігури",
+      "rating": null,
+      "origin": "https://lichess.org/training/0J4KQ",
+      "game": "https://lichess.org/QByV6HNx/black#102",
+      "explanation": "Кінь c7 не захищений: чорний король e5 занадто далеко, щоб побити білого короля після Kxc7. Забери коня. Після Kd4 хід Kb6 наближає короля до пішака та поля перетворення. Коли чорний король іде Kc4, зіграй Ka5: тепер білий король захищає пішака b4 й звільняє йому шлях уперед. Це закріплює виграш у пішаковому кінці."
+    },
+    {
+      "id": "generator-03A1C",
+      "source": "generator",
+      "seedId": "03A1C",
+      "fen": "4K3/1k2P2q/3Q4/8/8/8/8/8 b - - 4 55",
+      "moves": [
+        "h7g8",
+        "e8d7",
+        "g8c8"
+      ],
+      "san": [
+        "Qg8+",
+        "Kd7",
+        "Qc8#"
+      ],
+      "pieces": 5,
+      "category": "mateIn2",
+      "title": "Мат у 2 ходи",
+      "rating": null,
+      "origin": "https://lichess.org/training/03A1C",
+      "game": "https://lichess.org/RqaPUnMq#109",
+      "explanation": "Qg8+ ставить шах білому королю e8 по восьмому ряду. Він вимушено відходить Kd7. Хід Qc8# атакує його по діагоналі й закриває виходи. Чорний король b7 захищає ферзя c8, тому взяття Kxc8 неможливе. Потрібна саме ця послідовність двох шахів."
+    }
+  ]
+}

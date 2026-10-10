@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Нові задачі · пробна добірка</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/assets/chessground.base.css">
+<link rel="stylesheet" href="../shared/vendor/lichess-board.css?v=1791642982">
+<link rel="stylesheet" href="lab.css?v=1791642982">
+</head>
+<body>
+<main>
+<header><a href="../index.html#practice" aria-label="Назад до задач">‹</a><div><h1>Нові задачі</h1><small>Пробна добірка · старі задачі збережені</small></div></header>
+<section class="filters" aria-label="Вибір задач">
+<label>Джерело<select id="source"><option value="lichess">Lichess</option><option value="generator">Генератор</option><option value="all">Обидва</option></select></label>
+<label>Фігури<select id="amount"><option value="small">3–5</option><option value="large">6–10</option><option value="all">Усі 3–10</option></select></label>
+</section>
+<div id="picker" aria-label="Список задач"></div>
+<div class="task-head"><button id="prev" aria-label="Попередня задача">‹</button><div><h2 id="title">Завантаження…</h2><span id="meta"></span></div><button id="next" aria-label="Наступна задача">›</button></div>
+<p id="goal"></p>
+<div id="board-wrap" class="lg-board-wrap" data-fit="1"><div id="board" class="cg-wrap"></div></div>
+<p id="status" role="status" aria-live="polite"></p>
+<div id="promotion" hidden><span>На яку фігуру перетворити пішака?</span><button data-role="queen">Ферзь</button><button data-role="rook">Тура</button><button data-role="bishop">Слон</button><button data-role="knight">Кінь</button></div>
+<div class="controls"><button id="hint">Підказка</button><button id="answer">Рішення</button><button id="restart">Знову</button></div>
+<details id="explanation"><summary>Пояснення задачі</summary><p id="reason"></p><p id="line" hidden></p><a id="origin" target="_blank" rel="noopener">Позиція з партії ↗</a></details>
+<details><summary>Звідки ці задачі?</summary><p><b>Lichess</b> — готові задачі з реальних партій. Показуємо їхній рейтинг і повне рішення. Фігури з позицій не видаляємо.</p><p><b>Генератор</b> — chess-puzzle-maker зі Stockfish. Для проби він заново аналізує інші позиції з реальних партій. Це добір ходів із заданої позиції, а не генерація випадкової дошки. Його задачі не мають рейтингу Lichess.</p><p>В обох добірках лише 3–10 фігур, включно з королями та пішаками. Фільтр за замовчуванням — 3–5. Прогрес тут зберігається окремо.</p><a href="https://database.lichess.org/#puzzles" target="_blank" rel="noopener">База Lichess (CC0) ↗</a> · <a href="https://github.com/linrock/chess-puzzle-maker" target="_blank" rel="noopener">Генератор на GitHub ↗</a></details>
+<p id="error" role="alert" hidden></p>
+</main>
+<script type="module" src="lab.js?v=1791642982"></script>
+</body>
+</html>

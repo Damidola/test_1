@@ -1,19 +1,19 @@
-import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791640501';
-import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791640501';
-import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791640501';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791640501';
-import { bestUci, warmUp } from '../shared/engine.js?v=1791640501';
+import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791642982';
+import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791642982';
+import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791642982';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791642982';
+import { bestUci, warmUp } from '../shared/engine.js?v=1791642982';
 /* Шахові задачі: список розділів → задача або практика.
    Мат і тактика — навчальні позиції та відредаговані задачі Lichess; шах — авторські позиції (chess-puzzles/puzzles.json). Спершу сам робиться хід
    суперника, далі дитина знаходить хід (або кілька ходів), суперник відповідає за рішенням Lichess.
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1791640501';
-import { createRules } from '../chess/rules.js?v=1791640501';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791640501';
-import { hintMove } from '../shared/ai.js?v=1791640501';
-import { toggleGuide, introGuide } from '../shared/guide.js?v=1791640501';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1791642982';
+import { createRules } from '../chess/rules.js?v=1791642982';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791642982';
+import { hintMove } from '../shared/ai.js?v=1791642982';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1791642982';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)

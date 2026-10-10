@@ -1,14 +1,14 @@
-import { menuGroups } from './shared/puzzle-catalog.js?v=1791640501';
-import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1791640501';
+import { menuGroups } from './shared/puzzle-catalog.js?v=1791642982';
+import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1791642982';
 /* Шахи для дітей: застосунок із чотирма вкладками.
    🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
    🤖 Гра — вибір суперника, кольору, сили й режиму → партія з роботом;
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1791640501';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1791640501';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1791640501';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1791642982';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1791642982';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1791642982';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -130,6 +130,7 @@ const PRACTICE = [
   { id: 'check', ic: 'K', t: 'Шах', s: 'постав шах і врятуйся від шаху', c: '#3FA7F5', groups: menuGroups(['Постав шах', 'Урятуйся від шаху']) },
   { id: 'mate1', ic: 'Q', t: 'Мат', s: 'в 1 хід кожною фігурою і в 2 ходи', c: '#FF5C6C', groups: menuGroups(['Мат в 1 хід', 'Мат в 2 ходи']) },
   { id: 'tactics', ic: '🍴', t: 'Тактика', s: 'вилка, зв’язка, простріл та інші', c: '#FF9F1C', groups: menuGroups(['Тактичні прийоми']) },
+  { id: 'new-puzzles', ic: '🧩', t: 'Нові задачі', s: 'пробна добірка · 3–10 фігур · два джерела', c: '#2ECC9A', href: 'puzzle-lab/index.html' },
   { id: 'analysis', ic: '🔍', t: 'Аналіз', s: 'розстав позицію — робот підкаже ходи', c: '#3FA7F5', href: 'editor/index.html' },
   { id: 'endgame', ic: ['K', 'Q'], t: 'Постав мат роботу', s: 'скільки завгодно ходів — головне мат', c: '#2ECC9A', groups: [
     [null, [[['K', 'Q'], 'Ферзь і король', '', P('kqk')], [['K', 'R'], 'Тура і король', '', P('krk')], [['K', 'B', 'B'], 'Два слони', '', P('kbbk')], [['K', 'P'], 'Король і пішак', '', P('kpk')]]]] },
