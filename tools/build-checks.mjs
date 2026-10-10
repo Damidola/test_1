@@ -31,7 +31,7 @@ for (const [role, schemes] of Object.entries(CHECK_SCHEMES)) {
       const result = judgePuzzleMove(pos, parseUci(solution), goal);
       if (!result.ok) throw Error(solution + ': ' + result.message);
       const answers = puzzleMoves(pos, goal).map(makeUci);
-      const meta = { version: CHECK_BANK_VERSION, ...goal, motif: scheme.motif, ...CHECK_TEXT[role], hint: scheme.hint, answers, source: 'author', difficulty: i < 3 ? 'easy' : i < 6 ? 'medium' : 'challenge' };
+      const meta = { version: CHECK_BANK_VERSION, ...goal, motif: scheme.motif, ...CHECK_TEXT[role], ...(scheme.explanation ? { explanation: scheme.explanation } : {}), hint: scheme.hint, answers, source: 'author', difficulty: i < 8 ? 'easy' : i < 20 ? 'medium' : 'challenge' };
       rows.push([id, fen, solution, 400 + i * 50, pos.board.occupied.size(), meta]);
     } catch (error) { failures++; console.error(id, error.message); }
   }

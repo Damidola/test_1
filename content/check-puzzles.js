@@ -1,6 +1,7 @@
 /* Кожна позиція навчає окремого способу дати шах. Без дзеркал і зсунутих копій.
-   1–3: майже порожня дошка; 4–6: укриття; 7–9: взяття; 10–12: взаємодія фігур. */
-export const CHECK_BANK_VERSION = 3;
+   30 задач кожною фігурою: від відкритих ліній до укриттів, взяттів і взаємодії фігур. */
+import { CHECK_EXTRAS } from './check-extra-puzzles.js';
+export const CHECK_BANK_VERSION = 4;
 const p = (id, motif, white, black, solution, hint, capture = false) => ({ id, motif, white, black, solution, hint, capture });
 export const CHECK_SCHEMES = {
   rook: [
@@ -74,6 +75,10 @@ export const CHECK_SCHEMES = {
     p('capture-centre', 'Захищене взяття в центрі', 'Ka1 Pb5 Pd5 Ra3 Pd2', 'Kd7 Nc6 Pe7 Pf7 Rh8', 'b5c6', 'Побий коня. Пішак на іншому боці захистить нападника.', true)
   ]
 };
+for (const [role, extras] of Object.entries(CHECK_EXTRAS)) {
+  CHECK_SCHEMES[role].push(...extras);
+  CHECK_SCHEMES[role].sort((a, b) => (a.white + ' ' + a.black).split(/\s+/).length - (b.white + ' ' + b.black).split(/\s+/).length);
+}
 export const CHECK_TEXT = {
   rook: { explanation: 'Тура атакує короля по прямій. Лінія між ними відкрита.' },
   bishop: { explanation: 'Слон атакує короля по вільній діагоналі.' },

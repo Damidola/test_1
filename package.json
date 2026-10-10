@@ -5,6 +5,7 @@
   "scripts": {
     "build": "node tools/build-learn.mjs",
     "build:checks": "node --import ./tools/test/register.mjs tools/build-checks.mjs",
+    "build:puzzles": "npm run build:checks && node --import ./tools/test/register.mjs tools/build-puzzles.mjs",
     "test": "node --import ./tools/test/register.mjs --test 'tools/test/*.test.mjs'",
     "check:pages": "node tools/check-pages.mjs",
     "check": "npm test && node --import ./tools/test/register.mjs tools/check-lessons.mjs > /dev/null && node tools/check-pages.mjs"

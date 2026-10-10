@@ -51,7 +51,7 @@ npx playwright install chromium
 npm run check
 ```
 
-Перевірки охоплюють законність і розв’язність задач, міні-уроки та екрани на двох телефонних розмірах. Браузерний тест розв’язує всі 60 задач на шах на двох розмірах телефона: перевіряє підказки, пояснення, видиме положення фігури та нерухомість дошки під час ходу. GitHub Actions запускає ці перевірки й зберігає скриншоти. Після змін `lessons/src` або `shared/path.js` потрібно виконати `npm run build`.
+Перевірки охоплюють законність і розв’язність задач, міні-уроки та екрани на двох телефонних розмірах. Браузерний тест розв’язує всі 150 задач на шах на двох розмірах телефона: перевіряє підказки, пояснення, видиме положення фігури та нерухомість дошки під час ходу. GitHub Actions запускає ці перевірки й зберігає скриншоти. Після змін `lessons/src` або `shared/path.js` потрібно виконати `npm run build`.
 
 ## Ліцензії
 
@@ -60,9 +60,21 @@ npm run check
 - У «Як ходять фігури» з lila також шрифти (`lessons/assets/font`: Noto Sans і Roboto — SIL OFL / Apache 2.0, шрифт іконок lichess — AGPLv3+) і звуки уроків (`lessons/assets/sound`, lila `public/sound`).
 - Дошки в `shared/boards/` і стилі дошки `shared/vendor/lichess-board.css` — з Lichess (lila authors, pirouetti), AGPLv3+.
 - Набори фігур у `shared/pieces/*` — з Lichess; ліцензії кожного набору перелічені в [COPYING.md](https://github.com/lichess-org/lila/blob/master/COPYING.md) (cburnett, merida — GPLv2+; fantasy — MIT; california, cardinal, anarcandy, horsey — CC BY-NC-SA 4.0; pixel — AGPLv3+; xkcd — CC BY-NC 2.5; alpha — лише некомерційне використання).
-- Мат і тактичні задачі (`chess-puzzles/puzzles.json`) — з [відкритої бази задач Lichess](https://database.lichess.org/#puzzles), CC0; вибірку взято з [mcognetta/lichess-combined-puzzle-game-db](https://github.com/mcognetta/lichess-combined-puzzle-game-db) (CC0). Задачі на шах `chk_*` — авторські навчальні схеми з `content/check-puzzles.js`, які збирає `tools/build-checks.mjs`.
+- Частина матових і тактичних задач (`chess-puzzles/puzzles.json`) — з [відкритої бази задач Lichess](https://database.lichess.org/#puzzles), CC0; вибірку взято з [mcognetta/lichess-combined-puzzle-game-db](https://github.com/mcognetta/lichess-combined-puzzle-game-db) (CC0). Задачі на шах `chk_*` — авторські навчальні схеми з `content/check-puzzles.js`, які збирає `tools/build-checks.mjs`. Нові навчальні позиції для порятунку від шаху, мату й вилок зберігаються в `content/educational-puzzles.json`; позначки джерела наведені в метаданих.
 - Рушій для практики закінчень — [Stockfish.js 10](https://github.com/nmrugg/stockfish.js) (`shared/vendor/stockfish/`), GPL-3.0.
 - Персонажі-роботи — RoboHash ([e1ven/Robohash](https://github.com/e1ven/Robohash)); 90 роликів-нагород — з публічних колекцій гіфок на GitHub (public/moarcats, tlberglund/animated-gifs, Carol42/random-cat-gifs, onprema/catgifs), перекодовані в короткі MP4/WebM без звуку.
 - Відеоуроки українською — ChessKid, МФ FunMasterMike; завантажені з публічних плеєрів ChessKid і стиснуті для перегляду на телефоні. Джерела кожного ролика наведені в `shared/videos/manifest.json`; ліцензія коду проєкту не змінює прав авторів відео.
 
 Оскільки сюди входить код під GPL-3.0 і AGPLv3+, увесь проєкт поширюється на умовах AGPLv3+.
+
+## Навчальні задачі
+
+`npm run build:puzzles` відтворює банк із навчальних джерел і перевіряє розв’язки.
+На шах — по 30 позицій кожною фігурою; на порятунок — по 30 кожним способом,
+у змішаному розділі — 90, способи чергуються від самого початку. Кожна задача
+на порятунок має рівно один законний хід; кожен мат в один хід — єдиний мат.
+Вилки йдуть блоками по 10: тура, слон, ферзь, кінь; усередині кожного блоку
+позиції ускладнюються від 4 до 6 фігур. Вилки виграють матеріал,
+їхні відповіді суперника перевірено Stockfish 10. З тактичних розділів
+прибрано позиції, які не демонстрували названий прийом. Номер над дошкою
+відкриває список усіх задач; проходження по порядку не потрібне.

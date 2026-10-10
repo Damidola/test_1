@@ -1,18 +1,18 @@
-import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791622543';
-import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791622543';
-import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791622543';
-import { bestUci, warmUp } from '../shared/engine.js?v=1791622543';
+import { PUZZLE_SECTIONS, PUZZLE_GROUPS } from '../shared/puzzle-catalog.js?v=1791624117';
+import { judgePuzzleMove, puzzleMoves } from '../shared/puzzle-rules.js?v=1791624117';
+import { syncPuzzleProgress } from '../shared/puzzle-progress.js?v=1791624117';
+import { bestUci, warmUp } from '../shared/engine.js?v=1791624117';
 /* Шахові задачі: список розділів → задача або практика.
-   Мат і тактика — задачі Lichess; шах — авторські навчальні позиції (chess-puzzles/puzzles.json). Спершу сам робиться хід
+   Мат і тактика — навчальні позиції та відредаговані задачі Lichess; шах — авторські позиції (chess-puzzles/puzzles.json). Спершу сам робиться хід
    суперника, далі дитина знаходить хід (або кілька ходів), суперник відповідає за рішенням Lichess.
    Неправильний хід повертається назад; після 3 помилок гра показує розв'язок. Мат будь-яким ходом — теж правильно.
    Практика — закінчення проти робота без обмеження ходів: поставити мат (або провести пішака й поставити мат). */
 import { Chess, makeSquare, parseSquare, parseUci, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard, applyBoardLook } from '../shared/board.js?v=1791622543';
-import { createRules } from '../chess/rules.js?v=1791622543';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1791622543';
-import { hintMove } from '../shared/ai.js?v=1791622543';
-import { toggleGuide, introGuide } from '../shared/guide.js?v=1791622543';
+import { createBoard, applyBoardLook } from '../shared/board.js?v=1791624117';
+import { createRules } from '../chess/rules.js?v=1791624117';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1791624117';
+import { hintMove } from '../shared/ai.js?v=1791624117';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1791624117';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 // кнопка повного екрана — у правому верхньому куті (як у грі з роботом)
@@ -191,7 +191,7 @@ function opponent() { // хід суперника з рішення Lichess
 function paint() {
   const info = INFO[sec];
   const meta = DATA[sec]?.[idx]?.[5];
-  if (!flash && !(levels && done)) $('task').textContent = done && meta?.explanation ? meta.explanation : meta?.capture ? `Побий чорну фігуру ${RU[meta.role]} з шахом. Збережи свою фігуру.` : TASK[sec] || '';
+  if (!flash && !(levels && done)) $('task').textContent = done && meta?.explanation ? meta.explanation : meta?.task || (meta?.capture ? `Побий чорну фігуру ${RU[meta.role]} з шахом. Збережи свою фігуру.` : TASK[sec] || '');
   if (mode === 'practice') {
     $('goal').innerHTML = `${icon(info.ic)} ${info.title}`;
     $('lives').textContent = ''; $('count').textContent = '🏆 ' + LG.store.get('prac:' + sec, 0);
@@ -452,7 +452,13 @@ function showExplain() { toggleGuide(guideCfg()); }
 const exKey = k => k.startsWith('chk_') ? 'chk' : k.startsWith('m1') ? 'mate' : k;
 // n найзрозуміліших прикладів розділу (за зростанням складності)
 function exampleIndices(k, n = 1, list = DATA[k]) {
-  const from = Math.min(k.startsWith('chk_') ? 15 : k.startsWith('esc_') ? 10 : 8, list.length - 1);
+  if (k === 'fork' && list.some(row => row[5]?.teachingRole)) {
+    return ['rook', 'bishop', 'queen', 'knight'].map(role => {
+      const matches = list.map((row, i) => row[5]?.teachingRole === role ? i : -1).filter(i => i >= 0);
+      return matches[1] ?? matches[0];
+    }).filter(i => i !== undefined).slice(0, n);
+  }
+  const from = Math.min(k.startsWith('chk_') ? 15 : k.startsWith('esc_') ? 10 : 8, Math.max(0, list.length - Math.max(n, 3)));
   const scored = [];
   for (let i = from; i < Math.min(list.length, from + 15); i++) {
     const [, fen, moves] = list[i], ln = moves.split(' ');
@@ -654,7 +660,7 @@ $('hint').addEventListener('click', async () => {
   if (mode === 'example') return runExample();
   if (done) return;
   const meta = mode === 'puzzle' && DATA[sec][idx][5];
-  if (meta?.hint && hintStage === 0) { hintStage = 1; say(meta.hint, 4500); return; }
+  if (meta?.hint && step === 0 && hintStage === 0) { hintStage = 1; say(meta.hint, 4500); return; }
   let from, to;
   if (mode === 'puzzle') { if (pos.turn !== userColor) return; const m = parseUci(line[step]); from = makeSquare(m.from); to = makeSquare(m.to); }
   else if (mode === 'practice') {
@@ -664,7 +670,7 @@ $('hint').addEventListener('click', async () => {
     from = m.from; to = m.to;
   } else return;
   // перший раз — яка фігура ходить, другий — куди
-  if (hintStage < (meta ? 2 : 1)) { board.shapes([{ orig: from, brush: 'hint' }]); hintStage++; }
+  if (hintStage < (meta && step === 0 ? 2 : 1)) { board.shapes([{ orig: from, brush: 'hint' }]); hintStage++; }
   else board.hint(from, to);
 });
 // «Назад» у задачі: відміняємо свій останній хід (і відповідь суперника) — позиція перед ним
