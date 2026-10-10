@@ -2,9 +2,9 @@
    Гра дає лише правила (rules) — див. shared/ai.js і pawns/rules.js як приклад.
    Каркас робить решту: дошку Lichess, робота 1–5, тваринку-суперника,
    «Назад»/«Вперед», підказку, рахунок збитих, налаштування, екран результату. */
-import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1791622395';
-import { aiMove, hintMove } from './ai.js?v=1791622395';
-import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1791622395';
+import { createBoard, applyBoardLook, BOARD_THEMES, boardUrl } from './board.js?v=1791622543';
+import { aiMove, hintMove } from './ai.js?v=1791622543';
+import { mountOpponent, LEVEL_NAMES } from './opponent.js?v=1791622543';
 
 const LG = window.LG;
 
@@ -61,7 +61,7 @@ export function startGame(cfg) {
   const human = side => friend || side === player;
   const names = cfg.sideNames || { w: 'Білі', b: 'Чорні' };
 
-  // cfg.syncLevel: тваринка вгорі й кнопка «Рівень» — одне й те саме (поки лише пішакова битва)
+  // cfg.syncLevel: тваринка вгорі й кнопка «Рівень» — одне й те саме
   const hero = mountOpponent($('.lg-hero-slot'), { arrows: cfg.navOnly !== true, syncLevel: !!cfg.syncLevel,
     onLevel: l => { level = l; setLimits(); renderButtons(); paintLevel(); } });
   level = qLevel >= 1 && qLevel <= 5 ? qLevel : 1; // за замовчуванням — найлегший
@@ -75,7 +75,11 @@ export function startGame(cfg) {
   function paintLevel() {
     const b = root.querySelector('[data-act="level"]');
     if (b) { b.querySelector('.lg-dots').innerHTML = dots(level); b.title = 'Рівень: ' + LEVEL_NAMES[level - 1]; }
-    if (navLevel) navLevel.querySelector('.ico').innerHTML = `<span class="lg-dots">${dots(level)}</span>`;
+    if (navLevel) {
+      navLevel.querySelector('.ico').innerHTML = `<span class="lg-dots">${dots(level)}</span>`;
+      navLevel.title = 'Змінити рівень: ' + level + ' — ' + LEVEL_NAMES[level - 1];
+      navLevel.setAttribute('aria-label', navLevel.title);
+    }
     document.querySelectorAll('.lg-level-pop button').forEach(x => x.classList.toggle('on', +x.dataset.l === level));
   }
   function toggleLevelPop() {
