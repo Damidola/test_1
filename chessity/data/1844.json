@@ -1,0 +1,1 @@
+{"id":1844,"level":74,"name":"Розрахунок варіантів: мікс","group":"Практика","format":29,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-75258","fen":"2q4k/8/6p1/3p4/7B/5K2/5P2/7R w - - 0 1","pgn":"{[%csl Rc8,Rh8][%cal Gh8c8] [#]} {Q=1} 1. Bf6+ ! Kg8 {Q=2} 2. Rh8+ Kf7 3. Rxc8 *","texts":["Calculate with forcing moves.","Look for a x-ray."],"format":29}]}

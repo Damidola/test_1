@@ -1,11 +1,11 @@
-import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1791646040';
+import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1792245651';
 /* Урок «Цінність фігур»: ціни фігур, приклад зі стрілками й 8 коротких завдань «побий найдорожчу».
    Ходити можна лише білими й лише взяттям; правильне взяття — фігура з найбільшою ціною. */
 import { attacks, parseSquare, makeSquare, SquareSet } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1791646040';
-import { goNext, markSeen } from '../shared/path.js?v=1791646040';
-import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1791646040';
-import { toggleGuide } from '../shared/guide.js?v=1791646040';
+import { createBoard } from '../shared/board.js?v=1792245651';
+import { goNext, markSeen } from '../shared/path.js?v=1792245651';
+import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1792245651';
+import { toggleGuide } from '../shared/guide.js?v=1792245651';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.vl');
 const ROLE = { P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };

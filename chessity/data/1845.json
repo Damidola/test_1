@@ -1,0 +1,1 @@
+{"id":1845,"level":74,"name":"Форсовані взяття","group":"Взяття","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-75290","fen":"1q5k/6p1/r6P/5b2/8/1P6/1K6/6RR w - - 0 0","pgn":"{[%csl Rb8,Rh8][%cal Gh8b8] [#]} {Q=1} 1. hxg7+ ! Kg8 {Q=2} 2. Rh8+ Kf7 3. Rxb8 *","texts":["Calculate with forcing moves.","Look for a x-ray."],"format":27}]}

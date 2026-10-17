@@ -1,0 +1,1 @@
+{"id":2174,"level":80,"name":"Мікс","group":"Практика","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-77365","fen":"7k/2p1qpb1/p3pN1p/3r3P/8/1PQ5/2P3P1/1K5R w - - 0 39","pgn":"{[%csl Rd5,Re7][%evp 0,3,182,193,447,471]} {Q=1} 39. Nxd5 Bxc3 {Q=2} 40. Nxe7 * ","texts":["Calculate with forcing moves.","Calculate with forcing moves."],"format":27}]}

@@ -1,0 +1,1 @@
+{"id":1742,"level":71,"name":"Мікс","group":"Практика","format":27,"description":"<p>Play the best move</p>","video":"","examples":[],"puzzles":[{"id":"puzzle-74377","fen":"6nk/6pp/1p6/1BpbNn2/P7/7P/4P1PB/6K1 w - - 0 1","pgn":"{[%csl Rd5,Rf5,Rf7] [#]} {Q=1} 1. e4 ! Bxe4 (1... Ba2 2. exf5) {Q=2} 2. Nf7# *","texts":["The black king gasps.","The black king gasps."],"format":27}]}

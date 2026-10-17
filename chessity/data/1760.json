@@ -1,0 +1,1 @@
+{"id":1760,"level":73,"name":"Мікс","group":"Практика","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-73924","fen":"8/rk4B1/1p4p1/1R4Pp/8/8/1P1n2PK/8 b - - 0 1","pgn":"{[%csl Rb5,Rg7][%cal Gb5d5] [#]} {Q=1} 1... Kc6 ! (1... Ka6? 2. Rd5 Rxg7) 2. Re5 Rxg7 *","texts":["There are chances for a discovered attack. Keep calculating!"],"format":27}]}

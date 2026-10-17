@@ -1,0 +1,1 @@
+{"id":2190,"level":81,"name":"Мікс","group":"Практика","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-78674","fen":"2r1b3/2P3np/r2kpp2/2Rp2p1/PB1P4/4PP2/6PP/2R3K1 b - - 0 31","pgn":"{[%csl Rb4,Rc5][%evp 0,1,-129,-145]} {Q=1} 31... Kd7 * ","texts":["Escape the discovered check."],"format":27}]}

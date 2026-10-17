@@ -74,9 +74,13 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
   if (bad.length) { problems += bad.length; console.log(`✗ ${W}x${H} ${url}\n   ` + bad.join('\n   ')); } else console.log(`✓ ${W}x${H} ${url}`);
   if (/^chess-puzzles\/index.html#chk_/.test(url)) {
     const section = url.split('#')[1], rows = checkBank[section];
+    // Автоперехід через 900 мс не має випереджати перевірку кадрів або скриншот.
+    // Керуємо лише часом браузера; усі підказки й ходи виконуються через справжні дотики.
+    await page.clock.install();
+    await page.clock.pauseAt(new Date(await page.evaluate(() => Date.now()) + 50));
     for (const [i, row] of rows.entries()) {
       try {
-        if (i) { await page.locator('#nx').click(); await page.waitForTimeout(100); }
+        if (i) { await page.locator('#nx').click(); await page.clock.runFor(100); }
         const before = await page.locator('cg-board').boundingBox();
         await page.evaluate(() => {
           const board = document.querySelector('cg-board');
@@ -91,8 +95,8 @@ for (const [W, H] of [[343, 651], [450, 855]]) for (const url of pages) {
         if ((await page.locator('#task').textContent()) !== row[5].hint) throw Error('Немає підказки цієї позиції');
         const tap = async square => page.touchscreen.tap(before.x + (square.charCodeAt(0) - 97 + .5) * before.width / 8, before.y + (8 - Number(square[1]) + .5) * before.height / 8);
         await tap(row[2].slice(0, 2)); await tap(row[2].slice(2, 4));
+        await page.clock.runFor(350); // дочекайся руху фігури, а не лише зміни моделі
         await page.waitForFunction(() => document.getElementById('wrap').classList.contains('solved'), undefined, { timeout: 1500 });
-        await page.waitForTimeout(350); // дочекайся руху фігури, а не лише зміни моделі
         if ((await page.locator('#task').textContent()) !== row[5].explanation) throw Error('Немає пояснення після ходу');
         const frames = await page.evaluate(() => { window.recordBoard = false; return window.boardFrames; });
         for (const r of frames) {

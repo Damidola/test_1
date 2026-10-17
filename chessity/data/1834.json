@@ -1,0 +1,1 @@
+{"id":1834,"level":73,"name":"Підсумковий урок 1","group":"Пошук найкращого ходу","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-74534","fen":"8/5pkp/b5p1/3R2N1/8/6PP/5P1K/1r6 b - - 0 1","pgn":"{[%csl Rd5,Rh1] [#]} {Q=1} 1... Bb7 ! 2. Rd2 {Q=2} Rh1# *","texts":["Exploit the white king's weakness.","Checkmate ends the game!"],"format":27}]}

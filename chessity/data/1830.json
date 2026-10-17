@@ -1,0 +1,1 @@
+{"id":1830,"level":73,"name":"Мікс: поля","group":"Практика","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-74541","fen":"3r4/1kp5/1p5N/1P6/6p1/5bP1/5P2/5RK1 b - - 0 1","pgn":"{[%csl Rh1,Rh6] [#]} {Q=1} 1... Rh8 ! 2. Nf5 {Q=2} Rh1# *","texts":["Exploit the white king's weakness.","Checkmate ends the game!"],"format":27}]}

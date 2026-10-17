@@ -1,0 +1,1 @@
+{"id":2214,"level":75,"name":"Мікс","group":"Практика","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-75693","fen":"8/8/7K/5k2/8/8/8/2r5 b - - 0 1","pgn":"{[#]} {Q=1} 1... Rc7 2. Kh5 {Q=2} Rh7# * ","texts":["Use zugzwang to create a mating net.","Checkmate ends the game!"],"format":27}]}

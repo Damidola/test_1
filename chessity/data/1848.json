@@ -1,0 +1,1 @@
+{"id":1848,"level":74,"name":"Розрахунок варіантів: мікс (3)","group":"Практика","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-75209","fen":"Q7/4k3/2Bb4/8/pp1q4/6P1/P4PK1/8 w - - 0 1","pgn":"{[%csl Rd4,Re7][%cal Gh8d4] [#]} {Q=1} 1. Qe8+ ! Kf6 {Q=2} 2. Qh8+ Kf7 3. Qxd4 *","texts":["Calculate with forcing moves.","Look for a x-ray."],"format":27}]}

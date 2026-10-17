@@ -1,14 +1,15 @@
-import { menuGroups } from './shared/puzzle-catalog.js?v=1791646040';
-import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1791646040';
-/* Шахи для дітей: застосунок із чотирма вкладками.
+import { menuGroups } from './shared/puzzle-catalog.js?v=1792245651';
+import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1792245651';
+/* Шахи для дітей: застосунок із п’ятьма вкладками.
+   📖 Learn — каталог Chessity: 18 рівнів, уроки, пояснення та вправи;
    🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
    🤖 Гра — вибір суперника, кольору, сили й режиму → партія з роботом;
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1791646040';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1791646040';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1791646040';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1792245651';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1792245651';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1792245651';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -350,7 +351,9 @@ function renderProfile() {
 }
 
 // ---------- вкладки ----------
-const TITLES = { learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
+const TITLES = { chessity: 'Learn — Chessity', learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
+let chessityModule;
+const chessityReady = () => chessityModule || (chessityModule = import('./chessity/app.js?v=1792245651'));
 // ---------- без блимання: вкладка з'являється одразу вся, коли її картинки (і фони-сцени) вже завантажені ----------
 const imgReady = new Map(); // url → Promise
 function loadImg(url) {
@@ -377,12 +380,15 @@ function preloadRest() {
   for (let j = 0; j < 4; j++) next();
 }
 function show(hash) {
-  let [tab, sub] = String(hash || '').split('/');
+  let [tab, ...parts] = String(hash || '').split('/');
+  const sub = parts.join('/');
   if (!TITLES[tab]) tab = 'learn';
   document.querySelectorAll('.ap-view').forEach(v => { v.hidden = v.dataset.tab !== tab; });
   document.querySelectorAll('.ap-tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
   $('sheet').hidden = true;
-  try { sessionStorage.setItem('chk:back', location.href.split('#')[0] + '#' + tab + (tab === 'practice' && sub ? '/' + sub : '')); } catch (e) { /* */ }
+  try { sessionStorage.setItem('chk:back', location.href.split('#')[0] + '#' + tab + (['practice','chessity'].includes(tab) && sub ? '/' + sub : '')); } catch (e) { /* */ }
+  if (tab === 'chessity') chessityReady().then(m => { if (location.hash.slice(1).split('/')[0] === 'chessity') m.render(sub); }).catch(() => { $('view-chessity').innerHTML = '<p>Не вдалося завантажити Learn. Онови сторінку та спробуй ще раз.</p>'; });
+  else if (chessityModule) chessityModule.then(m => m.deactivate());
   if (tab === 'practice') renderPractice(sub);
   if (tab === 'profile') renderProfile();
   if (tab === 'play') renderPlay();

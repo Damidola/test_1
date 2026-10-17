@@ -1,0 +1,1 @@
+{"id":1781,"level":71,"name":"Мікс","group":"Практика","format":4,"description":"Choose a frog and race it to the flower.","video":"","examples":[],"puzzles":[{"id":"puzzle-74631","fen":"2k5/pp3pNr/2b2n2/P7/2P5/4B1P1/1R3P2/R5K1 b - - 0 1","pgn":"{[%evp 0,1,-29999,-30000]} {[#]} {Q=1} 1... Rh1# ! *","texts":["Мат!"],"format":4}]}

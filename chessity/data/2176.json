@@ -1,0 +1,1 @@
+{"id":2176,"level":80,"name":"Мікс","group":"Практика","format":27,"description":"","video":"","examples":[],"puzzles":[{"id":"puzzle-77757","fen":"7k/pb6/3Q2pq/5p2/PP2p3/4r2P/B5P1/2R4K b - - 0 35","pgn":"{[%csl Rc1][%evp 0,3,-159,-165,-159,-167]} {Q=1} 35... Rxh3+ 36. gxh3 {Q=2} Qxc1+ * ","texts":["Calculate with forcing moves.","Consider forcing moves."],"format":27}]}
