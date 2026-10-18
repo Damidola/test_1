@@ -1,121 +1,37 @@
-// Інтеграційна перевірка нового Learn без звернень до облікового запису Chessity.
-import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-import { extname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import {readFile,mkdir} from 'node:fs/promises';
+import {extname,join} from 'node:path';
 import assert from 'node:assert/strict';
-import {compileExercise,questionExercise,mainline} from '../chessity/model.js';
-
-const require = createRequire(import.meta.url);
-const pw = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
-const ROOT = new URL('..', import.meta.url).pathname, SHOTS = process.argv[2] || process.env.CHECK_SCREENSHOTS;
-if (SHOTS) (await import('node:fs')).mkdirSync(SHOTS, { recursive: true });
-const base = 'http://chess.local/';
-const resultRoot = join(ROOT, 'node_modules/@badrap/result');
-const resultPackage = JSON.parse(await readFile(join(resultRoot, 'package.json'), 'utf8'));
-const resultEntry = resultPackage.module ? join(resultRoot, resultPackage.module) : fileURLToPath(import.meta.resolve('@badrap/result'));
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.webmanifest': 'application/json' };
-// CDN-модулі читаються з установлених npm-пакетів; перевірка не потребує мережі або збірки.
-const chessops = join(ROOT, 'node_modules/chessops/dist/esm/index.js');
-const cg = join(ROOT, 'node_modules/@lichess-org/chessground');
-async function moduleBody(file) {
-  const text = await readFile(file, 'utf8');
-  return text.replace(/(from\s*|import\s*)(['"])([^'"]+)\2/g, (whole, prefix, quote, spec) => {
-    const target = spec === '@badrap/result' ? resultEntry : spec.startsWith('.') ? join(file, '..', spec) : null;
-    return target ? prefix + quote + base + target.slice(ROOT.length) + quote : whole;
-  });
-}
-
-const browser=await pw.chromium.launch(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{});
-try {
-for (const [width,height] of [[343,651],[450,855],[1440,900]]) {
-  const page=await browser.newPage({viewport:{width,height},isMobile:width<800,hasTouch:true});
-  await page.route(base + '**', async r => {
-    const pathname = decodeURIComponent(new URL(r.request().url()).pathname), file = join(ROOT, pathname.endsWith('/') ? pathname + 'index.html' : pathname);
-    try {
-      const body = file.includes('/node_modules/') && file.endsWith('.js') ? await moduleBody(file) : await readFile(file);
-      await r.fulfill({ status: 200, body, contentType: TYPES[extname(file)] || 'application/octet-stream' });
-    } catch { await r.fulfill({ status: 404, body: '' }); }
-  });
-  await page.route(/cdn\.jsdelivr\.net|telegram\.org|fonts\.g|youtube-nocookie\.com|youtube\.com|ytimg\.com/, async r => {
-    const u = r.request().url();
-    if (u.includes('chessops')) return r.fulfill({ body: await moduleBody(chessops), contentType: 'text/javascript' });
-    if (u.includes('chessground') && u.endsWith('.css')) return r.fulfill({ path: join(cg, 'assets/chessground.base.css'), contentType: 'text/css' });
-    if (u.includes('chessground')) return r.fulfill({ body: await moduleBody(join(cg, 'dist/chessground.js')), contentType: 'text/javascript' });
-    return r.abort();
-  });
-
-  const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(base+'index.html#chessity');
-  await page.locator('.ct-card').first().waitFor();
-  assert.equal(await page.locator('.ap-tabs a').count(),5);
-  const nav=await page.locator('.ap-tabs').boundingBox();
-  assert.ok(width<960?nav.y>height-100:nav.x===0);
-  await page.locator('[data-levels]').click();
-  assert.equal(await page.locator('.ct-picker [data-level]').count(),18);
-  await page.locator('[data-close]').click();
-  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width);
-  if(SHOTS)await page.screenshot({path:join(SHOTS,`chessity-${width}-catalog.png`)});
-  const catalog=JSON.parse(await readFile(join(ROOT,'chessity/data/catalog.json')));
-  const chosen=catalog.lessons.find(l=>l.id===1099);
-  await page.goto(base+'index.html#chessity/lesson/'+chosen.id);
-  await page.locator('.ct-lesson-intro .ct-primary').click();
-  await page.locator('.gd-go').waitFor();
-  assert.ok(await page.locator('.gd-dots i').count()>=2);
-  if(SHOTS)await page.screenshot({path:join(SHOTS,`chessity-${width}-guide.png`)});
-  await page.locator('.gd-go').click();
-  await page.waitForTimeout(250);
-  const rect=await page.locator('#ct-board cg-board').boundingBox();
-  assert.ok(rect.width>=200);assert.ok(Math.abs(rect.width-rect.height)<2);
-  assert.equal(await page.locator('#ct-board piece:not(.ghost)').count(),1);
-  if(width<960){const end=await page.locator('[data-solution]').boundingBox();assert.ok(end.y+end.height<nav.y, 'Усі кнопки вправи над навігацією');}
-  if(SHOTS)await page.screenshot({path:join(SHOTS,`chessity-${width}-exercise.png`)});
-  const tap=async (from,to,orientation='white')=>{
-    const b=await page.locator('#ct-board cg-board').boundingBox();
-    const point=s=>({x:b.x+((orientation==='white'?s.charCodeAt(0)-97:104-s.charCodeAt(0))+.5)*b.width/8,y:b.y+((orientation==='white'?8-Number(s[1]):Number(s[1])-1)+.5)*b.height/8});
-    const p=point(from),q=point(to);await page.touchscreen.tap(p.x,p.y);await page.touchscreen.tap(q.x,q.y);await page.waitForTimeout(200);
-  };
-  await tap('a5','d5');await tap('d5','d8');
-  await page.waitForFunction(()=>!document.querySelector('#ct-next').disabled);
-  await page.locator('#ct-next').click();
-  // Complete the available original examples through actual board gestures.
-  const lesson=JSON.parse(await readFile(join(ROOT,'chessity/data/'+chosen.id+'.json')));
-  const seen=new Set(),exercises=[];
-  for(const raw of [...lesson.puzzles,...lesson.examples]){const key=raw.fen+'|'+raw.pgn;if(seen.has(key))continue;seen.add(key);try{exercises.push(compileExercise(raw.fen,raw.pgn));}catch{}}
-  for(const ex of exercises.slice(1)){
-    if(ex.coinGoal){
-      const edges=mainline(ex).filter(e=>e.move);for(const e of edges)await tap(e.move.from,e.move.to,ex.player);
-    }else{for(const e of mainline(ex)){if(e.move&&e.next.turn!==ex.player)await tap(e.move.from,e.move.to,ex.player);else await page.waitForTimeout(800);}}
-    await page.waitForFunction(()=>!document.querySelector('#ct-next').disabled);await page.locator('#ct-next').click();
+import {chromium} from 'playwright';
+import {compileExercise,coinDestinations,movePosition,readPosition} from '../chessity/model.js';
+const ROOT=new URL('..',import.meta.url).pathname,SHOTS=process.argv[2]||process.env.CHECK_SCREENSHOTS||'/tmp/chessity-check';await mkdir(SHOTS,{recursive:true});
+const base='http://chess.local/',types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.otf':'font/otf','.ttf':'font/ttf','.mp3':'audio/mpeg'};
+const browser=await chromium.launch({headless:true});
+try{for(const[width,height]of [[390,866],[450,855],[1440,900]]){
+ const page=await browser.newPage({viewport:{width,height},isMobile:width<960,hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route(base+'**',async r=>{const path=decodeURIComponent(new URL(r.request().url()).pathname);try{await r.fulfill({body:await readFile(join(ROOT,path==='/'?'index.html':path)),contentType:types[extname(path)]||'application/octet-stream'});}catch{await r.fulfill({status:404,body:''});}});
+ await page.route(/fonts\.g|youtube|telegram\.org/,r=>r.abort());
+ await page.goto(base+'index.html#chessity');await page.locator('.ct-category').first().waitFor();
+ assert.equal(await page.locator('.ap-tabs a').count(),5);await page.locator('[data-levels]').click();assert.equal(await page.locator('.ct-picker [data-level]').count(),18);await page.locator('[data-close]').click();
+ await page.goto(base+'index.html#chessity/level/64');await page.locator('.ct-category').first().waitFor();await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(300);await page.screenshot({path:join(SHOTS,`${width}-levels.png`),fullPage:false});
+ await page.locator('.ct-category').first().click();await page.locator('.ct-card').first().waitFor();assert.ok(await page.locator('.ct-card img').first().evaluate(x=>x.complete&&x.naturalWidth>0));
+ await page.goto(base+'index.html#chessity/play/1099');await page.locator('#ct-board piece').first().waitFor();
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('chk:chessity:session')));assert.equal(saved.ids.length,5);assert.equal(new Set(saved.ids).size,5);
+ const dataset=JSON.parse(await readFile(join(ROOT,'chessity/data/1099.json'))),positions=saved.ids.map(id=>dataset.puzzles.find(x=>x.id===id).fen.split(/\s+/).slice(0,4).join(' '));assert.equal(new Set(positions).size,5);
+ await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(200);await page.screenshot({path:join(SHOTS,`${width}-exercise.png`)});
+ await page.goto(base+'index.html#chessity/profile');await page.locator('.ct-profile').waitFor();await page.goto(base+'index.html#chessity/play/1099');await page.locator('#ct-board piece').first().waitFor();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('chk:chessity:session')).ids),saved.ids);
+ if(width===390){
+  const tap=async square=>{const b=await page.locator('#ct-board cg-board').boundingBox();await page.touchscreen.tap(b.x+(square.charCodeAt(0)-97+.5)*b.width/8,b.y+(8-Number(square[1])+.5)*b.height/8);};
+  function pathTo(start,target){const queue=[{p:start,path:[]}],seen=new Set();for(let i=0;i<queue.length&&i<5000;i++){const{p,path}=queue[i],from=Object.keys(p.pieces).find(k=>p.pieces[k].color==='white');if(from===target)return path;const key=from+Object.keys(p.marks).sort().join();if(seen.has(key))continue;seen.add(key);for(const to of coinDestinations(p).get(from)||[]){const q=movePosition(p,{from,to});q.turn='white';queue.push({p:q,path:[...path,{from,to}]});}}throw Error('No safe route');}
+  for(let i=0;i<5;i++){
+   const raw=dataset.puzzles.find(x=>x.id===saved.ids[i]);let p=readPosition(raw.fen);
+   if(i===4){await page.locator('.ct-game-footer [data-explain]').click();await page.locator('.ct-guide-hint').click();await page.locator('.gd').waitFor({state:'detached'});}
+   const coins=Object.keys(p.marks).filter(k=>p.marks[k]==='coin'),flag=Object.keys(p.marks).find(k=>p.marks[k]==='flag');
+   for(const target of [...coins,flag]){if(target!==flag&&!p.marks[target])continue;for(const m of pathTo(p,target)){await tap(m.from);await tap(m.to);p=movePosition(p,m);p.turn='white';await page.waitForTimeout(70);}}
+   try{await page.waitForFunction(()=>!document.querySelector('#ct-next').disabled);}catch(e){console.log('round failed',i,await page.evaluate(()=>localStorage.getItem('chk:chessity:session')));throw e;}await page.locator('#ct-next').click();
   }
-  await page.locator('.ct-result').waitFor();
-  assert.match(await page.locator('.ct-result h1').textContent(),/Урок пройдено/);
-  assert.ok(await page.evaluate(()=>JSON.parse(localStorage.getItem('chk:chessity:v1'))[1099].stars>0));
-  await page.reload();await page.locator('.gd-go').click();
-  assert.ok(await page.evaluate(()=>JSON.parse(localStorage.getItem('chk:chessity:v1'))[1099].stars>0));
-  await page.locator('.ap-tabs a[href="#practice"]').click();
-  await page.locator('#view-practice:not([hidden])').waitFor();assert.equal(await page.locator('.gd-overlay').count(),0);
-  if(width===343){
-    const open=async id=>{await page.goto(base+'index.html#chessity/play/'+id);await page.locator('.gd-go').click();await page.waitForTimeout(220);};
-    await open(1231);await tap('b1','b1');await page.waitForFunction(()=>!document.querySelector('#ct-next').disabled);
-    await open(1375);
-    const qLesson=JSON.parse(await readFile(join(ROOT,'chessity/data/1375.json'))),q=qLesson.puzzles[0];
-    const question=questionExercise(q.fen,q.pgn).question;
-    await page.locator(`[data-answer="${question.legal?'yes':'no'}"]`).click();
-    await page.waitForFunction(()=>!document.querySelector('#ct-next').disabled);
-    await open(1504);await tap('c7','c8');await page.locator('[data-promotion="queen"]').click();
-    await page.waitForTimeout(250);assert.ok(await page.locator('#ct-board piece.queen:not(.ghost)').count()>0);
-    await open(1127);
-    const bLesson=JSON.parse(await readFile(join(ROOT,'chessity/data/1127.json'))),raw=bLesson.puzzles[0],ex=compileExercise(raw.fen,raw.pgn);
-    for(const edge of mainline(ex)){if(edge.move&&edge.next.turn!==ex.player)await tap(edge.move.from,edge.move.to,'black');else await page.waitForTimeout(800);}
-    await page.waitForFunction(()=>!document.querySelector('#ct-next').disabled);
-    await open(1207);await page.locator('[data-solution]').click();
-    await page.waitForFunction(()=>!document.querySelector('#ct-next').disabled);await page.locator('#ct-next').click();
-    await page.locator('.ct-result').waitFor();assert.match(await page.locator('.ct-result h1').textContent(),/Практику завершено/);
-    assert.ok(await page.evaluate(()=>!JSON.parse(localStorage.getItem('chk:chessity:v1'))[1207]));
-    console.log('✓ Chessity: початкове поле, відповідь так/ні, перетворення, гра чорними, без зірок за перегляд');
-  }
-  assert.deepEqual(errors,[]);console.log(`✓ Chessity ${width}×${height}: рівні, пояснення, дошка, розв’язання, прогрес, перемикання вкладок`);
-  await page.close();
-}
-}finally{await browser.close();}
+  await page.locator('.ct-result').waitFor();assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('chk:chessity:v1'))[1099].stars),3,'Four green answers award three stars');await page.screenshot({path:join(SHOTS,'390-result.png')});
+  await page.goto(base+'index.html#profile');await page.locator('.mg-link[href="#chessity/profile"]').waitFor();assert.match(await page.locator('.mg-link[href="#chessity/profile"]').textContent(),/3/);
+  await page.goto(base+'index.html#chessity/profile');await page.reload();await page.locator('.ct-profile').waitFor();assert.match(await page.locator('.ct-profile-stats').textContent(),/3/);
+ }
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width);assert.deepEqual(errors,[]);console.log(`✓ Chessity ${width}×${height}: original graphics, eighteen levels, five distinct tasks, stable resume, saved stars/profile`);await page.close();
+}}finally{await browser.close();}

@@ -5,8 +5,8 @@
    Фігури переставляються без перевірки правил — на дошці можуть бути лише потрібні фігури, без королів.
    move: кілька переміщень через пробіл; 5-та літера — перетворення (d7d8q); рокіровка — король на 2 клітинки або на свою туру;
    пішак навскоси на порожню клітинку — взяття на проході. */
-import { Chess, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from './board.js?v=1792245651';
+import { Chess, fen as FEN } from './vendor/chessops.js';
+import { createBoard } from './board.js?v=1792358668';
 
 const ROLE = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTER = { pawn: 'p', knight: 'n', bishop: 'b', rook: 'r', queen: 'q', king: 'k' };

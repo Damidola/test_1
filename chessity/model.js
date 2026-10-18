@@ -1,4 +1,4 @@
-import { Chess, parseFen, makeFen, parseSan, parsePgn, parseSquare, makeSquare } from './engine.js?v=1792245651';
+import { Chess, parseFen, makeFen, parseSan, parsePgn, parseSquare, makeSquare } from './engine.js?v=1792358668';
 
 const ROLES = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTERS = Object.fromEntries(Object.entries(ROLES).map(([k,v]) => [v,k]));
@@ -100,7 +100,9 @@ function sanMove(p,san) {
   if(!from)throw new Error('Unplayable move: '+san);
   return {from,to:m[4],...(m[5]?{promotion:ROLES[m[5].toLowerCase()]}:{})};
 }
-export function compileExercise(fen,pgn,{opening=false}={}) {
+export function compileExercise(fen,pgn,{opening=false,starting=false,minigame=false,notation=false}={}) {
+  if(minigame||notation){const start=readPosition(fen);return {start,tree:[],player:start.turn,minigame,notation};}
+  if(starting){const all=['pawn','knight','bishop','rook','queen'];const original=readPosition(fen),missing=all.filter(role=>!Object.values(original.pieces).some(p=>p.color==='white'&&p.role===role));const role=missing[0]||'pawn';return startingPositionExercise(role);}
   const start=readPosition(fen), game=parsePgn(pgn)[0];
   if (Object.values(start.marks).includes('flag') && !game?.moves.children.length) return {start,tree:[],player:start.turn,coinGoal:true};
   if (!game?.moves.children.length) {
@@ -120,7 +122,7 @@ export function compileExercise(fen,pgn,{opening=false}={}) {
     });
   }
   const tree=compile(game.moves.children,start);
-  if(!tree.length)throw new Error('No playable solution');
+  if(!tree.length){if(Object.values(start.marks).includes('flag'))return {start,tree:[],player:start.turn,coinGoal:true};throw new Error('No playable solution');}
   return { start, tree, player:start.turn, coinGoal:Object.values(start.marks).includes('flag') };
 }
 export function questionExercise(fen,pgn) {
@@ -138,4 +140,28 @@ export function mainline(exercise) {
 export function progressSummary(progress,lessons) {
   const stars=lessons.reduce((n,l)=>n+Math.min(3,Math.max(0,+progress[l.id]?.stars||0)),0);
   return {stars,done:lessons.filter(l=>progress[l.id]?.stars>0).length,total:lessons.length};
+}
+
+export function startingPositionExercise(role,previous=[]){
+ const initial=readPosition('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),start=readPosition('4k3/8/8/8/8/8/8/4K3 w - - 0 1');
+ for(const [square,piece]of Object.entries(initial.pieces))if(piece.color==='white'&&previous.includes(piece.role))start.pieces[square]=piece;
+ const targets=Object.keys(initial.pieces).filter(k=>initial.pieces[k].color==='white'&&initial.pieces[k].role===role);
+ return {start,tree:[],player:'white',placement:{to:targets[0],targets,piece:{color:'white',role}}};
+}
+
+// The native MiniChess lessons use positions without kings. Their finish line
+// belongs to the knight/pawns; the queen/bishop wins by capturing them.
+export function miniWinner(p,start){
+ const goal=Object.values(start.pieces).find(x=>x.role==='knight'||x.role==='pawn')?.color;
+ const count=color=>Object.values(p.pieces).filter(x=>x.color===color).length;
+ if(!count('white'))return 'black';if(!count('black'))return 'white';
+ if(goal&&Object.keys(start.marks).some(k=>start.marks[k]==='flag'&&p.pieces[k]?.color===goal))return goal;
+ return null;
+}
+export function miniBestMove(position,start,depth=3){
+ const root=position.turn,value={pawn:100,knight:320,bishop:330,rook:500,queen:900,king:10000};
+ const choices=p=>[...destinations(p)].flatMap(([from,tos])=>tos.map(to=>({from,to})));
+ function evaluate(p,d){const winner=miniWinner(p,start);if(winner)return winner===root?100000+d:-100000-d;let score=0;for(const[square,pc]of Object.entries(p.pieces)){let v=value[pc.role];if(pc.role==='pawn')v+=(pc.color==='white'?+square[1]-2:7-+square[1])*25;const flags=Object.keys(start.marks);if(pc.role==='knight'&&flags.length)v+=(8-Math.min(...flags.map(f=>Math.max(Math.abs(f.charCodeAt(0)-square.charCodeAt(0)),Math.abs(+f[1]-+square[1])))))*15;score+=(pc.color===root?1:-1)*v;}return score;}
+ function search(p,d,alpha,beta){if(!d||miniWinner(p,start))return evaluate(p,d);const list=choices(p);if(!list.length)return evaluate(p,d);const maximizing=p.turn===root;let best=maximizing?-Infinity:Infinity;for(const m of list){const n=search(movePosition(p,m),d-1,alpha,beta);best=maximizing?Math.max(best,n):Math.min(best,n);if(maximizing)alpha=Math.max(alpha,best);else beta=Math.min(beta,best);if(beta<=alpha)break;}return best;}
+ let chosen=null,best=-Infinity;for(const m of choices(position)){const score=search(movePosition(position,m),depth-1,-Infinity,Infinity);if(score>best){best=score;chosen=m;}}return chosen;
 }

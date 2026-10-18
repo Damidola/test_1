@@ -1,0 +1,13 @@
+{
+  "lessons": 690,
+  "variants": 12048,
+  "levels": 18,
+  "images": "Original APK PNGs, Montserrat, icon font and reconstructed original coach SVG components",
+  "source": "Same observed original pools as APK v229; no exhaustive server inventory",
+  "unavailableFrameworkLessons": [
+    {
+      "lessonID": 1704,
+      "reason": "Original server returns HTTP 500 even in authorized user session"
+    }
+  ]
+}
