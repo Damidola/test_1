@@ -14,16 +14,16 @@
   html.lg #learn-app:has(> .learn--run) { width: max-content; }
 
   /* Спільна геометрія всіх рушіїв. */
-  html.lg :is(.lg-play:has(> .lv-teach):not([data-step="intro"]), .lg-play.mt:not([data-lesson]):not([data-mode="menu"]), #learn-app > .learn--run) {
+  html.lg :is(.lg-play:has(> .lv-teach):not([data-step="intro"]), .lg-play.mt:not([data-mode="menu"]), #learn-app > .learn--run) {
     display: grid; width: var(--lesson-width); max-width: calc(100vw - 48px); height: var(--lesson-board);
     grid-template-columns: var(--lesson-board) var(--lesson-panel);
     grid-template-rows: var(--lesson-rows, auto minmax(0, 1fr) auto);
     grid-template-areas: none; gap: 24px var(--lesson-gap);
     align-content: stretch; align-items: start; justify-content: center; margin: 0; padding: 0; box-sizing: border-box;
   }
-  html.lg :is(.lg-play:has(> .lv-teach), .lg-play.mt:not([data-lesson]), #learn-app > .learn--run) > * { min-width: 0; margin: 0; }
-  html.lg :is(.lg-play:has(> .lv-teach), .lg-play.mt:not([data-lesson]), #learn-app > .learn--run) > :is(.lg-board-wrap, .learn__main.main-board) {
-    grid-area: auto; grid-column: 1; grid-row: 1 / -1; align-self: center; justify-self: center;
+  html.lg :is(.lg-play:has(> .lv-teach), .lg-play.mt, #learn-app > .learn--run) > * { min-width: 0; margin: 0; }
+  html.lg :is(.lg-play:has(> .lv-teach), .lg-play.mt, #learn-app > .learn--run) > :is(.lg-board-wrap, .learn__main.main-board) {
+    grid-area: auto; grid-column: 1; grid-row: 1 / -1; align-self: start; justify-self: center;
     width: min(100%, calc(var(--lesson-board) * var(--w, 8) / var(--h, 8)));
     max-width: none; height: auto; margin: 0;
   }
