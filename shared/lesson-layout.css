@@ -1,0 +1,71 @@
+/* Єдиний адаптивний каркас уроків: лабіринти, міні-уроки, Lichess Learn і задачі.
+   Розміри й розташування змінюються тут. Селектори нижче лише зіставляють
+   назви елементів різних рушіїв зі спільними місцями: дошка, заголовок, пояснення. */
+@media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+  html.lg {
+    --lesson-panel: 320px;
+    --lesson-gap: 32px;
+    --lesson-text: 18px;
+    --lesson-board: min(640px, calc(100svh - 136px), calc(100vw - var(--lesson-panel) - var(--lesson-gap) - 68px));
+    --lesson-width: calc(var(--lesson-board) + var(--lesson-gap) + var(--lesson-panel));
+  }
+  html.lg body.lg-game:has(.lg-play > .lv-teach, .lg-play.mt:not([data-mode="menu"])) { display: grid; place-items: center; }
+  html.lg #main-wrap:has(.learn--run) { display: grid; place-items: center; padding: 0; }
+  html.lg #learn-app:has(> .learn--run) { width: max-content; }
+
+  /* Спільна геометрія всіх рушіїв. */
+  html.lg :is(.lg-play:has(> .lv-teach):not([data-step="intro"]), .lg-play.mt:not([data-lesson]):not([data-mode="menu"]), #learn-app > .learn--run) {
+    display: grid; width: var(--lesson-width); max-width: calc(100vw - 48px); height: var(--lesson-board);
+    grid-template-columns: var(--lesson-board) var(--lesson-panel);
+    grid-template-rows: var(--lesson-rows, auto minmax(0, 1fr) auto);
+    grid-template-areas: none; gap: 24px var(--lesson-gap);
+    align-content: stretch; align-items: start; justify-content: center; margin: 0; padding: 0; box-sizing: border-box;
+  }
+  html.lg :is(.lg-play:has(> .lv-teach), .lg-play.mt:not([data-lesson]), #learn-app > .learn--run) > * { min-width: 0; margin: 0; }
+  html.lg :is(.lg-play:has(> .lv-teach), .lg-play.mt:not([data-lesson]), #learn-app > .learn--run) > :is(.lg-board-wrap, .learn__main.main-board) {
+    grid-area: auto; grid-column: 1; grid-row: 1 / -1; align-self: center; justify-self: center;
+    width: min(100%, calc(var(--lesson-board) * var(--w, 8) / var(--h, 8)));
+    max-width: none; height: auto; margin: 0;
+  }
+
+  /* Заголовок, повернення, повний екран і прогрес — одна панель. */
+  html.lg :is(.lg-play, .learn--run) > :is(.lv-row, .lg-run-top, .mt-top) {
+    grid-column: 2; grid-row: 1; position: static; inset: auto;
+    display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px;
+    grid-template-areas: "back title fs" "bar bar bar";
+    align-items: center; gap: 8px; width: 100% !important; padding: 0; box-sizing: border-box;
+  }
+  html.lg :is(.lv-row, .lg-run-top, .mt-top) > :is(.lv-back, .lg-run-menu, .lg-exit-slot) { grid-area: back; }
+  html.lg :is(.lv-row, .lg-run-top, .mt-top) > :is(.lv-title, .lg-run-title, .mt-goal) { grid-area: title; min-width: 0; text-align: center; }
+  html.lg :is(.lv-row, .lg-run-top, .mt-top) > :is(.lg-top-fs, .lg-run-fs, .mt-fsslot) { grid-area: fs; }
+  html.lg .lg-run-top .lg-run-menu { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--app-panel); color: #fff; font: 28px/1 sans-serif; }
+  html.lg .lg-run-top .lg-run-title { font: 800 14px/1.4 Manrope, sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+  html.lg .lg-run-top .progress { grid-area: bar; display: flex; justify-content: center; gap: 8px; padding: 6px; }
+  html.lg .lg-run-top .progress :is(a, .locked) { flex: 0 1 26px; width: 26px; height: 26px; min-width: 18px; border: 0; border-radius: 50%; display: grid; place-items: center; background: var(--app-panel); color: #fff; font: 800 12px/1 sans-serif; }
+  html.lg .lg-run-top .progress a.done.perfect { background: #2ee6b8; color: #04241d; }
+  html.lg .lg-run-top .progress a.done.passed { background: #F5C542; color: #6B4E00; }
+  html.lg .lg-run-top .progress a.active { outline: 2px solid #fff; outline-offset: 2px; }
+  html.lg .lg-run-top .progress .locked { opacity: .4; }
+
+  /* Одна подача вчителя й тексту, незалежно від рушія вправи. */
+  html.lg :is(.lg-play, .learn--run) > :is(.lv-teach, .learn__table) { grid-area: auto; grid-column: 2; grid-row: 2; align-self: start; width: 100%; height: auto; min-height: 0; margin: 0; background: none; border: 0; box-shadow: none; overflow: visible; }
+  html.lg :is(.lg-play > .lv-teach, .learn--run .learn__table .wrap) { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; height: auto; padding: 4px; box-sizing: border-box; background: none; border: 0; box-shadow: none; overflow: visible; --teach: 104px; }
+  html.lg :is(.lv-teach, .learn__table) .lg-teacher { flex: none; width: var(--teach); height: var(--teach); aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--app-panel); box-shadow: 0 0 0 3px #7C6CF0; }
+  html.lg :is(.lv-teach, .learn__table) .lg-teacher svg { width: 100%; height: 100%; display: block; }
+  html.lg :is(.lv-say, .learn--run .learn__table .goal) { flex: none; width: 100%; min-height: 104px; max-height: min(300px, 40svh); padding: 16px 18px; box-sizing: border-box; overflow-y: auto; background: var(--app-panel); border: 1px solid var(--app-border, #343C55); border-radius: 16px; color: #fff; text-align: left; font-size: var(--lesson-text); line-height: 1.5; }
+  html.lg .lv-say::before { left: calc(50% - 10px); top: -10px; border: 10px solid transparent; border-top: 0; border-bottom-color: var(--app-border, #343C55); }
+  html.lg .lv-say :is(.cl-task, .vl-task, .mt-task) { font-size: var(--lesson-text) !important; line-height: 1.5; }
+  html.lg .learn--run .learn__table .goal { font-size: var(--lesson-text) !important; }
+  html.lg .learn--run .learn__table .progress { display: none; }
+  html.lg .lg-play:has(> .lv-teach) > .lg-controls { grid-column: 2; grid-row: 3; }
+  html.lg .lg-play:has(> .lv-teach)[data-step="intro"] { display: flex; width: min(640px, 100%); height: 100%; }
+
+  /* У звичайних задачах замість вчителя — лічильник і текст завдання. */
+  html.lg .lg-play.mt:not([data-lesson]):not([data-mode="menu"]) { --lesson-rows: 40px 40px minmax(0, 1fr); }
+  html.lg .mt:not([data-lesson]) > .mt-top { grid-template-areas: "back title fs"; grid-template-rows: 40px; row-gap: 0; }
+  html.lg .mt:not([data-lesson]) > .mt-navrow { grid-column: 2; grid-row: 2; }
+  html.lg .mt:not([data-lesson])[data-mode="puzzle"] > .mt-task { grid-column: 2; grid-row: 3; width: 100%; height: auto; min-height: 128px; padding: 18px; border: 1px solid var(--app-border, #343C55); border-radius: 16px; background: var(--app-panel); color: #fff; font-size: var(--lesson-text); line-height: 1.5; }
+
+  /* Нижні кнопки вирівняні з тим самим ігровим блоком. */
+  html.lg .lg-nav { left: 50%; right: auto; width: min(var(--lesson-width), calc(100% - 48px)); transform: translateX(-50%); box-sizing: border-box; }
+}
