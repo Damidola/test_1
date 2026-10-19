@@ -1,6 +1,6 @@
-import { createBoard } from '../shared/board.js?v=1792358668';
-import { openGuide, closeGuide } from '../shared/guide.js?v=1792358668';
-import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792358668';
+import { createBoard } from '../shared/board.js?v=1792399935';
+import { openGuide, closeGuide } from '../shared/guide.js?v=1792399935';
+import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792399935';
 
 const ROOT=document.getElementById('view-chessity'), LG=window.LG;
 const URL_ROOT=new URL('./',import.meta.url), VERSION=new URL(import.meta.url).search;

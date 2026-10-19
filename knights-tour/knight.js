@@ -2,8 +2,8 @@
    Дошка — та сама дошка Lichess (chessground), обрізана до n×n (видно лівий нижній кут, a1…).
    Кінь стартує в куті a1; зеленими крапками — куди можна стрибнути; на пройдених клітинках — номер ходу.
    Підказка — правило Варнсдорфа (стрибай туди, звідки найменше виходів) з перевіркою, що обхід ще можливий. */
-import { createBoard } from '../shared/board.js?v=1792358668';
-import { markSeen } from '../shared/path.js?v=1792358668';
+import { createBoard } from '../shared/board.js?v=1792399935';
+import { markSeen } from '../shared/path.js?v=1792399935';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const JUMPS = [[1, 2], [2, 1], [-1, 2], [-2, 1], [1, -2], [2, -1], [-1, -2], [-2, -1]];

@@ -1,13 +1,13 @@
-import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1792358668';
-import { judgeLessonMove } from '../shared/puzzle-rules.js?v=1792358668';
+import { GUIDE_CONTENT } from '../shared/guide-content.js?v=1792399935';
+import { judgeLessonMove } from '../shared/puzzle-rules.js?v=1792399935';
 /* Міні-урок «Шляху новачка» (lessons/lesson.html#ключ): вступ → приклади (програються самі) і завдання по черзі.
    Уроки — у lessons.js; ходи перевіряє chessops. */
 import { Chess, makeSquare, parseSquare, compat, fen as FEN } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
-import { createBoard } from '../shared/board.js?v=1792358668';
-import { LESSONS } from './lessons.js?v=1792358668';
-import { markSeen } from '../shared/path.js?v=1792358668';
-import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1792358668';
-import { toggleGuide, introGuide } from '../shared/guide.js?v=1792358668';
+import { createBoard } from '../shared/board.js?v=1792399935';
+import { LESSONS } from './lessons.js?v=1792399935';
+import { markSeen } from '../shared/path.js?v=1792399935';
+import { createLevels, lessonDone, MAX_LESSON_LEVELS } from '../shared/levels.js?v=1792399935';
+import { toggleGuide, introGuide } from '../shared/guide.js?v=1792399935';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.cl');
 const lesson = LESSONS[location.hash.slice(1)] || LESSONS.attack;
