@@ -1,5 +1,5 @@
 /* Keep lesson data offline while replacing old application code on upgrades. */
-const VERSION='chessity-offline-journey-231',PREFIX='chessity-offline-';
+const VERSION='chessity-offline-journey-232',PREFIX='chessity-offline-';
 const root=new URL('./',self.location.href),url=p=>new URL(p.split('/').map(encodeURIComponent).join('/'),root).href;
 self.addEventListener('install',event=>event.waitUntil((async()=>{
  const cache=await caches.open(VERSION),manifest=await fetch(url('chessity/offline-manifest.json'),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error(r.status);return r.json();});

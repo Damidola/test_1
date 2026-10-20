@@ -29,7 +29,7 @@
 .ct-feedback { text-align:center;min-height:20px;margin:0;font-size:13px;line-height:1.5;color:#aab5cf; }.ct-feedback.success { color:#63e2b7; }.ct-feedback.error { color:#ff9b9f; }.ct-tools { display:grid;grid-template-columns:repeat(3,1fr);gap:6px; }.ct-tools button { min-height:40px;padding:7px 3px;color:#d0d7e9;background:#2b334c;border:0;border-radius:10px;font:700 10px Manrope,sans-serif;cursor:pointer; }.ct-solution { border:0;background:transparent;color:#919eba;font:600 11px Manrope,sans-serif;padding:8px;cursor:pointer; }
 #ct-answers:not(:empty) { display:flex;gap:12px;justify-content:center; }#ct-answers>button { flex:1;border:1px solid #69748f;border-radius:12px;background:#303a55;color:#fff;padding:12px;font:800 15px Manrope,sans-serif;cursor:pointer; }.ct-place-piece { display:flex;align-items:center;gap:12px;font-size:12px;color:#bec8df; }.ct-place-piece img { width:44px;height:44px; }
 .ct-promotion { text-align:center; }.ct-promotion h2 { font-size:18px; }.ct-promotion>div { display:flex;justify-content:center;gap:8px; }.ct-promotion button { width:20%;border:1px solid #7884a5;border-radius:12px;background:#35405d;cursor:pointer; }.ct-promotion img { width:100%; }
-.ct-result { display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:65dvh;gap:8px; }.ct-result-icon { font-size:72px; }.ct-result h1 { font-size:28px;margin:10px 0; }.ct-result p { font-size:14px;color:#b1bcd4;line-height:1.6; }.ct-result .ct-stars { font-size:45px;margin:12px;gap:7px; }.ct-result .ct-primary { margin-top:18px; }.ct-result .ct-secondary { margin-top:5px; }.ct-loading { text-align:center;padding:80px 18px;color:#c9d4eb; }.ct-loading a { color:#9cc8ff; }
+.ct-result-icon { font-size:72px; }.ct-result h1 { font-size:28px;margin:10px 0; }.ct-result p { font-size:14px;color:#b1bcd4;line-height:1.6; }.ct-result .ct-stars { font-size:45px;margin:12px;gap:7px; }.ct-result .ct-primary { margin-top:18px; }.ct-result .ct-secondary { margin-top:5px; }.ct-loading { text-align:center;padding:80px 18px;color:#c9d4eb; }.ct-loading a { color:#9cc8ff; }
 .ap-tabs { grid-template-columns:repeat(5,minmax(0,1fr)); }
 .ct-card-art,.ct-lesson-art,.ct-group h2>span { overflow:hidden; }
 .ct-card-art img,.ct-lesson-art img,.ct-group h2 img { object-fit:cover;transform:scale(1.6); }
@@ -113,22 +113,58 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .ct-banner>img{filter:brightness(0) invert(1) drop-shadow(0 0 12px #49a9d5)}.ct-coach>img{height:72px}
 .ct-level-panel{padding-top:10px}.ct-level-footer>*{flex:1 1 0;min-width:0}.ct-head .ct-icon{font-size:24px}.ct-banner .ct-icon{font-size:28px}.ct-rounds{gap:12px}.ct-coach-zone{padding-top:6px}.ct-coach>img{height:80px}
 .ct-game-footer{min-height:66px;padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom));background:linear-gradient(#08659e,#034873)}.ct-game-footer a .ct-icon{transform:scaleX(-1)}
-/* NewJourneyPage: source lesson order, native artwork, bottom-to-top progression. */
-#view-chessity.ct-journey{height:100svh;min-height:0;max-width:560px;padding:0;display:flex;flex-direction:column;overflow:hidden;background:#0b67a3}
-.ct-journey-head{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 15px 5px;flex:0 0 auto}
-.ct-journey-head h1{font-size:22px;margin:0;flex:1}.ct-journey-head>a{display:flex;align-items:center;gap:6px;text-decoration:none;background:#085789;padding:6px 9px;border-radius:5px;font-size:16px}.ct-journey-head>a .ct-icon{font-size:18px}
-.ct-journey-head button{width:38px;height:38px;border:1px solid #0d79b4;border-radius:5px;background:#085789;padding:4px}.ct-journey-head button img{height:100%;max-width:100%;object-fit:contain}
-.ct-journey-hero{height:85px;position:relative;flex:0 0 auto;overflow:hidden;background:#0d70aa}.ct-journey-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:.35}.ct-journey-hero>span{position:absolute;inset:0;display:grid;place-items:center;font-size:25px;font-weight:700;text-shadow:0 1px 4px #003657}
-.ct-journey-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;overflow-anchor:none;padding:20px 0 12px;scrollbar-width:thin;position:relative;touch-action:pan-y}
-.ct-journey-list{display:flex;flex-direction:column;position:relative}.ct-journey-lesson{display:flex;align-items:center;gap:20px;min-height:calc(min(100vw,560px)*.31);padding:10px 22px;box-sizing:border-box;text-decoration:none;flex-shrink:0}.ct-journey-lesson:focus-visible{outline:3px solid #03c7ef;outline-offset:-3px}
-.ct-journey-node{width:calc(min(100vw,560px)*.245);height:calc(min(100vw,560px)*.245);flex-shrink:0;position:relative;display:grid;place-items:center;border-radius:50%;background:#59add3;border:4px solid #08446f;box-shadow:0 0 0 3px #117cb1,0 3px 8px #004477}
-.ct-journey-node>img{width:93%;height:93%;object-fit:contain;border-radius:50%}.ct-journey-node>.ct-stars{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);display:flex;white-space:nowrap;filter:drop-shadow(0 1px 2px #003757)}.ct-journey-node .ct-stars .ct-icon{font-size:23px}
-.ct-journey-lesson.current .ct-journey-node{border-color:#f5ca50;box-shadow:0 0 0 3px #119bcd,0 0 18px #53c8f480}.ct-journey-lesson.complete .ct-journey-node{border-color:#8bd66b}
-.ct-journey-label{display:flex;flex-direction:column;gap:5px;min-width:0}.ct-journey-label small{font-size:13px;color:#a5d8ee}.ct-journey-label b{font-size:19px;line-height:1.25;font-weight:700}.ct-journey-start{font-size:16px;font-weight:700;text-align:center;margin:22px 10px 9px}
-.ct-journey-footer{display:flex;justify-content:space-around;flex:0 0 auto;gap:20px;padding:10px 10px calc(10px + env(safe-area-inset-bottom));background:#07558a;box-shadow:0 -3px 10px #003f6833}.ct-journey-footer>a{display:flex;align-items:center;gap:8px;text-decoration:none;font-size:15px;color:#7dc9e7!important}
-@media(min-width:960px){.ct-journey-label b{font-size:23px}.ct-journey-hero{height:100px}}
+/* APK NewJourneyPage: 40/60 split; connected rectangular lesson tiles.
+   AOT BoxConstraints.maxHeight drives row sizing (native-home.png evidence). */
+#view-chessity.ct-journey{--ct-journey-row:130px;height:100svh;min-height:0;max-width:560px;padding:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(#0a65a6,#023a63)}
+.ct-journey-top{height:calc((100svh + 24px)*.4 - 24px);flex:0 0 calc((100svh + 24px)*.4 - 24px);position:relative;background:linear-gradient(#00355b,#057bd0);overflow:hidden}
+.ct-journey-head{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;padding:calc(min(100vw,560px)*.05) calc(min(100vw,560px)*.046)}
+.ct-journey-head h1{font-size:calc(min(100vw,560px)*.046);font-weight:700;margin:0;line-height:1.3}
+.ct-native-totals{display:flex;gap:calc(min(100vw,560px)*.045)}
+.ct-native-totals>div{width:calc(min(100vw,560px)*.15);height:calc(min(100vw,560px)*.15);border-radius:6px;background:#03446c;box-shadow:3px 4px 0 #003a5c;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ct-native-totals b{font-size:calc(min(100vw,560px)*.052);line-height:1.1}.ct-native-totals span{font-size:calc(min(100vw,560px)*.023)}
+.ct-journey-skyline{position:absolute;inset:auto 0 0;height:calc(min(100vw,560px)*.315);display:flex;align-items:flex-end;justify-content:space-around;opacity:.4}
+.ct-journey-skyline img{width:18%;height:75%;object-fit:fill;filter:brightness(0) saturate(100%) invert(16%) sepia(31%) saturate(2505%) hue-rotate(166deg) brightness(90%) contrast(103%)}
+.ct-journey-skyline img:nth-child(2){height:80%}.ct-journey-skyline img:nth-child(3){height:70%}.ct-journey-skyline img:nth-child(4){height:85%}.ct-journey-skyline img:nth-child(5){height:100%}
+.ct-journey-level{position:absolute;left:11%;bottom:calc(min(100vw,560px)*-.008);display:flex;align-items:flex-end;gap:calc(min(100vw,560px)*.028);padding:0;border:0;background:transparent;color:#fff;cursor:pointer;text-align:left;font-family:Chessity,sans-serif}
+.ct-journey-level>img{height:calc(min(100vw,560px)*.25);width:auto;object-fit:contain;opacity:.8}.ct-journey-level>span{display:flex;flex-direction:column;gap:3px;padding-bottom:calc(min(100vw,560px)*.009)}
+.ct-journey-level b{font-size:calc(min(100vw,560px)*.048);line-height:1.15}.ct-journey-level small{font-size:calc(min(100vw,560px)*.03);font-weight:600}
+.ct-journey-bottom{height:calc((100svh + 24px)*.6);flex:0 0 calc((100svh + 24px)*.6);display:flex;flex-direction:column;min-height:0}
+.ct-journey-start{flex:none;font-size:calc(min(100vw,560px)*.05);line-height:1.2;font-weight:700;text-align:center;margin:0;padding:calc(min(100vw,560px)*.05) calc(min(100vw,560px)*.05) calc(min(100vw,560px)*.03)}
+.ct-journey-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;overflow-anchor:none;scrollbar-width:thin;position:relative;touch-action:pan-y;padding:0 calc(min(100vw,560px)*.07)}
+.ct-journey-list{display:flex;flex-direction:column;position:relative}
+.ct-journey-lesson{position:relative;display:flex;align-items:center;gap:calc(var(--ct-journey-row)*.195);height:var(--ct-journey-row);min-height:var(--ct-journey-row);text-decoration:none;flex-shrink:0;color:#fff}
+.ct-journey-lesson:focus-visible{outline:2px solid #00c7ed;outline-offset:-2px}
+.ct-journey-lesson::before{content:"";position:absolute;left:calc(var(--ct-journey-row)*.730337*1.31/2);height:100%;top:0;width:2px;background:#749baa;opacity:.7}
+.ct-journey-node{position:relative;flex-shrink:0;height:calc(var(--ct-journey-row)*.730337);width:calc(var(--ct-journey-row)*.730337*1.31);border-radius:6px;background:#0b69a1;box-shadow:0 3px 0 #7ba9bd,0 1px 2px #002e4c;border:1px solid #1381b0;box-sizing:border-box;display:grid;place-items:center}
+.ct-journey-node>img{width:100%;height:100%;object-fit:contain;border-radius:inherit}
+.ct-journey-number{position:absolute;right:calc(var(--ct-journey-row)*-.05);top:calc(var(--ct-journey-row)*-.05);width:calc(var(--ct-journey-row)*.2);height:calc(var(--ct-journey-row)*.2);display:grid;place-items:center;background:#55abd5;border-radius:50%;font-size:calc(var(--ct-journey-row)*.12);font-weight:700}
+.ct-journey-earned{position:absolute;left:3.5%;bottom:0;width:93%;height:65%;pointer-events:none}
+.ct-journey-label{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--ct-journey-row)*.035);min-width:0;flex:1}
+.ct-journey-label>small{display:inline-block;border:1px solid #00c5eb;color:#00c5eb;border-radius:1px;padding:1px 3px;font-size:calc(var(--ct-journey-row)*.08);line-height:1.1;font-weight:700;white-space:nowrap}
+.ct-journey-label>b{font-size:calc(var(--ct-journey-row)*.128);font-weight:700;line-height:1.12}.ct-journey-label>span{font-size:calc(var(--ct-journey-row)*.116);line-height:1.2;color:#7ba0b8}
 /* Keep every square above the footer on short phone viewports. */
 .ct-game .ct-coach-zone{height:clamp(100px,calc(100svh - min(100vw,560px) - 74px),33.7svh)}
 @media(max-height:650px) and (max-width:959px){.ct-game .ct-rounds{padding:5px 8px;margin:0 auto}.ct-game .ct-rounds span{width:29px;height:29px;font-size:18px}.ct-game .ct-coach>img{height:60px}.ct-game .ct-goal{font-size:16px;line-height:1.35;padding:10px}.ct-game .ct-coach-zone{padding-top:5px}}
-/* APK Color objects: #0a65a6 canvas, #075288 completed, #55abd5 accents. */
-#view-chessity.ct-journey{background:#0a65a6}.ct-journey-node{background:#0a65a6;border-color:#55abd54d;box-shadow:none}.ct-journey-lesson.current .ct-journey-node{border-color:#55abd5;box-shadow:0 0 12px #55abd533}.ct-journey-lesson.complete .ct-journey-node{background:#075288;border-color:#55abd54d}
+/* APK LessonCompleteDialog: transparent AlertDialog, 80% width, 30×50
+   content insets, original StarDisplay and two 50px GradientButtons. */
+.ct-completion{width:calc(min(100vw,560px)*.8);max-width:none;max-height:calc(100svh - 48px);overflow:visible;margin:auto;padding:0;border:0;border-radius:8px;background:transparent;color:#fff;font-family:Chessity,sans-serif}
+.ct-completion::backdrop{background:#0000008a}
+.ct-completion .ct-result{position:relative;margin:0;padding:50px 30px;text-align:center;box-sizing:border-box;border-radius:8px;background:linear-gradient(#0a65a6,#023a63)}
+.ct-completion h2{font-size:22px;line-height:1.2;font-weight:700;margin:0 0 5px;color:#fff}
+.ct-completion .ct-completion-score{font-size:18px;margin:0 0 5px}
+.ct-completion-close{position:absolute;top:0;right:0;border:0;padding:calc(min(100vw,560px)*.005);background:transparent;color:#033c66;display:grid;place-items:center;cursor:pointer}
+.ct-completion-close .ct-icon{font-size:calc(min(100vw,560px)*.05)}
+.ct-completion-stars{height:max(100px,calc(min(100vw,560px)*.1));margin:0}
+.ct-native-stars{display:flex;align-items:stretch;overflow:visible}
+.ct-native-star-slot{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.ct-native-star-slot:nth-child(2){padding-bottom:var(--ct-star-lift)}
+.ct-native-star{position:relative;display:grid;place-items:center;width:100%;aspect-ratio:1;max-height:100%;container-type:inline-size}
+.ct-native-star>.ct-icon{display:block;font-size:100cqw;line-height:1;color:#9e9e9eb3;text-shadow:0 0 12cqw #000;user-select:none}
+.ct-native-star.earned>.ct-icon{color:#fc0}
+.ct-star-animation{position:absolute;left:50%;top:50%;width:150%;height:150%;transform:translate(-50%,-50%);pointer-events:none;visibility:hidden}
+.ct-star-animation.playing{visibility:visible}.ct-star-animation>svg{overflow:visible!important}
+.ct-completion-buttons{margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:15px}
+.ct-completion-buttons>button{flex:none;width:calc(min(100vw,560px)*.6);max-width:100%;height:50px;padding:0 8px;border:0;border-radius:30px;color:#fff;background:linear-gradient(#55abd5,#0965a7);font:700 18px Chessity,sans-serif;box-shadow:0 3px 5px #0005;cursor:pointer}
+.ct-completion-buttons>button.dark{background:linear-gradient(#0a65a6,#023a63)}
+@media(max-height:430px){.ct-completion .ct-result{padding:24px 30px}.ct-completion{overflow:auto}}
+.ct-completion .ct-result{display:block;min-height:0;gap:0}.ct-completion-stars{width:100%}

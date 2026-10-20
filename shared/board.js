@@ -37,7 +37,7 @@ export function applyBoardLook() {
    — легкий тап із ковзанням пальця не перетягує фігуру на сусідню клітинку;
    — тап по клітинці, куди може піти лише одна фігура (напр. ворожа фігура під боєм), одразу робить цей хід;
    — коли наша фігура на дошці одна, тап по будь-якій клітинці, куди вона може піти, одразу робить хід. */
-export function lichessTouch(cg) {
+export function lichessTouch(cg, { onIllegal } = {}) {
   const wrap = cg.state.dom.elements.wrap;
   fitBoard(wrap.closest('.lg-board-wrap, .learn__main'));
   // Зелені крапки ходів можна повністю вимкнути в Профілі — тоді жодна гра чи урок їх не вмикає
@@ -78,7 +78,7 @@ export function lichessTouch(cg) {
     const orig = dragOrig; dragOrig = null;
     if (orig && e.type === 'pointerup') {
       const key = cg.getKeyAtDomPos([e.clientX, e.clientY]), color = cg.state.movable.color, ds = cg.state.movable.dests && cg.state.movable.dests.get(orig);
-      if (key && key !== orig && color && cg.state.turnColor === color && cg.state.pieces.get(orig)?.color === color && !(ds && ds.includes(key)) && window.LG) window.LG.play('illegal'); // хід наперед (не наш хід) — не «помилка»
+      if (key && key !== orig && color && cg.state.turnColor === color && cg.state.pieces.get(orig)?.color === color && !(ds && ds.includes(key)) ) (onIllegal || (() => window.LG?.play('illegal')))(); // хід наперед (не наш хід) — не «помилка»
     }
     wrap.classList.remove('lg-lifted');
     if (!tap || wasSelected) return;
@@ -202,7 +202,7 @@ export function createBoard(el, opts = {}) {
     drawable: { enabled: false, visible: true, brushes: { hint: { key: 'h', color: '#FF9F1C', opacity: 0.95, lineWidth: 13 } } },
     events: { select: key => opts.onSelect && opts.onSelect(key) }
   });
-  lichessTouch(cg);
+  lichessTouch(cg, { onIllegal: opts.onIllegal });
 
   let positionVersion = 0;
   function setPosition(pieces, o = {}) {

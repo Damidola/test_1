@@ -22,8 +22,23 @@ Implementation checklist: compare remaining original app flows; recover lesson 1
 
 ## Mobile completion and journey repair — 20 October 2026
 
-The native journey order and 31%-of-width lesson-row height were checked against `new_journey.dart` and `journey_page_state.dart` in the APK AOT disassembly, using REA's `inspect-dart-aot`. The 129 original lesson artwork mappings were recovered from the object pool. No new source journey screenshot was obtained, so full visual parity remains unverified.
+The native journey order and 31%-of-lower-pane-height lesson-row height were checked against `new_journey.dart` and `journey_page_state.dart` in the APK AOT disassembly, using REA's `inspect-dart-aot`. The 129 original lesson artwork mappings were recovered from the object pool. A real source journey screenshot has now been captured through REA; the earlier width interpretation was corrected after identifying BoxConstraints.maxHeight. Full application parity remains unverified.
 
 The default Chessity route now opens the bottom-to-top lesson journey directly. Touch checks at 360×640, 390×700 and 450×855 complete all five original king exercises, remove the captured flag, automatically advance, resume an interrupted completion, open the next lesson and retain earned stars after reload. The full board stays above the footer. A separate real-service-worker upgrade check reproduces the previous stale-code cache, then verifies new code, retained lesson data/session/stars and an offline cold reload. Navigation is dispatched without awaiting it inside service-worker activation, avoiding an activation/navigation deadlock.
+
+
+## Native journey, result and sound correction — 20 October 2026
+
+REA was used to inspect the APK AOT and capture the running Android application. [Android journey capture](design-review/chessity/native-journey.png) shows the actual native hierarchy, rectangular connected lesson cards, numbered badges and absence of unearned star rows. [Browser journey](design-review/chessity/browser-journey.png) shows the revised implementation at 390×809. These captures have different viewport sizes and are evidence of structure, not a pixel-difference certification. Original thumbnails are shown in the browser as requested; PNG decoding failed in the Android emulator after the native map loaded.
+
+The completed lesson remains behind a centred dialog instead of being replaced by a separate result page. Layout follows LessonCompleteDialog.build at 0x85fb1c: 80% width, 30×50 content padding, original rounded-star glyph, raised centre star, original star.json Lottie animation and 780 ms stagger. Replay restarts the lesson; Continue returns to the lesson journey. [One star](design-review/chessity/result-1-star.png), [two stars](design-review/chessity/result-2-stars.png) and [three stars](design-review/chessity/result-3-stars.png) are browser captures from actual completion of the final original king task. The dialog is source-derived; a native completed-lesson capture has not been obtained.
+
+All 62 original MP3 files and star.json were independently checked byte-for-byte against the supplied APK. Original move, coin, captureFlag, capture, mistake, solved, retry and one/two/threeStars samples replace generic effects. The shared audio context and decoded samples survive route changes; focus/touch resumes an interrupted context, and ended voices release their nodes. The additional Chessity profile and its journey navigation were removed; progress remains available in the existing site profile. Original fonts, star animation and the audio player bundle are included in the offline core.
+
+Targeted Playwright checks cover three mobile journey sizes, all five original king tasks, flag consumption, automatic progression, saved stars after reload, 1/2/3-star dialog geometry and animation timing, non-silent decoded original samples, and audio resuming after profile navigation and forced context suspension. The service-worker migration check covers retained lesson data/session/stars and a cold offline reload. Automated audio checks confirm PCM playback scheduling on a running context; they do not replace listening on a physical phone.
+
+Remaining limitations: lesson introductions still use the shared website explanation player, MiniChess uses the browser opponent implementation, and native result/explanation captures remain blocked by emulator renderer/ARM translation incompatibilities. Source screenshots for every original flow and a physical-device audio endurance check are still needed. Lesson 1704 remains unavailable from the source service. The changes correct specific mismatches and do not certify a complete 1:1 port.
+
+Validation: `npm run build`, offline manifest generation and the complete `npm run check` finished successfully, including all unit, lesson, page, Chessity, service-worker upgrade and responsive layout checks.
 
 final result: blocked

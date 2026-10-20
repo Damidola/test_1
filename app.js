@@ -1,5 +1,5 @@
-import { menuGroups } from './shared/puzzle-catalog.js?v=1792502661';
-import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1792502661';
+import { menuGroups } from './shared/puzzle-catalog.js?v=1792524299';
+import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1792524299';
 /* Шахи для дітей: застосунок із п’ятьма вкладками.
    📖 Learn — каталог Chessity: 18 рівнів, уроки, пояснення та вправи;
    🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
@@ -7,9 +7,9 @@ import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1792502661';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1792502661';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1792502661';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1792524299';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1792524299';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1792524299';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -271,7 +271,8 @@ function renderProfile() {
   $('view-profile').innerHTML = `
     <div class="mg-me"><span class="mg-av">${kingSvg}</span><div class="mg-who"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length} · ${sec ? sec[1] : ''}</small><div class="mg-bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
     <div class="mg-stats"><div><b>${d}</b><span>КРОКИ</span></div><div><b>${solvedPuzzles()}</b><span>ЗАДАЧІ</span></div><div><b>${wins}</b><span>ПЕРЕМОГИ</span></div></div>
-    <div class="mg-list"><a class="mg-row mg-link" href="#chessity/profile"><span>Chessity · Зірки</span><em>${Object.values(LG.store.get('chessity:v1',{})||{}).reduce((sum,p)=>sum+(p.stars||0),0)} ★ ${chev}</em></a>
+    <div class="mg-list"><a class="mg-row mg-link" href="#chessity"><span>Chessity · Зірки</span><em>${Object.values(LG.store.get('chessity:v1',{})||{}).reduce((sum,p)=>sum+(p.stars||0),0)} ★ ${chev}</em></a>
+      <button type="button" class="mg-row mg-link" id="p-chessity-offline"><span>Chessity · Зберегти офлайн</span><em>↓</em></button><p id="ct-offline-status" aria-live="polite"></p>
       <a class="mg-row mg-link" href="games/index.html"><span>📜 Мої партії</span><em>${(LG.store.get('games', []) || []).length}${chev}</em></a>
       <div class="mg-row"><span>Мова</span><div class="mg-pill" id="p-lang">${[['uk', 'UA'], ['en', 'EN']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
       <div class="mg-row"><span>Звук</span><div class="mg-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
@@ -294,6 +295,7 @@ function renderProfile() {
       </details>
     </div>
     <button type="button" class="mg-reset" id="p-reset">Скинути прогрес</button>`;
+  $('p-chessity-offline').onclick=async()=>{const status=$('ct-offline-status');try{status.textContent='Зберігаємо уроки…';const registration=await navigator.serviceWorker.ready;registration.active.postMessage({type:'CACHE_CHESSITY'});}catch{status.textContent='Для завантаження відкрий сайт через HTTPS з інтернетом.';}};
   // розкрите чи ні — пам'ятаємо, поки відкрита сторінка
   $('view-profile').querySelector('.pf-more').addEventListener('toggle', e => { pfOpen = e.target.open; });
   // скільки робот думає перед ходом (мс; типово 1,5 с)
@@ -353,7 +355,7 @@ function renderProfile() {
 // ---------- вкладки ----------
 const TITLES = { chessity: 'Learn — Chessity', learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
 let chessityModule;
-const chessityReady = () => chessityModule || (chessityModule = import('./chessity/app.js?v=1792502661'));
+const chessityReady = () => chessityModule || (chessityModule = import('./chessity/app.js?v=1792524299'));
 // ---------- без блимання: вкладка з'являється одразу вся, коли її картинки (і фони-сцени) вже завантажені ----------
 const imgReady = new Map(); // url → Promise
 function loadImg(url) {

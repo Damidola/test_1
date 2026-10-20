@@ -1,6 +1,7 @@
-import { createBoard } from '../shared/board.js?v=1792502661';
-import { openGuide, closeGuide } from '../shared/guide.js?v=1792502661';
-import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792502661';
+import { playSound, mountStars } from './native-effects.js?v=1792524299';
+import { createBoard } from '../shared/board.js?v=1792524299';
+import { openGuide, closeGuide } from '../shared/guide.js?v=1792524299';
+import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792524299';
 
 const ROOT=document.getElementById('view-chessity'), LG=window.LG;
 const URL_ROOT=new URL('./',import.meta.url), VERSION=new URL(import.meta.url).search;
@@ -13,14 +14,14 @@ const icon=(name)=>`<span class="ct-icon" aria-hidden="true">${({back:'&#xf71e;'
 const star=(n,max=3)=>`<span class="ct-stars" aria-label="Зірки: ${n} із ${max}">${Array.from({length:max},(_,i)=>`<span class="ct-icon ${i<n?'earned':''}">&#xe5f9;</span>`).join('')}</span>`;
 const store=()=>LG.store.get('chessity:v1',{})||{};
 const save=p=>LG.store.set('chessity:v1',p);
-let catalog, journeyImages={}, board, session, completionTimer, generation=0, activeLevel=+LG.store.get('chessity:level',40), loadPromise;
+let catalog, journeyImages={}, board, session, completionTimer, completionCleanup, journeyCleanup, generation=0, activeLevel=+LG.store.get('chessity:level',40), loadPromise;
 const lessonCache=new Map();
 async function json(file) { const response=await fetch(new URL('data/'+file+VERSION,URL_ROOT));if(!response.ok)throw new Error('Не вдалося завантажити урок. Спробуй ще раз.');return response.json(); }
 const load=()=>loadPromise||(loadPromise=Promise.all([json('catalog.json'),json('journey-images.json')]).then(([x,images])=>{journeyImages=images;return catalog=x;}).catch(e=>{loadPromise=null;throw e;}));
 async function lesson(id) { if(!lessonCache.has(id))lessonCache.set(id,json(id+'.json').catch(e=>{lessonCache.delete(id);throw e;}));return lessonCache.get(id); }
 const levelOf=id=>catalog.levels.find(l=>l.id===id)||catalog.levels[0];
 const back=id=>`<a class="ct-back" href="#chessity/journey/${id}" aria-label="Назад до уроків">‹</a>`;
-function dispose() { clearTimeout(completionTimer);rememberSession();generation++;closeGuide();board?.destroy();board=null;session=null;ROOT.querySelector('dialog')?.close(); }
+function dispose() { clearTimeout(completionTimer);completionCleanup?.();completionCleanup=null;journeyCleanup?.();journeyCleanup=null;rememberSession();generation++;closeGuide();board?.destroy();board=null;session=null;ROOT.querySelector('dialog')?.close(); }
 export function deactivate() { dispose(); }
 function art(group) {
   const item=catalog?.lessons.find(x=>x.group===group&&x.stickerID),sticker=catalog?.levels.flatMap(x=>x.stickers||[]).find(x=>x.id===item?.stickerID);
@@ -31,22 +32,26 @@ const header=(title,backTo='#learn')=>`<header class="ct-head"><h1>${esc(title)}
 function groupsFor(level){const result=(level.stickers||[]).map(x=>({...x,lessons:x.lessons.filter(id=>catalog.lessons.some(l=>l.id===id))}));const known=new Set(result.flatMap(x=>x.lessons)),extra=level.lessons.filter(id=>!known.has(id));if(extra.length)result.push({id:'extra',name:'Додаткова практика',lessons:extra,img:null});return result;}
 
 // Native NewJourneyPage renders the original lesson order in reverse and scrolls
-// to the first available/tried lesson. Source tile height is 31% of page width.
+// to the first available/tried lesson. Source tile height is 31% of the lower journey pane height.
 function renderJourney(id=activeLevel){
  const level=levelOf(id),progress=store(),lessons=level.lessons.map(id=>catalog.lessons.find(l=>l.id===id)).filter(Boolean);
- activeLevel=level.id;LG.store.set('chessity:level',level.id);ROOT.classList.remove('ct-game');ROOT.classList.add('ct-journey');
+ activeLevel=level.id;LG.store.set('chessity:level',level.id);ROOT.classList.add('ct-journey');
  const saved=LG.store.get('chessity:session',null),target=(saved&&lessons.find(l=>l.id===saved.lesson))||lessons.find(l=>!progress[l.id]?.stars)||lessons.at(-1);
- const total=progressSummary(progress,catalog.lessons).stars;
- ROOT.innerHTML=`<header class="ct-journey-head"><h1>Навчання</h1><a href="#chessity/profile" aria-label="Профіль і зірки">${total}${icon('star')}</a><button data-levels aria-label="Обрати інший рівень">${levelPiece(level)}</button></header>
- <div class="ct-journey-hero"><img src="chessity/assets/original/images/journey/pieces.png" alt=""><span>${esc(level.name)}</span></div>
- <div class="ct-journey-scroll" role="region" aria-label="Уроки: від першого внизу до наступних угорі" tabindex="0">
- <nav class="ct-journey-list" aria-label="Уроки рівня ${esc(level.name)}">${[...lessons].reverse().map(l=>{
+ const total=progressSummary(progress,catalog.lessons).stars,today=LG.store.get('chessity:history',{})[new Date().toLocaleDateString('en-CA')]||{solved:0};
+ ROOT.innerHTML=`<section class="ct-journey-top"><header class="ct-journey-head"><h1>Навчання</h1><div class="ct-native-totals"><div><b>${total}</b><span>зірок</span></div><div><b>${today.solved}</b><span>завдань</span></div></div></header>
+ <div class="ct-journey-skyline" aria-hidden="true">${['knight','bishop','rook','queen','king'].map(p=>`<img src="chessity/assets/original/images/journey/pieces/${p}.png" alt="">`).join('')}</div>
+ <button class="ct-journey-level" data-library="${level.id}" aria-label="Обрати інший рівень">${levelPiece(level)}<span><b>${esc(level.name)}</b><small>Level ${catalog.levels.indexOf(level)+1}</small></span></button></section>
+ <section class="ct-journey-bottom"><p class="ct-journey-start">${lessons.some(l=>progress[l.id]?.stars)?'Зроби свій наступний хід':'Зроби свій перший хід'}</p>
+ <div class="ct-journey-scroll" role="region" aria-label="Уроки: від першого внизу до наступних угорі" tabindex="0"><nav class="ct-journey-list" aria-label="Уроки рівня ${esc(level.name)}">${[...lessons].reverse().map(l=>{
  const n=lessons.indexOf(l)+1,stars=progress[l.id]?.stars||0,image=journeyImages[l.id]||'images/lessonImages/lesson.png';
- return `<a class="ct-journey-lesson ${stars?'complete':''} ${l.id===target?.id?'current':''}" data-lesson-id="${l.id}" data-lesson-number="${n}" href="#chessity/play/${l.id}" ${l.id===target?.id?'aria-current="step"':''}><span class="ct-journey-node"><img src="chessity/assets/original/${image}" alt="" loading="lazy">${star(stars)}</span><span class="ct-journey-label"><small>${l.format===29?'Рекорд':`Урок ${n}`}</small><b>${esc(l.name)}</b></span></a>`;
- }).join('')}</nav><p class="ct-journey-start">${lessons.some(l=>progress[l.id]?.stars)?'Зроби свій наступний хід':'Зроби свій перший хід'}</p></div>
- <footer class="ct-journey-footer"><a href="#learn">${icon('back')}Назад</a><a href="#chessity/profile">${icon('profile')}Профіль</a></footer>`;
- const scroll=ROOT.querySelector('.ct-journey-scroll'),node=ROOT.querySelector('[aria-current="step"]');
- requestAnimationFrame(()=>{if(!scroll.isConnected)return;if(node)scroll.scrollTop+=node.getBoundingClientRect().bottom-scroll.getBoundingClientRect().bottom+70;else scroll.scrollTop=scroll.scrollHeight;});
+ return `<a class="ct-journey-lesson ${stars?'complete':''}" data-lesson-id="${l.id}" data-lesson-number="${n}" href="#chessity/play/${l.id}" ${l.id===target?.id?'aria-current="step"':''}><span class="ct-journey-node"><img src="chessity/assets/original/${image}" alt="" loading="lazy"><span class="ct-journey-number">${n}</span>${stars?`<span class="ct-journey-earned" data-stars="${stars}"></span>`:''}</span><span class="ct-journey-label"><small>${l.format===29?'РЕКОРД':'УРОК НА НАВИЧКУ'}</small><b>${esc(l.name)}</b><span>${esc(l.group||'')}</span></span></a>`;
+ }).join('')}</nav></div></section>`;
+ const scroll=ROOT.querySelector('.ct-journey-scroll'),node=ROOT.querySelector('[aria-current="step"]'),bottom=ROOT.querySelector('.ct-journey-bottom'),cleanups=[];
+ // BoxConstraints.field_1f is maxHeight: native rows use 31% of the lower
+ // journey pane's height, rather than 31% of viewport width.
+ let positioned=false;const fit=()=>{const height=bottom.clientHeight;if(!height)return;ROOT.style.setProperty('--ct-journey-row',height*.31+'px');if(!positioned&&node){scroll.scrollTop+=node.getBoundingClientRect().bottom-scroll.getBoundingClientRect().bottom;positioned=true;}},observer=new ResizeObserver(fit);observer.observe(bottom);fit();
+ for(const el of ROOT.querySelectorAll('[data-stars]'))cleanups.push(mountStars(el,+el.dataset.stars));
+ journeyCleanup=()=>{observer.disconnect();cleanups.forEach(fn=>fn());};
 }
 
 function renderLevel(id) {
@@ -57,7 +62,7 @@ function renderGroup(token){
  const [levelID,groupID]=token.split('-'),level=levelOf(+levelID),group=groupsFor(level).find(x=>String(x.id)===groupID);if(!group)return renderLevel(level.id);ROOT.classList.remove('ct-game');
  const progress=store();ROOT.innerHTML=header(group.name,'#chessity/level/'+level.id)+`<div class="ct-group-hero"><img src="chessity/assets/original/${group.img?'web/'+group.img+'.png':'images/formatImages/mix.png'}" alt=""></div><div class="ct-grid">${group.lessons.map(id=>{const l=catalog.lessons.find(x=>x.id===id);return `<a class="ct-card ${progress[id]?.stars?'complete':''}" href="#chessity/lesson/${id}"><span class="ct-card-art">${art(l.group)}</span><b>${esc(l.name)}</b>${star(progress[id]?.stars||0)}</a>`;}).join('')}</div><a class="ct-secondary" href="#chessity/level/${level.id}">Назад</a>`;
 }
-function renderProfile(){const progress=store(),stats=progressSummary(progress,catalog.lessons),history=LG.store.get('chessity:history',{}),today=history[new Date().toLocaleDateString('en-CA')]||{solved:0,stars:0};ROOT.classList.remove('ct-game');ROOT.innerHTML=header('Профіль','#chessity')+`<div class="ct-profile"><img class="ct-avatar" src="chessity/assets/original/coach.svg" alt=""><h2>Юний шахіст</h2><div class="ct-profile-stats"><div><b>${stats.stars}</b>Зірки</div><div><b>${stats.done}</b>Уроки</div><div><b>${today.solved}</b>Задачі сьогодні</div></div><button class="ct-secondary" data-offline>Зберегти всі уроки для офлайн</button><p id="ct-offline-status" aria-live="polite">Близько 65 МБ: уроки, графіка й звуки.</p><h3>Мої досягнення</h3><div class="ct-badges">${catalog.levels.flatMap(l=>l.stickers||[]).map(g=>`<img class="${g.lessons.every(id=>progress[id]?.stars>0)?'earned':''}" src="chessity/assets/original/web/${g.img}.png" alt="${esc(g.name)}" title="${esc(g.name)}">`).join('')}</div><a class="ct-primary" href="#chessity">До уроків</a></div>`;}
+function renderProfile(){location.hash='profile';}
 
 function picker() {
   const dialog=document.createElement('dialog');dialog.className='ct-picker';dialog.innerHTML=`<header><h2>Обери рівень</h2><button type="button" data-close aria-label="Закрити">✕</button></header><div>${catalog.levels.map((l,i)=>`<button type="button" data-level="${l.id}" class="${l.id===activeLevel?'selected':''}" style="--ct-accent:${COLORS[i%6]}">${piece(l.piece)}<b>${esc(l.name)}</b><small>${l.lessons.length} уроків</small></button>`).join('')}</div>`;ROOT.append(dialog);dialog.showModal();dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.addEventListener('click',e=>{if(e.target===dialog||e.target.closest('[data-close]'))dialog.close();});
@@ -114,16 +119,7 @@ function showLesson(l) {
 }
 const movablePosition=p=>new Map(Object.entries(p.pieces));
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
-function fitSession() { return; /* Native app keeps the board full-width. */
-  if(!session||innerWidth>=960)return;
-  const wrap=ROOT.querySelector('.ct-board-wrap'),last=ROOT.querySelector('[data-solution]'),nav=document.querySelector('.ap-tabs');
-  if(!wrap||!last||!nav)return;
-  const full=wrap.parentElement.clientWidth;
-  wrap.style.width=full+'px';
-  const nonBoard=last.getBoundingClientRect().bottom+scrollY-full;
-  wrap.style.width=Math.min(full,Math.max(200,nav.getBoundingClientRect().top-nonBoard-10))+'px';
-}
-addEventListener('resize',()=>requestAnimationFrame(fitSession));
+
 function drawSession() {
   const s=session;if(!s||!board)return;
   board.setPosition(movablePosition(s.position),{lastMove:s.lastMove});
@@ -156,12 +152,12 @@ function scheduleAdvance(){
  if(s?.done)completionTimer=setTimeout(()=>{if(g===generation&&session===s&&s.round===round)advanceExercise(s);},1100);
 }
 function finishExercise() {
-  const s=session;if(!s||s.done)return;s.done=true;s.busy=false;board?.setMovable(null);playSound('success');
+  const s=session;if(!s||s.done)return;s.done=true;s.busy=false;board?.setMovable(null);playSound('solved');
   const stars=s.revealed?0:s.errors||s.hints?2:3;s.counted ||= [];if(stars>0&&!s.counted.includes(s.current.id)){s.counted.push(s.current.id);const history=LG.store.get('chessity:history',{}),day=new Date().toLocaleDateString('en-CA'),h=history[day]||{solved:0,stars:0};h.solved++;history[day]=h;LG.store.set('chessity:history',history);}s.roundStars[s.index]=Math.max(s.roundStars[s.index]||0,stars);
   feedback(stars?'Правильно! Чудова робота!':'Розв’язання переглянуто. Спробуй самостійно, щоб отримати зірки.',stars?'success':'');
   rememberSession();drawSession();scheduleAdvance();
 }
-function wrong(text='Цей хід не розв’язує завдання. Спробуй ще!') {const s=session;if(!s)return;s.errors++;playSound('error');feedback(text,'error');board?.setPosition(movablePosition(s.position));drawSession();}
+function wrong(text='Цей хід не розв’язує завдання. Спробуй ще!') {const s=session;if(!s)return;s.errors++;playSound('mistake');feedback(text,'error');board?.setPosition(movablePosition(s.position));drawSession();}
 async function promotion(from,to) {
   return new Promise(resolve=>{const dialog=document.createElement('dialog');dialog.className='ct-promotion';dialog.innerHTML='<h2>Обери фігуру</h2><div>'+[['queen','Q'],['rook','R'],['bishop','B'],['knight','N']].map(([role,c])=>`<button type="button" data-promotion="${role}" aria-label="${{queen:'Ферзь',rook:'Тура',bishop:'Слон',knight:'Кінь'}[role]}">${piece(c,session.position.turn==='white'?'w':'b')}</button>`).join('')+'</div>';ROOT.append(dialog);dialog.showModal();dialog.addEventListener('click',e=>{const b=e.target.closest('[data-promotion]');if(b){resolve(b.dataset.promotion);dialog.close();}});dialog.addEventListener('cancel',()=>resolve(null));dialog.addEventListener('close',()=>{resolve(null);dialog.remove();},{once:true});});
 }
@@ -174,17 +170,17 @@ async function onMove(from,to) {
     const flag=Object.keys(s.current.compiled.start.marks).find(k=>s.current.compiled.start.marks[k]==='flag');
     const next=movePosition(s.position,{from,to,promotion:promoted});next.turn=s.current.compiled.player;
     if(to===flag&&Object.values(next.marks).includes('coin'))return wrong('Спершу збери всі монети!');
-    s.position=next;s.lastMove=[from,to];playSound('move');board.setPosition(movablePosition(next),{lastMove:s.lastMove});
+    const sound=s.position.marks[to]==='flag'?'captureFlag':s.position.marks[to]==='coin'?'coin':s.position.pieces[to]?'capture':'move';s.position=next;s.lastMove=[from,to];playSound(sound);board.setPosition(movablePosition(next),{lastMove:s.lastMove});
     if(to===flag&&!Object.values(next.marks).includes('coin'))finishExercise();else drawSession();return;
   }
   const edge=s.nodes.find(e=>e.move?.from===from&&e.move.to===to&&(!e.move.promotion||e.move.promotion===promoted));
   if(!edge)return wrong();
-  s.position=structuredClone(edge.next);s.lastMove=[from,to];s.nodes=edge.children;board.setPosition(movablePosition(s.position),{lastMove:s.lastMove});playSound('move');board.clearHint();feedback('Правильно!');
+  const sound=s.position.pieces[to]?'capture':'move';s.position=structuredClone(edge.next);s.lastMove=[from,to];s.nodes=edge.children;board.setPosition(movablePosition(s.position),{lastMove:s.lastMove});playSound(sound);board.clearHint();feedback('Правильно!');
   if(!s.nodes.length)finishExercise();else await autoReply();
 }
 function loadRound() {
   clearTimeout(completionTimer);const s=session;s.round=(s.round||0)+1;s.current=s.exercises[s.index];s.position=structuredClone(s.current.compiled.question?.position||s.current.compiled.start);s.nodes=s.current.compiled.tree;s.errors=0;s.hints=0;s.done=false;s.busy=false;s.revealed=false;s.lastMove=null;board.clearHint();
-  feedback('');drawSession();requestAnimationFrame(fitSession);
+  feedback('');drawSession();
 }
 export function scoreStars(green,total){return !green?0:green>=Math.ceil(total*.8)?3:green>=Math.ceil(total*.4)?2:1;}
 function rememberSession(){const s=session;if(!s||s.finished)return;LG.store.set('chessity:session',{lesson:s.lesson.id,ids:s.exercises.map(x=>x.id),index:s.index,roundStars:s.roundStars,counted:s.counted||[],snapshot:{position:s.position,nodes:s.nodes,errors:s.errors,hints:s.hints,done:s.done,revealed:s.revealed,lastMove:s.lastMove}});}
@@ -193,26 +189,34 @@ function summary(){
  const s=session,green=s.roundStars.filter(x=>x===3).length,stars=s.lesson.format===29?Math.min(3,Math.floor(green/(s.lesson.record?.puzperstar||3))):scoreStars(green,s.exercises.length),progress=store(),old=progress[s.lesson.id]||{},best=Math.max(old.stars||0,stars);
  progress[s.lesson.id]={stars:best,completedAt:new Date().toISOString()};save(progress);s.finished=true;LG.store.set('chessity:session',null);
  const history=LG.store.get('chessity:history',{}),day=new Date().toLocaleDateString('en-CA'),h=history[day]||{solved:0,stars:0};h.stars+=best-(old.stars||0);history[day]=h;LG.store.set('chessity:history',history);
- const level=levelOf(s.lesson.level),all=catalog.levels.flatMap(l=>l.lessons),next=all[all.indexOf(s.lesson.id)+1];board?.destroy();board=null;ROOT.classList.remove('ct-game');
- ROOT.innerHTML=header('Урок завершено','#chessity/journey/'+level.id)+`<div class="ct-result"><h1>Урок пройдено!</h1><p>${esc(s.lesson.name)}</p>${star(stars)}<p>${green} / ${s.exercises.length} зелених відповідей</p>${next?`<a class="ct-primary" href="#chessity/play/${next}">Наступний урок</a>`:''}<a class="ct-secondary" href="#chessity/play/${s.lesson.id}">Пройти ще раз</a><a class="ct-secondary" href="#chessity/journey/${level.id}">До всіх уроків</a><a class="ct-secondary" href="#chessity/profile">Мій прогрес</a></div>`;
+ const level=levelOf(s.lesson.level);clearTimeout(completionTimer);
+ const dialog=document.createElement('dialog');dialog.className='ct-completion';dialog.setAttribute('aria-labelledby','ct-completion-title');
+ dialog.innerHTML=`<div class="ct-result"><button class="ct-completion-close" data-completion-close aria-label="Закрити">${icon('close')}</button><h2 id="ct-completion-title">Урок пройдено!</h2>${s.lesson.format===29?`<p class="ct-completion-score">Твій результат: ${green}</p>`:''}<div class="ct-completion-stars"></div><div class="ct-completion-buttons"><button data-completion-retry>Зіграти ще</button><button data-completion-close class="${stars===1?'dark':''}">Далі</button></div></div>`;
+ ROOT.append(dialog);dialog.showModal();completionCleanup=mountStars(dialog.querySelector('.ct-completion-stars'),stars,true);
+ if(stars)playSound(['','oneStars','twoStars','threeStars'][stars]);
+ const leave=()=>{dialog.close();location.hash='chessity/journey/'+level.id;};
+ dialog.addEventListener('cancel',event=>{event.preventDefault();leave();});
+ dialog.addEventListener('click',event=>{const b=event.target.closest('button');if(b?.hasAttribute('data-completion-close')){playSound('buttonClick');leave();}else if(b?.hasAttribute('data-completion-retry')){playSound('buttonClick');completionCleanup?.();completionCleanup=null;dialog.close();dialog.remove();startLesson(s.lesson);}else if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)leave();}});
+
 }
 function selectedExercises(l){const pool=exerciseList(l),saved=LG.store.get('chessity:session',null);if(saved?.lesson===l.id&&saved.ids.every(id=>pool.some(x=>x.id===id)))return saved.ids.map(id=>pool.find(x=>x.id===id));for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.slice(0,l.format===29?Math.min(l.record?.maxpuz||pool.length,pool.length):Math.min(5,pool.length));}
 
 function startLesson(l){
  const exercises=selectedExercises(l);if(l.format===33){const seed=exercises.reduce((a,x)=>a+x.id,0);exercises.forEach((x,i)=>x.compiled.targetSquare='abcdefgh'[(seed+i*13)%8]+(Math.floor(((seed+i*13)%64)/8)+1));}if(l.id===1231){const types=['pawn','knight','bishop','rook','queen'];let seed=exercises.reduce((n,x)=>n+x.id,0);for(let i=types.length-1;i>0;i--){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const j=seed%(i+1);[types[i],types[j]]=[types[j],types[i]];}exercises.forEach((x,i)=>{x.compiled=startingPositionExercise(types[i],types.slice(0,i));});}if(!exercises.length)throw new Error('Урок не містить доступних вправ.');ROOT.classList.add('ct-game');
- ROOT.innerHTML=`<div class="ct-coach-zone"><div class="ct-rounds" id="ct-round"></div><div class="ct-coach"><img src="chessity/assets/original/coach.svg" alt="Тренер"><p class="ct-goal" id="ct-status" aria-live="polite"></p></div></div><div class="ct-session-progress" hidden><i></i></div><div class="ct-session"><div class="ct-board-wrap"><div id="ct-board"></div></div><div id="ct-answers"></div><p id="ct-feedback" class="ct-feedback" aria-live="polite"></p><details class="ct-more"><summary>Допомога</summary><div class="ct-tools"><button data-hint>Підказка</button><button data-retry>Ще раз</button><button data-solution>Показати розв’язання</button></div></details></div><footer class="ct-game-footer"><a href="#chessity/journey/${l.level}">${icon('back')}Назад</a><button data-explain="${l.id}">${icon('book')}Пояснення</button></footer>`;
- const saved=LG.store.get('chessity:session',null);session={lesson:l,exercises,index:saved?.lesson===l.id?saved.index:0,roundStars:saved?.lesson===l.id?saved.roundStars:[],counted:saved?.lesson===l.id?saved.counted||[]:[]};board=createBoard(ROOT.querySelector('#ct-board'),{onMove,onSelect:key=>{const s=session;if(!s||s.done)return;if(s.current.compiled.notation){if(key===s.current.compiled.targetSquare)finishExercise();else wrong('Перевір літеру вертикалі та номер горизонталі.');return;}if(!s.current.compiled.placement)return;const pl=s.current.compiled.placement,targets=pl.targets||[pl.to];if(!targets.includes(key)||s.position.pieces[key]?.role===pl.piece.role)return wrong('Пошукай початкове поле цієї фігури.');s.position.pieces[key]=pl.piece;board.setPosition(movablePosition(s.position));if(targets.every(k=>s.position.pieces[k]?.role===pl.piece.role))finishExercise();else{rememberSession();feedback('Правильно! Постав решту таких фігур.');}}});board.cg.set({coordinates:false});loadRound();
+ ROOT.innerHTML=`<div class="ct-coach-zone"><div class="ct-rounds" id="ct-round"></div><div class="ct-coach"><img src="chessity/assets/original/coach.svg" alt="Тренер"><p class="ct-goal" id="ct-status" aria-live="polite"></p></div></div><div class="ct-session-progress" hidden><i></i></div><div class="ct-session"><div class="ct-board-wrap"><div id="ct-board"></div></div><div id="ct-answers"></div><p id="ct-feedback" class="ct-feedback" aria-live="polite"></p><details class="ct-more" hidden><summary>Допомога</summary><div class="ct-tools"><button data-hint>Підказка</button><button data-retry>Ще раз</button><button data-solution>Показати розв’язання</button></div></details></div><footer class="ct-game-footer"><a href="#chessity/journey/${l.level}">${icon('back')}Назад</a><button data-explain="${l.id}">${icon('book')}Пояснення</button></footer>`;
+ const saved=LG.store.get('chessity:session',null);session={lesson:l,exercises,index:saved?.lesson===l.id?saved.index:0,roundStars:saved?.lesson===l.id?saved.roundStars:[],counted:saved?.lesson===l.id?saved.counted||[]:[]};board=createBoard(ROOT.querySelector('#ct-board'),{onMove,onIllegal:()=>wrong(),onSelect:key=>{const s=session;if(!s||s.done)return;if(s.current.compiled.notation){if(key===s.current.compiled.targetSquare)finishExercise();else wrong('Перевір літеру вертикалі та номер горизонталі.');return;}if(!s.current.compiled.placement)return;const pl=s.current.compiled.placement,targets=pl.targets||[pl.to];if(!targets.includes(key)||s.position.pieces[key]?.role===pl.piece.role)return wrong('Пошукай початкове поле цієї фігури.');s.position.pieces[key]=pl.piece;board.setPosition(movablePosition(s.position));if(targets.every(k=>s.position.pieces[k]?.role===pl.piece.role))finishExercise();else{rememberSession();feedback('Правильно! Постав решту таких фігур.');}}});board.cg.set({coordinates:false});loadRound();
  if(saved?.lesson===l.id&&saved.snapshot){Object.assign(session,saved.snapshot);drawSession();if(session.done)scheduleAdvance();}
 }
 
 ROOT.addEventListener('click',async event=> {
-  const b=event.target.closest('button');if(!b)return;
-  if(b.hasAttribute('data-offline')){const status=ROOT.querySelector('#ct-offline-status');try{status.textContent='Зберігаємо уроки…';const registration=await navigator.serviceWorker.ready;registration.active.postMessage({type:'CACHE_CHESSITY'});}catch{status.textContent='Для завантаження відкрий сайт через HTTPS з інтернетом.';}return;}
+  const b=event.target.closest('button');if(!b)return;if(!b.hasAttribute('data-completion-close')&&!b.hasAttribute('data-completion-retry'))playSound('buttonClick');
+  if(b.hasAttribute('data-offline')){const status=document.getElementById('ct-offline-status');try{status.textContent='Зберігаємо уроки…';const registration=await navigator.serviceWorker.ready;registration.active.postMessage({type:'CACHE_CHESSITY'});}catch{status.textContent='Для завантаження відкрий сайт через HTTPS з інтернетом.';}return;}
   if(b.hasAttribute('data-levels'))return picker();
+   if(b.dataset.library){location.hash='chessity/level/'+b.dataset.library;return;}
   if(b.dataset.level){ROOT.querySelector('dialog')?.close();location.hash='chessity/journey/'+b.dataset.level;return;}
   if(b.dataset.explain){const l=await lesson(+b.dataset.explain);openGuide(guideConfig(l,exerciseList(l)));const guide=document.querySelector('.gd');guide?.classList.add('ct-guide');if(session&&!session.done){const hint=document.createElement('button');hint.type='button';hint.className='ct-guide-hint';hint.textContent='Підказка до завдання';hint.onclick=()=>{closeGuide();ROOT.querySelector('[data-hint]').click();};guide?.querySelector('.gd-go').before(hint);}return;}
   const s=session;if(!s)return;
-  if(b.hasAttribute('data-retry'))return loadRound();
+  if(b.hasAttribute('data-retry')){playSound('retry');return loadRound();}
   if(b.hasAttribute('data-answer')&&!s.done&&!s.busy)return (b.dataset.answer==='yes')===s.current.compiled.question.legal?finishExercise():wrong('Перевір, чи не залишається король під шахом і чи дотримано умов цього ходу.');
   if(b.hasAttribute('data-hint')&&!s.done&&!s.busy) {
     s.hints++;const edge=s.nodes.find(e=>e.move),placement=s.current.compiled.placement,q=s.current.compiled.question;
@@ -236,9 +240,4 @@ export async function render(route='') {
   }catch(e){if(g===generation)ROOT.innerHTML=`<div class="ct-loading"><h2>Не вдалося відкрити урок</h2><p>${esc(e.message)}</p><a href="#chessity">До уроків</a></div>`;}
 }
 
-let audioContext;const audioBuffers=new Map();
-async function playSound(name){if(LG.muted||LG.volume<=0)return;try{const files={move:'move',success:'correctNew',error:'bad',tap:'softClick',illegal:'bad'};const file=files[name]||'softClick';audioContext ||= new (window.AudioContext||window.webkitAudioContext)();if(audioContext.state!=='running')await audioContext.resume();if(!audioBuffers.has(file))audioBuffers.set(file,fetch(new URL('assets/original/sounds/'+file+'.mp3',URL_ROOT)).then(r=>{if(!r.ok)throw Error('sound');return r.arrayBuffer();}).then(b=>audioContext.decodeAudioData(b)).catch(e=>{audioBuffers.delete(file);throw e;}));const buffer=await audioBuffers.get(file),source=audioContext.createBufferSource(),gain=audioContext.createGain();source.buffer=buffer;gain.gain.value=LG.volume;source.connect(gain);gain.connect(audioContext.destination);source.onended=()=>{source.disconnect();gain.disconnect();};source.start();}catch{LG.play(name);}}
-addEventListener('pointerdown',()=>{if(audioContext?.state==='suspended')audioContext.resume().catch(()=>{});},{passive:true});
-addEventListener('visibilitychange',()=>{if(!document.hidden&&audioContext?.state==='suspended')audioContext.resume().catch(()=>{});});
-
-if('serviceWorker'in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type!=='CHESSITY_CACHE_PROGRESS')return;const{done,total,failed}=e.data,status=ROOT.querySelector('#ct-offline-status');const message=done===total?(failed?'Не всі файли збережено. Натисни ще раз, щоб повторити.':'Усі уроки збережено. Можна вимкнути інтернет.'):`Збережено ${done} / ${total}`;LG.store.set('chessity:offline',done===total&&failed===0);if(status)status.textContent=message;});
+if('serviceWorker'in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type!=='CHESSITY_CACHE_PROGRESS')return;const{done,total,failed}=e.data,status=document.getElementById('ct-offline-status');const message=done===total?(failed?'Не всі файли збережено. Натисни ще раз, щоб повторити.':'Усі уроки збережено. Можна вимкнути інтернет.'):`Збережено ${done} / ${total}`;LG.store.set('chessity:offline',done===total&&failed===0);if(status)status.textContent=message;});
