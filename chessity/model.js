@@ -1,4 +1,4 @@
-import { Chess, parseFen, makeFen, parseSan, parsePgn, parseSquare, makeSquare } from './engine.js?v=1792399935';
+import { Chess, parseFen, makeFen, parseSan, parsePgn, parseSquare, makeSquare } from './engine.js?v=1792502661';
 
 const ROLES = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTERS = Object.fromEntries(Object.entries(ROLES).map(([k,v]) => [v,k]));
@@ -42,7 +42,7 @@ export function movePosition(position, move) {
   }
   if(pc.role==='pawn' && move.from[0]!==move.to[0] && !p.pieces[move.to] && p.ep===move.to) delete p.pieces[move.to[0]+move.from[1]];
   delete p.pieces[move.from];p.pieces[move.to]={...pc,...(promotion?{role:promotion}:{})};
-  if(p.marks[move.to]==='coin') delete p.marks[move.to];
+  delete p.marks[move.to];
   p.ep=pc.role==='pawn'&&Math.abs(+move.to[1]- +move.from[1])===2 ? move.from[0]+((+move.from[1]+ +move.to[1])/2) : '-';
   p.turn=opposite(p.turn);return p;
 }

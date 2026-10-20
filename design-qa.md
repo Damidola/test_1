@@ -20,4 +20,10 @@ Browser checks: 390×866, 450×855 and 1440×900; navigation, 18 levels, five di
 
 Implementation checklist: compare remaining original app flows; recover lesson 1704 if the source service becomes available. The two supplied views are substantially matched, but this review does not certify a complete app clone.
 
+## Mobile completion and journey repair — 20 October 2026
+
+The native journey order and 31%-of-width lesson-row height were checked against `new_journey.dart` and `journey_page_state.dart` in the APK AOT disassembly, using REA's `inspect-dart-aot`. The 129 original lesson artwork mappings were recovered from the object pool. No new source journey screenshot was obtained, so full visual parity remains unverified.
+
+The default Chessity route now opens the bottom-to-top lesson journey directly. Touch checks at 360×640, 390×700 and 450×855 complete all five original king exercises, remove the captured flag, automatically advance, resume an interrupted completion, open the next lesson and retain earned stars after reload. The full board stays above the footer. A separate real-service-worker upgrade check reproduces the previous stale-code cache, then verifies new code, retained lesson data/session/stars and an offline cold reload. Navigation is dispatched without awaiting it inside service-worker activation, avoiding an activation/navigation deadlock.
+
 final result: blocked

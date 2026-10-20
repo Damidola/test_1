@@ -113,3 +113,22 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .ct-banner>img{filter:brightness(0) invert(1) drop-shadow(0 0 12px #49a9d5)}.ct-coach>img{height:72px}
 .ct-level-panel{padding-top:10px}.ct-level-footer>*{flex:1 1 0;min-width:0}.ct-head .ct-icon{font-size:24px}.ct-banner .ct-icon{font-size:28px}.ct-rounds{gap:12px}.ct-coach-zone{padding-top:6px}.ct-coach>img{height:80px}
 .ct-game-footer{min-height:66px;padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom));background:linear-gradient(#08659e,#034873)}.ct-game-footer a .ct-icon{transform:scaleX(-1)}
+/* NewJourneyPage: source lesson order, native artwork, bottom-to-top progression. */
+#view-chessity.ct-journey{height:100svh;min-height:0;max-width:560px;padding:0;display:flex;flex-direction:column;overflow:hidden;background:#0b67a3}
+.ct-journey-head{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 15px 5px;flex:0 0 auto}
+.ct-journey-head h1{font-size:22px;margin:0;flex:1}.ct-journey-head>a{display:flex;align-items:center;gap:6px;text-decoration:none;background:#085789;padding:6px 9px;border-radius:5px;font-size:16px}.ct-journey-head>a .ct-icon{font-size:18px}
+.ct-journey-head button{width:38px;height:38px;border:1px solid #0d79b4;border-radius:5px;background:#085789;padding:4px}.ct-journey-head button img{height:100%;max-width:100%;object-fit:contain}
+.ct-journey-hero{height:85px;position:relative;flex:0 0 auto;overflow:hidden;background:#0d70aa}.ct-journey-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:.35}.ct-journey-hero>span{position:absolute;inset:0;display:grid;place-items:center;font-size:25px;font-weight:700;text-shadow:0 1px 4px #003657}
+.ct-journey-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;overflow-anchor:none;padding:20px 0 12px;scrollbar-width:thin;position:relative;touch-action:pan-y}
+.ct-journey-list{display:flex;flex-direction:column;position:relative}.ct-journey-lesson{display:flex;align-items:center;gap:20px;min-height:calc(min(100vw,560px)*.31);padding:10px 22px;box-sizing:border-box;text-decoration:none;flex-shrink:0}.ct-journey-lesson:focus-visible{outline:3px solid #03c7ef;outline-offset:-3px}
+.ct-journey-node{width:calc(min(100vw,560px)*.245);height:calc(min(100vw,560px)*.245);flex-shrink:0;position:relative;display:grid;place-items:center;border-radius:50%;background:#59add3;border:4px solid #08446f;box-shadow:0 0 0 3px #117cb1,0 3px 8px #004477}
+.ct-journey-node>img{width:93%;height:93%;object-fit:contain;border-radius:50%}.ct-journey-node>.ct-stars{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);display:flex;white-space:nowrap;filter:drop-shadow(0 1px 2px #003757)}.ct-journey-node .ct-stars .ct-icon{font-size:23px}
+.ct-journey-lesson.current .ct-journey-node{border-color:#f5ca50;box-shadow:0 0 0 3px #119bcd,0 0 18px #53c8f480}.ct-journey-lesson.complete .ct-journey-node{border-color:#8bd66b}
+.ct-journey-label{display:flex;flex-direction:column;gap:5px;min-width:0}.ct-journey-label small{font-size:13px;color:#a5d8ee}.ct-journey-label b{font-size:19px;line-height:1.25;font-weight:700}.ct-journey-start{font-size:16px;font-weight:700;text-align:center;margin:22px 10px 9px}
+.ct-journey-footer{display:flex;justify-content:space-around;flex:0 0 auto;gap:20px;padding:10px 10px calc(10px + env(safe-area-inset-bottom));background:#07558a;box-shadow:0 -3px 10px #003f6833}.ct-journey-footer>a{display:flex;align-items:center;gap:8px;text-decoration:none;font-size:15px;color:#7dc9e7!important}
+@media(min-width:960px){.ct-journey-label b{font-size:23px}.ct-journey-hero{height:100px}}
+/* Keep every square above the footer on short phone viewports. */
+.ct-game .ct-coach-zone{height:clamp(100px,calc(100svh - min(100vw,560px) - 74px),33.7svh)}
+@media(max-height:650px) and (max-width:959px){.ct-game .ct-rounds{padding:5px 8px;margin:0 auto}.ct-game .ct-rounds span{width:29px;height:29px;font-size:18px}.ct-game .ct-coach>img{height:60px}.ct-game .ct-goal{font-size:16px;line-height:1.35;padding:10px}.ct-game .ct-coach-zone{padding-top:5px}}
+/* APK Color objects: #0a65a6 canvas, #075288 completed, #55abd5 accents. */
+#view-chessity.ct-journey{background:#0a65a6}.ct-journey-node{background:#0a65a6;border-color:#55abd54d;box-shadow:none}.ct-journey-lesson.current .ct-journey-node{border-color:#55abd5;box-shadow:0 0 12px #55abd533}.ct-journey-lesson.complete .ct-journey-node{background:#075288;border-color:#55abd54d}

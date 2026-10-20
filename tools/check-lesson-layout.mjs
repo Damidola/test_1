@@ -22,7 +22,7 @@ for(const[w,h,url]of cases){
  await page.goto('http://chess.local/'+url);await page.waitForTimeout(600);
  for(const selector of ['.lv-vid-go','.gd-go','main[data-step="intro"] #go']){const b=page.locator(selector);if(await b.count()&&await b.first().isVisible())await b.first().click();}
  await page.waitForTimeout(400);
- const geometry=await page.evaluate(()=>{const rect=s=>{const e=document.querySelector(s);if(!e)return null;const r=e.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height,bottom:r.bottom,right:r.right};};return{board:rect('.lg-board-wrap, .learn__main.main-board'),header:rect('.lv-row, .lg-run-top, .mt-top'),teacher:rect('.lv-teach'),nav:rect('.lg-nav')};});
+ const geometry=await page.evaluate(()=>{const rect=s=>{const e=[...document.querySelectorAll(s)].find(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0;});if(!e)return null;const r=e.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height,bottom:r.bottom,right:r.right};};return{board:rect('.lg-board-wrap, .learn__main.main-board'),header:rect('.lv-row, .lg-run-top, .mt-top'),teacher:rect('.lv-teach'),nav:rect('.lg-nav')};});
  assert.deepEqual(errors,[],url);
  const {board,header,nav}=geometry;assert.ok(board&&header&&nav,url+': missing board/header/navigation');
  assert.ok(board.x>=0&&board.right<=w&&board.y>=0&&board.bottom<=nav.y,url+': board outside viewport');

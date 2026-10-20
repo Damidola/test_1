@@ -10,7 +10,7 @@
     "check:pages": "node tools/check-pages.mjs",
     "check": "npm test && node --import ./tools/test/register.mjs tools/check-lessons.mjs > /dev/null && node tools/check-pages.mjs && npm run check:chessity && npm run check:layout",
     "build:guides": "node --import ./tools/test/register.mjs tools/build-guides.mjs",
-    "check:chessity": "node tools/check-chessity.mjs",
+    "check:chessity": "node tools/check-chessity.mjs && node tools/check-chessity-journey.mjs && node tools/check-chessity-upgrade.mjs",
     "check:layout": "node tools/check-lesson-layout.mjs"
   },
   "devDependencies": {

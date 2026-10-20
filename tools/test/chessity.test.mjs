@@ -33,6 +33,7 @@ test('Chessity: монети не стають фігурами; шлях про
   assert.ok(coinDestinations(p).get('f4').includes('b4'));
   let q=movePosition(p,{from:'f4',to:'b4'});q.turn='white';q=movePosition(q,{from:'b4',to:'b1'});
   assert.equal(q.marks.b1,undefined);assert.equal(q.marks.d1,'flag');
+  q.turn='white';q=movePosition(q,{from:'b1',to:'d1'});assert.equal(q.marks.d1,undefined,'Captured flag is removed like a captured coin');
   assert.doesNotMatch(positionFen(q),/[Fc]/);
 });
 test('Chessity: рокіровка, взяття на проході, перетворення та початкове поле',()=>{
@@ -55,4 +56,10 @@ test('Chessity MiniChess: фініш і виграш фігур визначаю
  assert.equal(miniWinner(start,start),null);const finish=structuredClone(start);delete finish.pieces.e1;finish.pieces.f8={role:'knight',color:'white'};assert.equal(miniWinner(finish,start),'white');
  const capture=readPosition('8/8/8/8/8/8/3n4/3Q4 w - - 0 1');assert.deepEqual(miniBestMove(capture,capture),{from:'d1',to:'d2'});
  const placement=startingPositionExercise('knight',['pawn']);assert.deepEqual(placement.placement.targets,['b1','g1']);assert.equal(Object.values(placement.start.pieces).filter(x=>x.role==='pawn').length,8);
+});
+
+test('Chessity: native journey images reference existing original APK artwork',()=>{
+ const images=data('journey-images');assert.equal(Object.keys(images).length,129);
+ assert.equal(images[1099],'images/lessonImages/rookMovement.png');
+ for(const image of Object.values(images))assert.ok(readFileSync(new URL('../../chessity/assets/original/'+image,import.meta.url)).length);
 });

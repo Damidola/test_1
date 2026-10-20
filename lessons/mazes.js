@@ -1,6 +1,6 @@
 /* Уроки-лабіринти на маленьких дошках (lessons/maze.html#ключ): фігура має з’їсти полуничку, обходячи стіни.
    Клітинки — [стовпчик, рядок], рядок 0 — угорі. w×h — розмір дошки. Перевірка: npm test (усі рівні проходимі). */
-import { MAX_LESSON_LEVELS } from '../shared/levels.js?v=1792399935';
+import { MAX_LESSON_LEVELS } from '../shared/levels.js?v=1792502661';
 export const MAZES = {
   rook: {
     title: 'Тура 1: лабіринт', piece: 'rook', video: 'D0eQPdJxtcs', videoTitle: 'Знайомся з турою!',
