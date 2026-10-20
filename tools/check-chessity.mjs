@@ -12,7 +12,7 @@ try{for(const[width,height]of [[390,866],[450,855],[1440,900]]){
  await page.route(/fonts\.g|youtube|telegram\.org/,r=>r.abort());
  await page.goto(base+'index.html#chessity');await page.locator('.ct-journey-lesson').first().waitFor();
  assert.equal(await page.locator('.ct-journey-lesson').count(),29);assert.equal(await page.locator('[aria-current=step]').getAttribute('data-lesson-id'),'1110');assert.ok(await page.locator('[data-lesson-id="1110"]').evaluate(e=>{const r=e.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight+1;}));
- assert.equal(await page.locator('.ap-tabs a').count(),5);await page.locator('[data-library]').click();await page.locator('[data-levels]').click();assert.equal(await page.locator('.ct-picker [data-level]').count(),18);await page.locator('[data-close]').click();
+ assert.equal(await page.locator('.ap-tabs a').count(),5);for(const a of await page.locator('.ap-tabs a').all())assert.ok(await a.isVisible(),'All five site tabs remain visible');await page.locator('[data-library]').click();await page.locator('[data-levels]').click();assert.equal(await page.locator('.ct-picker [data-level]').count(),18);await page.locator('[data-close]').click();
  await page.goto(base+'index.html#chessity/level/64');await page.locator('.ct-category').first().waitFor();await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(300);await page.screenshot({path:join(SHOTS,`${width}-levels.png`),fullPage:false});
  await page.locator('.ct-category').first().click();await page.locator('.ct-card').first().waitFor();assert.ok(await page.locator('.ct-card img').first().evaluate(x=>x.complete&&x.naturalWidth>0));
  await page.goto(base+'index.html#chessity/play/1099');await page.locator('#ct-board piece').first().waitFor();
@@ -25,7 +25,7 @@ try{for(const[width,height]of [[390,866],[450,855],[1440,900]]){
   function pathTo(start,target){const queue=[{p:start,path:[]}],seen=new Set();for(let i=0;i<queue.length&&i<5000;i++){const{p,path}=queue[i],from=Object.keys(p.pieces).find(k=>p.pieces[k].color==='white');if(from===target)return path;const key=from+Object.keys(p.marks).sort().join();if(seen.has(key))continue;seen.add(key);for(const to of coinDestinations(p).get(from)||[]){if(p.marks[to]==='flag'&&Object.values(p.marks).includes('coin'))continue;const q=movePosition(p,{from,to});q.turn='white';queue.push({p:q,path:[...path,{from,to}]});}}throw Error('No safe route');}
   for(let i=0;i<5;i++){
    const raw=dataset.puzzles.find(x=>x.id===saved.ids[i]);let p=readPosition(raw.fen);
-   if(i===4){await page.locator('.ct-game-footer [data-explain]').click();await page.locator('.ct-guide-hint').click();await page.locator('.gd').waitFor({state:'detached'});}
+   if(i===4){await page.locator('.ct-game-footer [data-explain]').click();await page.waitForFunction(()=>document.querySelector('.gd').getBoundingClientRect().bottom<=document.querySelector('.ap-tabs').getBoundingClientRect().top+1);await page.locator('.ct-guide-hint').click();await page.locator('.gd').waitFor({state:'detached'});}
    const coins=Object.keys(p.marks).filter(k=>p.marks[k]==='coin'),flag=Object.keys(p.marks).find(k=>p.marks[k]==='flag');
    for(const target of [...coins,flag]){if(target!==flag&&!p.marks[target])continue;for(const m of pathTo(p,target)){await tap(m.from);await tap(m.to);p=movePosition(p,m);p.turn='white';await page.waitForTimeout(70);}}
    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('chk:chessity:session'))?.snapshot.done||document.querySelector('.ct-result'));

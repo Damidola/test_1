@@ -1,9 +1,13 @@
-import { playSound, mountStars } from './native-effects.js?v=1792524299';
-import { createBoard } from '../shared/board.js?v=1792524299';
-import { openGuide, closeGuide } from '../shared/guide.js?v=1792524299';
-import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792524299';
+import { playSound, mountStars } from './native-effects.js?v=1792525094';
+import { createBoard } from '../shared/board.js?v=1792525094';
+import { openGuide, closeGuide } from '../shared/guide.js?v=1792525094';
+import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792525094';
 
 const ROOT=document.getElementById('view-chessity'), LG=window.LG;
+// Keep the site's five tabs visible; native content occupies the space above them.
+const tabs=document.querySelector('.ap-tabs');
+const fitTabs=()=>document.documentElement.style.setProperty('--ct-tabs-height',innerWidth<960?tabs.getBoundingClientRect().height+'px':'0px');
+new ResizeObserver(fitTabs).observe(tabs,{box:'border-box'});addEventListener('resize',fitTabs);fitTabs();
 const URL_ROOT=new URL('./',import.meta.url), VERSION=new URL(import.meta.url).search;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const COLORS=['#f4bc57','#8f9feb','#f083b4','#64c8bf','#b18bea','#ef8b73'];

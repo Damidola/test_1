@@ -1,5 +1,5 @@
-import { menuGroups } from './shared/puzzle-catalog.js?v=1792524299';
-import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1792524299';
+import { menuGroups } from './shared/puzzle-catalog.js?v=1792525094';
+import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1792525094';
 /* Шахи для дітей: застосунок із п’ятьма вкладками.
    📖 Learn — каталог Chessity: 18 рівнів, уроки, пояснення та вправи;
    🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
@@ -7,9 +7,9 @@ import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1792524299';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1792524299';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1792524299';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1792525094';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1792525094';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1792525094';
 
 const LG = window.LG, $ = id => document.getElementById(id);
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
@@ -355,7 +355,7 @@ function renderProfile() {
 // ---------- вкладки ----------
 const TITLES = { chessity: 'Learn — Chessity', learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
 let chessityModule;
-const chessityReady = () => chessityModule || (chessityModule = import('./chessity/app.js?v=1792524299'));
+const chessityReady = () => chessityModule || (chessityModule = import('./chessity/app.js?v=1792525094'));
 // ---------- без блимання: вкладка з'являється одразу вся, коли її картинки (і фони-сцени) вже завантажені ----------
 const imgReady = new Map(); // url → Promise
 function loadImg(url) {

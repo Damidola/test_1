@@ -1,10 +1,10 @@
-import { toggleGuide } from '../shared/guide.js?v=1792524299';
-import { mazeGuide } from '../shared/maze-guide.js?v=1792524299';
+import { toggleGuide } from '../shared/guide.js?v=1792525094';
+import { mazeGuide } from '../shared/maze-guide.js?v=1792525094';
 /* Урок-лабіринт (lessons/maze.html#rook): маленька дошка 5×5…8×8, фігура має з’їсти полуничку, обходячи стіни.
    Рівні — lessons/mazes.js. Ідеально — найкоротшим шляхом. */
-import { MAZES, movesFrom, solve, startState, attackingEnemies, solved } from './mazes.js?v=1792524299';
-import { applyBoardLook, fitBoard } from '../shared/board.js?v=1792524299';
-import { createLevels, lessonDone } from '../shared/levels.js?v=1792524299';
+import { MAZES, movesFrom, solve, startState, attackingEnemies, solved } from './mazes.js?v=1792525094';
+import { applyBoardLook, fitBoard } from '../shared/board.js?v=1792525094';
+import { createLevels, lessonDone } from '../shared/levels.js?v=1792525094';
 
 const LG = window.LG, $ = id => document.getElementById(id), main = document.querySelector('main.mz');
 const K = location.hash.slice(1), M = MAZES[K] || MAZES.rook, here = 'lessons/maze.html#' + (MAZES[K] ? K : 'rook');

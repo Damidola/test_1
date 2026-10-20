@@ -42,3 +42,12 @@ Remaining limitations: lesson introductions still use the shared website explana
 Validation: `npm run build`, offline manifest generation and the complete `npm run check` finished successfully, including all unit, lesson, page, Chessity, service-worker upgrade and responsive layout checks.
 
 final result: blocked
+
+
+## Persistent site navigation — user clarification
+
+[Mobile lesson with all five site tabs](design-review/chessity/persistent-navigation.png).
+
+The site's five navigation buttons stay visible while Chessity is selected, including the journey, lesson, level and explanation views. The previous mobile-only hide rule was removed. A ResizeObserver measures the real navigation height, including safe-area padding; the Chessity viewport, lesson footers and explanation overlay fit above it. The completion dialog is centred in that available content area. Desktop keeps the existing side navigation.
+
+Mobile regression checks now click Profile and the bottom-left Chessity button, confirm all five buttons remain visible, and ensure the journey, full board, lesson controls and explanation do not overlap the site navigation. Source-app fidelity applies inside the available Chessity area; persistent site navigation is the user's explicit requirement.

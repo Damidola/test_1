@@ -46,7 +46,7 @@
 @font-face{font-family:Chessity;src:url('./assets/original/fonts/Montserrat-Bold.ttf') format('truetype');font-weight:700 900;font-display:swap}
 @font-face{font-family:ChessityIcons;src:url('./assets/original/fonts/MaterialIcons-Regular.otf') format('opentype');font-display:block}
 body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
-#view-chessity{--ct-accent:#02bde9;font-family:Chessity,Montserrat,sans-serif;font-weight:600;background:#075487 url('./assets/original/images/journey/bg.png') center top/cover fixed;max-width:560px;padding:calc(24px + env(safe-area-inset-top)) 20px 104px;min-height:100svh;color:#fff}
+#view-chessity{--ct-accent:#02bde9;font-family:Chessity,Montserrat,sans-serif;font-weight:600;background:#075487 url('./assets/original/images/journey/bg.png') center top/cover fixed;max-width:560px;padding:calc(24px + env(safe-area-inset-top)) 20px 104px;min-height:var(--ct-height);color:#fff}
 #view-chessity button,#view-chessity a{font-family:inherit;color:inherit}
 #view-chessity button{cursor:pointer}
 .ct-icon{font-family:ChessityIcons!important;font-weight:normal;font-style:normal;display:inline-block;font-size:26px;line-height:1;text-transform:none;letter-spacing:normal;white-space:nowrap;direction:ltr;-webkit-font-smoothing:antialiased}
@@ -66,7 +66,7 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .ct-category-art img{width:100%;height:100%;object-fit:contain}
 .ct-category-info{flex:1;min-width:0}.ct-category-info>b{font-size:20px;font-weight:700;display:block;margin:0 0 12px;line-height:1.25}
 .ct-category-count{display:flex;align-items:center;gap:10px;white-space:nowrap;font-size:18px;font-weight:700}.ct-category-count>span{display:block;flex:1;background:#003f68;height:4px}.ct-category-count i{display:block;background:#50afd2;height:100%}
-.ct-level-footer,.ct-game-footer{position:fixed;z-index:15;bottom:0;left:0;right:0;background:#075386;padding:9px 8px calc(13px + env(safe-area-inset-bottom));display:flex;gap:16px;box-shadow:0 -6px 20px #0045724d;max-width:560px;margin:auto;box-sizing:border-box}
+.ct-level-footer,.ct-game-footer{position:fixed;z-index:15;bottom:var(--ct-tabs-height);left:0;right:0;background:#075386;padding:9px 8px 13px;display:flex;gap:16px;box-shadow:0 -6px 20px #0045724d;max-width:560px;margin:auto;box-sizing:border-box}
 .ct-level-footer>*{flex:1;min-height:60px;border:0;border-radius:38px;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-size:21px;font-weight:700;background:linear-gradient(#0c598b,#00436d)}
 .ct-level-footer>button{background:linear-gradient(#52add1,#0870b0);text-align:left;padding:0 20px;line-height:1.35}
 .ct-grid{padding:15px 0;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 10px}
@@ -77,7 +77,7 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .ct-secondary{background:#074c7c;box-shadow:0 1px 4px #00395c}
 .ct-lesson-intro small{color:#77d7ee}.ct-lesson-intro p,.ct-reading,.ct-result p{color:#fff}.ct-reading{background:#095587;border:1px solid #086094;border-radius:8px;padding:18px}.ct-reading img{max-width:100%;height:auto}
 .ct-picker{background:#095b91;border-color:#064d7b;border-radius:10px;font-family:Chessity,sans-serif}.ct-picker>div button{background:#075084}.ct-picker button.selected{border-color:#00c3ec;background:#086a9f}.ct-picker small{color:#abdae9}
-#view-chessity.ct-game{padding:0;min-height:100svh;background:#075487 url('./assets/original/images/journey/bg.png') center/cover fixed}
+#view-chessity.ct-game{padding:0;min-height:var(--ct-height);background:#075487 url('./assets/original/images/journey/bg.png') center/cover fixed}
 .ct-coach-zone{height:35.2svh;min-height:205px;max-height:350px;display:flex;flex-direction:column;justify-content:space-between;padding:12px 0 0;box-sizing:border-box}
 .ct-rounds{display:flex;gap:10px;align-self:center;background:#0c639c;padding:10px;border:1px solid #075184;border-radius:0 0 10px 10px;box-shadow:0 2px 5px #004a72}
 .ct-rounds>span{border-radius:50%;width:35px;height:35px;display:grid;place-items:center;background:#b7c4c9;color:#07476e;font-size:21px;font-weight:700;box-shadow:0 1px 4px #002d4d}
@@ -91,7 +91,10 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .ct-game-footer{justify-content:space-around;min-height:76px;padding:12px 15px 10px}.ct-game-footer>*{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:none;border:0;text-decoration:none;color:#57b0d4!important;font-size:16px;font-weight:700;width:45%}
 .ct-game-footer .ct-icon{font-size:25px}.ct-game .ct-feedback{margin:0;min-height:0;height:0;overflow:hidden}.ct-more{padding:8px 16px;color:#69bbdd;text-align:center;font-size:12px}.ct-more summary{cursor:pointer}.ct-game #ct-next{width:calc(100% - 32px);margin:10px auto}.ct-game #ct-next[hidden]{display:none}.ct-tools button{color:#caefff!important;background:#075184;border:0;padding:10px;border-radius:10px}
 .ct-profile{text-align:center}.ct-avatar{height:125px}.ct-profile-stats{display:flex;justify-content:space-around;margin:25px 0;font-size:12px}.ct-profile-stats b{display:block;font-size:28px;margin-bottom:8px}.ct-badges{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.ct-badges img{width:100%;opacity:.25;filter:grayscale(1)}.ct-badges img.earned{opacity:1;filter:none}
-@media(max-width:959px){body:has(#view-chessity:not([hidden]))>.ap-tabs{display:none}}
+/* Site navigation remains visible throughout Chessity. */
+:root{--ct-tabs-height:0px;--ct-height:calc(100svh - var(--ct-tabs-height))}
+@media(max-width:959px){:root{--ct-tabs-height:calc(56px + env(safe-area-inset-bottom))}}
+body:has(#view-chessity:not([hidden])) .gd.ct-guide{bottom:var(--ct-tabs-height);height:var(--ct-height)}
 @media(min-width:960px){#view-chessity{max-width:560px}.ct-level-footer,.ct-game-footer{left:90px}.ct-game .ct-coach-zone{height:260px}.ct-game .ct-board-wrap{max-width:560px}.ct-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 #view-chessity .ct-board-wrap piece.white.pawn{background-image:url("./assets/original/images/pieces/white_pawn.png")!important}
@@ -112,11 +115,11 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .gd.ct-guide{background:#075487;font-family:Chessity,sans-serif}.ct-guide-hint{border:0;border-radius:25px;background:#0b71ac;color:#fff;font:700 16px Chessity;padding:12px;margin:8px 16px}.ct-guide .gd-board cg-board{background-image:url('./assets/original/images/board/board2x.png')!important}.ct-guide .gd-text{color:white}
 .ct-banner>img{filter:brightness(0) invert(1) drop-shadow(0 0 12px #49a9d5)}.ct-coach>img{height:72px}
 .ct-level-panel{padding-top:10px}.ct-level-footer>*{flex:1 1 0;min-width:0}.ct-head .ct-icon{font-size:24px}.ct-banner .ct-icon{font-size:28px}.ct-rounds{gap:12px}.ct-coach-zone{padding-top:6px}.ct-coach>img{height:80px}
-.ct-game-footer{min-height:66px;padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom));background:linear-gradient(#08659e,#034873)}.ct-game-footer a .ct-icon{transform:scaleX(-1)}
+.ct-game-footer{min-height:66px;padding-top:7px;padding-bottom:7px;background:linear-gradient(#08659e,#034873)}.ct-game-footer a .ct-icon{transform:scaleX(-1)}
 /* APK NewJourneyPage: 40/60 split; connected rectangular lesson tiles.
    AOT BoxConstraints.maxHeight drives row sizing (native-home.png evidence). */
-#view-chessity.ct-journey{--ct-journey-row:130px;height:100svh;min-height:0;max-width:560px;padding:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(#0a65a6,#023a63)}
-.ct-journey-top{height:calc((100svh + 24px)*.4 - 24px);flex:0 0 calc((100svh + 24px)*.4 - 24px);position:relative;background:linear-gradient(#00355b,#057bd0);overflow:hidden}
+#view-chessity.ct-journey{--ct-journey-row:130px;height:var(--ct-height);min-height:0;max-width:560px;padding:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(#0a65a6,#023a63)}
+.ct-journey-top{height:calc((var(--ct-height) + 24px)*.4 - 24px);flex:0 0 calc((var(--ct-height) + 24px)*.4 - 24px);position:relative;background:linear-gradient(#00355b,#057bd0);overflow:hidden}
 .ct-journey-head{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;padding:calc(min(100vw,560px)*.05) calc(min(100vw,560px)*.046)}
 .ct-journey-head h1{font-size:calc(min(100vw,560px)*.046);font-weight:700;margin:0;line-height:1.3}
 .ct-native-totals{display:flex;gap:calc(min(100vw,560px)*.045)}
@@ -128,7 +131,7 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .ct-journey-level{position:absolute;left:11%;bottom:calc(min(100vw,560px)*-.008);display:flex;align-items:flex-end;gap:calc(min(100vw,560px)*.028);padding:0;border:0;background:transparent;color:#fff;cursor:pointer;text-align:left;font-family:Chessity,sans-serif}
 .ct-journey-level>img{height:calc(min(100vw,560px)*.25);width:auto;object-fit:contain;opacity:.8}.ct-journey-level>span{display:flex;flex-direction:column;gap:3px;padding-bottom:calc(min(100vw,560px)*.009)}
 .ct-journey-level b{font-size:calc(min(100vw,560px)*.048);line-height:1.15}.ct-journey-level small{font-size:calc(min(100vw,560px)*.03);font-weight:600}
-.ct-journey-bottom{height:calc((100svh + 24px)*.6);flex:0 0 calc((100svh + 24px)*.6);display:flex;flex-direction:column;min-height:0}
+.ct-journey-bottom{height:calc((var(--ct-height) + 24px)*.6);flex:0 0 calc((var(--ct-height) + 24px)*.6);display:flex;flex-direction:column;min-height:0}
 .ct-journey-start{flex:none;font-size:calc(min(100vw,560px)*.05);line-height:1.2;font-weight:700;text-align:center;margin:0;padding:calc(min(100vw,560px)*.05) calc(min(100vw,560px)*.05) calc(min(100vw,560px)*.03)}
 .ct-journey-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;overflow-anchor:none;scrollbar-width:thin;position:relative;touch-action:pan-y;padding:0 calc(min(100vw,560px)*.07)}
 .ct-journey-list{display:flex;flex-direction:column;position:relative}
@@ -143,11 +146,11 @@ body:has(#view-chessity:not([hidden])){background:#075487;color:#fff}
 .ct-journey-label>small{display:inline-block;border:1px solid #00c5eb;color:#00c5eb;border-radius:1px;padding:1px 3px;font-size:calc(var(--ct-journey-row)*.08);line-height:1.1;font-weight:700;white-space:nowrap}
 .ct-journey-label>b{font-size:calc(var(--ct-journey-row)*.128);font-weight:700;line-height:1.12}.ct-journey-label>span{font-size:calc(var(--ct-journey-row)*.116);line-height:1.2;color:#7ba0b8}
 /* Keep every square above the footer on short phone viewports. */
-.ct-game .ct-coach-zone{height:clamp(100px,calc(100svh - min(100vw,560px) - 74px),33.7svh)}
+.ct-game .ct-coach-zone{min-height:0;height:clamp(100px,calc(var(--ct-height) - min(100vw,560px) - 74px),33.7svh)}
 @media(max-height:650px) and (max-width:959px){.ct-game .ct-rounds{padding:5px 8px;margin:0 auto}.ct-game .ct-rounds span{width:29px;height:29px;font-size:18px}.ct-game .ct-coach>img{height:60px}.ct-game .ct-goal{font-size:16px;line-height:1.35;padding:10px}.ct-game .ct-coach-zone{padding-top:5px}}
 /* APK LessonCompleteDialog: transparent AlertDialog, 80% width, 30×50
    content insets, original StarDisplay and two 50px GradientButtons. */
-.ct-completion{width:calc(min(100vw,560px)*.8);max-width:none;max-height:calc(100svh - 48px);overflow:visible;margin:auto;padding:0;border:0;border-radius:8px;background:transparent;color:#fff;font-family:Chessity,sans-serif}
+.ct-completion{width:calc(min(100vw,560px)*.8);max-width:none;max-height:calc(var(--ct-height) - 48px);overflow:visible;inset:0 0 var(--ct-tabs-height);margin:auto;padding:0;border:0;border-radius:8px;background:transparent;color:#fff;font-family:Chessity,sans-serif}
 .ct-completion::backdrop{background:#0000008a}
 .ct-completion .ct-result{position:relative;margin:0;padding:50px 30px;text-align:center;box-sizing:border-box;border-radius:8px;background:linear-gradient(#0a65a6,#023a63)}
 .ct-completion h2{font-size:22px;line-height:1.2;font-weight:700;margin:0 0 5px;color:#fff}
