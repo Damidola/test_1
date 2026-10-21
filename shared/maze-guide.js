@@ -1,6 +1,6 @@
 // Show a real, solvable maze using the same rules as its exercises.
-import { movesFrom, solve, startState, solved } from '../lessons/mazes.js?v=1792525094';
-import { GUIDE_CONTENT } from './guide-content.js?v=1792525094';
+import { movesFrom, solve, startState, solved } from '../lessons/mazes.js?v=1792577371';
+import { GUIDE_CONTENT } from './guide-content.js?v=1792577371';
 const letter = { rook: 'R', bishop: 'B', queen: 'Q', king: 'K', knight: 'N', pawn: 'P' };
 const square = ([c, r]) => 'abcdefgh'[c] + (8 - r);
 function placement(st) {

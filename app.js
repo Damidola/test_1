@@ -1,17 +1,23 @@
-import { menuGroups } from './shared/puzzle-catalog.js?v=1792525094';
-import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1792525094';
-/* Шахи для дітей: застосунок із п’ятьма вкладками.
+import { menuGroups } from './shared/puzzle-catalog.js?v=1792577371';
+import { syncPuzzleProgress, puzzleStats } from './shared/puzzle-progress.js?v=1792577371';
+/* Шахи для дітей: чотири вкладки та необов’язкова п’ята Chessity.
    📖 Learn — каталог Chessity: 18 рівнів, уроки, пояснення та вправи;
    🎓 Уроки — дорога з 22 кроків (3 у ряд, змійкою знизу вгору), тап — аркуш «урок · задачі · гра»;
    🤖 Гра — вибір суперника, кольору, сили й режиму → партія з роботом;
    🎯 Практика — задачі, фігури проти пішаків, мат роботу, головоломки;
    👤 Профіль — прогрес, звук (значок — вимкнути, повзунок — гучність), набір фігур.
    Сторінки ігор і уроків відкриваються окремо; 🏠 у них повертає на ту саму вкладку. */
-import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1792525094';
-import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1792525094';
-import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1792525094';
+import { OPPONENTS, LEVEL_NAMES } from './shared/opponent.js?v=1792577371';
+import { BOARD_THEMES, boardUrl } from './shared/board.js?v=1792577371';
+import { SECTIONS, STEPS, P, W } from './shared/path.js?v=1792577371';
 
 const LG = window.LG, $ = id => document.getElementById(id);
+const chessityEnabled = () => LG.store.get('chessity:enabled', false) === true;
+function updateNavigation() {
+  document.querySelector('.ap-tabs [data-tab="chessity"]').hidden = !chessityEnabled();
+  document.body.classList.toggle('chessity-enabled', chessityEnabled());
+}
+
 const piece = (c, color = 'w') => `<img src="shared/pieces/${LG.pieceSet()}/${color}${c}.svg" alt="">`;
 const icon = ic => /^[PRBQNK]$/.test(ic) ? piece(ic) : /^[prbqnk]$/.test(ic) ? piece(ic.toUpperCase(), 'b') : ic; // мала літера — чорна фігура
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -271,8 +277,9 @@ function renderProfile() {
   $('view-profile').innerHTML = `
     <div class="mg-me"><span class="mg-av">${kingSvg}</span><div class="mg-who"><b>Юний шахіст</b><small>Крок ${Math.min(d + 1, STEPS.length)} з ${STEPS.length} · ${sec ? sec[1] : ''}</small><div class="mg-bar"><i style="width:${Math.round(100 * d / STEPS.length)}%"></i></div></div></div>
     <div class="mg-stats"><div><b>${d}</b><span>КРОКИ</span></div><div><b>${solvedPuzzles()}</b><span>ЗАДАЧІ</span></div><div><b>${wins}</b><span>ПЕРЕМОГИ</span></div></div>
-    <div class="mg-list"><a class="mg-row mg-link" href="#chessity"><span>Chessity · Зірки</span><em>${Object.values(LG.store.get('chessity:v1',{})||{}).reduce((sum,p)=>sum+(p.stars||0),0)} ★ ${chev}</em></a>
-      <button type="button" class="mg-row mg-link" id="p-chessity-offline"><span>Chessity · Зберегти офлайн</span><em>↓</em></button><p id="ct-offline-status" aria-live="polite"></p>
+    <div class="mg-list"><div class="mg-row"><span>Показувати Chessity</span><button type="button" class="pf-sw ${chessityEnabled()?'on':''}" id="p-chessity" role="switch" aria-checked="${chessityEnabled()}" aria-label="Показувати Chessity"></button></div>
+      ${chessityEnabled()?`<a class="mg-row mg-link" href="#chessity"><span>Chessity · Зірки</span><em>${Object.values(LG.store.get('chessity:v1',{})||{}).reduce((sum,p)=>sum+(p.stars||0),0)} ★ ${chev}</em></a>
+      <button type="button" class="mg-row mg-link" id="p-chessity-offline"><span>Chessity · Зберегти офлайн</span><em>↓</em></button><p id="ct-offline-status" aria-live="polite"></p>`:''}
       <a class="mg-row mg-link" href="games/index.html"><span>📜 Мої партії</span><em>${(LG.store.get('games', []) || []).length}${chev}</em></a>
       <div class="mg-row"><span>Мова</span><div class="mg-pill" id="p-lang">${[['uk', 'UA'], ['en', 'EN']].map(([v, t]) => `<button type="button" data-v="${v}" class="${LG.lang() === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
       <div class="mg-row"><span>Звук</span><div class="mg-vol" id="p-vol"><button type="button" id="p-mute" aria-label="Звук"></button><input type="range" min="0" max="100" step="5" id="p-range" aria-label="Гучність"></div></div>
@@ -295,7 +302,8 @@ function renderProfile() {
       </details>
     </div>
     <button type="button" class="mg-reset" id="p-reset">Скинути прогрес</button>`;
-  $('p-chessity-offline').onclick=async()=>{const status=$('ct-offline-status');try{status.textContent='Зберігаємо уроки…';const registration=await navigator.serviceWorker.ready;registration.active.postMessage({type:'CACHE_CHESSITY'});}catch{status.textContent='Для завантаження відкрий сайт через HTTPS з інтернетом.';}};
+  $('p-chessity').onclick=()=>{LG.store.set('chessity:enabled',!chessityEnabled());updateNavigation();renderProfile();};
+  if($('p-chessity-offline'))$('p-chessity-offline').onclick=async()=>{const status=$('ct-offline-status');try{status.textContent='Зберігаємо уроки…';const registration=await navigator.serviceWorker.ready;registration.active.postMessage({type:'CACHE_CHESSITY'});}catch{status.textContent='Для завантаження відкрий сайт через HTTPS з інтернетом.';}};
   // розкрите чи ні — пам'ятаємо, поки відкрита сторінка
   $('view-profile').querySelector('.pf-more').addEventListener('toggle', e => { pfOpen = e.target.open; });
   // скільки робот думає перед ходом (мс; типово 1,5 с)
@@ -347,7 +355,7 @@ function renderProfile() {
   $('view-profile').querySelectorAll('[data-lim]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LG.store.set(g.dataset.lim, b.dataset.v); LG.play('tap'); paintLim(); const em = $('view-profile').querySelector('.mg-more em'); if (em) em.firstChild.textContent = `${LG.store.get('hints', '3') === 'inf' ? '∞' : LG.store.get('hints', '3')} підказки · ${LG.store.get('undos', '3') === 'inf' ? '∞' : LG.store.get('undos', '3')} ходів назад`; }));
   $('p-reset').addEventListener('click', () => {
     if (!confirm('Скинути весь прогрес уроків, задач і ігор?')) return;
-    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay|botThink|fullscreen|lvlOpen)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
+    for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && (k.startsWith('chk:') && !/^chk:(muted|volume|pieceSet|boardTheme|hints|undos|play:side|showDests|lang|oppSay|botThink|fullscreen|lvlOpen|chessity:enabled)$/.test(k) || k === 'chk.learn.progress')) localStorage.removeItem(k); }
     seen.clear(); renderAll(); renderProfile();
   });
 }
@@ -355,7 +363,7 @@ function renderProfile() {
 // ---------- вкладки ----------
 const TITLES = { chessity: 'Learn — Chessity', learn: 'Уроки', play: 'Гра з роботом', practice: 'Практика', profile: 'Профіль' };
 let chessityModule;
-const chessityReady = () => chessityModule || (chessityModule = import('./chessity/app.js?v=1792525094'));
+const chessityReady = () => chessityModule || (chessityModule = import('./chessity/app.js?v=1792577371'));
 // ---------- без блимання: вкладка з'являється одразу вся, коли її картинки (і фони-сцени) вже завантажені ----------
 const imgReady = new Map(); // url → Promise
 function loadImg(url) {
@@ -385,6 +393,9 @@ function show(hash) {
   let [tab, ...parts] = String(hash || '').split('/');
   const sub = parts.join('/');
   if (!TITLES[tab]) tab = 'learn';
+  if (tab === 'chessity' && !chessityEnabled()) {
+    tab = 'learn';history.replaceState(null, '', location.pathname + location.search + '#learn');
+  }
   document.querySelectorAll('.ap-view').forEach(v => { v.hidden = v.dataset.tab !== tab; });
   document.querySelectorAll('.ap-tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
   $('sheet').hidden = true;
@@ -401,6 +412,7 @@ function show(hash) {
 function renderAll() { renderLearn(); renderPractice(); }
 window.addEventListener('hashchange', () => show(location.hash.slice(1)));
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+updateNavigation();
 renderAll();
 renderProfile();
 show(location.hash.slice(1) || 'learn');
@@ -409,3 +421,5 @@ window.addEventListener('pageshow', e => { if (e.persisted) { renderAll(); show(
 
 
 if('serviceWorker'in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))navigator.serviceWorker.register('./chessity-sw.js',{updateViaCache:'none'}).catch(()=>{});
+
+if('serviceWorker'in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type!=='CHESSITY_CACHE_PROGRESS')return;const{done,total,failed}=e.data,status=document.getElementById('ct-offline-status');const message=done===total?(failed?'Не всі файли збережено. Натисни ще раз, щоб повторити.':'Усі уроки збережено. Можна вимкнути інтернет.'):`Збережено ${done} / ${total}`;LG.store.set('chessity:offline',done===total&&failed===0);if(status)status.textContent=message;});

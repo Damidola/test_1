@@ -8,6 +8,7 @@ const server=await serveChessity(async(req,res)=>{
 }),browser=await chromium.launch();
 try{
  const context=await browser.newContext({viewport:{width:390,height:700},isMobile:true,hasTouch:true}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>localStorage.setItem('chk:chessity:enabled','true'));
  await page.route(/fonts\.g|telegram\.org/,r=>r.abort());await page.goto(server.url+'/upgrade-bootstrap');
  await page.evaluate(async()=>{await navigator.serviceWorker.register('/chessity-sw.js');await navigator.serviceWorker.ready;});await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
  const puzzle=await readFile('chessity/data/1110.json','utf8'),coach=await readFile('chessity/assets/original/coach.svg','utf8');

@@ -1,0 +1,22 @@
+import{chromium}from'playwright';import assert from'node:assert/strict';import{mkdir}from'node:fs/promises';import{serveChessity}from'./chessity-test-server.mjs';
+const server=await serveChessity(),browser=await chromium.launch(),out=process.env.CHECK_SCREENSHOTS||'/tmp/app-navigation';await mkdir(out,{recursive:true});
+try{for(const[width,height]of[[360,640],[390,809],[1366,768],[1920,1080]]){
+ const ctx=await browser.newContext({viewport:{width,height},isMobile:width<960,hasTouch:true,serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route(/fonts\.g|telegram\.org/,r=>r.abort());
+ const visibleTabs=()=>page.locator('.ap-tabs a:visible').evaluateAll(es=>es.map(e=>e.dataset.tab));
+ const selected=async tab=>{await page.waitForFunction(tab=>document.querySelector('#view-'+tab)?.hidden===false,tab);assert.equal(await page.locator('.ap-view:visible').count(),1,'Only the selected view participates in layout');const box=await page.locator('#view-'+tab).boundingBox();assert.ok(box&&box.y>=0&&box.y<40&&box.height>100,'Selected view begins at the top of the viewport');assert.ok(await page.locator(`.ap-tabs [data-tab="${tab}"]`).evaluate(e=>e.classList.contains('on')));};
+ await page.goto(server.url+'/#chessity');await selected('learn');assert.deepEqual(await visibleTabs(),['learn','play','practice','profile']);assert.equal(await page.locator('#view-chessity').evaluate(e=>getComputedStyle(e).display),'none');
+ await page.locator('.ap-tabs [data-tab="profile"]').click();await selected('profile');assert.equal(await page.locator('#p-chessity').getAttribute('aria-checked'),'false');assert.equal(await page.locator('#p-chessity-offline').count(),0);
+ await page.locator('#p-chessity').click();assert.equal(await page.locator('#p-chessity').getAttribute('aria-checked'),'true');assert.deepEqual(await visibleTabs(),['learn','play','practice','profile','chessity']);await page.reload();await selected('profile');assert.equal(await page.locator('#p-chessity').getAttribute('aria-checked'),'true');
+ for(const route of ['#chessity','#chessity/level/64','#chessity/play/1110']){
+  await page.goto(server.url+'/'+route);if(route.includes('/play/'))await page.locator('#ct-board piece').first().waitFor();else if(route.includes('/level/'))await page.locator('.ct-category').first().waitFor();else await page.locator('.ct-journey-lesson').first().waitFor();
+  for(const tab of ['learn','play','practice','profile']){await page.locator(`.ap-tabs [data-tab="${tab}"]`).click();await selected(tab);assert.equal(await page.locator('#view-chessity').evaluate(e=>getComputedStyle(e).display),'none');}
+ }
+ await page.locator('.ap-tabs [data-tab="chessity"]').click();await page.locator('.ct-journey-lesson').first().waitFor();await page.locator('.ap-tabs [data-tab="learn"]').click();await selected('learn');
+ for(const section of await page.locator('#secbar button').all()){
+  await section.click();await page.waitForTimeout(40);for(const dot of await page.locator('#road .ap-dot').all()){const r=await dot.boundingBox();assert.ok(r&&r.x>=0&&r.x+r.width<=width&&r.y>=46&&r.y+r.height<=height-20,'Lesson nodes remain inside the desktop/mobile viewport');}
+ }
+ await page.locator('#secbar button').first().click();await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(300);await page.screenshot({path:`${out}/${width}-lessons.png`});
+ const href=await page.locator('#road .ap-node').first().getAttribute('id');assert.ok(href);await page.locator('#road .ap-node').first().click();await page.waitForURL(/lessons\/|chess-puzzles\//);assert.ok(!page.url().includes('#chessity'),'A real lesson opens from the lesson map');
+ await page.goto(server.url+'/#profile');await page.locator('#p-chessity').click();assert.equal(await page.locator('#p-chessity').getAttribute('aria-checked'),'false');assert.deepEqual(await visibleTabs(),['learn','play','practice','profile']);await page.reload();assert.equal(await page.locator('#p-chessity').getAttribute('aria-checked'),'false');
+ await page.goto(server.url+'/#chessity/play/1110');await selected('learn');assert.deepEqual(await visibleTabs(),['learn','play','practice','profile']);assert.deepEqual(errors,[]);console.log(`PASS ${width}×${height}: opt-in fifth Chessity tab, persistent setting, real navigation from journey/level/exercise, desktop lessons visible and clickable`);await ctx.close();
+}}finally{await browser.close();await server.close();}

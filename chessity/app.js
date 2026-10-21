@@ -1,7 +1,7 @@
-import { playSound, mountStars } from './native-effects.js?v=1792525094';
-import { createBoard } from '../shared/board.js?v=1792525094';
-import { openGuide, closeGuide } from '../shared/guide.js?v=1792525094';
-import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792525094';
+import { playSound, mountStars } from './native-effects.js?v=1792577371';
+import { createBoard } from '../shared/board.js?v=1792577371';
+import { openGuide, closeGuide } from '../shared/guide.js?v=1792577371';
+import { compileExercise, questionExercise, mainline, destinations, coinDestinations, movePosition, positionFen, progressSummary, startingPositionExercise, miniWinner, miniBestMove } from './model.js?v=1792577371';
 
 const ROOT=document.getElementById('view-chessity'), LG=window.LG;
 // Keep the site's five tabs visible; native content occupies the space above them.
@@ -243,5 +243,3 @@ export async function render(route='') {
     else if(page==='group')renderGroup(id);else if(page==='profile')renderProfile();else if(page==='level')renderLevel(+id);else renderJourney(page==='journey'?+id:activeLevel);
   }catch(e){if(g===generation)ROOT.innerHTML=`<div class="ct-loading"><h2>Не вдалося відкрити урок</h2><p>${esc(e.message)}</p><a href="#chessity">До уроків</a></div>`;}
 }
-
-if('serviceWorker'in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type!=='CHESSITY_CACHE_PROGRESS')return;const{done,total,failed}=e.data,status=document.getElementById('ct-offline-status');const message=done===total?(failed?'Не всі файли збережено. Натисни ще раз, щоб повторити.':'Усі уроки збережено. Можна вимкнути інтернет.'):`Збережено ${done} / ${total}`;LG.store.set('chessity:offline',done===total&&failed===0);if(status)status.textContent=message;});

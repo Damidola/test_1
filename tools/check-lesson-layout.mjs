@@ -8,7 +8,7 @@ import {readFile,mkdir} from 'node:fs/promises';
 import {extname,join} from 'node:path';
 const root=fileURLToPath(new URL('..',import.meta.url)), phase='desktop', out=process.env.CHECK_SCREENSHOTS||'/tmp/lesson-layout-review';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{}),args:['--no-sandbox','--disable-dev-shm-usage']});
-const cases=phase==='before'?[[1844,809,'lessons/maze.html#rook']]:[[1844,809,'lessons/maze.html#rook'],[1366,768,'lessons/maze.html#bishop'],[1024,768,'lessons/check.html'],[1440,900,'lessons/lesson.html#attack'],[1440,900,'lessons/index.html#/1'],[1440,900,'chess-puzzles/index.html#chk_rook'],[1440,900,'chess-puzzles/index.html?lesson=1#esc_run'],[343,651,'lessons/maze.html#rook']];
+const cases=phase==='before'?[[1844,809,'lessons/maze.html#rook']]:[[1844,809,'lessons/maze.html#rook'],[1366,768,'lessons/maze.html#bishop'],[1024,768,'lessons/check.html'],[1440,900,'lessons/lesson.html#attack'],[1440,900,'lessons/index.html#/1'],[1920,1080,'lessons/index.html#/1'],[1920,1080,'lessons/maze.html#rook'],[1440,900,'chess-puzzles/index.html#chk_rook'],[1440,900,'chess-puzzles/index.html?lesson=1#esc_run'],[343,651,'lessons/maze.html#rook']];
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.woff2':'font/woff2'};
 for(const[w,h,url]of cases){
  const page=await browser.newPage({viewport:{width:w,height:h}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -26,8 +26,9 @@ for(const[w,h,url]of cases){
  assert.deepEqual(errors,[],url);
  const {board,header,nav}=geometry;assert.ok(board&&header&&nav,url+': missing board/header/navigation');
  assert.ok(board.x>=0&&board.right<=w&&board.y>=0&&board.bottom<=nav.y,url+': board outside viewport');
- if(w>=900){assert.ok(board.width>=Math.min(600,w-420,h-136)-1,url+': board too small');assert.ok(Math.abs(header.y-board.y)<=1,url+': header detached from board');assert.ok(header.x>=board.right+16,url+': sidebar overlaps board');assert.ok(Math.abs(nav.x-board.x)<=1&&Math.abs(nav.right-header.right)<=1,url+': navigation detached from layout');}
+ if(w>=900){assert.ok(board.width>=Math.min(w-420,h-96)-1,url+': board too small');assert.ok(Math.abs(header.y-board.y)<=1,url+': header detached from board');assert.ok(header.x>=board.right+16,url+': sidebar overlaps board');assert.ok(Math.abs(nav.x-board.x)<=1&&Math.abs(nav.right-board.right)<=1,url+': compact navigation should align with the board');}
  else assert.equal(Math.round(board.width),w,url+': mobile board should fill screen');
+ if(w>=900){assert.ok(nav.height<=50,url+': desktop toolbar too tall');assert.ok(await page.locator('.lg-nav-btn:visible').evaluateAll(es=>es.every(e=>{const r=e.getBoundingClientRect();return r.width<=117&&r.height<=38;})),url+': desktop buttons too large');}
  const file=`${phase}-${w}-${url.replace(/[^a-z0-9]+/gi,'-')}.png`;await page.screenshot({path:join(out,file)});console.log(JSON.stringify({url,w,h,file,geometry,errors}));await page.close();
 }
 await browser.close();

@@ -1,4 +1,4 @@
-import { createBoard } from '../shared/board.js?v=1792525094';
+import { createBoard } from '../shared/board.js?v=1792577371';
 import { Chess, fen, parseSquare, makeSquare, compat } from 'https://cdn.jsdelivr.net/npm/chessops@0.15.1/+esm';
 
 const $ = id => document.getElementById(id);

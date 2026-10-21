@@ -5,6 +5,7 @@ function route(start,target){const queue=[{p:start,path:[]}],seen=new Set();for(
 try{for(const[score,previous]of[[3,[3,3,3,3]],[2,[3,0,0,0]],[1,[0,0,0,0]]]){
  const context=await browser.newContext({viewport:{width:390,height:809},isMobile:true,hasTouch:true,serviceWorkers:'block'}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route(/fonts\.g|telegram\.org/,r=>r.abort());
  await page.addInitScript(previous=>{
+  localStorage.setItem('chk:chessity:enabled','true');
   localStorage.setItem('chk:chessity:session',JSON.stringify({lesson:1110,ids:[36012,36013,36014,36015,36016],index:4,roundStars:previous}));
   window.nativeSounds=[];window.nativeSoundErrors=[];window.starTimes=[];window.audioContexts=[];window.decodedSignals=[];
   addEventListener('chessity:sound',e=>nativeSounds.push(e.detail));addEventListener('chessity:sound-error',e=>nativeSoundErrors.push(e.detail));

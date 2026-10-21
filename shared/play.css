@@ -1,7 +1,7 @@
 /* Спільна розкладка ігор на дошці 8×8: усе на одному екрані, без прокрутки. */
 @import url('https://cdn.jsdelivr.net/npm/@lichess-org/chessground@10.2.0/assets/chessground.base.css');
 @import url('vendor/lichess-board.css');
-@import url('lesson-layout.css?v=1792525094');
+@import url('lesson-layout.css?v=1792577371');
 
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 html.lg { --lg-bar-h: 62px; } /* нижня панель */

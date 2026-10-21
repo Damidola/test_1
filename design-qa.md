@@ -51,3 +51,21 @@ final result: blocked
 The site's five navigation buttons stay visible while Chessity is selected, including the journey, lesson, level and explanation views. The previous mobile-only hide rule was removed. A ResizeObserver measures the real navigation height, including safe-area padding; the Chessity viewport, lesson footers and explanation overlay fit above it. The completion dialog is centred in that available content area. Desktop keeps the existing side navigation.
 
 Mobile regression checks now click Profile and the bottom-left Chessity button, confirm all five buttons remain visible, and ensure the journey, full board, lesson controls and explanation do not overlap the site navigation. Source-app fidelity applies inside the available Chessity area; persistent site navigation is the user's explicit requirement.
+
+
+## Optional fifth Chessity tab and hidden-view repair — 21 October 2026
+
+Reproduced the reported broken navigation: after opening Chessity's journey, clicking Lessons changed the selected tab and hidden attribute, but `#view-chessity.ct-journey { display:flex }` overrode `.ap-view[hidden]`. The inactive Chessity screen remained in layout above Lessons, including on desktop. [Before at 1440×900](design-review/navigation/desktop-before.png) and [after returning to Lessons](design-review/navigation/desktop-after.png) show the same transition. The shared hidden-view rule now has priority, so only the selected view occupies space.
+
+The core tab order is Lessons, Game, Practice, Profile. Chessity is hidden by default, including for previously used accounts with no explicit enabling preference. Profile's “Показувати Chessity” switch adds it as the fifth tab, and remembers the choice across reloads. Disabling hides its profile links and direct Chessity routes return to Lessons without deleting progress. Navigation layout is owned by app.css rather than the Chessity stylesheet. Offline-download status handling lives in the app shell, so it also works when enabled from Profile before opening Chessity.
+
+The new navigation regression test covers 360×640, 390×809, 1366×768 and 1920×1080: default-hidden and persisted opt-in/out states; all four real navigation buttons after journey, level and exercise screens; exactly one visible view at the viewport top; all lesson-map sections inside the viewport; and opening a real lesson. Existing Chessity tests explicitly enable the optional tab, retaining their task, stars, audio and offline upgrade coverage.
+
+The historical desktop attachment requested by the user was not present in the accessible uploads. The desktop bug above was reproduced from the current app and corrected; these captures are implementation evidence, not a comparison against that missing attachment. No unrelated redesign was inferred from the missing image.
+
+
+## Desktop lesson board and button proportions — clarified by user
+
+The desktop complaint concerns the board and bottom controls inside lessons. Removed the fixed 640px board cap from the shared lesson layout. The board now uses available viewport height/width while reserving the explanation column and compact controls. At 1920×1080 it measures 984×984; at 1440×900, 804×804. The bottom toolbar is 48px high; buttons are at most 116×36, with icon and text on one line, aligned beneath the board. [Desktop lesson at 1920×1080](design-review/navigation/desktop-lesson-size.png).
+
+The shared desktop rule covers maze, mini-lesson, Lichess Learn and lesson puzzle engines. Targeted checks passed at 1024×768, 1366×768, 1440×900, 1844×809 and 1920×1080. They assert that the board fits above controls, uses the available height, the right-hand panel stays separate, and the bottom buttons stay compact. The 343×651 mobile board and 62px mobile toolbar retain their prior geometry. This change follows the user's explicit size clarification and does not depend on reconstructing the unavailable historical image.

@@ -4,9 +4,10 @@
 @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
   html.lg {
     --lesson-panel: 320px;
+    --lg-bar-h: 48px;
     --lesson-gap: 32px;
     --lesson-text: 18px;
-    --lesson-board: min(640px, calc(100svh - 136px), calc(100vw - var(--lesson-panel) - var(--lesson-gap) - 68px));
+    --lesson-board: min(calc(100svh - 96px), calc(100vw - var(--lesson-panel) - var(--lesson-gap) - 68px));
     --lesson-width: calc(var(--lesson-board) + var(--lesson-gap) + var(--lesson-panel));
   }
   html.lg body.lg-game:has(.lg-play > .lv-teach, .lg-play.mt:not([data-mode="menu"])) { display: grid; place-items: center; }
@@ -66,6 +67,12 @@
   html.lg .mt:not([data-lesson]) > .mt-navrow { grid-column: 2; grid-row: 2; }
   html.lg .mt:not([data-lesson])[data-mode="puzzle"] > .mt-task { grid-column: 2; grid-row: 3; width: 100%; height: auto; min-height: 128px; padding: 18px; border: 1px solid var(--app-border, #343C55); border-radius: 16px; background: var(--app-panel); color: #fff; font-size: var(--lesson-text); line-height: 1.5; }
 
-  /* Нижні кнопки вирівняні з тим самим ігровим блоком. */
-  html.lg .lg-nav { left: 50%; right: auto; width: min(var(--lesson-width), calc(100% - 48px)); transform: translateX(-50%); box-sizing: border-box; }
+  /* Компактні нижні кнопки під дошкою, без розтягування на колонку пояснення. */
+  html.lg .lg-nav { left: calc(50% - (var(--lesson-panel) + var(--lesson-gap)) / 2); right: auto; width: var(--lesson-board); height:48px; transform: translateX(-50%); box-sizing: border-box; justify-content:center; padding:6px 8px !important; gap:8px !important; }
+  html.lg .lg-nav .lg-nav-btn { flex:1 1 0; max-width:116px; min-width:0; height:36px; flex-direction:row !important; gap:6px !important; padding:3px 6px; border-radius:10px !important; font-size:12px !important; }
+  html.lg .lg-nav .lg-nav-btn .ico { height:20px; font-size:18px; }
+  html.lg .lg-nav .lg-nav-btn .ico svg { width:18px !important; height:18px !important; }
+  html.lg .lg-nav .lg-nav-btn .lbl { font-size:11px; }
+  html.lg .lg-play:has(> .lv-teach) > .lg-controls button { height:38px; font-size:12px; }
+  html.lg .lg-play:has(> .lv-teach) > .lg-controls .ico { font-size:18px; }
 }

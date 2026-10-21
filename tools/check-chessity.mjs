@@ -8,6 +8,7 @@ const base='http://chess.local/',types={'.html':'text/html','.js':'text/javascri
 const browser=await chromium.launch({headless:true});
 try{for(const[width,height]of [[390,866],[450,855],[1440,900]]){
  const page=await browser.newPage({viewport:{width,height},isMobile:width<960,hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>localStorage.setItem('chk:chessity:enabled','true'));
  await page.route(base+'**',async r=>{const path=decodeURIComponent(new URL(r.request().url()).pathname);try{await r.fulfill({body:await readFile(join(ROOT,path==='/'?'index.html':path)),contentType:types[extname(path)]||'application/octet-stream'});}catch{await r.fulfill({status:404,body:''});}});
  await page.route(/fonts\.g|youtube|telegram\.org/,r=>r.abort());
  await page.goto(base+'index.html#chessity');await page.locator('.ct-journey-lesson').first().waitFor();

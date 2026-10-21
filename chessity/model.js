@@ -1,4 +1,4 @@
-import { Chess, parseFen, makeFen, parseSan, parsePgn, parseSquare, makeSquare } from './engine.js?v=1792525094';
+import { Chess, parseFen, makeFen, parseSan, parsePgn, parseSquare, makeSquare } from './engine.js?v=1792577371';
 
 const ROLES = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const LETTERS = Object.fromEntries(Object.entries(ROLES).map(([k,v]) => [v,k]));
